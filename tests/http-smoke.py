@@ -76,11 +76,11 @@ assert request(admin, "/wp-admin/admin-post.php", data=urllib.parse.urlencode(
 ).encode())[0] == 403, "Mutation without nonce was accepted"
 
 
-def upload(name, payload):
+def upload(name, payload, folder=0):
     boundary = "fw-" + uuid.uuid4().hex
     chunks = []
     fields = {"action": "filewarden_admin", "operation": "upload", "_wpnonce": nonce,
-              "folder_id": "0", "policy_type": "authenticated"}
+              "folder_id": str(folder), "policy_type": "authenticated"}
     for key, value in fields.items():
         chunks.append(f'--{boundary}\r\nContent-Disposition: form-data; name="{key}"\r\n\r\n{value}\r\n'.encode())
     chunks.append(f'--{boundary}\r\nContent-Disposition: form-data; name="file"; filename="{name}"\r\nContent-Type: application/pdf\r\n\r\n'.encode() + payload + b"\r\n")
@@ -91,13 +91,24 @@ def upload(name, payload):
 pdf = b"%PDF-1.4\n1 0 obj<</Type/Catalog>>endobj\n%%EOF\n"
 assert "result=success" in upload("upload-test.pdf", pdf)[3]
 assert "result=duplicate" in upload("upload-test.pdf", pdf)[3]
-assert "result=failed" in upload("malicious.php", b"<?php echo 'blocked';")[3]
-assert "result=failed" in upload("fake.pdf", b"not a PDF")[3]
+assert "result=format" in upload("malicious.php", b"<?php echo 'blocked';")[3]
+assert "result=format" in upload("fake.pdf", b"not a PDF")[3]
+large_pdf = pdf + b" " * 100000
+status, _, listing, url = upload("large-upload.pdf", large_pdf, fixtures["folder_id"])
+assert status == 200 and "result=success" in url and b"large-upload.pdf saved and verified" in listing
+created = urllib.parse.parse_qs(urllib.parse.urlsplit(url).query)["created"][0]
+download = "/wp-admin/admin-post.php?" + urllib.parse.urlencode({
+    "action": "filewarden_content", "document": created, "download": "1"
+})
+assert request(admin, download)[2] == large_pdf, "Uploaded bytes were not preserved"
+assert request(anon, download)[0] == 404
+assert b"large-upload.pdf" in request(editor, folder_view)[2], "Uploaded document absent from publication"
 status, _, page, url = request(admin, "/wp-admin/admin-post.php", data=urllib.parse.urlencode({
     "action": "filewarden_admin", "operation": "import", "_wpnonce": nonce,
     "folder_id": str(fixtures["folder_id"]), "policy_type": "authenticated", "media_id": str(fixtures["media_id"])
 }).encode())
 assert status == 200 and "result=success" in url and "folder_id=" + str(fixtures["folder_id"]) in url
+assert b"filewarden-fixture.png saved and verified in Restricted / Public child" in page
 match = re.search(rb'href="([^"]+)"[^>]*>filewarden-fixture\.png</a>', page)
 assert match, "Imported image missing from destination listing"
 detail = urllib.parse.urlsplit(unescape(match.group(1).decode()))

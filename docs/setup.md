@@ -18,13 +18,13 @@ Les documents sont chiffrés avec Sodium. Pour sauvegarder ou déplacer le site,
 
 Les installations avec `FILEWARDEN_STORAGE_DIR` conservent leur mode hors racine. Ne change pas de mode sur une installation contenant des documents sans migration dédiée. Les instructions suivantes couvrent la configuration avancée hors racine et les essais communs.
 
-Cette version `0.1.1-dev` sert à valider les fondations. Elle ne constitue pas la V1 complète et ne doit pas recevoir de documents confidentiels avant la validation de l’hébergement.
+Cette version `0.1.3-dev` sert à valider les fondations. Elle ne constitue pas la V1 complète et ne doit pas recevoir de documents confidentiels avant la validation de l’hébergement.
 
 ## 1. Préparer WordPress
 
 - Utiliser un site de préproduction WordPress **classique**, distinct de la production. Le multisite est bloqué.
 - Prévoir WordPress 6.8+, PHP 8.2+ avec `fileinfo`, MySQL 8.0+ ou MariaDB 10.11+ et HTTPS.
-- Générer le ZIP avec `php tools/build.php`, puis installer `build/filewarden-0.1.1-dev.zip` depuis Extensions → Ajouter → Téléverser une extension.
+- Générer le ZIP avec `php tools/build.php`, puis installer `build/filewarden-0.1.3-dev.zip` depuis Extensions → Ajouter → Téléverser une extension.
 - Activer FileWarden avec un administrateur. L’activation crée trois tables et attribue les capacités FileWarden au rôle administrateur. Les autres rôles ne reçoivent aucun nouveau droit par défaut.
 - L’entrée **FileWarden** apparaît dans l’administration. Au départ, le stockage est bloqué.
 
@@ -93,3 +93,11 @@ Exclure les routes FileWarden de tout cache serveur/CDN susceptible d’ignorer 
 - Désactivation et désinstallation conservent documents, tables et capacités. La désactivation retire la tâche planifiée. Une politique de suppression explicite sera conçue séparément.
 
 Noter les versions exactes de WordPress, PHP, base, serveur Web et les résultats. Le jalon `0.1.0` ne peut être déclaré accepté sans validation d’intégration et de stockage sur l’environnement cible.
+
+## Correctif 0.1.4-dev : documents absents après envoi
+
+Sur les hébergements utilisant la compatibilité Sodium de WordPress, les anciens fichiers de plus de 64 Kio pouvaient échouer au chiffrement. La version 0.1.4-dev corrige ce défaut sans changer le format ni déplacer les fichiers existants. Les envois qui ont échoué doivent être recommencés : ils n'ont pas créé de document.
+
+La progression du transfert est suivie d'une étape de chiffrement et de vérification. Attendre la confirmation indiquant le nom du document et son dossier. Une interruption réseau n'est pas une confirmation d'échec : consulter d'abord le dossier avant de réessayer.
+
+Les dossiers FileWarden sont virtuels. Ne pas déplacer le stockage dans `wp-content/plugins/filewarden` : ce répertoire est remplacé lors des mises à jour. Le stockage persistant reste dans `wp-content/filewarden-storage` par défaut ; aucune modification de `wp-config.php` n'est requise pour ce correctif.

@@ -12,6 +12,8 @@ namespace FileWarden;
  */
 final class EncryptedStream {
 	private const CHUNK = 65536;
+	// Protocol value: WordPress sodium_compat does not define the native TAG_MESSAGE constant.
+	private const TAG_MESSAGE = 0;
 
 	/**
 	 * Transfer a file between plaintext and encrypted streams.
@@ -37,7 +39,7 @@ final class EncryptedStream {
 		while ( $size > 0 ) {
 			$length = min( self::CHUNK, $size );
 			$size  -= $length;
-			$tag    = $size ? SODIUM_CRYPTO_SECRETSTREAM_XCHACHA20POLY1305_TAG_MESSAGE : SODIUM_CRYPTO_SECRETSTREAM_XCHACHA20POLY1305_TAG_FINAL;
+			$tag    = $size ? self::TAG_MESSAGE : SODIUM_CRYPTO_SECRETSTREAM_XCHACHA20POLY1305_TAG_FINAL;
 			if ( $encrypt ) {
 				$chunk = self::read( $input, $length );
 				self::write( $output, sodium_crypto_secretstream_xchacha20poly1305_push( $state, $chunk, '', $tag ) );

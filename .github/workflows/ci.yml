@@ -75,6 +75,8 @@ jobs:
           ln -s "$GITHUB_WORKSPACE" /tmp/fw-wordpress/wp-content/plugins/filewarden
           wp plugin activate filewarden --path=/tmp/fw-wordpress
           wp eval-file "$GITHUB_WORKSPACE/tests/integration.php" --path=/tmp/fw-wordpress
+      - name: Test WordPress Sodium fallback without the native extension
+        run: php -n tests/sodium-compat.php /tmp/fw-wordpress/wp-includes/sodium_compat/autoload.php
       - name: Exercise browser HTTP routes
         shell: bash
         run: |

@@ -170,10 +170,42 @@ final class DocumentService {
 	 * @return mixed Operation result.
 	 */
 	public function upload( array $file, $folder, $policy ) {
+		if ( in_array( $file['error'] ?? null, array( UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE ), true ) ) {
+			throw new \InvalidArgumentException( 'Upload exceeds server limit.' );
+		}
 		if ( ! isset( $file['error'], $file['tmp_name'], $file['name'] ) || UPLOAD_ERR_OK !== $file['error'] || ! is_string( $file['tmp_name'] ) || ! is_string( $file['name'] ) || ! is_uploaded_file( $file['tmp_name'] ) ) {
 			throw new \InvalidArgumentException( 'Invalid upload.' );
 		}
 		return $this->store( $file, $folder, $policy );
+	}
+
+	/**
+	 * List readable folder paths for the current administrator's selectors.
+	 *
+	 * @return array<int,string> Folder labels indexed by ID.
+	 */
+	public function folder_choices() {
+		$choices = array( 0 => __( 'Root folder', 'filewarden' ) );
+		$pending = array( 0 );
+		$user    = wp_get_current_user();
+		while ( $pending ) {
+			$parent_id = array_pop( $pending );
+			$offset    = 0;
+			do {
+				$rows = $this->repository->folders( $parent_id, $offset );
+				foreach ( $rows as $row ) {
+					$id = (int) $row['id'];
+					if ( isset( $choices[ $id ] ) || ! $this->permissions->can_read( $row, $user ) ) {
+						continue;
+					}
+					$choices[ $id ] = $parent_id ? $choices[ $parent_id ] . ' / ' . $row['name'] : $row['name'];
+					$pending[]      = $id;
+				}
+				$offset  += 100;
+				$has_more = 100 === count( $rows );
+			} while ( $has_more );
+		}
+		return $choices;
 	}
 
 	/**
@@ -216,6 +248,7 @@ final class DocumentService {
 	 * @return array Document metadata.
 	 * @throws \InvalidArgumentException If the file is invalid.
 	 * @throws \UnexpectedValueException If the name already exists.
+	 * @throws \RuntimeException If persistence or verification fails.
 	 * @throws \Throwable If storage fails.
 	 */
 	private function store( array $file, $folder, $policy ) {
@@ -243,16 +276,33 @@ final class DocumentService {
 		if ( 'application/pdf' === $mime && '%PDF-' !== FileIO::attempt( fn() => file_get_contents( $file['tmp_name'], false, null, 0, 5 ) ) ) {
 			throw new \InvalidArgumentException( 'Invalid PDF.' );
 		}
-		$lock = $this->repository->lock( $folder );
-		$key  = null;
+		$lock  = $this->repository->lock( $folder );
+		$key   = null;
+		$stage = null;
 		try {
 			if ( $this->repository->duplicate( $folder, $name ) ) {
 				throw new \UnexpectedValueException( 'Rename this file before uploading. Version creation is not available yet.' );
 			}
 			$this->audit->record( 'upload_requested', $folder );
-			$key  = $this->storage->put( $file['tmp_name'], $size );
-			$uuid = wp_generate_uuid4();
-			$id   = $this->repository->insert(
+			$stage  = 'storage';
+			$digest = FileIO::attempt( fn() => hash_file( 'sha256', $file['tmp_name'] ) );
+			if ( false === $digest ) {
+				throw new \RuntimeException( 'File verification failed.' );
+			}
+			$key    = $this->storage->put( $file['tmp_name'], $size );
+			$handle = $this->storage->open( $key, $size );
+			try {
+				$hash = hash_init( 'sha256' );
+				if ( FileIO::attempt( fn() => hash_update_stream( $hash, $handle ) ) !== $size || ! hash_equals( $digest, hash_final( $hash ) ) ) {
+					throw new \RuntimeException( 'File verification failed.' );
+				}
+			} finally {
+				// phpcs:ignore WordPress.WP.AlternativeFunctions -- Close the verified stream and release any temporary file.
+				fclose( $handle );
+			}
+			$stage = 'database';
+			$uuid  = wp_generate_uuid4();
+			$id    = $this->repository->insert(
 				'documents',
 				array(
 					'uuid'        => $uuid,
@@ -261,17 +311,27 @@ final class DocumentService {
 					'storage_key' => $key,
 					'mime'        => $mime,
 					'size'        => $size,
-					'sha256'      => FileIO::attempt( fn() => hash_file( 'sha256', $file['tmp_name'] ) ),
+					'sha256'      => $digest,
 					'policy'      => $policy,
 				)
 			);
 			// Once persisted, never delete the referenced file if audit logging subsequently fails.
-			$key = null;
+			$key    = null;
+			$record = $this->repository->document( $uuid );
+			if ( ! $record || (int) $record['folder_id'] !== $folder || (int) $record['id'] !== $id ) {
+				throw new \RuntimeException( 'Destination verification failed.' );
+			}
+			$stage = 'audit';
 			$this->audit->record( 'document_uploaded', $id );
-			return $this->metadata( $this->repository->document( $uuid ) );
+			return $this->metadata( $record );
 		} catch ( \Throwable $error ) {
 			if ( null !== $key ) {
 				$this->storage->remove( $key );
+			}
+			if ( $stage ) {
+				$this->audit->record( 'upload_failed_' . $stage, $folder );
+				// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Stage is an internal literal and callers map it to safe notices.
+				throw new \RuntimeException( 'Upload failed at ' . $stage . '.', 0, $error );
 			}
 			throw $error;
 		} finally {

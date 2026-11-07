@@ -53,6 +53,7 @@ foreach ( array( 'subscriber', 'editor' ) as $role ) {
 }
 foreach ( array( 0, $users['subscriber'] ) as $id ) {
 	wp_set_current_user( $id );
+	fw_assert( ! isset( $service->folder_choices()[ $child ] ), 'Private folder appeared in the selector.' );
 	fw_assert( 404 === fw_request( 'GET', '/documents/' . $ids['private'] )->get_status(), 'Private document metadata leaked.' );
 	fw_assert( 200 === fw_request( 'GET', '/documents/' . $ids['public'] )->get_status(), 'Public document denied.' );
 	fw_assert( 404 === fw_request( 'GET', '/documents', array( 'folder_id' => $child ) )->get_status(), 'Private folder leaked.' );
@@ -60,6 +61,7 @@ foreach ( array( 0, $users['subscriber'] ) as $id ) {
 	fw_assert( fw_request( 'POST', '/documents' )->get_status() >= 400, 'Unauthorized upload.' );
 }
 wp_set_current_user( $users['editor'] );
+fw_assert( 'Restricted / Public child' === ( $service->folder_choices()[ $child ] ?? null ), 'Authorized folder path missing from selector.' );
 $response = fw_request( 'GET', '/documents/' . $ids['private'] );
 fw_assert( 200 === $response->get_status(), 'Authorized editor denied.' );
 $data = $response->get_data();

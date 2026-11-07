@@ -1,0 +1,12 @@
+.filewarden-admin { max-width: 1100px; }
+.filewarden-admin > form { background: #fff; border: 1px solid #c3c4c7; padding: 18px; border-radius: 6px; }
+.filewarden-admin select { max-width: 100%; }
+.filewarden-admin fieldset label { display: inline-block; margin: 6px 14px 6px 0; }
+.filewarden-admin h2 { margin-top: 28px; }
+.filewarden-admin .filewarden-folders { display: flex; flex-wrap: wrap; gap: 12px; }
+.filewarden-folders li { background: #fff; border: 1px solid #c3c4c7; padding: 14px 20px; border-radius: 6px; }
+.filewarden-folders a { font-weight: 600; }
+.filewarden-admin th, .filewarden-admin td { padding: 14px; }
+.filewarden-diagnostics { margin-top: 20px; padding: 12px; border: 1px solid #c3c4c7; }
+.filewarden-diagnostics summary { cursor: pointer; font-weight: 600; }
+.filewarden-admin progress { width: min(100%, 480px); height: 22px; }

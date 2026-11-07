@@ -21,7 +21,7 @@ $zip = new ZipArchive();
 if ( true !== $zip->open( $output . '/' . $archive, ZipArchive::CREATE | ZipArchive::OVERWRITE ) ) {
 	throw new RuntimeException( 'Cannot create ZIP.' );
 }
-$files = array( 'filewarden.php', 'uninstall.php', 'readme.txt', 'README.md', 'LICENSE', 'docs/setup.md', 'assets/media.js' );
+$files = array( 'filewarden.php', 'uninstall.php', 'readme.txt', 'README.md', 'LICENSE', 'docs/setup.md', 'assets/media.js', 'assets/admin.js', 'assets/admin.css' );
 foreach ( glob( $root . '/includes/*.php' ) as $file ) {
 	$files[] = 'includes/' . basename( $file );
 }

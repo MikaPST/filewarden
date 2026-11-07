@@ -2,9 +2,15 @@
 
 **Private Document Management for WordPress**
 
-> **Status: 0.1.1-dev pre-alpha foundation. Not production-ready. Do not use confidential documents before deployment security validation.**
+> **Status: 0.1.4-dev pre-alpha foundation. Not production-ready. Do not use confidential documents before deployment security validation.**
 
 FileWarden is a free, open-source WordPress document-management plugin focused on private storage, inherited access control and modern publishing interfaces. Single-site only for the first version, confirmed by the owner.
+
+## Télécharger et installer
+
+Ouvre [GitHub Releases](https://github.com/MikaPST/filewarden/releases) et télécharge **filewarden-0.1.4-dev.zip** dans les fichiers joints. Dans WordPress : **Extensions → Ajouter → Téléverser une extension**. La préversion reste destinée aux tests. Consulte le [journal des changements](CHANGELOG.md).
+
+Les documents restent dans `wp-content/filewarden-storage`, séparés du code remplacé lors des mises à jour. Les dossiers affichés sont virtuels ; les fichiers physiques sont chiffrés et portent des noms opaques.
 
 ## Implemented foundation
 
@@ -27,14 +33,14 @@ WordPress 6.8+, PHP 8.2+ with `fileinfo`, MySQL 8.0+ or MariaDB 10.11+. These ar
 
 ### Préparer une release GitHub
 
-Mets à jour le champ `Version` et la constante `FILEWARDEN_VERSION` dans `filewarden.php`. Après avoir poussé ce commit, pousse un tag de même version, par exemple `v0.1.1-dev`.
+Mets à jour le champ `Version` et la constante `FILEWARDEN_VERSION` dans `filewarden.php`. Après avoir poussé ce commit, pousse un tag de même version, par exemple `v0.1.4-dev`.
 
 ```sh
-git tag -a v0.1.1-dev -m "FileWarden 0.1.1-dev"
-git push origin v0.1.1-dev
+git tag -a v0.1.4-dev -m "FileWarden 0.1.4-dev"
+git push origin v0.1.4-dev
 ```
 
-Le workflow réutilise la CI, vérifie la concordance du tag et prépare une release en brouillon avec le ZIP installable et son empreinte SHA-256. Un suffixe comme `-dev` marque la release comme préversion. Vérifie les notes et le ZIP avant de publier le brouillon dans GitHub Releases.
+Le workflow réutilise la CI, vérifie la concordance du tag et publie une release visible avec le ZIP installable et son empreinte SHA-256 seulement si tous les tests réussissent. Un suffixe comme `-dev` marque la release comme préversion. Pousser un tag autorise sa publication.
 
 Pour installer FileWarden, télécharge le ZIP nommé `filewarden-<version>.zip` dans les fichiers joints de la release. Dans WordPress, ouvre **Extensions → Ajouter → Téléverser une extension** et sélectionne ce ZIP. Les archives automatiques **Source code** de GitHub contiennent le dépôt de développement.
 

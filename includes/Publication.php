@@ -65,13 +65,14 @@ final class Publication {
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Read-only pagination with strict integer validation.
 			$offset = RestController::integer( wp_unslash( $_GET['offset'] ?? null ) );
 			$service->require_folder( $folder );
-			$rows = $service->repository->documents( $folder, $offset );
+			$rows  = $service->repository->documents( $folder, $offset );
+			$title = $folder ? ( $service->repository->folder( $folder )['name'] ?? __( 'Documents', 'filewarden' ) ) : __( 'Documents at the root', 'filewarden' );
 		} catch ( \Throwable $error ) {
 			status_header( 404 );
 			echo esc_html__( 'Folder unavailable.', 'filewarden' );
 			exit;
 		}
-		echo '<!doctype html><html lang="' . esc_attr( get_bloginfo( 'language' ) ) . '"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>' . esc_html__( 'Documents', 'filewarden' ) . '</title><main><h1>' . esc_html__( 'Documents', 'filewarden' ) . '</h1>';
+		echo '<!doctype html><html lang="' . esc_attr( get_bloginfo( 'language' ) ) . '"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>' . esc_html( $title ) . '</title><main><h1>' . esc_html( $title ) . '</h1>';
 		$visible = false;
 		foreach ( $rows as $row ) {
 			if ( ! $service->permissions->can_read( $row, wp_get_current_user() ) ) {
@@ -82,7 +83,7 @@ final class Publication {
 			echo '<p><a target="_blank" rel="noopener noreferrer" href="' . esc_url( $url ) . '">' . esc_html( $row['name'] ) . '</a></p>';
 		}
 		if ( ! $visible ) {
-			echo '<p>' . esc_html__( 'No documents available.', 'filewarden' ) . '</p>';
+			echo '<p>' . esc_html__( 'No documents are visible in this folder.', 'filewarden' ) . '</p>';
 		}
 		if ( count( $rows ) === 100 || $offset > 0 ) {
 			$links = array();
