@@ -33,10 +33,12 @@ function pdfFixture() {
         try {
             const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
             const page = await context.newPage();
-            await page.goto(base + '/wp-login.php');
-            await page.locator('#user_login').fill('fw_admin');
-            await page.locator('#user_pass').fill('disposable-test-password');
-            await Promise.all([page.waitForURL(/wp-admin/), page.locator('#wp-submit').click()]);
+            // Authenticate the disposable context without waiting on dashboard third-party resources.
+            await context.request.get(base + '/wp-login.php');
+            const login = await context.request.post(base + '/wp-login.php', {
+                form: { log: 'fw_admin', pwd: 'disposable-test-password', testcookie: '1' }
+            });
+            assert.ok(login.url().includes('/wp-admin/'), 'Fixture login failed');
             await page.goto(base + '/wp-admin/admin.php?page=filewarden');
             const filename = `browser-${name}.pdf`;
             await page.locator('#fw-file').setInputFiles({ name: filename, mimeType: 'application/pdf', buffer: pdfFixture() });
