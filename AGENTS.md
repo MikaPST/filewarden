@@ -1,0 +1,70 @@
+# AGENTS.md — FileWarden
+
+## Mission and status
+FileWarden is a **free, open-source WordPress document-management plugin** licensed **GPL-2.0-or-later**. Prioritize secure private document storage, strict inherited access control, reliable auditability, accessibility, and maintainability.
+
+**Current status: pre-alpha scaffold. No secure storage, ACL engine, or working document download exists yet. Never describe the plugin as production-ready or safe for confidential files until implementation and security tests demonstrate it.**
+
+## Source of truth and workflow
+Before changing code, read:
+1. `README.md`
+2. `docs/specifications/requirements.md`
+3. `docs/architecture.md`
+4. `docs/permissions.md`
+5. `docs/security.md`
+6. `docs/roadmap.md`
+
+Follow documented decisions. If requirements conflict or are incomplete, explain the trade-off and ask for a decision rather than silently redefining behavior. Do not create features beyond the agreed milestone without approval. Keep specifications and documentation aligned with implementation. Communicate with the project owner **in French**; write code identifiers and developer-facing technical comments in clear English.
+
+## Confirmed functional rules
+- Nested folders, categories, tags, and strict inherited access policies.
+- Public, authenticated-user, and WordPress-role access; ordinary users receive the **intersection** of the policies of the document and all ancestor folders.
+- WordPress administrators have global **content read access**, implemented using an explicit capability assigned to administrators by default. This does **not** bypass separate edit, delete, permission-management, or settings capabilities.
+- For V1, viewing/previewing/downloading share one `read` permission. A preview is not DRM and cannot prevent an authorized user from saving content.
+- Permanent logical document URLs, with authorization enforced on **every** request; never expose physical storage paths.
+- Document details open first, with preview and download actions. Preview supports PDF and images, in configurable modal or dedicated-page layouts.
+- Trash retention: **30 days** by default; automatic cleanup, configurable.
+- Same-name upload: warn and offer rename or a new version; version replacement requires edit authorization.
+- Version history is optional; when enabled, retain up to **10 versions** by default, configurable.
+- Maximum upload size: **50 MB** by default, configurable and bounded by server limits.
+- Audit log retention: **365 days** by default, configurable.
+- Native shortcode, Gutenberg and Elementor integrations; admin and authorized frontend uploads; grid/list/explorer displays.
+- French and English localization.
+- Multiple-file ZIP download and S3/MinIO are **future scope**, not V1.
+
+## Security invariants (non-negotiable)
+1. **Fail closed**: deny access, uploads, or storage operations if authorization or storage protection cannot be established.
+2. Prefer private storage **outside the webroot**. Never rely on `.htaccess` alone for Nginx/shared hosting. No unverified web-accessible fallback. Recheck protection when relevant configuration changes.
+3. Centralize access decisions in one authorization service. Check authorization server-side for metadata, listings, download, preview, thumbnails, versions, search, and all mutations. Never trust hidden UI controls.
+4. Validate authentication and WordPress capabilities on every privileged operation. Use nonces for CSRF protection where appropriate; **nonces are not authorization**.
+5. Use WordPress database APIs with prepared statements; sanitize inputs, validate schemas, and escape outputs at the appropriate context. Apply least privilege.
+6. Allowlist file types using extension and server-side MIME checks; validate sizes; generate opaque storage keys; avoid executing uploaded content. Handle temporary files and errors safely. Treat SVG/HTML and active content as unsafe unless explicitly reviewed.
+7. For private binary responses, use appropriate cache headers and secure content-disposition/MIME handling. Implement HTTP Range support for PDFs only with correct authorization and boundary validation.
+8. Prevent leaks through direct URLs, public thumbnails, backups, logs, REST responses, error messages, and caches.
+9. Log sensitive actions and access denials without unnecessarily collecting personal data; respect retention settings.
+10. Make trash/version cleanup idempotent and safe against races, interrupted operations, and deletion of active content.
+11. Never commit credentials, tokens, real personal documents, environment secrets, or production data.
+12. Do not claim absolute security or compatibility that has not been tested.
+
+## Technical approach
+- Target compatibility (not yet verified): WordPress **6.8+**, PHP **8.2+**, MySQL **8.0+** / MariaDB **10.11+**. Recommend HTTPS and currently supported PHP releases.
+- Modular PHP services for documents, folders, permissions, storage, audit, and REST/HTTP controllers.
+- Use a versioned REST namespace `filewarden/v1` for metadata and mutations; browser-compatible secure routes for binary content.
+- Use the WordPress table prefix dynamically; migrations must be repeatable and safe.
+- Use WordPress coding standards, PHP_CodeSniffer, PHPUnit, and existing GitHub Actions; add focused tests for each security-sensitive change.
+- Prefer WordPress APIs and dependencies already in the repository. Avoid adding a framework or dependency without explaining its benefit and maintenance/security cost.
+- Ship release ZIPs with runtime dependencies and built assets, excluding development-only files and secrets.
+- Keep translations ready with the `filewarden` text domain.
+- Do not delete user documents on plugin deactivation or uninstall without a separately designed, explicit policy.
+
+## How to work on a task
+1. Inspect relevant code, docs, and tests before editing.
+2. State a small implementation plan and identify security implications.
+3. Make focused changes; preserve existing functionality and public interfaces.
+4. Add or update automated tests, including negative authorization cases.
+5. Run applicable checks (PHP syntax, PHPCS, PHPUnit, frontend build, and security checks) when available. Report commands and actual outcomes; distinguish unavailable checks from passing checks.
+6. Summarize files changed, decisions made, remaining risks, and suggested next step.
+7. Ask before destructive changes, dependency overhauls, release publication, or changing agreed requirements.
+
+## First milestone: v0.1.0 secure foundation
+Prioritize activation/bootstrap, schema migrations, storage diagnostics, safe upload/download proof of concept, inherited ACL enforcement, audit events, and security-focused tests. Do **not** build the full visual file manager or announce a stable release before the secure foundation passes its acceptance criteria.
