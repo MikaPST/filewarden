@@ -1,0 +1,7 @@
+{
+  "name": "filewarden",
+  "private": true,
+  "version": "0.1.0-dev",
+  "description": "FileWarden development scaffold",
+  "scripts": {"build": "echo 'No frontend assets implemented yet'"}
+}

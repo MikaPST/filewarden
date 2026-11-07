@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<ruleset name="FileWarden">
+  <description>WordPress coding standards for FileWarden.</description>
+  <file>filewarden.php</file>
+  <file>includes</file>
+  <exclude-pattern>vendor/*</exclude-pattern>
+  <rule ref="WordPress"/>
+</ruleset>
