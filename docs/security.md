@@ -5,6 +5,8 @@ FileWarden is pre-alpha and must not be deployed for confidential documents.
 ## Design commitments
 
 - Deny by default, fail closed on insecure storage.
+- Managed storage combines a positive public HTTPS control and a denied storage witness with authenticated Sodium encryption. Probes cover the configured content URL, so alternate domains and aliases still require host verification.
+- Protect the independent WordPress database key and backup copies. A filesystem leak alone exposes encrypted bytes. Access to both the key and files permits decryption.
 - Never rely on `.htaccess` alone for Nginx or unknown hosting.
 - Do not expose raw physical storage paths or media-library URLs.
 - Validate upload extensions, MIME, size and content; disable execution in storage.

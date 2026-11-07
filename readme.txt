@@ -6,17 +6,17 @@ Requires PHP: 8.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Pre-alpha scaffold for a secure WordPress document management plugin. Not ready for production.
+Pre-alpha document-management foundation. Not ready for production.
 
 == Description ==
 
-FileWarden is under development. Secure storage, permissions and downloads are not yet implemented.
+FileWarden 0.1.0-dev implements private-storage checks, inherited permissions, PDF/image uploads, protected downloads and minimal administration. Integration and hosting validation are still required. Versions, trash, previews and publishing integrations are not implemented.
 
 == Installation ==
 
-This development scaffold should not be used on production sites.
+Use single-site preproduction WordPress. Managed storage requires Sodium and verified HTTPS access restrictions. See docs/setup.md for verification, backups and the optional outside-webroot configuration. Do not use confidential documents before deployment validation.
 
 == Changelog ==
 
 = Unreleased =
-Initial scaffold.
+First development foundation; not a stable release.

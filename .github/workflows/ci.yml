@@ -1,0 +1,77 @@
+name: Quality and security checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['8.2', '8.3', '8.4']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring, fileinfo, zip, sodium
+          tools: composer:v2
+          coverage: none
+      - run: composer install --no-interaction --prefer-dist --no-plugins
+      - run: find includes tests -name '*.php' -print0 | xargs -0 -n1 php -l
+      - run: composer lint
+      - run: composer test
+      - run: composer audit
+      - run: php tools/build.php
+      - uses: actions/upload-artifact@v4
+        if: matrix.php == '8.2'
+        with:
+          name: filewarden-development
+          path: build/filewarden-0.1.0-dev.zip
+  integration:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        wordpress: ['6.8', 'latest']
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: disposable-db-password
+          MYSQL_DATABASE: filewarden_test
+        ports: ['3306:3306']
+        options: --health-cmd="mysqladmin ping -pdisposable-db-password" --health-interval=10s --health-timeout=5s --health-retries=10
+    env:
+      FILEWARDEN_TESTING: '1'
+      FILEWARDEN_FIXTURES: /tmp/filewarden-fixtures.json
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mysqli, mbstring, fileinfo
+          tools: wp-cli
+          coverage: none
+      - name: Prepare disposable WordPress
+        shell: bash
+        run: |
+          mkdir -p /tmp/fw-wordpress /tmp/fw-private
+          chmod 700 /tmp/fw-private
+          wp core download --path=/tmp/fw-wordpress --version=${{ matrix.wordpress }}
+          wp config create --path=/tmp/fw-wordpress --dbname=filewarden_test --dbuser=root --dbpass=disposable-db-password --dbhost=127.0.0.1:3306 --dbprefix=fwtest_
+          wp config set FILEWARDEN_STORAGE_DIR /tmp/fw-private --path=/tmp/fw-wordpress
+          wp config set FILEWARDEN_STORAGE_VERIFIED true --raw --path=/tmp/fw-wordpress
+          wp core install --path=/tmp/fw-wordpress --url=http://127.0.0.1:8080 --title=FileWarden --admin_user=fw_admin --admin_password=disposable-test-password --admin_email=admin@example.test --skip-email
+          ln -s "$GITHUB_WORKSPACE" /tmp/fw-wordpress/wp-content/plugins/filewarden
+          wp plugin activate filewarden --path=/tmp/fw-wordpress
+          wp eval-file "$GITHUB_WORKSPACE/tests/integration.php" --path=/tmp/fw-wordpress
+      - name: Exercise browser HTTP routes
+        shell: bash
+        run: |
+          php -S 127.0.0.1:8080 -t /tmp/fw-wordpress > /tmp/fw-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          for attempt in {1..20}; do
+            if curl --silent --fail http://127.0.0.1:8080/wp-login.php > /dev/null; then break; fi
+            sleep 1
+          done
+          python3 tests/http-smoke.py

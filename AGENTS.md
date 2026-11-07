@@ -3,7 +3,7 @@
 ## Mission and status
 FileWarden is a **free, open-source WordPress document-management plugin** licensed **GPL-2.0-or-later**. Prioritize secure private document storage, strict inherited access control, reliable auditability, accessibility, and maintainability.
 
-**Current status: pre-alpha scaffold. No secure storage, ACL engine, or working document download exists yet. Never describe the plugin as production-ready or safe for confidential files until implementation and security tests demonstrate it.**
+**Current status: pre-alpha 0.1.0-dev foundation implemented; integration and target-host acceptance are pending. Storage, inherited ACL, upload/download, minimal administration and audit services exist. Never describe the plugin as production-ready or safe for confidential files until implementation and security tests demonstrate it. Single-site only initially, confirmed by the owner.**
 
 ## Source of truth and workflow
 Before changing code, read:
@@ -34,7 +34,7 @@ Follow documented decisions. If requirements conflict or are incomplete, explain
 
 ## Security invariants (non-negotiable)
 1. **Fail closed**: deny access, uploads, or storage operations if authorization or storage protection cannot be established.
-2. Prefer private storage **outside the webroot**. Never rely on `.htaccess` alone for Nginx/shared hosting. No unverified web-accessible fallback. Recheck protection when relevant configuration changes.
+2. Default to managed encrypted storage under wp-content with verified anonymous HTTPS denial and a positive public control. Preserve explicit outside-webroot storage. Never rely on `.htaccess` alone. Fail closed on inconclusive verification and keep the encryption key separate from stored documents.
 3. Centralize access decisions in one authorization service. Check authorization server-side for metadata, listings, download, preview, thumbnails, versions, search, and all mutations. Never trust hidden UI controls.
 4. Validate authentication and WordPress capabilities on every privileged operation. Use nonces for CSRF protection where appropriate; **nonces are not authorization**.
 5. Use WordPress database APIs with prepared statements; sanitize inputs, validate schemas, and escape outputs at the appropriate context. Apply least privilege.

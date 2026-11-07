@@ -25,7 +25,9 @@ A fully free, open-source WordPress document-management plugin. No paid tier or 
 - Public, authenticated or selected-role policies, with strict parent inheritance.
 - WordPress administrator has global document-read override, explicitly modeled as a dedicated capability; write/configuration actions require separate capabilities.
 - Single content-read permission for preview and download in v1.
-- Adaptive secure local storage: prefer outside webroot; accept alternate only if sufficiently verified; otherwise fail closed.
+- Default managed storage in `wp-content/filewarden-storage`, provisioned on first use. Require Sodium authenticated encryption and successful anonymous HTTPS checks. A public control must return the exact random witness while a matching witness in storage must be denied. Repeat checks for storage requests and fail closed on ambiguous responses.
+- Store a random site key separately from the encrypted files in the WordPress database. Include it in protected backups and restores. Never replace a missing key when encrypted files already exist.
+- Keep the explicitly configured outside-webroot mode available. Changing modes requires a separate migration. Authorized downloads may use a private temporary stream outside public roots to preserve PDF byte ranges.
 - Protect previews, thumbnails, historical versions and temporary files.
 - Server-side authorization for all listing, metadata and binary routes.
 - Secure upload allowlist, MIME checks, limits, non-executable storage and CSRF defenses.

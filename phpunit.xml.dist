@@ -1,4 +1,4 @@
 <?xml version="1.0"?>
 <phpunit colors="true" bootstrap="tests/bootstrap.php">
-  <testsuites><testsuite name="FileWarden"><directory>tests</directory></testsuite></testsuites>
+  <testsuites><testsuite name="FileWarden"><directory>tests/Unit</directory></testsuite></testsuites>
 </phpunit>

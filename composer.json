@@ -10,5 +10,6 @@
     "phpunit/phpunit": "^10.5"
   },
   "autoload": {"psr-4": {"FileWarden\\": "includes/"}},
+  "config": {"allow-plugins": {"dealerdirect/phpcodesniffer-composer-installer": false}},
   "scripts": {"lint": "phpcs", "test": "phpunit"}
 }

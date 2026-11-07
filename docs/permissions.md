@@ -8,4 +8,6 @@
 - Folder listing, search, versions, metadata, thumbnails, and preview all obey effective ACL.
 - Privileged administrative operations require independent capabilities even if content read is permitted.
 
-Detailed capability mapping, multisite behavior and role assignment require implementation review.
+Initial mapping: administrators receive the capabilities above at activation; other roles receive none by default. Folder creation requires manage_permissions plus parent read access. Uploading with an explicit policy requires upload_files and manage_permissions plus parent read access. The minimal admin screen additionally requires manage_settings. Reading never implicitly grants mutation capabilities.
+
+Policy modification, role assignment UI and delegated frontend upload defaults remain unimplemented. Multisite is excluded from the first version by owner decision. Every ancestor is reevaluated without permission caching. Missing ancestors or cycles deny access even with the read override.
