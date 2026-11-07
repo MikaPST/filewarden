@@ -56,21 +56,31 @@ final class ContentController {
 			$document = $this->service->get( $uuid );
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only navigation; authorization is independently enforced.
 			$download = isset( $_GET['download'] ) && '1' === $_GET['download'];
-			if ( ! $download ) {
-				header( "Content-Security-Policy: default-src 'none'; frame-ancestors 'none'; base-uri 'none'" );
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only navigation with independent ACL checks.
+			$preview = ! $download && isset( $_GET['preview'] ) && '1' === $_GET['preview'];
+			if ( ! $download && ! $preview ) {
+				header( "Content-Security-Policy: default-src 'none'; img-src 'self'; frame-ancestors 'none'; base-uri 'none'" );
 				header( 'Content-Type: text/html; charset=UTF-8' );
 				if ( 'HEAD' === $method ) {
 					exit;
 				}
-				$url = add_query_arg( 'download', '1', $this->service->metadata( $document )['detail_url'] );
-				echo '<!doctype html><html lang="' . esc_attr( get_bloginfo( 'language' ) ) . '"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>' . esc_html( $document['name'] ) . '</title><main><h1>' . esc_html( $document['name'] ) . '</h1><p>' . esc_html( size_format( $document['size'] ) ) . '</p><a href="' . esc_url( $url ) . '">' . esc_html__( 'Download', 'filewarden' ) . '</a></main></html>';
+				$url = $this->service->metadata( $document )['detail_url'];
+				echo '<!doctype html><html lang="' . esc_attr( get_bloginfo( 'language' ) ) . '"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>' . esc_html( $document['name'] ) . '</title><main><h1>' . esc_html( $document['name'] ) . '</h1><p>' . esc_html( size_format( $document['size'] ) ) . '</p><p><a href="' . esc_url( add_query_arg( 'download', '1', $url ) ) . '">' . esc_html__( 'Download', 'filewarden' ) . '</a></p><img width="640" src="' . esc_url( add_query_arg( 'preview', '1', $url ) ) . '" alt="' . esc_attr__( 'Document preview unavailable. Use the download link.', 'filewarden' ) . '"></main></html>';
+				exit;
+			}
+			if ( $preview && ! in_array( $document['mime'], array( 'application/pdf', 'image/jpeg', 'image/png' ), true ) ) {
+				status_header( 415 );
 				exit;
 			}
 			$handle = $this->service->storage->open( $document['storage_key'], $document['size'] );
-			$size   = (int) $document['size'];
-			$start  = 0;
-			$end    = $size - 1;
-			$range  = 'GET' === $method && 'application/pdf' === $document['mime'] && isset( $_SERVER['HTTP_RANGE'] ) && ! isset( $_SERVER['HTTP_IF_RANGE'] );
+			if ( $preview && 'application/pdf' === $document['mime'] ) {
+				$this->pdf_preview( $handle, (int) $document['id'], $method );
+				exit;
+			}
+			$size  = (int) $document['size'];
+			$start = 0;
+			$end   = $size - 1;
+			$range = 'GET' === $method && 'application/pdf' === $document['mime'] && isset( $_SERVER['HTTP_RANGE'] ) && ! isset( $_SERVER['HTTP_IF_RANGE'] );
 			if ( $range ) {
 				try {
 					// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- ByteRange validates the exact header syntax and bounds.
@@ -83,7 +93,8 @@ final class ContentController {
 					exit;
 				}
 			}
-			$this->service->audit->record( 'HEAD' === $method ? 'download_head' : 'download_started', (int) $document['id'] );
+			$event = 'HEAD' === $method ? 'download_head' : 'download_started';
+			$this->service->audit->record( $preview ? 'preview_requested' : $event, (int) $document['id'] );
 			if ( 0 !== fseek( $handle, $start ) ) {
 				throw new \RuntimeException( 'Read failed.' );
 			}
@@ -103,7 +114,7 @@ final class ContentController {
 		status_header( $range ? 206 : 200 );
 		header( 'Content-Type: ' . $document['mime'] );
 		header( "Content-Security-Policy: sandbox; default-src 'none'" );
-		header( 'Content-Disposition: attachment; filename="document.' . pathinfo( $document['name'], PATHINFO_EXTENSION ) . '"; filename*=UTF-8\'\'' . rawurlencode( $document['name'] ) );
+		header( 'Content-Disposition: ' . ( $preview ? 'inline' : 'attachment' ) . '; filename="document.' . pathinfo( $document['name'], PATHINFO_EXTENSION ) . '"; filename*=UTF-8\'\'' . rawurlencode( $document['name'] ) );
 		header( 'Content-Length: ' . ( $end - $start + 1 ) );
 		header( 'Accept-Ranges: ' . ( 'application/pdf' === $document['mime'] ? 'bytes' : 'none' ) );
 		if ( $range ) {
@@ -124,5 +135,45 @@ final class ContentController {
 		// phpcs:ignore WordPress.WP.AlternativeFunctions -- Private local streams require exclusive creation and byte-exact I/O without filesystem filters.
 		fclose( $handle );
 		exit;
+	}
+
+	/**
+	 * Render only the first PDF page as an image using the host's Imagick policy.
+	 *
+	 * @param resource $handle Authorized local stream.
+	 * @param int      $id Document ID.
+	 * @param string   $method HTTP method.
+	 */
+	private function pdf_preview( $handle, $id, $method ) {
+		$image = null;
+		try {
+			$path = stream_get_meta_data( $handle )['uri'];
+			if ( ! class_exists( '\Imagick' ) || ! preg_match( '~^[a-zA-Z0-9_./:\\\\ -]+$~D', $path ) ) {
+				status_header( 415 );
+				return;
+			}
+			$image = new \Imagick();
+			$image->setResolution( 96, 96 );
+			$image->readImage( 'pdf:' . $path . '[0]' );
+			$image->thumbnailImage( 1200, 1600, true );
+			$image->setImageFormat( 'jpeg' );
+			$image->stripImage();
+			$bytes = $image->getImageBlob();
+			$this->service->audit->record( 'preview_requested', $id );
+			header( "Content-Security-Policy: sandbox; default-src 'none'" );
+			header( 'Content-Type: image/jpeg' );
+			header( 'Content-Length: ' . strlen( $bytes ) );
+			if ( 'HEAD' !== $method ) {
+				echo $bytes; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Authorized rendered image.
+			}
+		} catch ( \Throwable $error ) {
+			status_header( 415 );
+		} finally {
+			if ( $image ) {
+				$image->clear();
+			}
+			// phpcs:ignore WordPress.WP.AlternativeFunctions -- Close and remove the temporary plaintext stream.
+			fclose( $handle );
+		}
 	}
 }

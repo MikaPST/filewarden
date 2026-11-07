@@ -1,5 +1,13 @@
 # Installer FileWarden sur une préproduction
 
+## Essayer le dépôt, l’import et la publication
+
+1. Ouvre **FileWarden → Documents**, puis un dossier. Téléverse un PDF, JPEG ou PNG. Après validation, tu retrouves le fichier dans ce même dossier.
+2. Pour réutiliser un média local, ouvre **Importer depuis la médiathèque** sur la page Documents. Tu peux aussi choisir **Copy to FileWarden** depuis la liste WordPress **Médias**. FileWarden crée une copie protégée. L’URL de l’original conserve ses droits d’accès et peut rester publique.
+3. Ouvre le document. Les images s’affichent dans la fiche. Pour un PDF, FileWarden affiche la première page en image lorsque Imagick et la configuration de l’hébergeur permettent le rendu PDF. Le fichier complet reste téléchargeable.
+4. Clique sur **Publish this folder**, puis copie le shortcode dans le widget **Code court** d’Elementor. Teste la page publiée depuis un compte autorisé et une fenêtre privée. La liste du dossier s’affiche dans un cadre du même site. FileWarden vérifie les droits à chaque affichage.
+5. Exclure `wp-admin/admin-post.php` du cache de l’hébergeur ou du CDN. L’URL publique du site et celle de l’administration doivent avoir la même origine pour que le cadre s’affiche.
+
 ## Mode standard pour hébergement mutualisé
 
 Après activation, ouvre **FileWarden**. Sans configuration explicite, le plugin crée `wp-content/filewarden-storage` à la première vérification. PHP doit disposer de Sodium et pouvoir écrire dans `wp-content`. Le site doit pouvoir joindre sa propre URL de contenu en HTTPS avec un certificat valide. Un CDN sur un autre nom d’hôte ou un serveur qui bloque ces requêtes peut empêcher la validation.
@@ -10,13 +18,13 @@ Les documents sont chiffrés avec Sodium. Pour sauvegarder ou déplacer le site,
 
 Les installations avec `FILEWARDEN_STORAGE_DIR` conservent leur mode hors racine. Ne change pas de mode sur une installation contenant des documents sans migration dédiée. Les instructions suivantes couvrent la configuration avancée hors racine et les essais communs.
 
-Cette version `0.1.0-dev` sert à valider les fondations. Elle ne constitue pas la V1 complète et ne doit pas recevoir de documents confidentiels avant la validation de l’hébergement.
+Cette version `0.1.1-dev` sert à valider les fondations. Elle ne constitue pas la V1 complète et ne doit pas recevoir de documents confidentiels avant la validation de l’hébergement.
 
 ## 1. Préparer WordPress
 
 - Utiliser un site de préproduction WordPress **classique**, distinct de la production. Le multisite est bloqué.
 - Prévoir WordPress 6.8+, PHP 8.2+ avec `fileinfo`, MySQL 8.0+ ou MariaDB 10.11+ et HTTPS.
-- Générer le ZIP avec `php tools/build.php`, puis installer `build/filewarden-0.1.0-dev.zip` depuis Extensions → Ajouter → Téléverser une extension.
+- Générer le ZIP avec `php tools/build.php`, puis installer `build/filewarden-0.1.1-dev.zip` depuis Extensions → Ajouter → Téléverser une extension.
 - Activer FileWarden avec un administrateur. L’activation crée trois tables et attribue les capacités FileWarden au rôle administrateur. Les autres rôles ne reçoivent aucun nouveau droit par défaut.
 - L’entrée **FileWarden** apparaît dans l’administration. Au départ, le stockage est bloqué.
 
@@ -77,8 +85,8 @@ Exclure les routes FileWarden de tout cache serveur/CDN susceptible d’ignorer 
 
 - Le dépôt avec une politique choisie nécessite **upload + manage_permissions**, ainsi que la lecture du dossier parent. La page d’administration exige aussi **manage_settings**.
 - L’API permet les dépôts autorisés, mais il n’y a pas encore de formulaire frontend.
-- Aucune modification, suppression, corbeille, prévisualisation ou création de version n’est exposée. Ne pas supprimer manuellement un fichier référencé par la base.
-- Les signatures/MIME ne constituent pas un antivirus ni une désactivation des fonctions actives d’un PDF. Seuls les téléchargements en pièce jointe sont disponibles.
+- La modification, la suppression, la corbeille et la création de version restent à développer. Ne pas supprimer manuellement un fichier référencé par la base.
+- Les signatures/MIME ne constituent pas un antivirus ni une désactivation des fonctions actives d’un PDF. Le PDF original est envoyé en pièce jointe. Son aperçu est une image de la première page.
 - Fichiers et base ne forment pas une transaction atomique entre deux systèmes. Un arrêt brutal peut laisser un fichier orphelin. Aucun nettoyage automatique des fichiers orphelins n’est lancé afin de protéger les documents actifs.
 - Si l’écriture de l’audit final échoue après insertion, l’opération peut être conservée malgré un message d’erreur. Vérifier la liste avant de réessayer. Les téléchargements nécessitent un journal disponible.
 - La purge utilise WP-Cron : elle dépend des visites ou d’un déclenchement serveur régulier, avec au maximum 10 000 suppressions d’anciens événements par exécution.

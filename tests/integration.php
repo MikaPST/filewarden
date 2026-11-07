@@ -85,5 +85,11 @@ $wpdb->insert( $wpdb->prefix . 'filewarden_audit_logs', array( 'event' => 'expir
 FileWarden\AuditService::cleanup();
 FileWarden\AuditService::cleanup();
 fw_assert( '0' === (string) $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}filewarden_audit_logs WHERE event = 'expired_fixture'" ), 'Audit cleanup failed.' );
+$png = base64_decode( 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a82cAAAAASUVORK5CYII=' );
+$media = wp_upload_bits( 'filewarden-fixture.png', null, $png );
+fw_assert( ! $media['error'], 'Media fixture upload failed.' );
+$ids['media_id'] = wp_insert_attachment( array( 'post_mime_type' => 'image/png', 'post_title' => 'FileWarden fixture', 'post_status' => 'inherit' ), $media['file'], 0, true );
+fw_assert( ! is_wp_error( $ids['media_id'] ) && $ids['media_id'] > 0, 'Media attachment fixture failed.' );
+$ids['folder_id'] = $child;
 file_put_contents( getenv( 'FILEWARDEN_FIXTURES' ), wp_json_encode( $ids ) );
 WP_CLI::success( 'Integration assertions passed.' );

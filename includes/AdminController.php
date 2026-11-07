@@ -35,6 +35,46 @@ final class AdminController {
 	 */
 	public function menu() {
 		add_menu_page( 'FileWarden', 'FileWarden', 'filewarden_manage_settings', 'filewarden', array( $this, 'page' ), 'dashicons-media-document' );
+		add_submenu_page( 'filewarden', __( 'Documents', 'filewarden' ), __( 'Documents', 'filewarden' ), 'filewarden_manage_settings', 'filewarden', array( $this, 'page' ) );
+		add_submenu_page( 'filewarden', __( 'Publication', 'filewarden' ), __( 'Publication', 'filewarden' ), 'filewarden_manage_settings', 'filewarden-publication', array( $this, 'publish_page' ) );
+		add_submenu_page( 'filewarden', __( 'Settings', 'filewarden' ), __( 'Settings', 'filewarden' ), 'filewarden_manage_settings', 'filewarden-settings', array( $this, 'settings_page' ) );
+		add_submenu_page( 'filewarden', __( 'Audit log', 'filewarden' ), __( 'Audit log', 'filewarden' ), 'filewarden_view_audit', 'filewarden-audit', array( $this, 'audit_page' ) );
+	}
+
+	/**
+	 * Load the native Media Library picker on the documents screen.
+	 *
+	 * @param string $hook Administration screen hook.
+	 */
+	public function media_assets( $hook ) {
+		if ( 'toplevel_page_filewarden' !== $hook || ! current_user_can( 'upload_files' ) ) {
+			return;
+		}
+		wp_enqueue_media();
+		wp_enqueue_script( 'filewarden-media', plugins_url( 'assets/media.js', FILEWARDEN_PATH . 'filewarden.php' ), array( 'media-views' ), FILEWARDEN_VERSION, true );
+	}
+
+	/**
+	 * Link supported media items to the FileWarden import form.
+	 *
+	 * @param array    $actions Row actions.
+	 * @param \WP_Post $post Attachment.
+	 * @return array Row actions.
+	 */
+	public function media_action( $actions, $post ) {
+		if ( current_user_can( 'filewarden_manage_settings' ) && current_user_can( 'filewarden_manage_permissions' )
+			&& current_user_can( 'filewarden_upload_files' ) && current_user_can( 'upload_files' )
+			&& current_user_can( 'edit_post', $post->ID ) && in_array( $post->post_mime_type, DocumentService::TYPES, true ) ) {
+			$url                   = add_query_arg(
+				array(
+					'page'     => 'filewarden',
+					'media_id' => $post->ID,
+				),
+				admin_url( 'admin.php' )
+			) . '#filewarden-import';
+			$actions['filewarden'] = '<a href="' . esc_url( $url ) . '">' . esc_html__( 'Copy to FileWarden', 'filewarden' ) . '</a>';
+		}
+		return $actions;
 	}
 
 	/**
@@ -44,11 +84,15 @@ final class AdminController {
 	 * @return mixed Operation result.
 	 */
 	public function submit() {
+		$folder  = 0;
+		$page    = 'filewarden';
+		$created = null;
 		try {
 			$this->service->require_capability( 'filewarden_manage_settings' );
 			check_admin_referer( 'filewarden_admin' );
 			$operation = isset( $_POST['operation'] ) && is_string( $_POST['operation'] ) ? sanitize_key( $_POST['operation'] ) : '';
 			if ( 'settings' === $operation ) {
+				$page = 'filewarden-settings';
 				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- integer() strictly validates scalar nonnegative integers.
 				$size = RestController::integer( wp_unslash( $_POST['upload_mb'] ?? null ) );
 				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- integer() strictly validates scalar nonnegative integers.
@@ -73,7 +117,11 @@ final class AdminController {
 					$this->service->create_folder( $name, $folder, $policy );
 				} elseif ( 'upload' === $operation ) {
 					// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Upload service validates the original PHP upload structure, provenance, MIME and size.
-					$this->service->upload( $_FILES['file'] ?? array(), $folder, $policy );
+					$created = $this->service->upload( $_FILES['file'] ?? array(), $folder, $policy );
+				} elseif ( 'import' === $operation ) {
+					// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- integer() strictly validates the attachment ID.
+					$id      = RestController::integer( wp_unslash( $_POST['media_id'] ?? null ) );
+					$created = $this->service->import_media( $id, $folder, $policy );
 				} else {
 					throw new \InvalidArgumentException( 'Invalid operation.' );
 				}
@@ -87,8 +135,10 @@ final class AdminController {
 		wp_safe_redirect(
 			add_query_arg(
 				array(
-					'page'   => 'filewarden',
-					'result' => $result,
+					'page'      => $page,
+					'folder_id' => $folder,
+					'result'    => $result,
+					'created'   => $created['id'] ?? false,
 				),
 				admin_url( 'admin.php' )
 			)
@@ -135,7 +185,7 @@ final class AdminController {
 		if ( ! current_user_can( 'filewarden_manage_settings' ) ) {
 			return;
 		}
-		echo '<div class="wrap"><h1>FileWarden — 0.1.0-dev</h1><p>' . esc_html__( 'Development foundation. Do not upload confidential documents before deployment security checks.', 'filewarden' ) . '</p>';
+		echo '<div class="wrap"><h1>FileWarden — ' . esc_html( FILEWARDEN_VERSION ) . '</h1><p>' . esc_html__( 'Development foundation. Do not upload confidential documents before deployment security checks.', 'filewarden' ) . '</p>';
 		$messages = array(
 			'success'   => __( 'Operation completed.', 'filewarden' ),
 			'duplicate' => __( 'A file with this name exists. Rename it or cancel. Versions arrive in a later milestone.', 'filewarden' ),
@@ -145,6 +195,18 @@ final class AdminController {
 		$result = isset( $_GET['result'] ) && is_string( $_GET['result'] ) ? sanitize_key( $_GET['result'] ) : '';
 		if ( isset( $messages[ $result ] ) ) {
 			echo '<div role="status" class="notice notice-info"><p>' . esc_html( $messages[ $result ] ) . '</p></div>';
+		}
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only confirmation; document access is checked again below.
+		$created = isset( $_GET['created'] ) && is_string( $_GET['created'] ) ? sanitize_text_field( wp_unslash( $_GET['created'] ) ) : '';
+		if ( 'success' === $result && wp_is_uuid( $created ) ) {
+			try {
+				$document = $this->service->metadata( $this->service->get( $created ) );
+			} catch ( \Throwable $error ) {
+				$document = null;
+			}
+			if ( $document ) {
+				echo '<p><a class="button" href="' . esc_url( $document['detail_url'] ) . '">' . esc_html__( 'Open document', 'filewarden' ) . ' — ' . esc_html( $document['name'] ) . '</a></p>';
+			}
 		}
 		echo '<h2>' . esc_html__( 'Storage diagnostics', 'filewarden' ) . '</h2>';
 		$storage_ready = false;
@@ -201,6 +263,14 @@ final class AdminController {
 			echo '<a href="' . esc_url( $url ) . '">' . esc_html( $label ) . '</a> ';
 		}
 		echo '</p>';
+		$publish = add_query_arg(
+			array(
+				'page'      => 'filewarden-publication',
+				'folder_id' => $folder,
+			),
+			admin_url( 'admin.php' )
+		);
+		echo '<p><a class="button" href="' . esc_url( $publish ) . '">' . esc_html__( 'Publish this folder', 'filewarden' ) . '</a></p>';
 		if ( current_user_can( 'filewarden_manage_permissions' ) ) {
 			echo '<h2>' . esc_html__( 'Create folder', 'filewarden' ) . '</h2>';
 			$this->form_start( 'folder' );
@@ -216,24 +286,91 @@ final class AdminController {
 					$this->policy_fields( 'upload', $folder );
 					submit_button( __( 'Upload', 'filewarden' ) );
 					echo '</form>';
+					if ( current_user_can( 'upload_files' ) ) {
+						$this->import_form( $folder );
+					}
 				} else {
 					echo '<p>' . esc_html__( 'Uploads are unavailable. Follow the storage diagnostic above and reload this page.', 'filewarden' ) . '</p>';
 				}
 			}
 		}
-		echo '<h2>' . esc_html__( 'Settings', 'filewarden' ) . '</h2>';
+		echo '</div>';
+	}
+
+	/**
+	 * Render the import form for a selected or newly picked attachment.
+	 *
+	 * @param int $folder Current folder.
+	 */
+	private function import_form( $folder ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only preselection; the POST has its own nonce.
+		$id    = isset( $_GET['media_id'] ) ? absint( $_GET['media_id'] ) : 0;
+		$title = $id && 'attachment' === get_post_type( $id ) && current_user_can( 'edit_post', $id ) ? get_the_title( $id ) : '';
+		echo '<h2 id="filewarden-import">' . esc_html__( 'Import from Media Library', 'filewarden' ) . '</h2>';
+		echo '<p>' . esc_html__( 'FileWarden creates a protected copy. The original stays in WordPress Media and may remain publicly accessible.', 'filewarden' ) . '</p>';
+		$this->form_start( 'import' );
+		echo '<input type="hidden" id="fw-media-id" name="media_id" value="' . esc_attr( $title ? $id : 0 ) . '">';
+		echo '<p><button type="button" class="button" id="fw-media-picker">' . esc_html__( 'Choose a media file', 'filewarden' ) . '</button> <span id="fw-media-title" role="status">' . esc_html( $title ) . '</span></p>';
+		$this->policy_fields( 'import', $folder );
+		submit_button( __( 'Copy to FileWarden', 'filewarden' ) );
+		echo '</form>';
+	}
+
+	/**
+	 * Show the shortcode and its current-session preview.
+	 */
+	public function publish_page() {
+		if ( ! current_user_can( 'filewarden_manage_settings' ) ) {
+			return;
+		}
+		echo '<div class="wrap"><h1>' . esc_html__( 'FileWarden publication', 'filewarden' ) . '</h1>';
+		try {
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Read-only navigation; integer() validates input.
+			$folder = RestController::integer( wp_unslash( $_GET['folder_id'] ?? null ) );
+			$this->service->require_folder( $folder );
+			echo '<form method="get"><input type="hidden" name="page" value="filewarden-publication"><label for="fw-publish-folder">' . esc_html__( 'Folder ID', 'filewarden' ) . '</label> <input type="number" id="fw-publish-folder" name="folder_id" min="0" value="' . esc_attr( $folder ) . '"> ';
+			submit_button( __( 'Show shortcode', 'filewarden' ), 'secondary', 'submit', false );
+			echo '</form><p><label for="fw-shortcode">' . esc_html__( 'Copy into the Elementor Shortcode widget', 'filewarden' ) . '</label> <input type="text" readonly id="fw-shortcode" value="' . esc_attr( '[filewarden folder="' . $folder . '"]' ) . '"></p>';
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- The renderer escapes all dynamic frame attributes.
+			echo Publication::shortcode( array( 'folder' => $folder ) );
+		} catch ( \Throwable $error ) {
+			echo '<p>' . esc_html__( 'Folder unavailable.', 'filewarden' ) . '</p>';
+		}
+		echo '</div>';
+	}
+
+	/**
+	 * Render settings in their own administration screen.
+	 */
+	public function settings_page() {
+		if ( ! current_user_can( 'filewarden_manage_settings' ) ) {
+			return;
+		}
+		echo '<div class="wrap"><h1>' . esc_html__( 'FileWarden settings', 'filewarden' ) . '</h1>';
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only notice from the POST redirect.
+		if ( isset( $_GET['result'] ) && 'success' === $_GET['result'] ) {
+			echo '<div class="notice notice-success"><p>' . esc_html__( 'Settings saved.', 'filewarden' ) . '</p></div>';
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only notice from the POST redirect.
+		} elseif ( isset( $_GET['result'] ) ) {
+			echo '<div class="notice notice-error"><p>' . esc_html__( 'Settings could not be saved.', 'filewarden' ) . '</p></div>';
+		}
 		$this->form_start( 'settings' );
 		echo '<p><label for="fw-size">' . esc_html__( 'Upload limit (MB, also bounded by server limits)', 'filewarden' ) . '</label> <input type="number" id="fw-size" name="upload_mb" min="1" max="1024" value="' . esc_attr( get_option( 'filewarden_upload_mb', 50 ) ) . '" required></p>';
 		echo '<p><label for="fw-days">' . esc_html__( 'Audit retention (days)', 'filewarden' ) . '</label> <input type="number" id="fw-days" name="audit_days" min="1" max="3650" value="' . esc_attr( get_option( 'filewarden_audit_days', 365 ) ) . '" required></p>';
 		submit_button( __( 'Save settings', 'filewarden' ) );
-		echo '</form>';
+		echo '</form></div>';
+	}
+
+	/**
+	 * Render the restricted audit screen.
+	 */
+	public function audit_page() {
 		if ( current_user_can( 'filewarden_view_audit' ) ) {
-			echo '<h2>' . esc_html__( 'Recent audit events', 'filewarden' ) . '</h2><ul>';
+			echo '<div class="wrap"><h1>' . esc_html__( 'Recent audit events', 'filewarden' ) . '</h1><ul>';
 			foreach ( $this->service->audit->recent() as $row ) {
 				echo '<li>' . esc_html( $row['created_at'] . ' UTC — ' . $row['event'] . ' — user #' . $row['actor_id'] . ' — object #' . $row['object_id'] ) . '</li>';
 			}
-			echo '</ul>';
+			echo '</ul></div>';
 		}
-		echo '</div>';
 	}
 }

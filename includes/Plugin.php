@@ -49,6 +49,9 @@ final class Plugin {
 		$rest    = new RestController( $service );
 		$content = new ContentController( $service );
 		$admin   = new AdminController( $service );
+		Publication::register( $service );
+		add_filter( 'media_row_actions', array( $admin, 'media_action' ), 10, 2 );
+		add_action( 'admin_enqueue_scripts', array( $admin, 'media_assets' ) );
 		add_action( 'rest_api_init', array( $rest, 'register' ) );
 		add_action( 'admin_post_filewarden_content', array( $content, 'serve' ) );
 		add_action( 'admin_post_nopriv_filewarden_content', array( $content, 'serve' ) );

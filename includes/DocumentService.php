@@ -167,20 +167,64 @@ final class DocumentService {
 	 * @param mixed $folder folder value.
 	 * @param mixed $policy policy value.
 	 * @throws \InvalidArgumentException When the operation cannot be completed safely.
-	 * @throws \UnexpectedValueException When the operation cannot be completed safely.
-	 * @throws \Throwable When the operation cannot be completed safely.
 	 * @return mixed Operation result.
 	 */
 	public function upload( array $file, $folder, $policy ) {
+		if ( ! isset( $file['error'], $file['tmp_name'], $file['name'] ) || UPLOAD_ERR_OK !== $file['error'] || ! is_string( $file['tmp_name'] ) || ! is_string( $file['name'] ) || ! is_uploaded_file( $file['tmp_name'] ) ) {
+			throw new \InvalidArgumentException( 'Invalid upload.' );
+		}
+		return $this->store( $file, $folder, $policy );
+	}
+
+	/**
+	 * Copy a readable local WordPress attachment into protected storage.
+	 *
+	 * @param int   $id Attachment ID.
+	 * @param int   $folder Destination folder.
+	 * @param array $policy Destination access policy.
+	 * @return array Document metadata.
+	 * @throws \InvalidArgumentException If the source is not an accessible local attachment.
+	 */
+	public function import_media( $id, $folder, $policy ) {
+		$this->require_capability( 'upload_files' );
+		if ( 'attachment' !== get_post_type( $id ) || ! current_user_can( 'edit_post', $id ) ) {
+			throw new \InvalidArgumentException( 'Media unavailable.' );
+		}
+		$uploads = wp_get_upload_dir();
+		$base    = FileIO::attempt( fn() => realpath( $uploads['basedir'] ) );
+		$source  = get_attached_file( $id, true );
+		$path    = is_string( $source ) ? FileIO::attempt( fn() => realpath( $source ) ) : false;
+		if ( ! $base || ! $path || ! StorageService::within( $path, $base ) || ! is_file( $path ) || ! is_readable( $path ) ) {
+			throw new \InvalidArgumentException( 'Media is not a readable local file in WordPress uploads.' );
+		}
+		return $this->store(
+			array(
+				'tmp_name' => $path,
+				'name'     => wp_basename( $path ),
+			),
+			$folder,
+			$policy
+		);
+	}
+
+	/**
+	 * Validate and persist a file whose provenance was checked by the caller.
+	 *
+	 * @param array $file File path and original name.
+	 * @param int   $folder Destination folder.
+	 * @param array $policy Destination access policy.
+	 * @return array Document metadata.
+	 * @throws \InvalidArgumentException If the file is invalid.
+	 * @throws \UnexpectedValueException If the name already exists.
+	 * @throws \Throwable If storage fails.
+	 */
+	private function store( array $file, $folder, $policy ) {
 		$this->require_capability( 'filewarden_upload_files' );
 		// This milestone requires explicit policy management; delegated upload defaults follow later.
 		$this->require_capability( 'filewarden_manage_permissions' );
 		$this->require_folder( $folder );
 		$policy = Policy::validate( $policy, array_keys( wp_roles()->roles ) );
 		$this->storage->root();
-		if ( ! isset( $file['error'], $file['tmp_name'], $file['name'] ) || UPLOAD_ERR_OK !== $file['error'] || ! is_string( $file['tmp_name'] ) || ! is_string( $file['name'] ) || ! is_uploaded_file( $file['tmp_name'] ) ) {
-			throw new \InvalidArgumentException( 'Invalid upload.' );
-		}
 		$name  = sanitize_file_name( $file['name'] );
 		$size  = FileIO::attempt( fn() => filesize( $file['tmp_name'] ) );
 		$limit = min( max( 1, (int) get_option( 'filewarden_upload_mb', 50 ) ) * MB_IN_BYTES, wp_max_upload_size() );

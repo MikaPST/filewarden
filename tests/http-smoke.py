@@ -7,6 +7,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 import uuid
+from html import unescape
 
 assert os.environ.get("FILEWARDEN_TESTING") == "1"
 base = os.environ.get("FILEWARDEN_URL", "http://127.0.0.1:8080")
@@ -56,6 +57,10 @@ assert request(anon, content("public"), data=b"")[0] == 405
 
 editor = login("fw_editor")
 assert request(editor, content("private"))[0] == 200
+folder_view = "/wp-admin/admin-post.php?action=filewarden_folder&folder_id=" + str(fixtures["folder_id"])
+assert request(anon, folder_view)[0] == 404
+status, headers, listing, _ = request(editor, folder_view)
+assert status == 200 and b"private.pdf" in listing and "no-store" in headers["Cache-Control"]
 reader = login("fw_subscriber")
 assert request(reader, content("private"))[0] == 200
 assert request(reader, "/?rest_route=/filewarden/v1/documents", data=b"")[0] in (401, 403)
@@ -88,4 +93,16 @@ assert "result=success" in upload("upload-test.pdf", pdf)[3]
 assert "result=duplicate" in upload("upload-test.pdf", pdf)[3]
 assert "result=failed" in upload("malicious.php", b"<?php echo 'blocked';")[3]
 assert "result=failed" in upload("fake.pdf", b"not a PDF")[3]
-print("HTTP assertions passed: authentication, ACL, HEAD/ranges, CSRF, uploads and duplicates.")
+status, _, page, url = request(admin, "/wp-admin/admin-post.php", data=urllib.parse.urlencode({
+    "action": "filewarden_admin", "operation": "import", "_wpnonce": nonce,
+    "folder_id": str(fixtures["folder_id"]), "policy_type": "authenticated", "media_id": str(fixtures["media_id"])
+}).encode())
+assert status == 200 and "result=success" in url and "folder_id=" + str(fixtures["folder_id"]) in url
+match = re.search(rb'href="([^"]+)"[^>]*>filewarden-fixture\.png</a>', page)
+assert match, "Imported image missing from destination listing"
+detail = urllib.parse.urlsplit(unescape(match.group(1).decode()))
+preview = detail.path + "?" + detail.query + "&preview=1"
+assert request(anon, preview)[0] == 404
+status, headers, pixels, _ = request(editor, preview)
+assert status == 200 and headers["Content-Type"] == "image/png" and pixels.startswith(b"\x89PNG")
+print("HTTP assertions passed: ACL, publication, protected preview, media import, ranges, CSRF and uploads.")

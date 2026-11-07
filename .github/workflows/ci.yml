@@ -1,5 +1,9 @@
 name: Quality and security checks
-on: [push, pull_request]
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_call:
 permissions:
   contents: read
 jobs:
@@ -21,12 +25,19 @@ jobs:
       - run: composer lint
       - run: composer test
       - run: composer audit
-      - run: php tools/build.php
+      - name: Build installable ZIP
+        run: |
+          if [[ "$GITHUB_REF_TYPE" == tag ]]; then
+            php tools/build.php "$GITHUB_REF_NAME"
+          else
+            php tools/build.php
+          fi
       - uses: actions/upload-artifact@v4
         if: matrix.php == '8.2'
         with:
           name: filewarden-development
-          path: build/filewarden-0.1.0-dev.zip
+          path: build/filewarden-*.zip
+          if-no-files-found: error
   integration:
     runs-on: ubuntu-latest
     strategy:
