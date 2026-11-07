@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.6-dev — 2026-11-07
+
+- Replace host-dependent PDF rasterization with bundled Mozilla PDF.js 6.5.438: all pages, page navigation, fit-width and zoom, without sending documents to third parties.
+- Add a full-size administrator preview dialog with Escape/close and focus restoration; preserve new-tab links without JavaScript and from shortcode publications.
+- Add a responsive image viewer with zoom and download/new-tab actions.
+- Keep authorization on both viewer and binary requests, private cache headers and attachment-only raw PDFs. No PDF scripts, XFA forms or interactive annotations are executed by the viewer.
+- Add Chromium/Firefox tests for actual browser upload, PDF rendering, navigation, zoom, dialog focus, image rendering and denied anonymous access.
+- PDF/JPEG/PNG remain the accepted upload types. Office documents and other formats are not added by this release.
+
 ## 0.1.5-dev — 2026-11-07
 
 - Fix direct browser uploads returning HTTP 404: the hidden WordPress `action` input shadowed `form.action`. Read the form's HTML action attribute to obtain the upload URL.

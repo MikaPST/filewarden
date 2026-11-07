@@ -58,6 +58,15 @@ final class AdminController {
 			return;
 		}
 		wp_enqueue_style( 'filewarden-admin', plugins_url( 'assets/admin.css', FILEWARDEN_PATH . 'filewarden.php' ), array(), FILEWARDEN_VERSION );
+		wp_enqueue_script( 'filewarden-preview', plugins_url( 'assets/preview.js', FILEWARDEN_PATH . 'filewarden.php' ), array(), FILEWARDEN_VERSION, true );
+		wp_localize_script(
+			'filewarden-preview',
+			'filewardenPreview',
+			array(
+				'title' => __( 'Document preview', 'filewarden' ),
+				'close' => __( 'Close preview', 'filewarden' ),
+			)
+		);
 		wp_enqueue_script( 'filewarden-upload', plugins_url( 'assets/admin.js', FILEWARDEN_PATH . 'filewarden.php' ), array(), FILEWARDEN_VERSION, true );
 		wp_localize_script(
 			'filewarden-upload',
@@ -285,7 +294,7 @@ final class AdminController {
 				$destination           = $this->folder_labels[ $document['folder_id'] ] ?? __( 'Selected folder', 'filewarden' );
 				/* translators: 1: document name, 2: folder path. */
 				$confirmation = sprintf( __( 'File %1$s saved and verified in %2$s.', 'filewarden' ), $document['name'], $destination );
-				echo '<div class="notice notice-success"><p>' . esc_html( $confirmation ) . ' <a href="' . esc_url( $document['detail_url'] ) . '">' . esc_html__( 'Open document', 'filewarden' ) . '</a></p></div>';
+				echo '<div class="notice notice-success"><p>' . esc_html( $confirmation ) . ' <a data-filewarden-preview target="_blank" rel="noopener noreferrer" href="' . esc_url( $document['detail_url'] ) . '">' . esc_html__( 'Open document', 'filewarden' ) . '</a></p></div>';
 			}
 		}
 		echo '<details class="filewarden-diagnostics"><summary>' . esc_html__( 'Storage diagnostics', 'filewarden' ) . '</summary>';
@@ -338,7 +347,7 @@ final class AdminController {
 			if ( $this->service->permissions->can_read( $row, wp_get_current_user() ) ) {
 				$visible = true;
 				$url     = $this->service->metadata( $row )['detail_url'];
-				echo '<tr><th scope="row"><a href="' . esc_url( $url ) . '">' . esc_html( $row['name'] ) . '</a></th><td>' . esc_html( size_format( $row['size'] ) ) . '</td><td><a href="' . esc_url( $url ) . '">' . esc_html__( 'Preview', 'filewarden' ) . '</a> · <a href="' . esc_url( add_query_arg( 'download', '1', $url ) ) . '">' . esc_html__( 'Download', 'filewarden' ) . '</a></td></tr>';
+				echo '<tr><th scope="row"><a data-filewarden-preview target="_blank" rel="noopener noreferrer" href="' . esc_url( $url ) . '">' . esc_html( $row['name'] ) . '</a></th><td>' . esc_html( size_format( $row['size'] ) ) . '</td><td><a data-filewarden-preview target="_blank" rel="noopener noreferrer" href="' . esc_url( $url ) . '">' . esc_html__( 'Preview', 'filewarden' ) . '</a> · <a href="' . esc_url( add_query_arg( 'download', '1', $url ) ) . '">' . esc_html__( 'Download', 'filewarden' ) . '</a></td></tr>';
 			}
 		}
 		if ( ! $visible ) {

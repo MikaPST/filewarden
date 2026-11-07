@@ -21,7 +21,12 @@ $zip = new ZipArchive();
 if ( true !== $zip->open( $output . '/' . $archive, ZipArchive::CREATE | ZipArchive::OVERWRITE ) ) {
 	throw new RuntimeException( 'Cannot create ZIP.' );
 }
-$files = array( 'filewarden.php', 'uninstall.php', 'readme.txt', 'README.md', 'LICENSE', 'docs/setup.md', 'assets/media.js', 'assets/admin.js', 'assets/admin.css' );
+$files = array( 'filewarden.php', 'uninstall.php', 'readme.txt', 'README.md', 'LICENSE', 'docs/setup.md', 'assets/media.js', 'assets/admin.js', 'assets/admin.css', 'assets/preview.js', 'assets/viewer.mjs', 'assets/viewer.css' );
+foreach ( new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $root . '/assets/pdfjs', FilesystemIterator::SKIP_DOTS ) ) as $file ) {
+	if ( $file->isFile() && ! $file->isLink() ) {
+		$files[] = str_replace( '\\', '/', substr( $file->getPathname(), strlen( $root ) + 1 ) );
+	}
+}
 foreach ( glob( $root . '/includes/*.php' ) as $file ) {
 	$files[] = 'includes/' . basename( $file );
 }

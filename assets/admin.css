@@ -15,3 +15,8 @@
 .filewarden-sources label:has(input:checked) { border-color: #2271b1; background: #f0f6fc; }
 .filewarden-admin [data-filewarden-source] { padding: 16px; background: #f6f7f7; border-radius: 4px; }
 .filewarden-admin [data-filewarden-source][hidden] { display: none; }
+.filewarden-preview-dialog { width: 96vw; max-width: 1600px; height: 94vh; max-height: 94vh; padding: 8px; border: 0; border-radius: 8px; background: #15161a; }
+.filewarden-preview-dialog::backdrop { background: #000b; }
+.filewarden-preview-dialog[open] { display: flex; flex-direction: column; gap: 8px; }
+.filewarden-preview-dialog > button { align-self: flex-end; }
+.filewarden-preview-dialog iframe { width: 100%; flex: 1; min-height: 0; border: 0; }

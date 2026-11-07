@@ -85,6 +85,13 @@ jobs:
           wp eval-file "$GITHUB_WORKSPACE/tests/integration.php" --path=/tmp/fw-wordpress
       - name: Test WordPress Sodium PHP fallback
         run: php tests/sodium-compat.php /tmp/fw-wordpress/wp-includes/sodium_compat/autoload.php
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Prepare real browser tests
+        run: |
+          npm install --prefix /tmp/fw-browser --ignore-scripts --no-audit --no-fund playwright@1.65.0
+          node /tmp/fw-browser/node_modules/playwright/cli.js install --with-deps chromium firefox
       - name: Exercise browser HTTP routes
         shell: bash
         run: |
@@ -96,3 +103,4 @@ jobs:
             sleep 1
           done
           python3 tests/http-smoke.py
+          NODE_PATH=/tmp/fw-browser/node_modules node tests/viewer-browser.cjs

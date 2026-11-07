@@ -16,3 +16,7 @@ FileWarden is pre-alpha and must not be deployed for confidential documents.
 - Audit sensitive operations and minimize personal data retained.
 
 Report vulnerabilities privately to the repository maintainers once a contact channel is published. Do not post exploitable reports as public issues.
+
+## Browser viewer
+
+The 0.1.6 viewer uses locally bundled PDF.js 6.5.438 with evaluation disabled, XFA disabled, no scripting/annotation layer and canvas-rendered fonts. Each PDF/image request is independently authorized. Raw PDFs retain attachment disposition and a sandbox CSP; the trusted HTML viewer has a separate self-only CSP permitting its module, worker and WASM decoders. No document is transmitted to a remote viewer. Authorized users can save the bytes; this is not DRM. Maintain the pinned PDF.js distribution and its license notices with upstream security updates.

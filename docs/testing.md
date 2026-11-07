@@ -30,4 +30,6 @@ The workflow definition is not proof of a passing CI run. Record actual results 
 
 ## Packaging
 
+CI also installs pinned Playwright 1.65.0 as a test-only tool and runs `tests/viewer-browser.cjs` in Chromium and Firefox against the disposable WordPress instances. It creates a synthetic two-page PDF, submits it through the real JavaScript form, verifies rendered pixels/page navigation/zoom, new-tab viewing, modal close/focus, an image and anonymous denial. It never targets the shared preproduction site.
+
 `php tools/build.php` creates a development ZIP with a fixed runtime allowlist. It includes no `.git`, `.tools`, `vendor`, tests, credentials or server configuration. Runtime classes use the plugin's own small PSR-4 loader.

@@ -43,6 +43,15 @@ anon = urllib.request.build_opener()
 assert request(anon, content("private"))[0] == 404
 assert request(anon, content("private", False))[0] == 404
 assert request(anon, content("private"), headers={"Range": "bytes=0-4"})[0] == 404
+assert request(anon, content("private", False) + "&preview=1")[0] == 404
+status, headers, body, _ = request(anon, content("public", False) + "&preview=1")
+assert status == 200 and body.startswith(b"%PDF-")
+assert headers["Content-Type"] == "application/pdf" and headers["Content-Disposition"].startswith("attachment")
+assert "sandbox" in headers["Content-Security-Policy"] and "no-store" in headers["Cache-Control"]
+status, headers, body, _ = request(anon, content("public", False))
+assert status == 200 and b"viewer.mjs" in body and b'id="fw-page"' in body
+assert "frame-ancestors 'self'" in headers["Content-Security-Policy"]
+assert request(anon, content("public", False) + "&preview=1", headers={"Range": "bytes=0-4"})[2] == b"%PDF-"
 status, headers, body, _ = request(anon, content("public"))
 assert status == 200 and body.startswith(b"%PDF-")
 assert "no-store" in headers["Cache-Control"] and headers["Content-Disposition"].startswith("attachment")
