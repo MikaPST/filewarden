@@ -94,6 +94,12 @@ Exclure les routes FileWarden de tout cache serveur/CDN susceptible d’ignorer 
 
 Noter les versions exactes de WordPress, PHP, base, serveur Web et les résultats. Le jalon `0.1.0` ne peut être déclaré accepté sans validation d’intégration et de stockage sur l’environnement cible.
 
+## Correctif 0.1.5-dev : erreur 404 lors de l'envoi direct
+
+La version 0.1.4-dev lisait un champ caché nommé `action` à la place de l'adresse du formulaire en JavaScript. Le fichier partait vers une mauvaise URL. La version 0.1.5-dev corrige cette adresse et réunit les deux sources dans « Add a document » : « From my computer » ou « From the Media Library ». Le dossier et les droits sont communs aux deux méthodes.
+
+Après la mise à jour, recharger la page FileWarden pour charger le nouveau JavaScript. Les envois directs ne passent pas par la Médiathèque et ne créent pas de copie publique. Les importations depuis la Médiathèque conservent leur original, potentiellement public.
+
 ## Correctif 0.1.4-dev : documents absents après envoi
 
 Sur les hébergements utilisant la compatibilité Sodium de WordPress, les anciens fichiers de plus de 64 Kio pouvaient échouer au chiffrement. La version 0.1.4-dev corrige ce défaut sans changer le format ni déplacer les fichiers existants. Les envois qui ont échoué doivent être recommencés : ils n'ont pas créé de document.

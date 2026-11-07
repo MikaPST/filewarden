@@ -10,3 +10,8 @@
 .filewarden-diagnostics { margin-top: 20px; padding: 12px; border: 1px solid #c3c4c7; }
 .filewarden-diagnostics summary { cursor: pointer; font-weight: 600; }
 .filewarden-admin progress { width: min(100%, 480px); height: 22px; }
+.filewarden-sources { margin-bottom: 20px; }
+.filewarden-sources label { padding: 12px; border: 1px solid #c3c4c7; border-radius: 4px; }
+.filewarden-sources label:has(input:checked) { border-color: #2271b1; background: #f0f6fc; }
+.filewarden-admin [data-filewarden-source] { padding: 16px; background: #f6f7f7; border-radius: 4px; }
+.filewarden-admin [data-filewarden-source][hidden] { display: none; }

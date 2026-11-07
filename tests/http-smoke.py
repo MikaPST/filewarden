@@ -68,18 +68,31 @@ assert request(reader, "/?rest_route=/filewarden/v1/documents", data=b"")[0] in 
 admin = login("fw_admin")
 status, _, page, _ = request(admin, "/wp-admin/admin.php?page=filewarden")
 assert status == 200
+assert page.count(b'data-filewarden-upload="true"') == 1, "Expected one unified document form"
+assert b'name="operation" value="add_document"' in page
+assert b'value="upload"' in page and b'value="import"' in page
+assert page.count(b'id="document-parent"') == 1, "Expected one shared document destination"
 match = re.search(rb'name="_wpnonce" value="([^"]+)"', page)
 assert match, "Admin form nonce not found"
 nonce = match.group(1).decode()
 assert request(admin, "/wp-admin/admin-post.php", data=urllib.parse.urlencode(
     {"action": "filewarden_admin", "operation": "settings", "upload_mb": "25", "audit_days": "30"}
 ).encode())[0] == 403, "Mutation without nonce was accepted"
+for source in ("", "settings", "folder", "unknown"):
+    result = request(admin, "/wp-admin/admin-post.php", data=urllib.parse.urlencode({
+        "action": "filewarden_admin", "operation": "add_document", "source": source, "_wpnonce": nonce
+    }).encode())
+    assert "result=invalid" in result[3], "Invalid source must not dispatch another operation"
+assert "result=denied" in request(reader, "/wp-admin/admin-post.php", data=urllib.parse.urlencode({
+    "action": "filewarden_admin", "operation": "add_document", "source": "import", "_wpnonce": nonce,
+    "folder_id": str(fixtures["folder_id"]), "policy_type": "authenticated", "media_id": str(fixtures["media_id"])
+}).encode())[3], "Reader must not be allowed to import"
 
 
 def upload(name, payload, folder=0):
     boundary = "fw-" + uuid.uuid4().hex
     chunks = []
-    fields = {"action": "filewarden_admin", "operation": "upload", "_wpnonce": nonce,
+    fields = {"action": "filewarden_admin", "operation": "add_document", "source": "upload", "_wpnonce": nonce,
               "folder_id": str(folder), "policy_type": "authenticated"}
     for key, value in fields.items():
         chunks.append(f'--{boundary}\r\nContent-Disposition: form-data; name="{key}"\r\n\r\n{value}\r\n'.encode())
@@ -104,7 +117,7 @@ assert request(admin, download)[2] == large_pdf, "Uploaded bytes were not preser
 assert request(anon, download)[0] == 404
 assert b"large-upload.pdf" in request(editor, folder_view)[2], "Uploaded document absent from publication"
 status, _, page, url = request(admin, "/wp-admin/admin-post.php", data=urllib.parse.urlencode({
-    "action": "filewarden_admin", "operation": "import", "_wpnonce": nonce,
+    "action": "filewarden_admin", "operation": "add_document", "source": "import", "_wpnonce": nonce,
     "folder_id": str(fixtures["folder_id"]), "policy_type": "authenticated", "media_id": str(fixtures["media_id"])
 }).encode())
 assert status == 200 and "result=success" in url and "folder_id=" + str(fixtures["folder_id"]) in url

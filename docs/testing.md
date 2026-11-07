@@ -12,6 +12,8 @@
 
 ## Unit and coding checks
 
+Run `node --test tests/admin.test.cjs` with Node.js 22+ for the upload-interface regression tests. These execute the shipped JavaScript with DOM/transport doubles, including the WordPress hidden `action` field that shadows the native form property. The routing test fails against 0.1.4-dev and passes after the 0.1.5-dev fix. These tests complement HTTP integration; they are not an end-to-end browser test.
+
 Run `composer install --no-interaction --no-plugins`, `composer lint`, and `composer test` with PHP 8.2+. Development dependencies are pinned in `composer.lock`. `fileinfo` is required at runtime; tests require PHPUnit's normal PHP extensions.
 
 Coverage includes inherited policy intersections, missing parents/cycles, explicit read override, malformed policies, storage isolation, traversal, partial-write cleanup, size checks, and valid/invalid PDF ranges.

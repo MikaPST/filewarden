@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.5-dev — 2026-11-07
+
+- Fix direct browser uploads returning HTTP 404: the hidden WordPress `action` input shadowed `form.action`. Read the form's HTML action attribute to obtain the upload URL.
+- Merge computer upload and Media Library import into one form with a source selector, one destination, one access policy and one submit button. Inactive source fields are excluded from the request.
+- Preserve Media Library preselection and server-side capability, nonce, MIME and storage checks. Direct uploads remain private and do not create public Media Library attachments.
+- Add dependency-free JavaScript regression tests for routing, source switching, duplicate submission, progress and failed responses. Extend WordPress HTTP checks for the unified form and invalid/unauthorized requests.
+
 ## 0.1.4-dev — 2026-11-07
 
 - Fix encrypted uploads larger than 64 KiB when WordPress supplies Sodium compatibility functions without the native `TAG_MESSAGE` constant. The encrypted format is unchanged.

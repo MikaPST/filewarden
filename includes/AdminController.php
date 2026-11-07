@@ -67,6 +67,7 @@ final class AdminController {
 				'verifying' => __( 'Transfer complete. Encrypting and verifying the document in its destination folder…', 'filewarden' ),
 				'failed'    => __( 'The server did not confirm saving the file. Check the folder before retrying. HTTP status:', 'filewarden' ),
 				'network'   => __( 'Connection interrupted. Check the folder before retrying; the server may still be processing the file.', 'filewarden' ),
+				'media'     => __( 'Choose a file from the Media Library first.', 'filewarden' ),
 			)
 		);
 		if ( ! current_user_can( 'upload_files' ) ) {
@@ -93,7 +94,7 @@ final class AdminController {
 					'media_id' => $post->ID,
 				),
 				admin_url( 'admin.php' )
-			) . '#filewarden-import';
+			) . '#fw-add-document';
 			$actions['filewarden'] = '<a href="' . esc_url( $url ) . '">' . esc_html__( 'Copy to FileWarden', 'filewarden' ) . '</a>';
 		}
 		return $actions;
@@ -113,6 +114,13 @@ final class AdminController {
 			$this->service->require_capability( 'filewarden_manage_settings' );
 			check_admin_referer( 'filewarden_admin' );
 			$operation = isset( $_POST['operation'] ) && is_string( $_POST['operation'] ) ? sanitize_key( $_POST['operation'] ) : '';
+			if ( 'add_document' === $operation ) {
+				$source = isset( $_POST['source'] ) && is_string( $_POST['source'] ) ? sanitize_key( $_POST['source'] ) : '';
+				if ( ! in_array( $source, array( 'upload', 'import' ), true ) ) {
+					throw new \InvalidArgumentException( 'Invalid document source.' );
+				}
+				$operation = $source;
+			}
 			if ( 'settings' === $operation ) {
 				$page = 'filewarden-settings';
 				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- integer() strictly validates scalar nonnegative integers.
@@ -373,18 +381,9 @@ final class AdminController {
 			submit_button( __( 'Create folder', 'filewarden' ) );
 			echo '</form>';
 			if ( current_user_can( 'filewarden_upload_files' ) ) {
-				echo '<h2 id="fw-add-document">' . esc_html__( 'Upload PDF, JPEG or PNG', 'filewarden' ) . '</h2>';
+				echo '<h2 id="fw-add-document">' . esc_html__( 'Add a document', 'filewarden' ) . '</h2>';
 				if ( $storage_ready ) {
-					$this->form_start( 'upload', true );
-					/* translators: %s: effective maximum file size. */
-					echo '<p>' . esc_html( sprintf( __( 'Maximum file size: %s. Saving is confirmed only after storage and destination verification.', 'filewarden' ), size_format( min( max( 1, (int) get_option( 'filewarden_upload_mb', 50 ) ) * MB_IN_BYTES, wp_max_upload_size() ) ) ) ) . '</p>';
-					echo '<p><label for="fw-file">' . esc_html__( 'File', 'filewarden' ) . '</label> <input type="file" id="fw-file" name="file" accept=".pdf,.jpg,.jpeg,.png" required></p>';
-					$this->policy_fields( 'upload', $folder );
-					submit_button( __( 'Upload', 'filewarden' ) );
-					echo '</form>';
-					if ( current_user_can( 'upload_files' ) ) {
-						$this->import_form( $folder );
-					}
+					$this->document_form( $folder );
 				} else {
 					echo '<p>' . esc_html__( 'Uploads are unavailable. Follow the storage diagnostic above and reload this page.', 'filewarden' ) . '</p>';
 				}
@@ -394,21 +393,32 @@ final class AdminController {
 	}
 
 	/**
-	 * Render the import form for a selected or newly picked attachment.
+	 * Render one document form with a shared destination and two source options.
 	 *
 	 * @param int $folder Current folder.
 	 */
-	private function import_form( $folder ) {
+	private function document_form( $folder ) {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only preselection; the POST has its own nonce.
 		$id    = isset( $_GET['media_id'] ) ? absint( $_GET['media_id'] ) : 0;
-		$title = $id && 'attachment' === get_post_type( $id ) && current_user_can( 'edit_post', $id ) ? get_the_title( $id ) : '';
-		echo '<h2 id="filewarden-import">' . esc_html__( 'Import from Media Library', 'filewarden' ) . '</h2>';
-		echo '<p>' . esc_html__( 'FileWarden creates a protected copy. The original stays in WordPress Media and may remain publicly accessible.', 'filewarden' ) . '</p>';
-		$this->form_start( 'import' );
-		echo '<input type="hidden" id="fw-media-id" name="media_id" value="' . esc_attr( $title ? $id : 0 ) . '">';
-		echo '<p><button type="button" class="button" id="fw-media-picker">' . esc_html__( 'Choose a media file', 'filewarden' ) . '</button> <span id="fw-media-title" role="status">' . esc_html( $title ) . '</span></p>';
-		$this->policy_fields( 'import', $folder );
-		submit_button( __( 'Copy to FileWarden', 'filewarden' ) );
+		$title = current_user_can( 'upload_files' ) && $id && 'attachment' === get_post_type( $id ) && current_user_can( 'edit_post', $id ) ? get_the_title( $id ) : '';
+		$this->form_start( 'add_document', true );
+		echo '<fieldset class="filewarden-sources"><legend>' . esc_html__( 'Choose a source', 'filewarden' ) . '</legend>';
+		echo '<label><input type="radio" name="source" value="upload"' . checked( ! $title, true, false ) . '> ' . esc_html__( 'From my computer', 'filewarden' ) . '</label>';
+		if ( current_user_can( 'upload_files' ) ) {
+			echo '<label><input type="radio" name="source" value="import"' . checked( (bool) $title, true, false ) . '> ' . esc_html__( 'From the Media Library', 'filewarden' ) . '</label>';
+		}
+		echo '</fieldset><fieldset data-filewarden-source="upload"><legend>' . esc_html__( 'Choose a PDF, JPEG or PNG', 'filewarden' ) . '</legend>';
+		/* translators: %s: effective maximum file size. */
+		echo '<p>' . esc_html( sprintf( __( 'Maximum file size: %s. Saving is confirmed only after storage and destination verification.', 'filewarden' ), size_format( min( max( 1, (int) get_option( 'filewarden_upload_mb', 50 ) ) * MB_IN_BYTES, wp_max_upload_size() ) ) ) ) . '</p>';
+		echo '<p><label for="fw-file">' . esc_html__( 'File', 'filewarden' ) . '</label> <input type="file" id="fw-file" name="file" accept=".pdf,.jpg,.jpeg,.png"></p></fieldset>';
+		if ( current_user_can( 'upload_files' ) ) {
+			echo '<fieldset data-filewarden-source="import"><legend>' . esc_html__( 'Choose an existing document', 'filewarden' ) . '</legend>';
+			echo '<p>' . esc_html__( 'FileWarden creates a protected copy. The original stays in WordPress Media and may remain publicly accessible.', 'filewarden' ) . '</p>';
+			echo '<input type="hidden" id="fw-media-id" name="media_id" value="' . esc_attr( $title ? $id : 0 ) . '">';
+			echo '<p><button type="button" class="button" id="fw-media-picker">' . esc_html__( 'Choose a media file', 'filewarden' ) . '</button> <span id="fw-media-title" role="status">' . esc_html( $title ) . '</span></p></fieldset>';
+		}
+		$this->policy_fields( 'document', $folder );
+		submit_button( __( 'Add to this folder', 'filewarden' ), 'primary', 'filewarden_save' );
 		echo '</form>';
 	}
 
