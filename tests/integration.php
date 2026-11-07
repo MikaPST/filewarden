@@ -12,7 +12,11 @@ function fw_assert( $condition, $message ) {
 
 function fw_request( $method, $route, $params = array() ) {
 	$request = new WP_REST_Request( $method, '/filewarden/v1' . $route );
-	$request->set_body_params( $params );
+	if ( 'GET' === $method || 'HEAD' === $method ) {
+		$request->set_query_params( $params );
+	} else {
+		$request->set_body_params( $params );
+	}
 	return rest_get_server()->dispatch( $request );
 }
 
@@ -61,6 +65,8 @@ fw_assert( 200 === $response->get_status(), 'Authorized editor denied.' );
 $data = $response->get_data();
 fw_assert( ! isset( $data['storage_key'] ) && ! isset( $data['sha256'] ), 'Storage metadata leaked.' );
 fw_assert( str_contains( $response->get_headers()['Cache-Control'], 'no-store' ), 'Missing private cache headers.' );
+$listing = fw_request( 'GET', '/documents', array( 'folder_id' => $child ) );
+fw_assert( 200 === $listing->get_status() && array( $ids['private'] ) === array_column( $listing->get_data(), 'id' ), 'Authorized folder listing did not return its document.' );
 
 // Grant only read override: it must never grant write permissions.
 $reader = new WP_User( $users['subscriber'] );
