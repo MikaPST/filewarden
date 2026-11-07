@@ -147,12 +147,14 @@ final class AdminController {
 			echo '<div role="status" class="notice notice-info"><p>' . esc_html( $messages[ $result ] ) . '</p></div>';
 		}
 		echo '<h2>' . esc_html__( 'Storage diagnostics', 'filewarden' ) . '</h2>';
+		$storage_ready = false;
 		try {
 			$this->service->storage->root();
+			$storage_ready = true;
 			echo '<p>' . esc_html__( 'Storage directory checks passed.', 'filewarden' ) . '</p>';
 		} catch ( \Throwable $error ) {
 			$message = $error instanceof \RuntimeException ? $error->getMessage() : __( 'Unexpected storage error.', 'filewarden' );
-			echo '<p>' . esc_html__( 'Storage blocked.', 'filewarden' ) . ' ' . esc_html( $message ) . '</p>';
+			echo '<div class="notice notice-error inline"><p>' . esc_html__( 'Storage blocked.', 'filewarden' ) . ' ' . esc_html( $message ) . '</p></div>';
 		}
 		try {
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Read-only navigation; authorization is independently enforced; integer() strictly validates scalar nonnegative integers.
@@ -208,11 +210,15 @@ final class AdminController {
 			echo '</form>';
 			if ( current_user_can( 'filewarden_upload_files' ) ) {
 				echo '<h2>' . esc_html__( 'Upload PDF, JPEG or PNG', 'filewarden' ) . '</h2>';
-				$this->form_start( 'upload', true );
-				echo '<p><label for="fw-file">' . esc_html__( 'File', 'filewarden' ) . '</label> <input type="file" id="fw-file" name="file" accept=".pdf,.jpg,.jpeg,.png" required></p>';
-				$this->policy_fields( 'upload', $folder );
-				submit_button( __( 'Upload', 'filewarden' ) );
-				echo '</form>';
+				if ( $storage_ready ) {
+					$this->form_start( 'upload', true );
+					echo '<p><label for="fw-file">' . esc_html__( 'File', 'filewarden' ) . '</label> <input type="file" id="fw-file" name="file" accept=".pdf,.jpg,.jpeg,.png" required></p>';
+					$this->policy_fields( 'upload', $folder );
+					submit_button( __( 'Upload', 'filewarden' ) );
+					echo '</form>';
+				} else {
+					echo '<p>' . esc_html__( 'Uploads are unavailable. Follow the storage diagnostic above and reload this page.', 'filewarden' ) . '</p>';
+				}
 			}
 		}
 		echo '<h2>' . esc_html__( 'Settings', 'filewarden' ) . '</h2>';

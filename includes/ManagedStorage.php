@@ -29,8 +29,15 @@ final class ManagedStorage {
 	 */
 	public function root() {
 		$directory = WP_CONTENT_DIR . '/' . self::DIRECTORY;
-		if ( ! extension_loaded( 'sodium' ) || ! wp_mkdir_p( $directory ) || is_link( $directory ) ) {
-			throw new \RuntimeException( 'Managed storage requires Sodium and a writable, non-symbolic directory.' );
+		if ( ! function_exists( 'sodium_crypto_secretstream_xchacha20poly1305_init_push' ) ) {
+			throw new \RuntimeException( esc_html__( 'Enable the PHP Sodium extension for this site, then reload this page.', 'filewarden' ) );
+		}
+		if ( is_link( $directory ) ) {
+			throw new \RuntimeException( esc_html__( 'The FileWarden storage directory is a symbolic link. Use a regular directory.', 'filewarden' ) );
+		}
+		// phpcs:ignore WordPress.WP.AlternativeFunctions -- Check permissions for the PHP process that writes local files.
+		if ( ! FileIO::attempt( fn() => wp_mkdir_p( $directory ) ) || ! FileIO::attempt( fn() => is_writable( $directory ) ) ) {
+			throw new \RuntimeException( esc_html__( 'PHP cannot create or write the FileWarden storage directory. Check the owner and permissions of wp-content and filewarden-storage with your host.', 'filewarden' ) );
 		}
 		$root = realpath( $directory );
 		if ( false === $root || dirname( $root ) !== realpath( WP_CONTENT_DIR ) ) {
