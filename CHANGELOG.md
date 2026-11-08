@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.8-dev
+
+- Permanent folder UUIDs in generated shortcodes and public navigation, with automatic repeatable schema upgrade and legacy numeric shortcode compatibility.
+- Backend shows folder/file policies, inherited rules and document icons.
+- Migration, UUID access denial, shortcode and browser regression tests.
+
 ## 0.1.7-dev
 
 - Frontend document library: detailed list/grid, responsive cards, filename search with ACL-filtered pagination, date/size and preview/download buttons.

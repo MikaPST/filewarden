@@ -20,3 +20,5 @@
 .filewarden-preview-dialog[open] { display: flex; flex-direction: column; gap: 8px; }
 .filewarden-preview-dialog > button { align-self: flex-end; }
 .filewarden-preview-dialog iframe { width: 100%; flex: 1; min-height: 0; border: 0; }
+
+.filewarden-access{background:#fff;border:1px solid #c3c4c7;border-left:4px solid #2271b1;border-radius:6px;padding:12px 18px;margin:16px 0}.filewarden-access h3{margin-top:0}.filewarden-policy{display:inline-block;background:#edf3f8;color:#23415d;border:1px solid #ccdbea;border-radius:6px;padding:4px 9px;font-weight:600}.filewarden-rules{min-width:180px;max-width:360px}.filewarden-rules details,.filewarden-access details{margin-top:8px}.filewarden-rules summary,.filewarden-access summary{cursor:pointer;color:#385b7d}.filewarden-type{width:54px;text-align:center}.filewarden-documents td,.filewarden-documents th{vertical-align:middle}.filewarden-folders .filewarden-policy{margin-left:12px}#fw-shortcode{width:min(100%,620px)}

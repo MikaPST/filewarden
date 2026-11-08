@@ -38,6 +38,18 @@ final class Repository {
 	}
 
 	/**
+	 * Resolve an opaque folder reference. Authorization remains in the service.
+	 *
+	 * @param string $uuid Valid UUID.
+	 * @return mixed Folder record or null.
+	 */
+	public function folder_by_uuid( $uuid ) {
+		global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Fresh prepared custom-table lookup.
+		return $this->decode( $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}filewarden_folders WHERE uuid = %s", $uuid ), ARRAY_A ) );
+	}
+
+	/**
 	 * Retrieve a document by its logical UUID.
 	 *
 	 * @param mixed $uuid uuid value.
@@ -104,6 +116,8 @@ final class Repository {
 		if ( ! in_array( $kind, array( 'documents', 'folders' ), true ) ) {
 			throw new \InvalidArgumentException( 'Invalid record type.' );
 		}
+		if ( 'folders' === $kind ) {
+			$data['uuid'] = wp_generate_uuid4(); }
 		$data['policy']     = wp_json_encode( $data['policy'] );
 		$data['created_by'] = get_current_user_id();
 		$data['created_at'] = current_time( 'mysql', true );

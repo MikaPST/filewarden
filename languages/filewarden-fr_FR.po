@@ -1,8 +1,26 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8\nLanguage: fr_FR\nPlural-Forms: nplurals=2; plural=(n > 1);\n"
 
+msgid "Access rules"
+msgstr "Droits d’accès"
+
+msgid "Access unavailable"
+msgstr "Accès indisponible"
+
+msgid "All inherited rules apply together. Users with the global read capability can read all documents; this does not grant editing rights."
+msgstr "Toutes les règles héritées s’appliquent conjointement. Les utilisateurs disposant du droit de lecture globale peuvent consulter tous les documents ; cela ne donne pas de droits de modification."
+
+msgid "Authenticated users"
+msgstr "Utilisateurs connectés"
+
+msgid "Current folder access"
+msgstr "Droits du dossier actuel"
+
 msgid "Detailed list"
 msgstr "Liste détaillée"
+
+msgid "Display"
+msgstr "Affichage"
 
 msgid "Documents at the root"
 msgstr "Documents à la racine"
@@ -19,6 +37,9 @@ msgstr "Dossier indisponible."
 msgid "Grid"
 msgstr "Grille"
 
+msgid "Inherited restrictions"
+msgstr "Restrictions héritées"
+
 msgid "Next"
 msgstr "Suivant"
 
@@ -31,6 +52,9 @@ msgstr "Aperçu"
 msgid "Previous"
 msgstr "Précédent"
 
+msgid "Public"
+msgstr "Public"
+
 msgid "Search"
 msgstr "Rechercher"
 
@@ -39,3 +63,9 @@ msgstr "Rechercher des documents…"
 
 msgid "Search this folder"
 msgstr "Rechercher dans ce dossier"
+
+msgid "Selected roles:"
+msgstr "Rôles autorisés :"
+
+msgid "Type"
+msgstr "Type"

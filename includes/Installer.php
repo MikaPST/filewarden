@@ -11,7 +11,7 @@ namespace FileWarden;
  * Installer implementation.
  */
 final class Installer {
-	const SCHEMA       = '1';
+	const SCHEMA       = '2';
 	const CAPABILITIES = array( 'filewarden_read_all_files', 'filewarden_upload_files', 'filewarden_edit_files', 'filewarden_delete_files', 'filewarden_manage_permissions', 'filewarden_manage_settings', 'filewarden_view_audit' );
 
 	/**
@@ -41,21 +41,26 @@ final class Installer {
 	 */
 	public static function migrate() {
 		global $wpdb;
-		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-		$charset = $wpdb->get_charset_collate();
-		$prefix  = $wpdb->prefix . 'filewarden_';
-		$sql     = array(
-			"CREATE TABLE {$prefix}folders (
+		$repository = new Repository();
+		$lock       = $repository->lock( -1 );
+		try {
+			require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+			$charset = $wpdb->get_charset_collate();
+			$prefix  = $wpdb->prefix . 'filewarden_';
+			$sql     = array(
+				"CREATE TABLE {$prefix}folders (
 			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			uuid char(36) DEFAULT NULL,
 			parent_id bigint(20) unsigned NOT NULL DEFAULT 0,
 			name varchar(255) NOT NULL,
 			policy longtext NOT NULL,
 			created_by bigint(20) unsigned NOT NULL,
 			created_at datetime NOT NULL,
 			PRIMARY KEY  (id),
+			UNIQUE KEY uuid (uuid),
 			KEY parent_id (parent_id)
 			) $charset;",
-			"CREATE TABLE {$prefix}documents (
+				"CREATE TABLE {$prefix}documents (
 			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			uuid char(36) NOT NULL,
 			folder_id bigint(20) unsigned NOT NULL DEFAULT 0,
@@ -72,7 +77,7 @@ final class Installer {
 			UNIQUE KEY storage_key (storage_key),
 			KEY folder_id (folder_id)
 			) $charset;",
-			"CREATE TABLE {$prefix}audit_logs (
+				"CREATE TABLE {$prefix}audit_logs (
 			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			actor_id bigint(20) unsigned NOT NULL DEFAULT 0,
 			event varchar(64) NOT NULL,
@@ -81,13 +86,32 @@ final class Installer {
 			PRIMARY KEY  (id),
 			KEY created_at (created_at)
 			) $charset;",
-		);
-		foreach ( $sql as $statement ) {
-			dbDelta( $statement );
-			if ( $wpdb->last_error ) {
-				throw new \RuntimeException( 'FileWarden schema installation failed.' );
+			);
+			foreach ( $sql as $statement ) {
+				dbDelta( $statement );
+				if ( $wpdb->last_error ) {
+					throw new \RuntimeException( 'FileWarden schema installation failed.' );
+				}
 			}
-		}
-		update_option( 'filewarden_schema', self::SCHEMA, false );
+			// Nullable unique UUIDs allow upgrades with existing rows; conditional writes are retry-safe.
+			do {
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Bounded migration of custom records.
+				$ids = $wpdb->get_col( $wpdb->prepare( 'SELECT id FROM %i WHERE uuid IS NULL LIMIT 100', $prefix . 'folders' ) );
+				if ( $wpdb->last_error ) {
+					throw new \RuntimeException( 'Folder migration read failed.' ); }
+				foreach ( $ids as $id ) {
+					// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Prepared, conditional backfill preserves existing references.
+					if ( false === $wpdb->query( $wpdb->prepare( 'UPDATE %i SET uuid = %s WHERE id = %d AND uuid IS NULL', $prefix . 'folders', wp_generate_uuid4(), $id ) ) ) {
+						throw new \RuntimeException( 'Folder UUID migration failed.' );
+					}
+				}
+				$count = count( $ids );
+			} while ( 100 === $count );
+			add_option( 'filewarden_root_uuid', wp_generate_uuid4(), '', false );
+			if ( ! wp_is_uuid( get_option( 'filewarden_root_uuid' ), 4 ) ) {
+				throw new \RuntimeException( 'Invalid root UUID.' ); }
+			update_option( 'filewarden_schema', self::SCHEMA, false );
+		} finally {
+			$repository->unlock( $lock ); }
 	}
 }

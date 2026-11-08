@@ -44,6 +44,9 @@ function pdfFixture() {
             await page.locator('#fw-file').setInputFiles({ name: filename, mimeType: 'application/pdf', buffer: pdfFixture() });
             await page.locator('[name="filewarden_save"]').click();
             await page.waitForURL(/result=success/, { timeout: 30000 });
+            assert.ok(await page.locator('.filewarden-access').isVisible());
+            assert.ok(await page.locator('.filewarden-documents .filewarden-type img').first().evaluate(img => img.complete && img.naturalWidth > 0));
+            assert.ok((await page.locator('.filewarden-rules').first().textContent()).length > 0);
             const link = page.getByRole('link', { name: filename, exact: true });
             const detailURL = await link.getAttribute('href');
             await link.click();
@@ -77,13 +80,24 @@ function pdfFixture() {
             // Test a real image through the same direct-upload workflow and viewer.
             const fixture = JSON.parse(fs.readFileSync(process.env.FILEWARDEN_FIXTURES, 'utf8'));
             await page.goto(base + '/wp-admin/admin.php?page=filewarden&folder_id=' + fixture.folder_id);
+            assert.ok(await page.locator('.filewarden-access details').isVisible());
+            await page.locator('.filewarden-access summary').click();
+            assert.ok((await page.locator('.filewarden-access').textContent()).includes('Restricted'));
             await page.getByRole('link', { name: 'filewarden-fixture.png', exact: true }).click();
             await viewer.locator('#fw-image').waitFor({ state: 'visible' });
             assert.ok(await viewer.locator('#fw-image').evaluate(img => img.naturalWidth > 0));
             await viewer.locator('#fw-zoom').selectOption('2');
             await page.getByRole('button', { name: 'Close preview' }).click();
             await modal.waitFor({ state: 'hidden' });
-            await page.goto(base + '/wp-admin/admin-post.php?action=filewarden_folder&folder_id=0');
+            await page.goto(base + '/wp-admin/admin.php?page=filewarden-publication&folder_id=' + fixture.folder_id);
+            assert.ok((await page.locator('#fw-shortcode').inputValue()).includes(fixture.folder_uuid));
+            const deniedUUID = await context.request.get(base + '/wp-admin/admin-post.php?action=filewarden_folder&folder_id=00000000-0000-4000-8000-000000000000');
+            assert.equal(deniedUUID.status(), 404);
+            const publicContext = await browser.newContext();
+            const privateFolder = await publicContext.request.get(base + '/wp-admin/admin-post.php?action=filewarden_folder&folder_id=' + fixture.folder_uuid);
+            assert.equal(privateFolder.status(), 404);
+            await publicContext.close();
+            await page.goto(base + '/wp-admin/admin-post.php?action=filewarden_folder&folder_id=' + fixture.root_uuid);
             await page.locator('#fw-search').fill(filename);
             await page.getByRole('button', { name: 'Search', exact: true }).click();
             assert.equal(await page.locator('.document').count(), 1);

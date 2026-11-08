@@ -328,7 +328,14 @@ final class AdminController {
 		echo '<h2>' . esc_html__( 'Documents in', 'filewarden' ) . ' ' . esc_html( $this->folder_labels[ $folder ] ?? '' ) . '</h2><form method="get"><input type="hidden" name="page" value="filewarden">';
 		$this->folder_picker( 'fw-browse-folder', $folder, __( 'Current folder', 'filewarden' ) );
 		submit_button( __( 'Open folder', 'filewarden' ), 'secondary', 'submit', false );
-		echo '</form><p><a class="button button-primary" href="#fw-add-document">' . esc_html__( 'Add a document to this folder', 'filewarden' ) . '</a></p><h3>' . esc_html__( 'Subfolders', 'filewarden' ) . '</h3><ul class="filewarden-folders">';
+		echo '</form><section class="filewarden-access"><h3>' . esc_html__( 'Current folder access', 'filewarden' ) . '</h3>';
+		$current = $folder ? $this->service->repository->folder( $folder ) : array(
+			'policy'    => array( 'type' => 'public' ),
+			'parent_id' => 0,
+		);
+		$this->access_summary( $current );
+		echo '<p class="description">' . esc_html__( 'All inherited rules apply together. Users with the global read capability can read all documents; this does not grant editing rights.', 'filewarden' ) . '</p></section>';
+		echo '<p><a class="button button-primary" href="#fw-add-document">' . esc_html__( 'Add a document to this folder', 'filewarden' ) . '</a></p><h3>' . esc_html__( 'Subfolders', 'filewarden' ) . '</h3><ul class="filewarden-folders">';
 		foreach ( $folders as $row ) {
 			if ( $this->service->permissions->can_read( $row, wp_get_current_user() ) ) {
 				$url = add_query_arg(
@@ -338,20 +345,25 @@ final class AdminController {
 					),
 					admin_url( 'admin.php' )
 				);
-				echo '<li><a href="' . esc_url( $url ) . '">' . esc_html( $row['name'] ) . '</a> (#' . esc_html( $row['id'] ) . ')</li>';
+				echo '<li><a href="' . esc_url( $url ) . '">' . esc_html( $row['name'] ) . '</a>';
+				$this->access_summary( $row );
+				echo '</li>';
 			}
 		}
-		echo '</ul><h3>' . esc_html__( 'Files in this folder', 'filewarden' ) . '</h3><table class="widefat striped"><thead><tr><th scope="col">' . esc_html__( 'Document', 'filewarden' ) . '</th><th scope="col">' . esc_html__( 'Size', 'filewarden' ) . '</th><th scope="col">' . esc_html__( 'Actions', 'filewarden' ) . '</th></tr></thead><tbody>';
+		echo '</ul><h3>' . esc_html__( 'Files in this folder', 'filewarden' ) . '</h3><table class="widefat striped filewarden-documents"><thead><tr><th scope="col" class="filewarden-type">' . esc_html__( 'Type', 'filewarden' ) . '</th><th scope="col">' . esc_html__( 'Document', 'filewarden' ) . '</th><th scope="col">' . esc_html__( 'Size', 'filewarden' ) . '</th><th scope="col">' . esc_html__( 'Access rules', 'filewarden' ) . '</th><th scope="col">' . esc_html__( 'Actions', 'filewarden' ) . '</th></tr></thead><tbody>';
 		$visible = false;
 		foreach ( $documents as $row ) {
 			if ( $this->service->permissions->can_read( $row, wp_get_current_user() ) ) {
 				$visible = true;
 				$url     = $this->service->metadata( $row )['detail_url'];
-				echo '<tr><th scope="row"><a data-filewarden-preview target="_blank" rel="noopener noreferrer" href="' . esc_url( $url ) . '">' . esc_html( $row['name'] ) . '</a></th><td>' . esc_html( size_format( $row['size'] ) ) . '</td><td><a data-filewarden-preview target="_blank" rel="noopener noreferrer" href="' . esc_url( $url ) . '">' . esc_html__( 'Preview', 'filewarden' ) . '</a> · <a href="' . esc_url( add_query_arg( 'download', '1', $url ) ) . '">' . esc_html__( 'Download', 'filewarden' ) . '</a></td></tr>';
+				$icon    = plugins_url( 'assets/icons/' . Publication::icon( $row['name'] ) . '.svg', FILEWARDEN_PATH . 'filewarden.php' );
+				echo '<tr><td class="filewarden-type"><img src="' . esc_url( $icon ) . '" alt="' . esc_attr( strtoupper( pathinfo( $row['name'], PATHINFO_EXTENSION ) ) ) . '" width="40" height="46"></td><th scope="row"><a data-filewarden-preview target="_blank" rel="noopener noreferrer" href="' . esc_url( $url ) . '">' . esc_html( $row['name'] ) . '</a></th><td>' . esc_html( size_format( $row['size'] ) ) . '</td><td class="filewarden-rules">';
+				$this->access_summary( $row );
+				echo '</td><td><a data-filewarden-preview target="_blank" rel="noopener noreferrer" href="' . esc_url( $url ) . '">' . esc_html__( 'Preview', 'filewarden' ) . '</a> · <a href="' . esc_url( add_query_arg( 'download', '1', $url ) ) . '">' . esc_html__( 'Download', 'filewarden' ) . '</a></td></tr>';
 			}
 		}
 		if ( ! $visible ) {
-			echo '<tr><td colspan="3">' . esc_html__( 'No visible documents in this folder. Choose another folder or add a file here.', 'filewarden' ) . '</td></tr>';
+			echo '<tr><td colspan="5">' . esc_html__( 'No visible documents in this folder. Choose another folder or add a file here.', 'filewarden' ) . '</td></tr>';
 		}
 		echo '</tbody></table>';
 		$links = array();
@@ -402,6 +414,35 @@ final class AdminController {
 	}
 
 	/**
+	 * Display explicit and inherited rules for an already authorized record.
+	 *
+	 * @param array $record Authorized folder or document.
+	 */
+	private function access_summary( array $record ) {
+		echo '<span class="filewarden-policy">' . esc_html( AccessSummary::label( $record['policy'] ?? null ) ) . '</span>';
+		$parent = (int) ( $record['folder_id'] ?? $record['parent_id'] ?? 0 );
+		if ( ! $parent ) {
+			return; }
+		echo '<details><summary>' . esc_html__( 'Inherited restrictions', 'filewarden' ) . '</summary><ul>';
+		$seen = array();
+		while ( $parent ) {
+			if ( isset( $seen[ $parent ] ) || count( $seen ) >= 100 ) {
+				echo '<li>' . esc_html__( 'Access unavailable', 'filewarden' ) . '</li>';
+				break;
+			}
+			$seen[ $parent ] = true;
+			$folder          = $this->service->repository->folder( $parent );
+			if ( ! $folder ) {
+				echo '<li>' . esc_html__( 'Access unavailable', 'filewarden' ) . '</li>';
+				break;
+			}
+			echo '<li><strong>' . esc_html( $folder['name'] ) . '</strong>: ' . esc_html( AccessSummary::label( $folder['policy'] ?? null ) ) . '</li>';
+			$parent = (int) $folder['parent_id'];
+		}
+		echo '</ul></details>';
+	}
+
+	/**
 	 * Render one document form with a shared destination and two source options.
 	 *
 	 * @param int $folder Current folder.
@@ -449,7 +490,7 @@ final class AdminController {
 			$view = isset( $_GET['view'] ) && 'grid' === $_GET['view'] ? 'grid' : 'list';
 			echo '<p><label for="fw-view">' . esc_html__( 'Display', 'filewarden' ) . '</label> <select name="view" id="fw-view"><option value="list"' . selected( $view, 'list', false ) . '>' . esc_html__( 'Detailed list', 'filewarden' ) . '</option><option value="grid"' . selected( $view, 'grid', false ) . '>' . esc_html__( 'Grid', 'filewarden' ) . '</option></select></p>';
 			submit_button( __( 'Show shortcode', 'filewarden' ), 'secondary', 'submit', false );
-			echo '</form><p><label for="fw-shortcode">' . esc_html__( 'Copy into the Elementor Shortcode widget', 'filewarden' ) . '</label> <input type="text" readonly id="fw-shortcode" value="' . esc_attr( '[filewarden folder="' . $folder . '" view="' . $view . '"]' ) . '"></p>';
+			echo '</form><p><label for="fw-shortcode">' . esc_html__( 'Copy into the Elementor Shortcode widget', 'filewarden' ) . '</label> <input type="text" readonly id="fw-shortcode" value="' . esc_attr( '[filewarden folder="' . FolderReference::uuid( $folder ) . '" view="' . $view . '"]' ) . '"></p>';
 			$frame = Publication::shortcode(
 				array(
 					'folder' => $folder,

@@ -23,7 +23,7 @@ function fw_request( $method, $route, $params = array() ) {
 wp_set_current_user( 1 );
 FileWarden\Installer::activate();
 FileWarden\Installer::migrate();
-fw_assert( '1' === get_option( 'filewarden_schema' ), 'Repeatable migration failed.' );
+fw_assert( '2' === get_option( 'filewarden_schema' ), 'Repeatable migration failed.' );
 
 $repository = new FileWarden\Repository();
 $permission = new FileWarden\PermissionService( array( $repository, 'folder' ) );
@@ -31,6 +31,28 @@ $storage    = new FileWarden\StorageService( FILEWARDEN_STORAGE_DIR, array( ABSP
 $service    = new FileWarden\DocumentService( $repository, $permission, $storage, new FileWarden\AuditService() );
 $folder     = $service->create_folder( 'Restricted', 0, array( 'type' => 'roles', 'roles' => array( 'editor' ) ) );
 $child      = $service->create_folder( 'Public child', $folder, array( 'type' => 'public' ) );
+// Recreate the actual v1 folder layout and upgrade without deleting records.
+global $wpdb;
+$wpdb->query( "ALTER TABLE {$wpdb->prefix}filewarden_folders DROP INDEX uuid, DROP COLUMN uuid" );
+update_option( 'filewarden_schema', '1' );
+FileWarden\Installer::migrate();
+$folder_uuid = FileWarden\FolderReference::uuid( $folder );
+$child_uuid = FileWarden\FolderReference::uuid( $child );
+$root_uuid = FileWarden\FolderReference::uuid( 0 );
+fw_assert( wp_is_uuid( $folder_uuid, 4 ) && $folder_uuid !== $child_uuid, 'Existing folders did not receive unique UUIDs.' );
+FileWarden\Installer::migrate();
+fw_assert( $folder_uuid === FileWarden\FolderReference::uuid( $folder ) && $root_uuid === FileWarden\FolderReference::uuid( 0 ), 'Repeated migration changed permanent references.' );
+fw_assert( $child === FileWarden\FolderReference::resolve( $child_uuid ) && $child === FileWarden\FolderReference::resolve( (string) $child ), 'UUID and legacy references differ.' );
+fw_assert( 0 === FileWarden\FolderReference::resolve( $root_uuid ), 'Root UUID did not resolve.' );
+fw_assert( str_contains( FileWarden\Publication::shortcode( array( 'folder' => $child_uuid ) ), $child_uuid ), 'Shortcode omitted UUID.' );
+fw_assert( str_contains( FileWarden\Publication::shortcode( array( 'folder' => $child ) ), $child_uuid ), 'Legacy shortcode was not converted.' );
+foreach ( array( wp_generate_uuid4(), 'invalid', '', array() ) as $invalid ) {
+    try {
+        FileWarden\FolderReference::resolve( $invalid );
+        fw_assert( false, 'Invalid reference resolved to a folder.' );
+    } catch ( \InvalidArgumentException $expected ) { }
+}
+
 
 $temporary = tempnam( sys_get_temp_dir(), 'fw-integration-' );
 $bytes = "%PDF-1.4\n1 0 obj<</Type/Catalog>>endobj\n%%EOF\n";
@@ -99,9 +121,12 @@ fw_assert( ! $media['error'], 'Media fixture upload failed.' );
 $ids['media_id'] = wp_insert_attachment( array( 'post_mime_type' => 'image/png', 'post_title' => 'FileWarden fixture', 'post_status' => 'inherit' ), $media['file'], 0, true );
 fw_assert( ! is_wp_error( $ids['media_id'] ) && $ids['media_id'] > 0, 'Media attachment fixture failed.' );
 $ids['folder_id'] = $child;
+$ids['folder_uuid'] = $child_uuid;
+$ids['root_uuid'] = $root_uuid;
 file_put_contents( getenv( 'FILEWARDEN_FIXTURES' ), wp_json_encode( $ids ) );
 // Publication must scan beyond raw batches, then paginate only authorized results.
 $search_folder = $service->create_folder( 'Search fixtures', 0, array( 'type' => 'public' ) );
+fw_assert( wp_is_uuid( FileWarden\FolderReference::uuid( $search_folder ), 4 ), 'New folder UUID missing.' );
 $template = $repository->document( $ids['public'] );
 unset( $template['id'], $template['created_at'], $template['created_by'] );
 for ( $i = 0; $i < 115; $i++ ) {

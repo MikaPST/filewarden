@@ -20,7 +20,15 @@ final class Plugin {
 		if ( is_multisite() ) {
 			return;
 		}
-		if ( Installer::SCHEMA !== get_option( 'filewarden_schema' ) ) {
+		$migration_failed = false;
+		if ( '1' === get_option( 'filewarden_schema' ) ) {
+			try {
+				Installer::migrate();
+			} catch ( \Throwable $error ) {
+				$migration_failed = true;
+			}
+		}
+		if ( $migration_failed || Installer::SCHEMA !== get_option( 'filewarden_schema' ) ) {
 			add_action(
 				'admin_notices',
 				static function () {

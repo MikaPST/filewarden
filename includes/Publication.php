@@ -39,14 +39,15 @@ final class Publication {
 			'filewarden'
 		);
 		try {
-			$folder = RestController::integer( $attributes['folder'] );
+			$folder    = FolderReference::resolve( $attributes['folder'] );
+			$reference = FolderReference::uuid( $folder );
 		} catch ( \InvalidArgumentException $error ) {
 			return '';
 		}
 		$url = add_query_arg(
 			array(
 				'action'    => 'filewarden_folder',
-				'folder_id' => $folder,
+				'folder_id' => $reference,
 				'view'      => 'grid' === $attributes['view'] ? 'grid' : 'list',
 			),
 			admin_url( 'admin-post.php' )
@@ -70,7 +71,8 @@ final class Publication {
 		header( 'Content-Type: text/html; charset=UTF-8' );
 		try {
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Read-only request; integer() validates input and service enforces ACL.
-			$folder = RestController::integer( wp_unslash( $_GET['folder_id'] ?? null ) );
+			$folder    = FolderReference::resolve( wp_unslash( $_GET['folder_id'] ?? '0' ) );
+			$reference = FolderReference::uuid( $folder );
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Read-only pagination with strict integer validation.
 			$offset = RestController::integer( wp_unslash( $_GET['offset'] ?? null ) );
 			$service->require_folder( $folder );
@@ -88,7 +90,7 @@ final class Publication {
 		$assets = plugins_url( 'assets/', FILEWARDEN_PATH . 'filewarden.php' );
 		// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- Standalone private frame independent of theme hooks.
 		echo '<!doctype html><html lang="' . esc_attr( get_bloginfo( 'language' ) ) . '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>' . esc_html( $title ) . '</title><link rel="stylesheet" href="' . esc_url( $assets . 'publication.css?ver=' . FILEWARDEN_VERSION ) . '"></head><body><main><header><span class="eyebrow">FILEWARDEN</span><h1>' . esc_html( $title ) . '</h1></header>';
-		echo '<form method="get" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '"><input type="hidden" name="action" value="filewarden_folder"><input type="hidden" name="folder_id" value="' . esc_attr( $folder ) . '"><label for="fw-search">' . esc_html__( 'Search this folder', 'filewarden' ) . '</label><div class="toolbar"><input id="fw-search" type="search" name="search" maxlength="200" value="' . esc_attr( $search ) . '" placeholder="' . esc_attr__( 'Search documents…', 'filewarden' ) . '"><button name="view" value="' . esc_attr( $view ) . '">' . esc_html__( 'Search', 'filewarden' ) . '</button><div class="views">';
+		echo '<form method="get" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '"><input type="hidden" name="action" value="filewarden_folder"><input type="hidden" name="folder_id" value="' . esc_attr( $reference ) . '"><label for="fw-search">' . esc_html__( 'Search this folder', 'filewarden' ) . '</label><div class="toolbar"><input id="fw-search" type="search" name="search" maxlength="200" value="' . esc_attr( $search ) . '" placeholder="' . esc_attr__( 'Search documents…', 'filewarden' ) . '"><button name="view" value="' . esc_attr( $view ) . '">' . esc_html__( 'Search', 'filewarden' ) . '</button><div class="views">';
 		foreach ( array(
 			'list' => __( 'Detailed list', 'filewarden' ),
 			'grid' => __( 'Grid', 'filewarden' ),
@@ -121,7 +123,7 @@ final class Publication {
 				$url = add_query_arg(
 					array(
 						'action'    => 'filewarden_folder',
-						'folder_id' => $folder,
+						'folder_id' => $reference,
 						'offset'    => $position,
 						'search'    => $search,
 						'view'      => $view,
