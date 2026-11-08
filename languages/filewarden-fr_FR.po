@@ -1,0 +1,41 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8\nLanguage: fr_FR\nPlural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgid "Detailed list"
+msgstr "Liste détaillée"
+
+msgid "Documents at the root"
+msgstr "Documents à la racine"
+
+msgid "Download"
+msgstr "Télécharger"
+
+msgid "FileWarden documents"
+msgstr "Documents FileWarden"
+
+msgid "Folder unavailable."
+msgstr "Dossier indisponible."
+
+msgid "Grid"
+msgstr "Grille"
+
+msgid "Next"
+msgstr "Suivant"
+
+msgid "No documents are visible in this folder."
+msgstr "Aucun document accessible ne correspond à votre recherche dans ce dossier."
+
+msgid "Preview"
+msgstr "Aperçu"
+
+msgid "Previous"
+msgstr "Précédent"
+
+msgid "Search"
+msgstr "Rechercher"
+
+msgid "Search documents…"
+msgstr "Rechercher des documents…"
+
+msgid "Search this folder"
+msgstr "Rechercher dans ce dossier"

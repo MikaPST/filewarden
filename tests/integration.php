@@ -100,4 +100,32 @@ $ids['media_id'] = wp_insert_attachment( array( 'post_mime_type' => 'image/png',
 fw_assert( ! is_wp_error( $ids['media_id'] ) && $ids['media_id'] > 0, 'Media attachment fixture failed.' );
 $ids['folder_id'] = $child;
 file_put_contents( getenv( 'FILEWARDEN_FIXTURES' ), wp_json_encode( $ids ) );
+// Publication must scan beyond raw batches, then paginate only authorized results.
+$search_folder = $service->create_folder( 'Search fixtures', 0, array( 'type' => 'public' ) );
+$template = $repository->document( $ids['public'] );
+unset( $template['id'], $template['created_at'], $template['created_by'] );
+for ( $i = 0; $i < 115; $i++ ) {
+    $record = $template;
+    $record['uuid'] = wp_generate_uuid4();
+    // Metadata-only search fixtures never serve binary content.
+    $record['storage_key'] = bin2hex( random_bytes( 32 ) );
+    $record['folder_id'] = $search_folder;
+    $record['name'] = ( $i < 101 ? 'Hidden-' : 'Visible-' ) . $i . '.pdf';
+    $record['policy'] = array( 'type' => $i < 101 ? 'authenticated' : 'public' );
+    $repository->insert( 'documents', $record );
+}
+wp_set_current_user( 0 );
+fw_assert( array() === FileWarden\Publication::page( $service, $search_folder, 'Hidden', 0 ), 'Search leaked restricted names.' );
+$first = FileWarden\Publication::page( $service, $search_folder, 'visible', 0 );
+fw_assert( 13 === count( $first ) && 'Visible-101.pdf' === $first[0]['name'], 'Authorized pagination stopped at raw batch boundary.' );
+$second = FileWarden\Publication::page( $service, $search_folder, 'visible', 12 );
+fw_assert( 2 === count( $second ) && 'Visible-113.pdf' === $second[0]['name'], 'Visible pagination skipped or duplicated results.' );
+fw_assert( array() === FileWarden\Publication::page( $service, $search_folder, '%', 0 ), 'Search treated literal percent as a wildcard.' );
+try {
+    FileWarden\Publication::page( $service, $child, '', 0 );
+    fw_assert( false, 'Publication bypassed inherited folder policy.' );
+} catch ( \DomainException $error ) {
+    // Expected denial.
+}
+wp_set_current_user( 1 );
 WP_CLI::success( 'Integration assertions passed.' );

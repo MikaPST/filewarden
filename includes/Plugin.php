@@ -29,6 +29,12 @@ final class Plugin {
 			);
 			return;
 		}
+		add_action(
+			'init',
+			static function () {
+				load_plugin_textdomain( 'filewarden', false, dirname( plugin_basename( FILEWARDEN_PATH . 'filewarden.php' ) ) . '/languages' );
+			}
+		);
 		$repository  = new Repository();
 		$permissions = new PermissionService( array( $repository, 'folder' ) );
 		$roots       = array( ABSPATH, WP_CONTENT_DIR );

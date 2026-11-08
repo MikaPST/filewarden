@@ -445,10 +445,19 @@ final class AdminController {
 			$this->service->require_folder( $folder );
 			echo '<form method="get"><input type="hidden" name="page" value="filewarden-publication">';
 			$this->folder_picker( 'fw-publish-folder', $folder, __( 'Folder to publish', 'filewarden' ) );
+            // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only display selection.
+			$view = isset( $_GET['view'] ) && 'grid' === $_GET['view'] ? 'grid' : 'list';
+			echo '<p><label for="fw-view">' . esc_html__( 'Display', 'filewarden' ) . '</label> <select name="view" id="fw-view"><option value="list"' . selected( $view, 'list', false ) . '>' . esc_html__( 'Detailed list', 'filewarden' ) . '</option><option value="grid"' . selected( $view, 'grid', false ) . '>' . esc_html__( 'Grid', 'filewarden' ) . '</option></select></p>';
 			submit_button( __( 'Show shortcode', 'filewarden' ), 'secondary', 'submit', false );
-			echo '</form><p><label for="fw-shortcode">' . esc_html__( 'Copy into the Elementor Shortcode widget', 'filewarden' ) . '</label> <input type="text" readonly id="fw-shortcode" value="' . esc_attr( '[filewarden folder="' . $folder . '"]' ) . '"></p>';
+			echo '</form><p><label for="fw-shortcode">' . esc_html__( 'Copy into the Elementor Shortcode widget', 'filewarden' ) . '</label> <input type="text" readonly id="fw-shortcode" value="' . esc_attr( '[filewarden folder="' . $folder . '" view="' . $view . '"]' ) . '"></p>';
+			$frame = Publication::shortcode(
+				array(
+					'folder' => $folder,
+					'view'   => $view,
+				)
+			);
 			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- The renderer escapes all dynamic frame attributes.
-			echo Publication::shortcode( array( 'folder' => $folder ) );
+			echo $frame;
 		} catch ( \Throwable $error ) {
 			echo '<p>' . esc_html__( 'Folder unavailable.', 'filewarden' ) . '</p>';
 		}

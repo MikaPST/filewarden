@@ -36,3 +36,6 @@ A fully free, open-source WordPress document-management plugin. No paid tier or 
 ## Distribution
 - Public GitHub repository first; WordPress.org later, subject to name and guideline review.
 - GPL-2.0-or-later; GitHub Actions tests and release ZIP packaging.
+
+## Frontend library (implemented)
+The shortcode supports list/grid layouts, a filename search limited to its published folder, authorized pagination (12 documents), local file-type SVG icons, date/size and separate preview/download actions. Search and pagination filter inherited permissions before rendering. PDF/JPEG/PNG remain the accepted upload formats.

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.7-dev
+
+- Frontend document library: detailed list/grid, responsive cards, filename search with ACL-filtered pagination, date/size and preview/download buttons.
+- Ten original folded-page SVG file-type icons, local French frontend translations and automatic shortcode frame height.
+- Publication builder offers a default view; existing shortcodes remain compatible.
+- Office icons are prepared; accepted upload formats remain PDF/JPEG/PNG.
+
 ## 0.1.6-dev — 2026-11-07
 
 - Replace host-dependent PDF rasterization with bundled Mozilla PDF.js 6.5.438: all pages, page navigation, fit-width and zoom, without sending documents to third parties.

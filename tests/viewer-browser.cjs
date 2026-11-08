@@ -83,7 +83,22 @@ function pdfFixture() {
             await viewer.locator('#fw-zoom').selectOption('2');
             await page.getByRole('button', { name: 'Close preview' }).click();
             await modal.waitFor({ state: 'hidden' });
-            console.log(`${name}: real upload, rendered PDF, page navigation, zoom, new tab, modal focus, image and denied access passed`);
+            await page.goto(base + '/wp-admin/admin-post.php?action=filewarden_folder&folder_id=0');
+            await page.locator('#fw-search').fill(filename);
+            await page.getByRole('button', { name: 'Search', exact: true }).click();
+            assert.equal(await page.locator('.document').count(), 1);
+            assert.equal(await page.locator('.preview').getAttribute('target'), '_blank');
+            assert.ok((await page.locator('.download').getAttribute('href')).includes('download=1'));
+            assert.ok(await page.locator('.file-icon').evaluate(img => img.complete && img.naturalWidth > 0));
+            await page.getByRole('button', { name: 'Grid', exact: true }).click();
+            assert.equal(await page.locator('.documents.grid').count(), 1);
+            assert.equal(await page.locator('#fw-search').inputValue(), filename);
+            await page.setViewportSize({ width: 375, height: 812 });
+            assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+            await page.locator('#fw-search').fill('missing-fixture-name');
+            await page.getByRole('button', { name: 'Search', exact: true }).click();
+            assert.equal(await page.locator('.document').count(), 0);
+            console.log(`${name}: search, grid, mobile layout, icons,  real upload, rendered PDF, page navigation, zoom, new tab, modal focus, image and denied access passed`);
         } finally { await browser.close(); }
     }
 })().catch(error => { console.error(error); process.exitCode = 1; });
