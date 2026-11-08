@@ -10,4 +10,12 @@
 
 Initial mapping: administrators receive the capabilities above at activation; other roles receive none by default. Folder creation requires manage_permissions plus parent read access. Uploading with an explicit policy requires upload_files and manage_permissions plus parent read access. The minimal admin screen additionally requires manage_settings. Reading never implicitly grants mutation capabilities.
 
-Policy modification, role assignment UI and delegated frontend upload defaults remain unimplemented. Multisite is excluded from the first version by owner decision. Every ancestor is reevaluated without permission caching. Missing ancestors or cycles deny access even with the read override.
+Folder/document policy editing is implemented in the administration UI; WordPress role assignment and delegated frontend uploads remain future scope. Multisite is excluded from the first version by owner decision. Every ancestor is reevaluated without permission caching. Missing ancestors or cycles deny access even with the read override.
+
+## Editable policies (0.1.9)
+
+New documents default to `inherit`: no additional file restriction, so the containing folder governs access dynamically. The existing complete ancestor intersection is preserved. At the virtual root there is no folder restriction, so inherited documents are public; the UI explicitly states this. Existing documents retain their stored policy.
+
+A file may restrict its folder policy, never broaden it. All applicable predicates must be satisfied, including each selected-role predicate (there is no simple ranking of arbitrary role sets). Global-read administrators remain the explicit read-only override.
+
+The backend editor requires `filewarden_manage_settings`, a valid admin nonce, and `filewarden_manage_permissions`; the service independently requires permission management and read access to the target. Editing does not require content-edit capability because it changes permissions only. Requested/completed policy changes are audited. Folder changes do not rewrite children; each fresh listing, preview and download reevaluates access without policy caching. Previously downloaded copies cannot be revoked.

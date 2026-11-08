@@ -18,6 +18,8 @@ final class AccessSummary {
 	 */
 	public static function label( $policy ) {
 		switch ( $policy['type'] ?? '' ) {
+			case 'inherit':
+				return __( 'Inherit from folder', 'filewarden' );
 			case 'public':
 				return __( 'Public', 'filewarden' );
 			case 'authenticated':

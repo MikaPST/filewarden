@@ -158,4 +158,24 @@ final class Repository {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Custom tables require fresh authorization data and prepared database access.
 		$wpdb->get_var( $wpdb->prepare( 'SELECT RELEASE_LOCK(%s)', $key ) );
 	}
+
+	/**
+	 * Update only the explicit policy using a fixed table allowlist.
+	 *
+	 * @param string $kind Record table.
+	 * @param int    $id Internal ID.
+	 * @param array  $policy Validated policy.
+	 * @throws \RuntimeException When persistence fails.
+	 * @throws \InvalidArgumentException For an unknown table.
+	 */
+	public function update_policy( $kind, $id, array $policy ) {
+		global $wpdb;
+		if ( ! in_array( $kind, array( 'folders', 'documents' ), true ) ) {
+			throw new \InvalidArgumentException( 'Invalid record type.' );
+		}
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Prepared update on allowlisted custom tables, no stale permission cache.
+		if ( false === $wpdb->update( $wpdb->prefix . 'filewarden_' . $kind, array( 'policy' => wp_json_encode( $policy ) ), array( 'id' => $id ), array( '%s' ), array( '%d' ) ) ) {
+			throw new \RuntimeException( 'Policy update failed.' );
+		}
+	}
 }

@@ -153,4 +153,47 @@ try {
     // Expected denial.
 }
 wp_set_current_user( 1 );
+
+$policy_folder = $service->create_folder( 'Policy tests', 0, array( 'type' => 'public' ) );
+$ids['policy_folder'] = $policy_folder;
+$ids['policy_folder_uuid'] = FileWarden\FolderReference::uuid( $policy_folder );
+$temp = tempnam( sys_get_temp_dir(), 'fw-policy-' );
+file_put_contents( $temp, $bytes );
+foreach ( array( 'inherit', 'authenticated', 'public' ) as $type ) {
+    $record = $template;
+    $record['uuid'] = wp_generate_uuid4();
+    $record['folder_id'] = $policy_folder;
+    $record['name'] = 'policy-' . $type . '.pdf';
+    $record['storage_key'] = $storage->put( $temp, strlen( $bytes ) );
+    $record['policy'] = array( 'type' => $type );
+    $repository->insert( 'documents', $record );
+    $ids['policy_' . $type] = $record['uuid'];
+}
+unlink( $temp );
+wp_set_current_user( 0 );
+fw_assert( 2 === count( FileWarden\Publication::page( $service, $policy_folder, '', 0 ) ), 'Public folder leaked restricted file or hid inherited files.' );
+foreach ( array( 0, $users['editor'], $users['subscriber'] ) as $actor ) {
+    wp_set_current_user( $actor );
+    try {
+        $service->change_policy( 'document', $ids['policy_authenticated'], array( 'type' => 'public' ) );
+        fw_assert( false, 'Read access granted policy mutation.' );
+    } catch ( \DomainException $expected ) { }
+}
+wp_set_current_user( 1 );
+$service->change_policy( 'folder', $policy_folder, array( 'type' => 'authenticated' ) );
+wp_set_current_user( 0 );
+foreach ( array( 'inherit', 'authenticated', 'public' ) as $type ) {
+    fw_assert( ! $permission->can_read( $repository->document( $ids['policy_' . $type] ), wp_get_current_user() ), 'File rule overrode a restricted folder.' );
+}
+wp_set_current_user( 1 );
+$service->change_policy( 'folder', $policy_folder, array( 'type' => 'public' ) );
+fw_assert( 'authenticated' === $repository->document( $ids['policy_authenticated'] )['policy']['type'], 'Folder update overwrote explicit document rule.' );
+fw_assert( 'inherit' === $repository->document( $ids['policy_inherit'] )['policy']['type'], 'Folder update copied a policy into inherited document.' );
+fw_assert( $ids['policy_folder_uuid'] === FileWarden\FolderReference::uuid( $policy_folder ), 'Policy edit changed UUID.' );
+try {
+    $service->change_policy( 'folder', $policy_folder, array( 'type' => 'roles', 'roles' => array() ) );
+    fw_assert( false, 'Empty selected-role rule accepted.' );
+} catch ( \InvalidArgumentException $expected ) { }
+fw_assert( 'public' === $repository->folder( $policy_folder )['policy']['type'], 'Rejected policy changed folder.' );
+file_put_contents( getenv( 'FILEWARDEN_FIXTURES' ), wp_json_encode( $ids ) );
 WP_CLI::success( 'Integration assertions passed.' );

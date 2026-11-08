@@ -69,4 +69,20 @@ final class PermissionTest extends TestCase {
 	public static function invalid_policies(): array {
 		return array( array( null ), array( array() ), array( array( 'type' => 'roles', 'roles' => array() ) ), array( array( 'type' => 'roles', 'roles' => array( 'unknown' ) ) ), array( array( 'type' => 'public', 'roles' => array( 'editor' ) ) ), array( array( 'type' => 'public', 'override' => true ) ), array( array( 'type' => 'roles', 'roles' => 'editor' ) ) );
 	}
+
+    public function test_inherit_follows_folder_without_weakening_it(): void {
+        $policy = Policy::validate( array( 'type' => 'inherit' ), array(), true );
+        $document = array( 'folder_id' => 1, 'policy' => $policy );
+        $public = new PermissionService( fn() => array( 'parent_id' => 0, 'policy' => array( 'type' => 'public' ) ) );
+        $private = new PermissionService( fn() => array( 'parent_id' => 0, 'policy' => array( 'type' => 'authenticated' ) ) );
+        self::assertTrue( $public->can_read( $document, $this->user() ) );
+        self::assertFalse( $private->can_read( $document, $this->user() ) );
+        self::assertTrue( $private->can_read( $document, $this->user( array( 'subscriber' ) ) ) );
+        $document['policy'] = array( 'type' => 'authenticated' );
+        self::assertFalse( $public->can_read( $document, $this->user() ) );
+    }
+    public function test_folders_cannot_select_document_inheritance(): void {
+        $this->expectException( \InvalidArgumentException::class );
+        Policy::validate( array( 'type' => 'inherit' ), array() );
+    }
 }

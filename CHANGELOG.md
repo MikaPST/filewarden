@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.9-dev
+
+- Edit folder/file access policies after creation, with permission checks, CSRF protection and audit events.
+- New documents default to dynamic folder inheritance; existing policies remain unchanged.
+- Explain that file and folder restrictions apply together; public files cannot bypass private folders.
+- Test policy editing, immediate revocation, anonymous filtering and viewer/download authorization.
+
 ## 0.1.8-dev
 
 - Permanent folder UUIDs in generated shortcodes and public navigation, with automatic repeatable schema upgrade and legacy numeric shortcode compatibility.

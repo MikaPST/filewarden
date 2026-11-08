@@ -139,3 +139,34 @@ assert request(anon, preview)[0] == 404
 status, headers, pixels, _ = request(editor, preview)
 assert status == 200 and headers["Content-Type"] == "image/png" and pixels.startswith(b"\x89PNG")
 print("HTTP assertions passed: ACL, publication, protected preview, media import, ranges, CSRF and uploads.")
+
+# Policy mutations must be nonce-protected and immediately affect every read path.
+policy_view = '/wp-admin/admin-post.php?' + urllib.parse.urlencode({'action': 'filewarden_folder', 'folder_id': fixtures['policy_folder_uuid']})
+policy_binary = '/wp-admin/admin-post.php?' + urllib.parse.urlencode({'action': 'filewarden_content', 'document': fixtures['policy_inherit'], 'download': '1'})
+assert b'policy-inherit.pdf' in request(anon, policy_view)[2]
+assert b'policy-authenticated.pdf' not in request(anon, policy_view)[2]
+assert request(anon, policy_binary)[0] == 200
+
+def policy_change(operation, policy_type, document=None, include_nonce=True):
+    fields = {'action': 'filewarden_admin', 'operation': operation, 'folder_id': fixtures['policy_folder'], 'policy_type': policy_type}
+    if include_nonce: fields['_wpnonce'] = nonce
+    if document: fields['document'] = document
+    return request(admin, '/wp-admin/admin-post.php', data=urllib.parse.urlencode(fields).encode())
+
+assert policy_change('document_policy', 'authenticated', fixtures['policy_inherit'], False)[0] == 403
+assert request(anon, policy_binary)[0] == 200
+assert 'result=policy_saved' in policy_change('document_policy', 'authenticated', fixtures['policy_inherit'])[3]
+assert request(anon, policy_binary)[0] == 404
+assert b'policy-inherit.pdf' not in request(anon, policy_view)[2]
+assert request(editor, policy_binary)[0] == 200
+assert 'result=policy_saved' in policy_change('document_policy', 'inherit', fixtures['policy_inherit'])[3]
+assert request(anon, policy_binary)[0] == 200
+assert 'result=policy_saved' in policy_change('folder_policy', 'authenticated')[3]
+assert request(anon, policy_view)[0] == 404
+assert request(anon, policy_binary)[0] == 404
+assert 'result=policy_saved' in policy_change('document_policy', 'public', fixtures['policy_inherit'])[3]
+assert request(anon, policy_binary)[0] == 404, 'Explicit public bypassed folder restriction'
+assert 'result=policy_saved' in policy_change('folder_policy', 'public')[3]
+assert 'result=policy_saved' in policy_change('document_policy', 'inherit', fixtures['policy_inherit'])[3]
+assert request(anon, policy_binary)[0] == 200
+print('Policy editing HTTP checks passed: inheritance, file restriction, folder ceiling, immediate revocation and CSRF.')

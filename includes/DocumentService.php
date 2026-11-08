@@ -91,6 +91,33 @@ final class DocumentService {
 	}
 
 	/**
+	 * Change one policy without changing children, UUIDs or stored content.
+	 *
+	 * @param string $kind Folder or document.
+	 * @param mixed  $identifier Internal folder ID or document UUID.
+	 * @param array  $policy Requested policy.
+	 * @return int Destination folder for navigation.
+	 * @throws \DomainException If permission or the object is unavailable.
+	 * @throws \InvalidArgumentException If the policy is invalid.
+	 */
+	public function change_policy( $kind, $identifier, array $policy ) {
+		$this->require_capability( 'filewarden_manage_permissions' );
+		if ( ! in_array( $kind, array( 'folder', 'document' ), true ) ) {
+			throw new \InvalidArgumentException( 'Invalid policy target.' );
+		}
+		$document = 'document' === $kind;
+		$policy   = Policy::validate( $policy, array_keys( wp_roles()->roles ), $document );
+		$record   = $document ? $this->repository->document( $identifier ) : $this->repository->folder( $identifier );
+		if ( ! $record || ! $this->permissions->can_read( $record, wp_get_current_user() ) ) {
+			throw new \DomainException( 'Access denied.' );
+		}
+		$this->audit->record( $kind . '_policy_change_requested', (int) $record['id'] );
+		$this->repository->update_policy( $document ? 'documents' : 'folders', (int) $record['id'], $policy );
+		$this->audit->record( $kind . '_policy_changed', (int) $record['id'] );
+		return (int) ( $document ? $record['folder_id'] : $record['id'] );
+	}
+
+	/**
 	 * Resolve a logical document and enforce read authorization.
 	 *
 	 * @param mixed $uuid uuid value.
@@ -256,7 +283,7 @@ final class DocumentService {
 		// This milestone requires explicit policy management; delegated upload defaults follow later.
 		$this->require_capability( 'filewarden_manage_permissions' );
 		$this->require_folder( $folder );
-		$policy = Policy::validate( $policy, array_keys( wp_roles()->roles ) );
+		$policy = Policy::validate( $policy ?? array( 'type' => 'inherit' ), array_keys( wp_roles()->roles ), true );
 		$this->storage->root();
 		$name  = sanitize_file_name( $file['name'] );
 		$size  = FileIO::attempt( fn() => filesize( $file['tmp_name'] ) );

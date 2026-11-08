@@ -16,14 +16,15 @@ final class Policy {
 	 *
 	 * @param mixed $policy policy value.
 	 * @param array $known_roles known roles value.
+	 * @param bool  $allow_inherit Whether this is a document policy.
 	 * @throws \InvalidArgumentException When the operation cannot be completed safely.
 	 * @return mixed Operation result.
 	 */
-	public static function validate( $policy, array $known_roles ) {
+	public static function validate( $policy, array $known_roles, $allow_inherit = false ) {
 		if ( ! is_array( $policy ) || ! isset( $policy['type'] ) || array_diff( array_keys( $policy ), array( 'type', 'roles' ) ) ) {
 			throw new \InvalidArgumentException( 'Invalid policy.' );
 		}
-		if ( ! in_array( $policy['type'], array( 'public', 'authenticated', 'roles' ), true ) ) {
+		if ( ! in_array( $policy['type'], ( $allow_inherit ? array( 'public', 'authenticated', 'roles', 'inherit' ) : array( 'public', 'authenticated', 'roles' ) ), true ) ) {
 			throw new \InvalidArgumentException( 'Invalid policy type.' );
 		}
 		$roles = $policy['roles'] ?? array();
@@ -57,6 +58,7 @@ final class Policy {
 			return false;
 		}
 		switch ( $policy['type'] ?? '' ) {
+			case 'inherit':
 			case 'public':
 				return true;
 			case 'authenticated':

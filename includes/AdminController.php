@@ -151,7 +151,14 @@ final class AdminController {
 				);
 				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- integer() strictly validates scalar nonnegative integers.
 				$folder = RestController::integer( wp_unslash( $_POST['folder_id'] ?? null ) );
-				if ( 'folder' === $operation ) {
+				if ( 'folder_policy' === $operation ) {
+					$folder = $this->service->change_policy( 'folder', $folder, $policy );
+				} elseif ( 'document_policy' === $operation ) {
+					$uuid = isset( $_POST['document'] ) && is_string( $_POST['document'] ) ? sanitize_text_field( wp_unslash( $_POST['document'] ) ) : '';
+					if ( ! wp_is_uuid( $uuid, 4 ) ) {
+						throw new \InvalidArgumentException( 'Invalid document.' ); }
+					$folder = $this->service->change_policy( 'document', $uuid, $policy );
+				} elseif ( 'folder' === $operation ) {
 					$name = isset( $_POST['name'] ) && is_string( $_POST['name'] ) ? sanitize_text_field( wp_unslash( $_POST['name'] ) ) : '';
 					$this->service->create_folder( $name, $folder, $policy );
 				} elseif ( 'upload' === $operation ) {
@@ -165,7 +172,7 @@ final class AdminController {
 					throw new \InvalidArgumentException( 'Invalid operation.' );
 				}
 			}
-			$result = 'success';
+			$result = in_array( $operation, array( 'folder_policy', 'document_policy' ), true ) ? 'policy_saved' : 'success';
 		} catch ( \UnexpectedValueException $error ) {
 			$result = 'duplicate';
 		} catch ( \DomainException $error ) {
@@ -227,12 +234,67 @@ final class AdminController {
 		echo '<p>';
 		$this->folder_picker( $prefix . '-parent', $folder, __( 'Destination folder', 'filewarden' ) );
 		echo '</p>';
-		echo '<p><label for="' . esc_attr( $prefix ) . '-policy">' . esc_html__( 'Access policy', 'filewarden' ) . '</label> <select name="policy_type" id="' . esc_attr( $prefix ) . '-policy"><option value="authenticated">' . esc_html__( 'Authenticated users', 'filewarden' ) . '</option><option value="roles">' . esc_html__( 'Selected roles', 'filewarden' ) . '</option><option value="public">' . esc_html__( 'Public', 'filewarden' ) . '</option></select></p>';
-		echo '<fieldset><legend>' . esc_html__( 'Roles (only for selected-role policies)', 'filewarden' ) . '</legend>';
-		foreach ( wp_roles()->roles as $key => $role ) {
-			echo '<label><input type="checkbox" name="roles[]" value="' . esc_attr( $key ) . '"> ' . esc_html( translate_user_role( $role['name'] ) ) . '</label> ';
+		$document = 'document' === $prefix;
+		$this->policy_controls(
+			$prefix,
+			array(
+				'type'  => $document ? 'inherit' : 'authenticated',
+				'roles' => array(),
+			),
+			$document
+		);
+	}
+
+	/**
+	 * Render policy controls shared by creation and editing forms.
+	 *
+	 * @param string $prefix Unique input prefix.
+	 * @param array  $policy Current explicit rule.
+	 * @param bool   $document Whether inheritance may be selected.
+	 */
+	private function policy_controls( $prefix, array $policy, $document ) {
+		$choices  = $document ? array( 'inherit' => __( 'Inherit from folder', 'filewarden' ) ) : array();
+		$choices += array(
+			'public'        => __( 'Public', 'filewarden' ),
+			'authenticated' => __( 'Authenticated users', 'filewarden' ),
+			'roles'         => __( 'Selected roles', 'filewarden' ),
+		);
+		echo '<p><label for="' . esc_attr( $prefix ) . '-policy">' . esc_html__( 'Access policy', 'filewarden' ) . '</label> <select name="policy_type" id="' . esc_attr( $prefix ) . '-policy">';
+		foreach ( $choices as $value => $label ) {
+			echo '<option value="' . esc_attr( $value ) . '"' . selected( $policy['type'] ?? '', $value, false ) . '>' . esc_html( $label ) . '</option>';
 		}
-		echo '</fieldset><p>' . esc_html__( 'Every parent folder also restricts access.', 'filewarden' ) . '</p>';
+		echo '</select></p><fieldset><legend>' . esc_html__( 'Roles (only for selected-role policies)', 'filewarden' ) . '</legend>';
+		foreach ( wp_roles()->roles as $key => $role ) {
+			echo '<label><input type="checkbox" name="roles[]" value="' . esc_attr( $key ) . '"' . checked( in_array( $key, $policy['roles'] ?? array(), true ), true, false ) . '> ' . esc_html( translate_user_role( $role['name'] ) ) . '</label> ';
+		}
+		echo '</fieldset><p class="description">' . esc_html__( 'The most restrictive rules apply: access must satisfy the file AND its folder. Public never overrides a restricted folder. Existing ancestor restrictions also remain in force.', 'filewarden' ) . '</p>';
+		if ( $document ) {
+			echo '<p class="description">' . esc_html__( 'Inherit follows the folder automatically. At the root, without a folder restriction, inherited documents are public.', 'filewarden' ) . '</p>';
+		}
+	}
+
+	/**
+	 * Offer explicit policy editing only to permission managers.
+	 *
+	 * @param array $record Authorized target.
+	 * @param bool  $document Whether the target is a document.
+	 */
+	private function policy_editor( array $record, $document ) {
+		if ( ! current_user_can( 'filewarden_manage_permissions' ) ) {
+			return; }
+		$prefix = ( $document ? 'edit-document-' : 'edit-folder-' ) . $record['id'];
+		echo '<details class="filewarden-policy-editor"><summary>' . esc_html__( 'Edit access rules', 'filewarden' ) . '</summary>';
+		$this->form_start( $document ? 'document_policy' : 'folder_policy' );
+		echo '<input type="hidden" name="folder_id" value="' . esc_attr( $document ? $record['folder_id'] : $record['id'] ) . '">';
+		if ( $document ) {
+			echo '<input type="hidden" name="document" value="' . esc_attr( $record['uuid'] ) . '">';
+		}
+		$this->policy_controls( $prefix, $record['policy'], $document );
+		if ( ! $document ) {
+			echo '<p class="description">' . esc_html__( 'Changing this folder immediately changes access to its documents. File-specific restrictions are preserved.', 'filewarden' ) . '</p>';
+		}
+		submit_button( __( 'Save access rules', 'filewarden' ), 'secondary', 'save_policy', false );
+		echo '</form></details>';
 	}
 
 	/**
@@ -262,6 +324,7 @@ final class AdminController {
 		}
 		echo '<div class="wrap filewarden-admin"><h1>FileWarden — ' . esc_html( FILEWARDEN_VERSION ) . '</h1><p>' . esc_html__( 'Development foundation. Do not upload confidential documents before deployment security checks.', 'filewarden' ) . '</p>';
 		$messages = array(
+			'policy_saved' => __( 'Access rules saved. The most restrictive rules apply immediately.', 'filewarden' ),
 			'success'      => __( 'Operation completed.', 'filewarden' ),
 			'duplicate'    => __( 'A file with this name exists. Rename it or cancel. Versions arrive in a later milestone.', 'filewarden' ),
 			'failed'       => __( 'Operation refused or unavailable. Check permissions, inputs and storage configuration.', 'filewarden' ),
@@ -269,7 +332,7 @@ final class AdminController {
 			'database'     => __( 'FileWarden could not confirm that the document was recorded in the selected folder. Check the list before retrying.', 'filewarden' ),
 			'audit'        => __( 'The file was saved, but the audit entry could not be confirmed. Check the folder before retrying.', 'filewarden' ),
 			'busy'         => __( 'Another operation is using this folder. Try again in a moment.', 'filewarden' ),
-			'denied'       => __( 'You do not have permission to add a file in the selected folder.', 'filewarden' ),
+			'denied'       => __( 'You do not have permission to perform this operation.', 'filewarden' ),
 			'size'         => __( 'The file is empty or exceeds the allowed upload size. Check FileWarden settings and your PHP upload limit.', 'filewarden' ),
 			'format'       => __( 'Choose a valid PDF, JPEG or PNG file.', 'filewarden' ),
 			'missing_file' => __( 'No complete upload was received. Select the file again and check the server upload limit.', 'filewarden' ),
@@ -279,7 +342,7 @@ final class AdminController {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only navigation; authorization is independently enforced.
 		$result = isset( $_GET['result'] ) && is_string( $_GET['result'] ) ? sanitize_key( $_GET['result'] ) : '';
 		if ( isset( $messages[ $result ] ) ) {
-			echo '<div role="status" class="notice ' . ( 'success' === $result ? 'notice-success' : 'notice-error' ) . '"><p>' . esc_html( $messages[ $result ] ) . '</p></div>';
+			echo '<div role="status" class="notice ' . ( in_array( $result, array( 'success', 'policy_saved' ), true ) ? 'notice-success' : 'notice-error' ) . '"><p>' . esc_html( $messages[ $result ] ) . '</p></div>';
 		}
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only confirmation; document access is checked again below.
 		$created = isset( $_GET['created'] ) && is_string( $_GET['created'] ) ? sanitize_text_field( wp_unslash( $_GET['created'] ) ) : '';
@@ -334,7 +397,9 @@ final class AdminController {
 			'parent_id' => 0,
 		);
 		$this->access_summary( $current );
-		echo '<p class="description">' . esc_html__( 'All inherited rules apply together. Users with the global read capability can read all documents; this does not grant editing rights.', 'filewarden' ) . '</p></section>';
+		if ( $folder ) {
+			$this->policy_editor( $current, false ); }
+		echo '<p class="description">' . esc_html__( 'The most restrictive rules apply. A public file stays private inside a restricted folder. Users with global read access remain an explicit exception; this does not grant editing rights.', 'filewarden' ) . '</p></section>';
 		echo '<p><a class="button button-primary" href="#fw-add-document">' . esc_html__( 'Add a document to this folder', 'filewarden' ) . '</a></p><h3>' . esc_html__( 'Subfolders', 'filewarden' ) . '</h3><ul class="filewarden-folders">';
 		foreach ( $folders as $row ) {
 			if ( $this->service->permissions->can_read( $row, wp_get_current_user() ) ) {
@@ -359,6 +424,7 @@ final class AdminController {
 				$icon    = plugins_url( 'assets/icons/' . Publication::icon( $row['name'] ) . '.svg', FILEWARDEN_PATH . 'filewarden.php' );
 				echo '<tr><td class="filewarden-type"><img src="' . esc_url( $icon ) . '" alt="' . esc_attr( strtoupper( pathinfo( $row['name'], PATHINFO_EXTENSION ) ) ) . '" width="40" height="46"></td><th scope="row"><a data-filewarden-preview target="_blank" rel="noopener noreferrer" href="' . esc_url( $url ) . '">' . esc_html( $row['name'] ) . '</a></th><td>' . esc_html( size_format( $row['size'] ) ) . '</td><td class="filewarden-rules">';
 				$this->access_summary( $row );
+				$this->policy_editor( $row, true );
 				echo '</td><td><a data-filewarden-preview target="_blank" rel="noopener noreferrer" href="' . esc_url( $url ) . '">' . esc_html__( 'Preview', 'filewarden' ) . '</a> · <a href="' . esc_url( add_query_arg( 'download', '1', $url ) ) . '">' . esc_html__( 'Download', 'filewarden' ) . '</a></td></tr>';
 			}
 		}

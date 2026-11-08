@@ -1,8 +1,14 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8\nLanguage: fr_FR\nPlural-Forms: nplurals=2; plural=(n > 1);\n"
 
+msgid "Access policy"
+msgstr "Règle d’accès"
+
 msgid "Access rules"
 msgstr "Droits d’accès"
+
+msgid "Access rules saved. The most restrictive rules apply immediately."
+msgstr "Droits enregistrés. Les règles les plus restrictives s’appliquent immédiatement."
 
 msgid "Access unavailable"
 msgstr "Accès indisponible"
@@ -12,6 +18,9 @@ msgstr "Toutes les règles héritées s’appliquent conjointement. Les utilisat
 
 msgid "Authenticated users"
 msgstr "Utilisateurs connectés"
+
+msgid "Changing this folder immediately changes access to its documents. File-specific restrictions are preserved."
+msgstr "Modifier les droits du dossier modifie immédiatement l’accès à ses documents. Les restrictions propres à chaque fichier sont conservées."
 
 msgid "Current folder access"
 msgstr "Droits du dossier actuel"
@@ -28,6 +37,9 @@ msgstr "Documents à la racine"
 msgid "Download"
 msgstr "Télécharger"
 
+msgid "Edit access rules"
+msgstr "Modifier les droits"
+
 msgid "FileWarden documents"
 msgstr "Documents FileWarden"
 
@@ -36,6 +48,12 @@ msgstr "Dossier indisponible."
 
 msgid "Grid"
 msgstr "Grille"
+
+msgid "Inherit follows the folder automatically. At the root, without a folder restriction, inherited documents are public."
+msgstr "« Hériter » suit automatiquement les droits du dossier. À la racine, sans restriction de dossier, les documents hérités sont publics."
+
+msgid "Inherit from folder"
+msgstr "Hériter du dossier"
 
 msgid "Inherited restrictions"
 msgstr "Restrictions héritées"
@@ -55,6 +73,12 @@ msgstr "Précédent"
 msgid "Public"
 msgstr "Public"
 
+msgid "Roles (only for selected-role policies)"
+msgstr "Rôles autorisés (uniquement pour la règle « Rôles sélectionnés »)"
+
+msgid "Save access rules"
+msgstr "Enregistrer les droits"
+
 msgid "Search"
 msgstr "Rechercher"
 
@@ -64,8 +88,20 @@ msgstr "Rechercher des documents…"
 msgid "Search this folder"
 msgstr "Rechercher dans ce dossier"
 
+msgid "Selected roles"
+msgstr "Rôles sélectionnés"
+
 msgid "Selected roles:"
 msgstr "Rôles autorisés :"
 
+msgid "The most restrictive rules apply. A public file stays private inside a restricted folder. Users with global read access remain an explicit exception; this does not grant editing rights."
+msgstr "Les règles les plus restrictives s’appliquent. Un fichier « Public » reste restreint dans un dossier restreint. Les utilisateurs disposant de la lecture globale restent une exception explicite ; cela ne donne aucun droit de modification."
+
+msgid "The most restrictive rules apply: access must satisfy the file AND its folder. Public never overrides a restricted folder. Existing ancestor restrictions also remain in force."
+msgstr "Les règles les plus restrictives s’appliquent : il faut respecter les droits du fichier ET de son dossier. « Public » ne contourne jamais un dossier restreint. Les restrictions des dossiers ancêtres restent également applicables."
+
 msgid "Type"
 msgstr "Type"
+
+msgid "You do not have permission to perform this operation."
+msgstr "Vous n’avez pas les droits nécessaires pour effectuer cette opération."
