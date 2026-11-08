@@ -107,3 +107,7 @@ Sur les hébergements utilisant la compatibilité Sodium de WordPress, les ancie
 La progression du transfert est suivie d'une étape de chiffrement et de vérification. Attendre la confirmation indiquant le nom du document et son dossier. Une interruption réseau n'est pas une confirmation d'échec : consulter d'abord le dossier avant de réessayer.
 
 Les dossiers FileWarden sont virtuels. Ne pas déplacer le stockage dans `wp-content/plugins/filewarden` : ce répertoire est remplacé lors des mises à jour. Le stockage persistant reste dans `wp-content/filewarden-storage` par défaut ; aucune modification de `wp-config.php` n'est requise pour ce correctif.
+
+## Déploiement standard et nettoyage
+
+Le code actif doit rester dans `wp-content/plugins/filewarden/`, distinct du stockage des documents. La procédure normale consiste à remplacer l’extension depuis WordPress avec son ZIP de release. Les anciennes copies `fw-stage-*`, `fw-backup-*` et `filewarden-fix-backup-*` issues d’interventions manuelles ne font pas partie de l’installation. Voir [la procédure de déploiement](deployment.md) ; ne jamais supprimer le stockage lors d’un nettoyage.

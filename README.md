@@ -64,3 +64,7 @@ GPL-2.0-or-later. See [LICENSE](LICENSE).
 
 ## Folder references and access visibility (0.1.8)
 New publication shortcodes use a permanent UUID v4 for each folder, including the virtual root. Schema 2 automatically backfills existing folders without changing internal IDs, parent relationships, policies or files; numeric shortcodes remain compatible. UUIDs reduce predictability but never replace authorization. The backend shows each explicit policy, expandable inherited folder rules, a global-read override explanation and file-type icons. Policy editing remains a separate milestone.
+
+## Emplacement de l’extension et mises à jour
+
+Le code de FileWarden se trouve dans `wp-content/plugins/filewarden/` ; les documents chiffrés sont conservés séparément dans `wp-content/filewarden-storage/`. Pour les mises à jour, utiliser le ZIP de release depuis l’administration WordPress. Consulter la [procédure de déploiement](docs/deployment.md) pour l’arborescence, les sauvegardes et le nettoyage des anciens transferts manuels.
