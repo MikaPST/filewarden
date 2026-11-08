@@ -82,8 +82,8 @@ function pdfFixture() {
             // Test a real image through the same direct-upload workflow and viewer.
             const fixture = JSON.parse(fs.readFileSync(process.env.FILEWARDEN_FIXTURES, 'utf8'));
             await page.goto(base + '/wp-admin/admin.php?page=filewarden&folder_id=' + fixture.folder_id);
-            assert.ok(await page.locator('.filewarden-access details').isVisible());
-            await page.locator('.filewarden-access summary').click();
+            assert.ok(await page.locator('.filewarden-access > details:not(.filewarden-policy-editor)').isVisible());
+            await page.locator('.filewarden-access > details:not(.filewarden-policy-editor) > summary').click();
             assert.ok((await page.locator('.filewarden-access').textContent()).includes('Restricted'));
             await page.getByRole('link', { name: 'filewarden-fixture.png', exact: true }).click();
             await viewer.locator('#fw-image').waitFor({ state: 'visible' });
