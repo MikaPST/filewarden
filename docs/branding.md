@@ -170,17 +170,26 @@ Official favicon assets are stored in `assets/favicon/`.
 
 ## 4. Typography
 
-The official brand typeface has not yet been selected.
+### Official Brand Typography
 
-Until a final decision is made:
+The official FileWarden brand typeface is **Manrope**.
 
-- Prefer modern, readable sans-serif fonts.
-- Prioritize accessibility and multilingual character support.
-- Avoid decorative fonts in functional interfaces.
-- Respect WordPress administration typography where appropriate.
-- Use a consistent hierarchy of headings, labels and body text.
+Manrope is an open-source sans-serif typeface distributed under the SIL Open Font License (OFL).
 
-Typography choices for the marketing website may differ from those used inside the WordPress administration interface.
+#### Typography Weights
+
+- **Bold (700):** Official FileWarden wordmark and main headings.
+- **SemiBold (600):** Section headings, navigation and prominent UI labels.
+- **Regular (400):** Body text, descriptions and documentation.
+
+#### Usage Guidelines
+
+- Use Manrope Bold (700) for the FileWarden wordmark.
+- Preserve consistent letter spacing and proportions.
+- Do not modify existing approved logo assets.
+- Respect native WordPress administration typography where appropriate.
+- Prioritize readability and accessibility.
+
 
 ---
 
