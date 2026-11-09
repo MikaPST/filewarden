@@ -1,6 +1,18 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8\nLanguage: fr_FR\nPlural-Forms: nplurals=2; plural=(n > 1);\n"
 
+msgid "A file can restrict access, never broaden the access allowed by its folder. Global-read administrators remain an explicit exception."
+msgstr "Un fichier peut restreindre l’accès, jamais élargir celui autorisé par son dossier. Les administrateurs disposant du droit de lecture globale restent une exception explicite."
+
+msgid "A file with this name already exists. Choose another name or destination."
+msgstr "Un fichier porte déjà ce nom. Choisissez un autre nom ou un autre dossier."
+
+msgid "A file with this name exists. Rename it or cancel. Versions arrive in a later milestone."
+msgstr "Un fichier porte déjà ce nom. Renommez-le ou annulez. La gestion des versions sera ajoutée ultérieurement."
+
+msgid "Access at destination"
+msgstr "Accès dans le dossier de destination"
+
 msgid "Access policy"
 msgstr "Règle d’accès"
 
@@ -13,23 +25,125 @@ msgstr "Droits enregistrés. Les règles les plus restrictives s’appliquent im
 msgid "Access unavailable"
 msgstr "Accès indisponible"
 
+msgid "Actions"
+msgstr "Actions"
+
+msgid "Add documents"
+msgstr "Ajouter des documents"
+
+msgid "Add to this folder"
+msgstr "Ajouter dans ce dossier"
+
 msgid "All inherited rules apply together. Users with the global read capability can read all documents; this does not grant editing rights."
 msgstr "Toutes les règles héritées s’appliquent conjointement. Les utilisateurs disposant du droit de lecture globale peuvent consulter tous les documents ; cela ne donne pas de droits de modification."
+
+msgid "Another operation is using this folder. Try again in a moment."
+msgstr "Une autre opération utilise ce dossier. Réessayez dans un instant."
+
+msgid "Audit log"
+msgstr "Journal d’audit"
+
+msgid "Audit retention (days)"
+msgstr "Conservation du journal d’audit (jours)"
 
 msgid "Authenticated users"
 msgstr "Utilisateurs connectés"
 
+msgid "Cancel"
+msgstr "Annuler"
+
 msgid "Changing this folder immediately changes access to its documents. File-specific restrictions are preserved."
 msgstr "Modifier les droits du dossier modifie immédiatement l’accès à ses documents. Les restrictions propres à chaque fichier sont conservées."
+
+msgid "Check the folder, access policy and form fields."
+msgstr "Vérifiez le dossier, la règle d’accès et les champs du formulaire."
+
+msgid "Choose a PDF, JPEG or PNG"
+msgstr "Choisir un PDF, JPEG ou PNG"
+
+msgid "Choose a file from the Media Library first."
+msgstr "Choisissez d’abord un fichier dans la médiathèque."
+
+msgid "Choose a local Media Library file that you are allowed to edit."
+msgstr "Choisissez un fichier local de la médiathèque que vous avez le droit de modifier."
+
+msgid "Choose a media file"
+msgstr "Choisir dans la médiathèque"
+
+msgid "Choose a source"
+msgstr "Source du document"
+
+msgid "Choose a source, then check the destination and access rules."
+msgstr "Choisissez une source, puis vérifiez le dossier de destination et les droits d’accès."
+
+msgid "Choose a valid PDF, JPEG or PNG file."
+msgstr "Choisissez un fichier PDF, JPEG ou PNG valide."
+
+msgid "Choose an existing document"
+msgstr "Choisir un document existant"
+
+msgid "Close panel"
+msgstr "Fermer le panneau"
+
+msgid "Close preview"
+msgstr "Fermer l’aperçu"
+
+msgid "Confirm copy"
+msgstr "Confirmer la copie"
+
+msgid "Confirm move"
+msgstr "Confirmer le déplacement"
+
+msgid "Connection interrupted. Check the folder before retrying; the server may still be processing the file."
+msgstr "Connexion interrompue. Vérifiez le dossier avant de réessayer ; le serveur traite peut-être encore le fichier."
+
+msgid "Copy"
+msgstr "Copier"
+
+msgid "Copy into the Elementor Shortcode widget"
+msgstr "À copier dans le widget Code court d’Elementor"
+
+msgid "Copy to FileWarden"
+msgstr "Copier vers FileWarden"
+
+msgid "Create folder"
+msgstr "Créer un dossier"
+
+msgid "Current folder"
+msgstr "Dossier actuel"
 
 msgid "Current folder access"
 msgstr "Droits du dossier actuel"
 
+msgid "Destination folder"
+msgstr "Dossier de destination"
+
 msgid "Detailed list"
 msgstr "Liste détaillée"
 
+msgid "Development version. Validate deployment security before sharing confidential documents."
+msgstr "Version de développement. Validez la sécurité du déploiement avant de partager des documents confidentiels."
+
 msgid "Display"
 msgstr "Affichage"
+
+msgid "Document"
+msgstr "Document"
+
+msgid "Document action"
+msgstr "Action sur le document"
+
+msgid "Document library"
+msgstr "Bibliothèque de documents"
+
+msgid "Document preview"
+msgstr "Aperçu du document"
+
+msgid "Document tasks"
+msgstr "Gestion des documents"
+
+msgid "Documents"
+msgstr "Documents"
 
 msgid "Documents at the root"
 msgstr "Documents à la racine"
@@ -40,11 +154,62 @@ msgstr "Télécharger"
 msgid "Edit access rules"
 msgstr "Modifier les droits"
 
+msgid "Effective access"
+msgstr "Accès effectif"
+
+msgid "Expired trashed files are permanently removed by scheduled cleanup. Active documents are never removed by this setting."
+msgstr "Les fichiers expirés dans la corbeille sont supprimés définitivement par le nettoyage planifié. Ce réglage ne supprime jamais les documents actifs."
+
+msgid "File"
+msgstr "Fichier"
+
+msgid "File %1$s saved and verified in %2$s."
+msgstr "Fichier %1$s enregistré et vérifié dans %2$s."
+
+msgid "File rule"
+msgstr "Règle du fichier"
+
+msgid "FileWarden could not confirm that the document was recorded in the selected folder. Check the list before retrying."
+msgstr "FileWarden n’a pas pu confirmer l’enregistrement dans le dossier sélectionné. Vérifiez la liste avant de réessayer."
+
+msgid "FileWarden creates a protected copy. The original stays in WordPress Media and may remain publicly accessible."
+msgstr "FileWarden crée une copie protégée. L’original reste dans la médiathèque WordPress et peut rester accessible publiquement."
+
 msgid "FileWarden documents"
 msgstr "Documents FileWarden"
 
+msgid "FileWarden folders are virtual. In managed mode, all encrypted files are stored in wp-content/filewarden-storage under opaque names."
+msgstr "Les dossiers FileWarden sont virtuels. En mode géré, tous les fichiers chiffrés sont stockés dans wp-content/filewarden-storage sous des noms opaques."
+
+msgid "FileWarden publication"
+msgstr "Publication FileWarden"
+
+msgid "FileWarden settings"
+msgstr "Réglages FileWarden"
+
+msgid "Filename"
+msgstr "Nom du fichier"
+
+msgid "Folder name"
+msgstr "Nom du dossier"
+
+msgid "Folder restrictions:"
+msgstr "Restrictions du dossier :"
+
+msgid "Folder to publish"
+msgstr "Dossier à publier"
+
 msgid "Folder unavailable."
 msgstr "Dossier indisponible."
+
+msgid "Folders"
+msgstr "Dossiers"
+
+msgid "From my computer"
+msgstr "Depuis mon ordinateur"
+
+msgid "From the Media Library"
+msgstr "Depuis la médiathèque"
 
 msgid "Grid"
 msgstr "Grille"
@@ -58,11 +223,41 @@ msgstr "Hériter du dossier"
 msgid "Inherited restrictions"
 msgstr "Restrictions héritées"
 
+msgid "Maximum file size: %s. Saving is confirmed only after storage and destination verification."
+msgstr "Taille maximale : %s. L’enregistrement est confirmé après vérification du stockage et de la destination."
+
+msgid "More actions"
+msgstr "Autres actions"
+
+msgid "Move"
+msgstr "Déplacer"
+
+msgid "Move to trash"
+msgstr "Mettre à la corbeille"
+
 msgid "Next"
 msgstr "Suivant"
 
+msgid "No complete upload was received. Select the file again and check the server upload limit."
+msgstr "Aucun envoi complet n’a été reçu. Sélectionnez à nouveau le fichier et vérifiez la limite d’envoi du serveur."
+
 msgid "No documents are visible in this folder."
 msgstr "Aucun document accessible ne correspond à votre recherche dans ce dossier."
+
+msgid "No documents match this view."
+msgstr "Aucun document dans cette vue."
+
+msgid "Not public: restricted by its folder."
+msgstr "Non public : accès limité par le dossier."
+
+msgid "Operation completed."
+msgstr "Opération terminée."
+
+msgid "Operation refused or unavailable. Check permissions, inputs and storage configuration."
+msgstr "Opération refusée ou indisponible. Vérifiez les droits, les champs et la configuration du stockage."
+
+msgid "Operation refused. Check your permissions, the destination, filename and storage settings."
+msgstr "Opération refusée. Vérifiez vos droits, la destination, le nom du fichier et les réglages de stockage."
 
 msgid "Preview"
 msgstr "Aperçu"
@@ -73,20 +268,47 @@ msgstr "Précédent"
 msgid "Public"
 msgstr "Public"
 
+msgid "Publication"
+msgstr "Publication"
+
+msgid "Publish this folder"
+msgstr "Publier ce dossier"
+
+msgid "Recent audit events"
+msgstr "Événements récents du journal d’audit"
+
+msgid "Restore"
+msgstr "Restaurer"
+
+msgid "Restore this file in its original folder with its existing rules."
+msgstr "Restaurez ce fichier dans son dossier d’origine, avec ses règles existantes."
+
+msgid "Review destination"
+msgstr "Vérifier la destination"
+
 msgid "Roles (only for selected-role policies)"
 msgstr "Rôles autorisés (uniquement pour la règle « Rôles sélectionnés »)"
+
+msgid "Root folder"
+msgstr "Racine"
 
 msgid "Save access rules"
 msgstr "Enregistrer les droits"
 
+msgid "Save settings"
+msgstr "Enregistrer les réglages"
+
 msgid "Search"
 msgstr "Rechercher"
+
+msgid "Search documents"
+msgstr "Rechercher des documents"
 
 msgid "Search documents…"
 msgstr "Rechercher des documents…"
 
 msgid "Search this folder"
-msgstr "Rechercher dans ce dossier"
+msgstr "Rechercher dans ce dossier…"
 
 msgid "Selected roles"
 msgstr "Rôles sélectionnés"
@@ -94,14 +316,98 @@ msgstr "Rôles sélectionnés"
 msgid "Selected roles:"
 msgstr "Rôles autorisés :"
 
+msgid "Sending file…"
+msgstr "Envoi du fichier…"
+
+msgid "Settings"
+msgstr "Réglages"
+
+msgid "Settings could not be saved."
+msgstr "Les réglages n’ont pas pu être enregistrés."
+
+msgid "Settings saved."
+msgstr "Réglages enregistrés."
+
+msgid "Show shortcode"
+msgstr "Afficher le code court"
+
+msgid "Size"
+msgstr "Taille"
+
+msgid "Storage blocked."
+msgstr "Stockage bloqué."
+
+msgid "Storage blocked. Check FileWarden settings before uploading."
+msgstr "Stockage indisponible. Consultez les réglages FileWarden avant d’ajouter un document."
+
+msgid "Storage diagnostics"
+msgstr "Diagnostic du stockage"
+
+msgid "Storage directory checks passed."
+msgstr "Vérifications du dossier de stockage réussies."
+
+msgid "The file could not be written or read back from protected storage. No document was added."
+msgstr "Le fichier n’a pas pu être écrit ou relu depuis le stockage protégé. Aucun document n’a été ajouté."
+
+msgid "The file is empty or exceeds the allowed upload size. Check FileWarden settings and your PHP upload limit."
+msgstr "Le fichier est vide ou dépasse la taille autorisée. Vérifiez les réglages FileWarden et la limite d’envoi PHP."
+
+msgid "The file rule is preserved; inherited rules change with the destination. Moving or copying into a public folder can broaden access. Check this result before confirming."
+msgstr "La règle du fichier est conservée ; les restrictions héritées changent avec la destination. Un déplacement ou une copie vers un dossier public peut élargir l’accès. Vérifiez le résultat avant de confirmer."
+
+msgid "The file was saved, but the audit entry could not be confirmed. Check the folder before retrying."
+msgstr "Le fichier a été enregistré, mais la trace d’audit n’a pas pu être confirmée. Vérifiez le dossier avant de réessayer."
+
+msgid "The file will disappear from listings and its preview/download links will stop working. You can restore it from Trash before retention expires."
+msgstr "Le fichier disparaîtra des listes et ses liens d’aperçu et de téléchargement seront désactivés. Vous pourrez le restaurer depuis la corbeille avant la fin du délai de conservation."
+
 msgid "The most restrictive rules apply. A public file stays private inside a restricted folder. Users with global read access remain an explicit exception; this does not grant editing rights."
 msgstr "Les règles les plus restrictives s’appliquent. Un fichier « Public » reste restreint dans un dossier restreint. Les utilisateurs disposant de la lecture globale restent une exception explicite ; cela ne donne aucun droit de modification."
 
 msgid "The most restrictive rules apply: access must satisfy the file AND its folder. Public never overrides a restricted folder. Existing ancestor restrictions also remain in force."
 msgstr "Les règles les plus restrictives s’appliquent : il faut respecter les droits du fichier ET de son dossier. « Public » ne contourne jamais un dossier restreint. Les restrictions des dossiers ancêtres restent également applicables."
 
+msgid "The server did not confirm saving the file. Check the folder before retrying. HTTP status:"
+msgstr "Le serveur n’a pas confirmé l’enregistrement. Vérifiez le dossier avant de réessayer. Statut HTTP :"
+
+msgid "The source or destination rules changed. Review the destination again before confirming."
+msgstr "Les droits de la source ou de la destination ont changé. Vérifiez de nouveau la destination avant de confirmer."
+
+msgid "This action is unavailable. Check permissions and select an available document or destination."
+msgstr "Cette action est indisponible. Vérifiez vos droits et choisissez un document ou une destination accessible."
+
+msgid "This file cannot be made public here. Its folder is restricted. Selecting Public does not remove the folder restrictions: unauthorized visitors will still not see or download this file."
+msgstr "Ce fichier ne peut pas être rendu public ici : son dossier est restreint. Choisir « Public » ne supprime pas les restrictions du dossier. Les visiteurs non autorisés ne pourront ni voir ni télécharger ce fichier."
+
+msgid "This folder cannot be made public while an ancestor is restricted. All ancestor restrictions remain in force."
+msgstr "Ce dossier ne peut pas devenir public tant qu’un dossier parent est restreint. Toutes les restrictions des dossiers parents restent applicables."
+
+msgid "This folder or action is unavailable. Return to Documents and check your permissions."
+msgstr "Ce dossier ou cette action est indisponible. Revenez dans Documents et vérifiez vos droits."
+
+msgid "Transfer complete. Encrypting and verifying the document in its destination folder…"
+msgstr "Transfert terminé. Chiffrement et vérification du document dans son dossier de destination…"
+
+msgid "Trash"
+msgstr "Corbeille"
+
+msgid "Trash for this folder. Restore files before %d days; expired files are permanently removed by scheduled cleanup."
+msgstr "Corbeille de ce dossier. Restaurez les fichiers avant %d jours ; les fichiers expirés sont supprimés définitivement par le nettoyage planifié."
+
+msgid "Trash retention (days)"
+msgstr "Conservation dans la corbeille (jours)"
+
 msgid "Type"
 msgstr "Type"
+
+msgid "Unavailable in trash"
+msgstr "Indisponible — dans la corbeille"
+
+msgid "Unexpected storage error."
+msgstr "Erreur de stockage inattendue."
+
+msgid "Upload limit (MB, also bounded by server limits)"
+msgstr "Limite d’envoi (Mo, également limitée par le serveur)"
 
 msgid "You do not have permission to perform this operation."
 msgstr "Vous n’avez pas les droits nécessaires pour effectuer cette opération."

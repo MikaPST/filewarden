@@ -85,4 +85,12 @@ final class PermissionTest extends TestCase {
         $this->expectException( \InvalidArgumentException::class );
         Policy::validate( array( 'type' => 'inherit' ), array() );
     }
+    public function test_trash_and_purging_deny_even_global_read(): void {
+        $service = new PermissionService( fn() => null );
+        foreach ( array( array( 'trashed_at' => '2026-01-01 00:00:00' ), array( 'purging' => 1 ) ) as $state ) {
+            $record = $state + array( 'policy' => array( 'type' => 'public' ) );
+            self::assertFalse( $service->can_read( $record, $this->user() ) );
+            self::assertFalse( $service->can_read( $record, $this->user( array( 'administrator' ), true ) ) );
+        }
+    }
 }

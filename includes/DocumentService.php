@@ -105,16 +105,26 @@ final class DocumentService {
 		if ( ! in_array( $kind, array( 'folder', 'document' ), true ) ) {
 			throw new \InvalidArgumentException( 'Invalid policy target.' );
 		}
-		$document = 'document' === $kind;
-		$policy   = Policy::validate( $policy, array_keys( wp_roles()->roles ), $document );
-		$record   = $document ? $this->repository->document( $identifier ) : $this->repository->folder( $identifier );
-		if ( ! $record || ! $this->permissions->can_read( $record, wp_get_current_user() ) ) {
-			throw new \DomainException( 'Access denied.' );
+		$document      = 'document' === $kind;
+		$policy        = Policy::validate( $policy, array_keys( wp_roles()->roles ), $document );
+		$rules_lock    = $this->repository->lock( 'access-rules' );
+		$document_lock = null;
+		try {
+			if ( $document ) {
+				$document_lock = $this->repository->lock( 'document:' . $identifier ); }
+			$record = $document ? $this->repository->document( $identifier ) : $this->repository->folder( $identifier );
+			if ( ! $record || ! $this->permissions->can_read( $record, wp_get_current_user() ) ) {
+				throw new \DomainException( 'Access denied.' );
+			}
+			$this->audit->record( $kind . '_policy_change_requested', (int) $record['id'] );
+			$this->repository->update_policy( $document ? 'documents' : 'folders', (int) $record['id'], $policy );
+			$this->audit->record( $kind . '_policy_changed', (int) $record['id'] );
+			return (int) ( $document ? $record['folder_id'] : $record['id'] );
+		} finally {
+			if ( $document_lock ) {
+				$this->repository->unlock( $document_lock ); }
+			$this->repository->unlock( $rules_lock );
 		}
-		$this->audit->record( $kind . '_policy_change_requested', (int) $record['id'] );
-		$this->repository->update_policy( $document ? 'documents' : 'folders', (int) $record['id'], $policy );
-		$this->audit->record( $kind . '_policy_changed', (int) $record['id'] );
-		return (int) ( $document ? $record['folder_id'] : $record['id'] );
 	}
 
 	/**

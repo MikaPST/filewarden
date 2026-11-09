@@ -75,7 +75,7 @@ assert request(reader, content("private"))[0] == 200
 assert request(reader, "/?rest_route=/filewarden/v1/documents", data=b"")[0] in (401, 403)
 
 admin = login("fw_admin")
-status, _, page, _ = request(admin, "/wp-admin/admin.php?page=filewarden")
+status, _, page, _ = request(admin, "/wp-admin/admin.php?page=filewarden&tab=add")
 assert status == 200
 assert page.count(b'data-filewarden-upload="true"') == 1, "Expected one unified document form"
 assert b'name="operation" value="add_document"' in page

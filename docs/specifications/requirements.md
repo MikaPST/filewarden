@@ -45,3 +45,11 @@ New publication shortcodes use a permanent UUID v4 for each folder, including th
 
 ## Editable access policies (0.1.9)
 Folder and document access rules can be changed after creation by an authorized permission manager. New files default to dynamic folder inheritance; individual restrictions narrow access. Existing file policies remain unchanged. Public file policies cannot open restricted parent folders; existing ancestor checks remain enforced. The admin UI explains these rules and confirms saved changes.
+
+## Approved backend workspace (0.1.10)
+- Separate tabs for documents, adding documents, folder creation and trash; retain folder context across tabs.
+- Authorized collapsible folder tree, searchable file table with icons, own/effective rules, preview/download and contextual actions.
+- Right-side action inspector for rights, move/copy review and trash/restore confirmation.
+- Explicit warning: choosing Public cannot override a restricted folder. All ancestor rules remain intersected.
+- Review destination access before moving/copying; preserve explicit rules and move URLs, generate independent copy identity/storage, refuse active name collisions.
+- Trash hides files immediately from every read surface; restore preserves rules and refuses name collisions; scheduled permanent cleanup after configurable retention (default 30 days).

@@ -21,7 +21,7 @@ final class Plugin {
 			return;
 		}
 		$migration_failed = false;
-		if ( '1' === get_option( 'filewarden_schema' ) ) {
+		if ( in_array( get_option( 'filewarden_schema' ), array( '1', '2' ), true ) ) {
 			try {
 				Installer::migrate();
 			} catch ( \Throwable $error ) {
@@ -72,6 +72,7 @@ final class Plugin {
 		add_action( 'admin_menu', array( $admin, 'menu' ) );
 		add_action( 'admin_post_filewarden_admin', array( $admin, 'submit' ) );
 		add_action( 'filewarden_audit_cleanup', array( AuditService::class, 'cleanup' ) );
+		add_action( 'filewarden_audit_cleanup', static fn() => ( new Lifecycle( $service ) )->cleanup() );
 		if ( ! wp_next_scheduled( 'filewarden_audit_cleanup' ) ) {
 			wp_schedule_event( time() + HOUR_IN_SECONDS, 'hourly', 'filewarden_audit_cleanup' );
 		}

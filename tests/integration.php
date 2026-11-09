@@ -23,7 +23,7 @@ function fw_request( $method, $route, $params = array() ) {
 wp_set_current_user( 1 );
 FileWarden\Installer::activate();
 FileWarden\Installer::migrate();
-fw_assert( '2' === get_option( 'filewarden_schema' ), 'Repeatable migration failed.' );
+fw_assert( '3' === get_option( 'filewarden_schema' ), 'Repeatable migration failed.' );
 
 $repository = new FileWarden\Repository();
 $permission = new FileWarden\PermissionService( array( $repository, 'folder' ) );
@@ -196,4 +196,5 @@ try {
 } catch ( \InvalidArgumentException $expected ) { }
 fw_assert( 'public' === $repository->folder( $policy_folder )['policy']['type'], 'Rejected policy changed folder.' );
 file_put_contents( getenv( 'FILEWARDEN_FIXTURES' ), wp_json_encode( $ids ) );
+require __DIR__ . '/lifecycle-integration.php';
 WP_CLI::success( 'Integration assertions passed.' );

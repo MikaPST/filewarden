@@ -11,7 +11,7 @@ namespace FileWarden;
  * Installer implementation.
  */
 final class Installer {
-	const SCHEMA       = '2';
+	const SCHEMA       = '3';
 	const CAPABILITIES = array( 'filewarden_read_all_files', 'filewarden_upload_files', 'filewarden_edit_files', 'filewarden_delete_files', 'filewarden_manage_permissions', 'filewarden_manage_settings', 'filewarden_view_audit' );
 
 	/**
@@ -66,6 +66,8 @@ final class Installer {
 			folder_id bigint(20) unsigned NOT NULL DEFAULT 0,
 			name varchar(255) NOT NULL,
 			storage_key char(64) NOT NULL,
+            trashed_at datetime DEFAULT NULL,
+            purging tinyint(1) NOT NULL DEFAULT 0,
 			mime varchar(100) NOT NULL,
 			size bigint(20) unsigned NOT NULL,
 			sha256 char(64) NOT NULL,
@@ -75,7 +77,8 @@ final class Installer {
 			PRIMARY KEY  (id),
 			UNIQUE KEY uuid (uuid),
 			UNIQUE KEY storage_key (storage_key),
-			KEY folder_id (folder_id)
+			KEY folder_id (folder_id),
+            KEY trashed_at (trashed_at)
 			) $charset;",
 				"CREATE TABLE {$prefix}audit_logs (
 			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,

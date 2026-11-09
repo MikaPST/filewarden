@@ -19,3 +19,9 @@ New documents default to `inherit`: no additional file restriction, so the conta
 A file may restrict its folder policy, never broaden it. All applicable predicates must be satisfied, including each selected-role predicate (there is no simple ranking of arbitrary role sets). Global-read administrators remain the explicit read-only override.
 
 The backend editor requires `filewarden_manage_settings`, a valid admin nonce, and `filewarden_manage_permissions`; the service independently requires permission management and read access to the target. Editing does not require content-edit capability because it changes permissions only. Requested/completed policy changes are audited. Folder changes do not rewrite children; each fresh listing, preview and download reevaluates access without policy caching. Previously downloaded copies cannot be revoked.
+
+## Workspace actions (0.1.10)
+
+The table displays the file rule separately from the intersection of all applicable rules. A public file below a restricted folder receives an explicit “not public” warning. The editor repeats the warning when Public is selected; this is explanation, never an ACL override.
+
+Move requires `filewarden_edit_files` and `filewarden_manage_permissions`; copy requires `filewarden_upload_files` and permission management. Both require read access to source and destination, and a fresh destination review. File rules are preserved; inherited rules follow the destination and may broaden access, which the confirmation explicitly explains. Trash/restore requires `filewarden_delete_files` and read access to the record’s current ancestry. The admin transport also requires `filewarden_manage_settings` and a valid nonce for every mutation. Global read alone never grants these operations. Trashed/purging files cannot be listed publicly, previewed or downloaded, even with global read.

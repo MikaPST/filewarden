@@ -36,6 +36,8 @@ final class PermissionService {
 	 * @return mixed Operation result.
 	 */
 	public function can_read( array $record, $user ) {
+		if ( ! empty( $record['trashed_at'] ) || ! empty( $record['purging'] ) ) {
+			return false; }
 		// Resolve the complete ancestry first: missing parents and cycles fail closed.
 		$policies = array( $record['policy'] ?? null );
 		$parent   = (int) ( $record['folder_id'] ?? $record['parent_id'] ?? 0 );

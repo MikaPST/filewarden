@@ -104,3 +104,9 @@ jobs:
           done
           python3 tests/http-smoke.py
           NODE_PATH=/tmp/fw-browser/node_modules node tests/viewer-browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: workspace-screenshots-${{ matrix.wordpress }}
+          path: build/screenshots/*.png
+          if-no-files-found: ignore

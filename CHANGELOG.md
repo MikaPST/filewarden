@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.10-dev
+
+- Task tabs, collapsible folder tree, searchable document table and contextual rights/action inspector.
+- Distinguish explicit file rules from effective access; explain public-file restrictions under private folders.
+- Confirmed move/copy with destination-policy review, stable move URLs and independent verified copy storage.
+- Recoverable trash, duplicate-safe restoration and retry-safe scheduled cleanup (30 days, configurable).
+- Repeatable schema 3 migration preserving existing documents and permissions; French workspace translations.
+- WordPress/browser regression tests for transfers, trash, restoration, public warnings and responsive navigation.
+
 ## 0.1.9-dev
 
 - Edit folder/file access policies after creation, with permission checks, CSRF protection and audit events.

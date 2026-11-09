@@ -53,12 +53,13 @@ final class Repository {
 	 * Retrieve a document by its logical UUID.
 	 *
 	 * @param mixed $uuid uuid value.
+	 * @param bool  $include_trash Include soft-deleted records for authorized lifecycle operations.
 	 * @return mixed Operation result.
 	 */
-	public function document( $uuid ) {
+	public function document( $uuid, $include_trash = false ) {
 		global $wpdb;
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Custom tables require fresh authorization data and prepared database access.
-		return $this->decode( $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}filewarden_documents WHERE uuid = %s", $uuid ), ARRAY_A ) );
+		return $this->decode( $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}filewarden_documents WHERE uuid = %s AND (%d = 1 OR (trashed_at IS NULL AND purging = 0))", $uuid, $include_trash ? 1 : 0 ), ARRAY_A ) );
 	}
 
 	/**
@@ -66,12 +67,13 @@ final class Repository {
 	 *
 	 * @param mixed $folder folder value.
 	 * @param mixed $offset offset value.
+	 * @param bool  $trash List trashed instead of active files.
 	 * @return mixed Operation result.
 	 */
-	public function documents( $folder, $offset = 0 ) {
+	public function documents( $folder, $offset = 0, $trash = false ) {
 		global $wpdb;
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Custom tables require fresh authorization data and prepared database access.
-		$rows = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}filewarden_documents WHERE folder_id = %d ORDER BY id ASC LIMIT 100 OFFSET %d", $folder, $offset ), ARRAY_A );
+		$rows = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}filewarden_documents WHERE folder_id = %d AND purging = 0 AND ((%d = 0 AND trashed_at IS NULL) OR (%d = 1 AND trashed_at IS NOT NULL)) ORDER BY id ASC LIMIT 100 OFFSET %d", $folder, $trash ? 1 : 0, $trash ? 1 : 0, $offset ), ARRAY_A );
 		return array_map( array( $this, 'decode' ), $rows ?? array() );
 	}
 
@@ -99,7 +101,7 @@ final class Repository {
 	public function duplicate( $folder, $name ) {
 		global $wpdb;
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Custom tables require fresh authorization data and prepared database access.
-		return (bool) $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}filewarden_documents WHERE folder_id = %d AND name = %s LIMIT 1", $folder, $name ) );
+		return (bool) $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}filewarden_documents WHERE folder_id = %d AND name = %s AND trashed_at IS NULL AND purging = 0 LIMIT 1", $folder, $name ) );
 	}
 
 	/**
@@ -177,5 +179,51 @@ final class Repository {
 		if ( false === $wpdb->update( $wpdb->prefix . 'filewarden_' . $kind, array( 'policy' => wp_json_encode( $policy ) ), array( 'id' => $id ), array( '%s' ), array( '%d' ) ) ) {
 			throw new \RuntimeException( 'Policy update failed.' );
 		}
+	}
+
+	/**
+	 * Update lifecycle fields without accepting arbitrary columns.
+	 *
+	 * @param int   $id Document ID.
+	 * @param array $fields Validated lifecycle fields.
+	 * @throws \RuntimeException On persistence failure.
+	 * @throws \InvalidArgumentException For unknown columns.
+	 */
+	public function update_document( $id, array $fields ) {
+		global $wpdb;
+		if ( array_diff( array_keys( $fields ), array( 'folder_id', 'name', 'trashed_at', 'purging' ) ) ) {
+			throw new \InvalidArgumentException( 'Invalid fields.' ); }
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- wpdb prepares values for a fixed custom table.
+		if ( false === $wpdb->update( $wpdb->prefix . 'filewarden_documents', $fields, array( 'id' => $id ) ) ) {
+			throw new \RuntimeException( 'Document update failed.' ); }
+	}
+	/**
+	 * Retrieve a bounded purge batch.
+	 *
+	 * @param string $cutoff UTC cutoff.
+	 * @return array Candidate UUIDs.
+	 */
+	public function expired( $cutoff ) {
+		global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Prepared maintenance query.
+		return $wpdb->get_col( $wpdb->prepare( "SELECT uuid FROM {$wpdb->prefix}filewarden_documents WHERE purging = 1 OR trashed_at < %s LIMIT 25", $cutoff ) );
+	}
+	/**
+	 * Remove a tombstone only after binary removal.
+	 *
+	 * @param int $id Purging document ID.
+	 * @throws \RuntimeException On persistence failure.
+	 */
+	public function delete_purged( $id ) {
+		global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Never delete an active document.
+		if ( false === $wpdb->delete(
+			$wpdb->prefix . 'filewarden_documents',
+			array(
+				'id'      => $id,
+				'purging' => 1,
+			)
+		) ) {
+			throw new \RuntimeException( 'Purge failed.' ); }
 	}
 }

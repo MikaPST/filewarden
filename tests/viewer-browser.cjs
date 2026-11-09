@@ -39,7 +39,7 @@ function pdfFixture() {
                 form: { log: 'fw_admin', pwd: 'disposable-test-password', testcookie: '1' }
             });
             assert.ok(login.url().includes('/wp-admin/'), 'Fixture login failed');
-            await page.goto(base + '/wp-admin/admin.php?page=filewarden');
+            await page.goto(base + '/wp-admin/admin.php?page=filewarden&tab=add');
             const filename = `browser-${name}.pdf`;
             assert.equal(await page.locator('#document-policy').inputValue(), 'inherit');
             await page.locator('#document-policy').selectOption('authenticated');
@@ -47,7 +47,7 @@ function pdfFixture() {
             await page.locator('[name="filewarden_save"]').click();
             await page.waitForURL(/result=success/, { timeout: 30000 });
             assert.ok(await page.locator('.filewarden-access').isVisible());
-            assert.ok(await page.locator('.filewarden-documents .filewarden-type img').first().evaluate(img => img.complete && img.naturalWidth > 0));
+            assert.ok(await page.locator('.filewarden-documents .fw-document-name img').first().evaluate(img => img.complete && img.naturalWidth > 0));
             assert.ok((await page.locator('.filewarden-rules').first().textContent()).length > 0);
             const link = page.getByRole('link', { name: filename, exact: true });
             const detailURL = await link.getAttribute('href');
@@ -82,9 +82,8 @@ function pdfFixture() {
             // Test a real image through the same direct-upload workflow and viewer.
             const fixture = JSON.parse(fs.readFileSync(process.env.FILEWARDEN_FIXTURES, 'utf8'));
             await page.goto(base + '/wp-admin/admin.php?page=filewarden&folder_id=' + fixture.folder_id);
-            assert.ok(await page.locator('.filewarden-access > details:not(.filewarden-policy-editor)').isVisible());
-            await page.locator('.filewarden-access > details:not(.filewarden-policy-editor) > summary').click();
-            assert.ok((await page.locator('.filewarden-access').textContent()).includes('Restricted'));
+            assert.ok((await page.locator('.filewarden-access').textContent()).includes('Editor'));
+            assert.equal(await page.locator('form[data-filewarden-upload]').count(), 0);
             await page.getByRole('link', { name: 'filewarden-fixture.png', exact: true }).click();
             await viewer.locator('#fw-image').waitFor({ state: 'visible' });
             assert.ok(await viewer.locator('#fw-image').evaluate(img => img.naturalWidth > 0));
@@ -114,28 +113,8 @@ function pdfFixture() {
             await page.locator('#fw-search').fill('missing-fixture-name');
             await page.getByRole('button', { name: 'Search', exact: true }).click();
             assert.equal(await page.locator('.document').count(), 0);
-            await page.goto(base + '/wp-admin/admin.php?page=filewarden&folder_id=' + fixture.policy_folder);
-            const folderEditor = page.locator('.filewarden-access .filewarden-policy-editor');
-            await folderEditor.locator('summary').click();
-            await folderEditor.locator('[name="policy_type"]').selectOption('authenticated');
-            await folderEditor.getByRole('button', { name: 'Save access rules' }).click();
-            await page.waitForURL(/result=policy_saved/);
-            assert.ok((await page.locator('.notice-success').textContent()).includes('Access rules saved'));
-            await folderEditor.locator('summary').click();
-            await folderEditor.locator('[name="policy_type"]').selectOption('public');
-            await folderEditor.getByRole('button', { name: 'Save access rules' }).click();
-            await page.waitForLoadState('domcontentloaded');
-            const rowEditor = page.locator('tr').filter({ has: page.getByRole('link', { name: 'policy-inherit.pdf', exact: true }) }).locator('.filewarden-policy-editor');
-            await rowEditor.locator('summary').click();
-            await rowEditor.locator('[name="policy_type"]').selectOption('authenticated');
-            await rowEditor.getByRole('button', { name: 'Save access rules' }).click();
-            await page.waitForLoadState('domcontentloaded');
-            await rowEditor.locator('summary').click();
-            assert.equal(await rowEditor.locator('[name="policy_type"]').inputValue(), 'authenticated');
-            await rowEditor.locator('[name="policy_type"]').selectOption('inherit');
-            await rowEditor.getByRole('button', { name: 'Save access rules' }).click();
-            await page.waitForLoadState('domcontentloaded');
-            console.log(`${name}: folder/file policy editors,  search, grid, mobile layout, icons,  real upload, rendered PDF, page navigation, zoom, new tab, modal focus, image and denied access passed`);
+            await require('./workspace-browser.cjs')({ page, context, base, fixture, name });
+            console.log(name + ': workspace, ACL, lifecycle, upload, previews and publication passed');
         } finally { await browser.close(); }
     }
 })().catch(error => { console.error(error); process.exitCode = 1; });

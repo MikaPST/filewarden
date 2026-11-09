@@ -3,7 +3,7 @@
 ## Essayer le dépôt, l’import et la publication
 
 1. Ouvre **FileWarden → Documents**, puis un dossier. Téléverse un PDF, JPEG ou PNG. Après validation, tu retrouves le fichier dans ce même dossier.
-2. Pour réutiliser un média local, ouvre **Importer depuis la médiathèque** sur la page Documents. Tu peux aussi choisir **Copy to FileWarden** depuis la liste WordPress **Médias**. FileWarden crée une copie protégée. L’URL de l’original conserve ses droits d’accès et peut rester publique.
+2. Pour réutiliser un média local, ouvre l’onglet **Ajouter des documents**, puis **Depuis la médiathèque**. Tu peux aussi choisir **Copy to FileWarden** depuis la liste WordPress **Médias**. FileWarden crée une copie protégée. L’URL de l’original conserve ses droits d’accès et peut rester publique.
 3. Ouvre le document : l’administration affiche une modale avec fermeture par bouton ou Échap. Les PDF disposent de la navigation entre toutes les pages et du zoom ; les JPEG/PNG disposent du zoom. « Open in new tab » ouvre la visionneuse complète. Les liens du shortcode ouvrent directement un nouvel onglet. PDF.js est inclus dans le plugin, sans service externe ni dépendance à Imagick.
 4. Clique sur **Publish this folder**, puis copie le shortcode dans le widget **Code court** d’Elementor. Teste la page publiée depuis un compte autorisé et une fenêtre privée. La liste du dossier s’affiche dans un cadre du même site. FileWarden vérifie les droits à chaque affichage.
 5. Exclure `wp-admin/admin-post.php` du cache de l’hébergeur ou du CDN. L’URL publique du site et celle de l’administration doivent avoir la même origine pour que le cadre s’affiche.
@@ -85,7 +85,7 @@ Exclure les routes FileWarden de tout cache serveur/CDN susceptible d’ignorer 
 
 - Le dépôt avec une politique choisie nécessite **upload + manage_permissions**, ainsi que la lecture du dossier parent. La page d’administration exige aussi **manage_settings**.
 - L’API permet les dépôts autorisés, mais il n’y a pas encore de formulaire frontend.
-- La modification, la suppression, la corbeille et la création de version restent à développer. Ne pas supprimer manuellement un fichier référencé par la base.
+- Le remplacement du contenu et la création de versions restent à développer. Les menus de ligne permettent maintenant de déplacer, copier ou mettre à la corbeille. Ne pas supprimer manuellement un fichier référencé par la base.
 - Les signatures/MIME ne constituent pas un antivirus ni une désactivation des fonctions actives d’un PDF. Le PDF original est envoyé en pièce jointe. La visionneuse PDF.js dessine les pages sans exécuter les scripts, formulaires XFA ou annotations interactives du document.
 - Fichiers et base ne forment pas une transaction atomique entre deux systèmes. Un arrêt brutal peut laisser un fichier orphelin. Aucun nettoyage automatique des fichiers orphelins n’est lancé afin de protéger les documents actifs.
 - Si l’écriture de l’audit final échoue après insertion, l’opération peut être conservée malgré un message d’erreur. Vérifier la liste avant de réessayer. Les téléchargements nécessitent un journal disponible.
@@ -111,3 +111,12 @@ Les dossiers FileWarden sont virtuels. Ne pas déplacer le stockage dans `wp-con
 ## Déploiement standard et nettoyage
 
 Le code actif doit rester dans `wp-content/plugins/filewarden/`, distinct du stockage des documents. La procédure normale consiste à remplacer l’extension depuis WordPress avec son ZIP de release. Les anciennes copies `fw-stage-*`, `fw-backup-*` et `filewarden-fix-backup-*` issues d’interventions manuelles ne font pas partie de l’installation. Voir [la procédure de déploiement](deployment.md) ; ne jamais supprimer le stockage lors d’un nettoyage.
+
+## Interface Documents (0.1.10)
+
+- **Documents** : choisissez le dossier dans l’arborescence, recherchez par nom et consultez la règle du fichier et son accès effectif. Le menu **⋯** ouvre les droits, le déplacement, la copie ou la mise à la corbeille.
+- **Ajouter des documents** : choisissez votre ordinateur ou la médiathèque dans un formulaire commun. Vérifiez la destination et les droits avant de valider.
+- **Créer un dossier** : indiquez son nom, son parent et ses droits.
+- **Corbeille** : affiche les fichiers supprimés du dossier sélectionné. Restaurez-les avant l’expiration (30 jours par défaut, configurable dans Réglages). Le nettoyage définitif dépend de l’exécution des tâches planifiées WordPress. Les fichiers actifs restent intacts.
+
+Un fichier marqué Public peut rester privé : le panneau et le tableau indiquent la restriction héritée. Pour publier ce fichier, il faut revoir les droits de son dossier ou choisir une autre destination, après vérification des conséquences. Un déplacement conserve son URL, une copie obtient sa propre URL. Les liens d’un fichier en corbeille ne fonctionnent plus jusqu’à sa restauration.
