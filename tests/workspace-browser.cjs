@@ -24,7 +24,7 @@ module.exports = async ({ page, context, base, fixture, name }) => {
     const publicRow = page.locator('tbody tr').filter({ hasText: 'policy-public.pdf' });
     assert.ok((await publicRow.textContent()).includes('Not public: restricted by its folder.'));
     await openAction('policy-inherit.pdf', 'Edit access rules');
-    assert.equal(await inspector.locator('h2').evaluate(el => el === document.activeElement), true);
+    await page.waitForFunction(() => document.querySelector('.fw-inspector h2') === document.activeElement); 
     await inspector.locator('[name="policy_type"]').selectOption('public');
     assert.ok(await inspector.locator('.fw-public-warning').isVisible());
     await inspector.locator('[name="policy_type"]').selectOption('inherit');

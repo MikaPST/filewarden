@@ -49,5 +49,9 @@
         update();
     });
     const heading = workspace.querySelector('.fw-inspector h2');
-    if (heading) heading.focus({ preventScroll: true });
+    if (heading) {
+        const focus = () => heading.focus({ preventScroll: true });
+        if (document.readyState === 'complete') focus();
+        else window.addEventListener('load', focus, { once: true });
+    }
 })();
