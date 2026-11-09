@@ -23,7 +23,7 @@ function fw_request( $method, $route, $params = array() ) {
 wp_set_current_user( 1 );
 FileWarden\Installer::activate();
 FileWarden\Installer::migrate();
-fw_assert( '3' === get_option( 'filewarden_schema' ), 'Repeatable migration failed.' );
+fw_assert( '4' === get_option( 'filewarden_schema' ), 'Repeatable migration failed.' );
 
 $repository = new FileWarden\Repository();
 $permission = new FileWarden\PermissionService( array( $repository, 'folder' ) );
@@ -58,7 +58,8 @@ $temporary = tempnam( sys_get_temp_dir(), 'fw-integration-' );
 $bytes = "%PDF-1.4\n1 0 obj<</Type/Catalog>>endobj\n%%EOF\n";
 file_put_contents( $temporary, $bytes );
 $ids = array();
-foreach ( array( 'private' => $child, 'public' => 0 ) as $kind => $parent ) {
+$public_folder = $service->create_folder( 'Public fixtures', 0, array( 'type' => 'public' ) );
+foreach ( array( 'private' => $child, 'public' => $public_folder ) as $kind => $parent ) {
 	$key = $storage->put( $temporary, strlen( $bytes ) );
 	$uuid = wp_generate_uuid4();
 	$repository->insert( 'documents', array( 'uuid' => $uuid, 'folder_id' => $parent, 'name' => $kind . '.pdf', 'storage_key' => $key, 'mime' => 'application/pdf', 'size' => strlen( $bytes ), 'sha256' => hash( 'sha256', $bytes ), 'policy' => array( 'type' => 'public' ) ) );
@@ -109,7 +110,7 @@ $wpdb->update( $wpdb->prefix . 'filewarden_folders', array( 'policy' => wp_json_
 
 wp_set_current_user( 1 );
 $lock = $repository->lock( 0 );
-fw_assert( $repository->duplicate( 0, 'public.pdf' ), 'Duplicate detection failed.' );
+fw_assert( $repository->duplicate( $public_folder, 'public.pdf' ), 'Duplicate detection failed.' );
 $repository->unlock( $lock );
 $wpdb->insert( $wpdb->prefix . 'filewarden_audit_logs', array( 'event' => 'expired_fixture', 'created_at' => '2000-01-01 00:00:00' ) );
 FileWarden\AuditService::cleanup();
@@ -123,6 +124,8 @@ fw_assert( ! is_wp_error( $ids['media_id'] ) && $ids['media_id'] > 0, 'Media att
 $ids['folder_id'] = $child;
 $ids['folder_uuid'] = $child_uuid;
 $ids['root_uuid'] = $root_uuid;
+$ids['public_folder_uuid'] = FileWarden\FolderReference::uuid( $public_folder );
+$ids['public_folder_id'] = $public_folder;
 file_put_contents( getenv( 'FILEWARDEN_FIXTURES' ), wp_json_encode( $ids ) );
 // Publication must scan beyond raw batches, then paginate only authorized results.
 $search_folder = $service->create_folder( 'Search fixtures', 0, array( 'type' => 'public' ) );
@@ -197,4 +200,5 @@ try {
 fw_assert( 'public' === $repository->folder( $policy_folder )['policy']['type'], 'Rejected policy changed folder.' );
 file_put_contents( getenv( 'FILEWARDEN_FIXTURES' ), wp_json_encode( $ids ) );
 require __DIR__ . '/lifecycle-integration.php';
+require __DIR__ . '/navigation-integration.php';
 WP_CLI::success( 'Integration assertions passed.' );

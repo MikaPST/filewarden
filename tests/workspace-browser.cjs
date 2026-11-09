@@ -57,11 +57,11 @@ module.exports = async ({ page, context, base, fixture, name }) => {
     const copyName = 'workspace-copy-' + name + '.pdf';
     const permanentURL = await page.getByRole('link', { name: copyName, exact: true }).getAttribute('href');
     await openAction(copyName, 'Move');
-    await inspector.locator('#fw-destination').selectOption('0');
+    await inspector.locator('#fw-destination').selectOption(String(fixture.public_folder_id));
     await inspector.getByRole('button', { name: 'Review destination' }).click();
     await inspector.getByRole('button', { name: 'Confirm move' }).click();
     await page.waitForURL(/result=success/);
-    assert.equal(new URL(page.url()).searchParams.get('folder_id'), '0');
+    assert.equal(new URL(page.url()).searchParams.get('folder_id'), String(fixture.public_folder_id));
     assert.equal(await page.getByRole('link', { name: copyName, exact: true }).getAttribute('href'), permanentURL);
     await openAction(copyName, 'Move to trash');
     await inspector.getByRole('button', { name: 'Move to trash' }).click();

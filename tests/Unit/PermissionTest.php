@@ -81,6 +81,22 @@ final class PermissionTest extends TestCase {
         $document['policy'] = array( 'type' => 'authenticated' );
         self::assertFalse( $public->can_read( $document, $this->user() ) );
     }
+    public function test_recovery_collection_is_not_public_even_with_read_override(): void {
+        $service = new PermissionService( fn() => null );
+        $doc = array( 'folder_id' => 0, 'policy' => array( 'type' => 'public' ) );
+        self::assertFalse( $service->can_read( $doc, $this->user() ) );
+        self::assertFalse( $service->can_read( $doc, $this->user( array( 'administrator' ), true ) ) );
+    }
+    public function test_reclassified_file_keeps_all_saved_restrictions(): void {
+        $service = new PermissionService( fn() => array( 'parent_id' => 0, 'policy' => array( 'type' => 'public' ) ) );
+        $doc = array( 'folder_id' => 1, 'policy' => array( 'type' => 'public' ), 'retained_rules' => array(
+            array( 'type' => 'roles', 'roles' => array( 'editor' ) ),
+            array( 'type' => 'roles', 'roles' => array( 'subscriber' ) )
+        ) );
+        self::assertFalse( $service->can_read( $doc, $this->user() ) );
+        self::assertFalse( $service->can_read( $doc, $this->user( array( 'editor' ) ) ) );
+        self::assertTrue( $service->can_read( $doc, $this->user( array( 'editor', 'subscriber' ) ) ) );
+    }
     public function test_folders_cannot_select_document_inheritance(): void {
         $this->expectException( \InvalidArgumentException::class );
         Policy::validate( array( 'type' => 'inherit' ), array() );

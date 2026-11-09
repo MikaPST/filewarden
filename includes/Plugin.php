@@ -21,7 +21,7 @@ final class Plugin {
 			return;
 		}
 		$migration_failed = false;
-		if ( in_array( get_option( 'filewarden_schema' ), array( '1', '2' ), true ) ) {
+		if ( in_array( get_option( 'filewarden_schema' ), array( '1', '2', '3' ), true ) ) {
 			try {
 				Installer::migrate();
 			} catch ( \Throwable $error ) {
@@ -69,6 +69,7 @@ final class Plugin {
 		add_action( 'rest_api_init', array( $rest, 'register' ) );
 		add_action( 'admin_post_filewarden_content', array( $content, 'serve' ) );
 		add_action( 'admin_post_nopriv_filewarden_content', array( $content, 'serve' ) );
+		add_action( 'admin_post_filewarden_audit', array( AuditConsole::class, 'handle' ) );
 		add_action( 'admin_menu', array( $admin, 'menu' ) );
 		add_action( 'admin_post_filewarden_admin', array( $admin, 'submit' ) );
 		add_action( 'filewarden_audit_cleanup', array( AuditService::class, 'cleanup' ) );

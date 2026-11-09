@@ -53,3 +53,12 @@ Folder and document access rules can be changed after creation by an authorized 
 - Explicit warning: choosing Public cannot override a restricted folder. All ancestor rules remain intersected.
 - Review destination access before moving/copying; preserve explicit rules and move URLs, generate independent copy identity/storage, refuse active name collisions.
 - Trash hides files immediately from every read surface; restore preserves rules and refuses name collisions; scheduled permanent cleanup after configurable retention (default 30 days).
+
+## Lot validé le 9 novembre 2026 — navigation et administration
+
+- Dossiers imbriqués navigables avec fil d’Ariane borné, héritage dynamique et intersection des droits ; recherche limitée au dossier courant.
+- Racine remplacée par Documents à classer, non publiable. Anciens fichiers conservés mais retirés des publications jusqu’au reclassement.
+- Suppression confirmée des dossiers feuilles : récupération des fichiers et conservation des restrictions héritées ; blocage si sous-dossiers.
+- Publication dynamique : liste/grille, choix compact/carte centrée/bandeau éditorial pour accès refusé, copie du code et aperçu. Carte centrée par défaut ; aucun nom privé dans l’erreur.
+- Réglages harmonisés et diagnostic visible ; audit en deux colonnes, filtres événement/date, exports CSV/TXT, purge irréversible confirmée, sans import.
+- Aucun tag ni release sans validation distincte du lot testé.

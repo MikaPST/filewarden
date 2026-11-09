@@ -54,10 +54,15 @@ final class AdminController {
 	 * @param string $hook Administration screen hook.
 	 */
 	public function media_assets( $hook ) {
-		if ( 'toplevel_page_filewarden' !== $hook ) {
+		if ( false === strpos( $hook, 'filewarden' ) ) {
 			return;
 		}
 		wp_enqueue_style( 'filewarden-admin', plugins_url( 'assets/admin.css', FILEWARDEN_PATH . 'filewarden.php' ), array(), FILEWARDEN_VERSION );
+		if ( 'toplevel_page_filewarden' !== $hook ) {
+			if ( 'filewarden_page_filewarden-publication' === $hook ) {
+				wp_enqueue_script( 'filewarden-publisher', plugins_url( 'assets/publisher.js', FILEWARDEN_PATH . 'filewarden.php' ), array(), FILEWARDEN_VERSION, true ); }
+			return;
+		}
 		wp_enqueue_script( 'filewarden-preview', plugins_url( 'assets/preview.js', FILEWARDEN_PATH . 'filewarden.php' ), array(), FILEWARDEN_VERSION, true );
 		wp_localize_script(
 			'filewarden-preview',
@@ -173,6 +178,9 @@ final class AdminController {
 						$created     = $lifecycle->transfer( $operation, $uuid, $destination, $name, $proof );
 						$folder      = $destination;
 					}
+				} elseif ( 'delete_folder' === $operation ) {
+					FolderLifecycle::remove( $this->service, $folder );
+					$folder = 0;
 				} elseif ( 'folder_policy' === $operation ) {
 					$folder = $this->service->change_policy( 'folder', $folder, $policy );
 				} elseif ( 'document_policy' === $operation ) {
@@ -222,11 +230,12 @@ final class AdminController {
 		wp_safe_redirect(
 			add_query_arg(
 				array(
-					'page'      => $page,
-					'folder_id' => $folder,
-					'result'    => $result,
-					'created'   => $created['id'] ?? false,
-					'tab'       => ! in_array( $result, array( 'success', 'policy_saved' ), true ) && in_array( $operation, array( 'upload', 'import' ), true ) ? 'add' : 'documents',
+					'page'       => $page,
+					'folder_id'  => $folder,
+					'result'     => $result,
+					'created'    => $created['id'] ?? false,
+					'collection' => 0 === $folder ? 'unfiled' : false,
+					'tab'        => ! in_array( $result, array( 'success', 'policy_saved' ), true ) && in_array( $operation, array( 'upload', 'import' ), true ) ? 'add' : 'documents',
 				),
 				admin_url( 'admin.php' )
 			)
@@ -262,10 +271,10 @@ final class AdminController {
 		$this->policy_controls(
 			$prefix,
 			array(
-				'type'  => $document ? 'inherit' : 'authenticated',
+				'type'  => $document || $folder > 0 ? 'inherit' : 'authenticated',
 				'roles' => array(),
 			),
-			$document
+			true
 		);
 	}
 
@@ -291,9 +300,9 @@ final class AdminController {
 		foreach ( wp_roles()->roles as $key => $role ) {
 			echo '<label><input type="checkbox" name="roles[]" value="' . esc_attr( $key ) . '"' . checked( in_array( $key, $policy['roles'] ?? array(), true ), true, false ) . '> ' . esc_html( translate_user_role( $role['name'] ) ) . '</label> ';
 		}
-		echo '</fieldset><p class="description">' . esc_html__( 'The most restrictive rules apply: access must satisfy the file AND its folder. Public never overrides a restricted folder. Existing ancestor restrictions also remain in force.', 'filewarden' ) . '</p>';
+		echo '</fieldset><p class="description">' . esc_html__( 'The most restrictive rules apply: those of the file and its folder. A Public file stays private when its folder is restricted.', 'filewarden' ) . '</p>';
 		if ( $document ) {
-			echo '<p class="description">' . esc_html__( 'Inherit follows the folder automatically. At the root, without a folder restriction, inherited documents are public.', 'filewarden' ) . '</p>';
+			echo '<p class="description">' . esc_html__( 'Inherit: automatically follow the folder rules.', 'filewarden' ) . '</p>';
 		}
 	}
 
@@ -308,6 +317,8 @@ final class AdminController {
 		echo '<label for="' . esc_attr( $id ) . '">' . esc_html( $label ) . '</label> <select id="' . esc_attr( $id ) . '" name="folder_id">';
 		$this->folder_labels ??= $this->service->folder_choices();
 		foreach ( $this->folder_labels as $value => $name ) {
+			if ( 0 === $value && 'folder-parent' !== $id ) {
+				continue; }
 			echo '<option value="' . esc_attr( $value ) . '"' . selected( $folder, $value, false ) . '>' . esc_html( $name ) . '</option>';
 		}
 		echo '</select>';
@@ -358,33 +369,7 @@ final class AdminController {
 	 * Show the shortcode and its current-session preview.
 	 */
 	public function publish_page() {
-		if ( ! current_user_can( 'filewarden_manage_settings' ) ) {
-			return;
-		}
-		echo '<div class="wrap"><h1>' . esc_html__( 'FileWarden publication', 'filewarden' ) . '</h1>';
-		try {
-			// phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Read-only navigation; integer() validates input.
-			$folder = RestController::integer( wp_unslash( $_GET['folder_id'] ?? null ) );
-			$this->service->require_folder( $folder );
-			echo '<form method="get"><input type="hidden" name="page" value="filewarden-publication">';
-			$this->folder_picker( 'fw-publish-folder', $folder, __( 'Folder to publish', 'filewarden' ) );
-            // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only display selection.
-			$view = isset( $_GET['view'] ) && 'grid' === $_GET['view'] ? 'grid' : 'list';
-			echo '<p><label for="fw-view">' . esc_html__( 'Display', 'filewarden' ) . '</label> <select name="view" id="fw-view"><option value="list"' . selected( $view, 'list', false ) . '>' . esc_html__( 'Detailed list', 'filewarden' ) . '</option><option value="grid"' . selected( $view, 'grid', false ) . '>' . esc_html__( 'Grid', 'filewarden' ) . '</option></select></p>';
-			submit_button( __( 'Show shortcode', 'filewarden' ), 'secondary', 'submit', false );
-			echo '</form><p><label for="fw-shortcode">' . esc_html__( 'Copy into the Elementor Shortcode widget', 'filewarden' ) . '</label> <input type="text" readonly id="fw-shortcode" value="' . esc_attr( '[filewarden folder="' . FolderReference::uuid( $folder ) . '" view="' . $view . '"]' ) . '"></p>';
-			$frame = Publication::shortcode(
-				array(
-					'folder' => $folder,
-					'view'   => $view,
-				)
-			);
-			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- The renderer escapes all dynamic frame attributes.
-			echo $frame;
-		} catch ( \Throwable $error ) {
-			echo '<p>' . esc_html__( 'Folder unavailable.', 'filewarden' ) . '</p>';
-		}
-		echo '</div>';
+		Publisher::page( $this->service );
 	}
 
 	/**
@@ -394,7 +379,7 @@ final class AdminController {
 		if ( ! current_user_can( 'filewarden_manage_settings' ) ) {
 			return;
 		}
-		echo '<div class="wrap"><h1>' . esc_html__( 'FileWarden settings', 'filewarden' ) . '</h1>';
+		echo '<div class="wrap fw-workspace fw-settings"><header class="fw-heading"><h1>' . esc_html__( 'FileWarden settings', 'filewarden' ) . '</h1></header>';
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only notice from the POST redirect.
 		if ( isset( $_GET['result'] ) && 'success' === $_GET['result'] ) {
 			echo '<div class="notice notice-success"><p>' . esc_html__( 'Settings saved.', 'filewarden' ) . '</p></div>';
@@ -402,7 +387,7 @@ final class AdminController {
 		} elseif ( isset( $_GET['result'] ) ) {
 			echo '<div class="notice notice-error"><p>' . esc_html__( 'Settings could not be saved.', 'filewarden' ) . '</p></div>';
 		}
-		echo '<details class="filewarden-diagnostics"><summary>' . esc_html__( 'Storage diagnostics', 'filewarden' ) . '</summary>';
+		echo '<section class="fw-content filewarden-diagnostics"><h2>' . esc_html__( 'Storage diagnostics', 'filewarden' ) . '</h2>';
 		try {
 			$this->service->storage->root();
 			echo '<p>' . esc_html__( 'Storage directory checks passed.', 'filewarden' ) . '</p>';
@@ -411,25 +396,19 @@ final class AdminController {
 			$message = $error instanceof \RuntimeException ? $error->getMessage() : __( 'Unexpected storage error.', 'filewarden' );
 			echo '<div class="notice notice-error inline"><p>' . esc_html__( 'Storage blocked.', 'filewarden' ) . ' ' . esc_html( $message ) . '</p></div>';
 		}
-		echo '</details>';
+		echo '</section><section class="fw-content"><h2>' . esc_html__( 'Limits and retention', 'filewarden' ) . '</h2>';
 		$this->form_start( 'settings' );
 		echo '<p><label for="fw-size">' . esc_html__( 'Upload limit (MB, also bounded by server limits)', 'filewarden' ) . '</label> <input type="number" id="fw-size" name="upload_mb" min="1" max="1024" value="' . esc_attr( get_option( 'filewarden_upload_mb', 50 ) ) . '" required></p>';
 		echo '<p><label for="fw-days">' . esc_html__( 'Audit retention (days)', 'filewarden' ) . '</label> <input type="number" id="fw-days" name="audit_days" min="1" max="3650" value="' . esc_attr( get_option( 'filewarden_audit_days', 365 ) ) . '" required></p>';
 		echo '<p><label for="fw-trash-days">' . esc_html__( 'Trash retention (days)', 'filewarden' ) . '</label> <input type="number" id="fw-trash-days" name="trash_days" min="1" max="3650" value="' . esc_attr( get_option( 'filewarden_trash_days', 30 ) ) . '" required></p><p class="description">' . esc_html__( 'Expired trashed files are permanently removed by scheduled cleanup. Active documents are never removed by this setting.', 'filewarden' ) . '</p>';
 		submit_button( __( 'Save settings', 'filewarden' ) );
-		echo '</form></div>';
+		echo '</form></section></div>';
 	}
 
 	/**
 	 * Render the restricted audit screen.
 	 */
 	public function audit_page() {
-		if ( current_user_can( 'filewarden_view_audit' ) ) {
-			echo '<div class="wrap"><h1>' . esc_html__( 'Recent audit events', 'filewarden' ) . '</h1><ul>';
-			foreach ( $this->service->audit->recent() as $row ) {
-				echo '<li>' . esc_html( $row['created_at'] . ' UTC — ' . $row['event'] . ' — user #' . $row['actor_id'] . ' — object #' . $row['object_id'] ) . '</li>';
-			}
-			echo '</ul></div>';
-		}
+		AuditConsole::page();
 	}
 }

@@ -24,3 +24,9 @@ AdminWorkspace renders task tabs, authorized folder navigation, explicit/effecti
 Moves preserve UUID and storage key. Copies create a new UUID/key and verify copied bytes against SHA-256. A destination review HMAC binds source identity, filename, location and source/destination policy chains; transfer rechecks it under the shared access-rules lock. Policy edits share that lock; document locks serialize moves, policy edits, trash, restore and purge, and folder locks prevent same-name collisions.
 
 Trash retains bytes for 30 days by default (`filewarden_trash_days`, 1–3650). The existing hourly cleanup hook processes up to 25 expired records per run. Each purge sets a tombstone before removing bytes and then metadata; interrupted purges are retried and cannot be restored. The schedule depends on WordPress cron execution. Deactivation/uninstall does not remove documents.
+
+## Lot navigation et interfaces
+
+Schéma 4 : colonne documents.retained_rules nullable pour les restrictions conservées après suppression du dossier. Migration répétable, sans déplacement physique des fichiers ni changement des UUID. FolderLifecycle récupère et supprime dans une transaction InnoDB vérifiée ; verrou global des droits puis verrou du dossier. Les transferts, changements de droits, création et corbeille partagent le verrou des droits. Les uploads verrouillent puis revérifient le dossier.
+
+FolderNavigation borne les chemins publiés et filtre les sous-dossiers. Publisher produit le code court et l’aperçu dynamiques sans modifier les droits. AuditHistory porte filtres, pagination et purge ; AuditConsole contrôle les accès, nonces et exports CSV/TXT sans fichier temporaire public.

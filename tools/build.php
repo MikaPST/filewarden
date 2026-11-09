@@ -21,7 +21,7 @@ $zip = new ZipArchive();
 if ( true !== $zip->open( $output . '/' . $archive, ZipArchive::CREATE | ZipArchive::OVERWRITE ) ) {
 	throw new RuntimeException( 'Cannot create ZIP.' );
 }
-$files = array( 'filewarden.php', 'uninstall.php', 'readme.txt', 'README.md', 'LICENSE', 'docs/setup.md', 'docs/deployment.md', 'languages/filewarden-fr_FR.mo', 'languages/filewarden-fr_FR.po', 'assets/publication-frame.js', 'assets/publication.css', 'assets/media.js', 'assets/admin.js', 'assets/admin.css', 'assets/workspace.js', 'assets/preview.js', 'assets/viewer.mjs', 'assets/viewer.css' );
+$files = array( 'filewarden.php', 'uninstall.php', 'readme.txt', 'README.md', 'LICENSE', 'docs/setup.md', 'docs/deployment.md', 'languages/filewarden-fr_FR.mo', 'languages/filewarden-fr_FR.po', 'assets/publication-frame.js', 'assets/publication.css', 'assets/media.js', 'assets/admin.js', 'assets/admin.css', 'assets/workspace.js', 'assets/publisher.js', 'assets/preview.js', 'assets/viewer.mjs', 'assets/viewer.css' );
 foreach ( new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $root . '/assets/pdfjs', FilesystemIterator::SKIP_DOTS ) ) as $file ) {
 	if ( $file->isFile() && ! $file->isLink() ) {
 		$files[] = str_replace( '\\', '/', substr( $file->getPathname(), strlen( $root ) + 1 ) );

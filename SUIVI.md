@@ -13,13 +13,15 @@ Mis à jour le 9 novembre 2026. Lire ce fichier à la reprise, puis vérifier l�
 
 ## Lot en cours / prochaine action
 
-- **Statut : attente de la liste regroupée des améliorations, corrections et optimisations de l’utilisateur.**
-- À sa réception : préparer un compte rendu court du périmètre, du comportement attendu, des propositions visuelles utiles et des questions à trancher.
-- Périmètre validé : aucun nouveau lot pour le moment.
-- Autorisation de coder : en attente d’un accord explicite après revue du compte rendu.
+- **Statut : développement autorisé et en cours.**
+- Lot proposé : navigation dans les sous-dossiers, héritage des dossiers, retrait de Racine de l’usage courant, icônes/explications, accès restreint frontend, refonte Publication/Réglages/Audit et exports de logs. Voir [le compte rendu du lot](docs/lot-navigation-interfaces.md).
+- Décisions reçues : Carte centrée par défaut avec choix des trois designs dans Publication ; Documents à classer comme collection de récupération non publiable ; pas d’import de logs ; purge manuelle avec confirmation incluse. Ajout demandé : suppression de dossier. Modalités validées : récupérer les fichiers, bloquer si sous-dossiers, préserver les restrictions lors du reclassement.
+- Conséquence explicitement validée par l’utilisateur : les fichiers à classer ne seront plus accessibles via leurs anciennes publications ou liens frontend ; aucun effacement.
+- Autorisation de coder : accord explicite reçu le 9 novembre 2026.
 - Vérifications automatisées regroupées : organisation à définir ensemble ensuite ; aucune nouvelle commande à développer maintenant.
 - Publication du prochain lot : non autorisée à ce stade ; accord distinct requis.
-- Blocage technique connu : aucun sur le lot livré.
+- Progression : code du lot écrit (récupération sécurisée, navigation, Publication dynamique, Réglages, Audit, traductions). Contrôles de style et 48 tests PHP / 8 JavaScript existants réussis ; nouveaux tests de sécurité et tests WordPress/navigateur à exécuter. Aucun tag, aucune release ni déploiement effectués.
+- Prochaine étape : exécuter les nouveaux tests puis la CI WordPress/Chromium/Firefox ; corriger les échecs et contrôler les captures avant de proposer la publication.
 
 ## Organisation convenue
 

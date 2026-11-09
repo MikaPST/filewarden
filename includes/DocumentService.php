@@ -105,8 +105,8 @@ final class DocumentService {
 		if ( ! in_array( $kind, array( 'folder', 'document' ), true ) ) {
 			throw new \InvalidArgumentException( 'Invalid policy target.' );
 		}
-		$document      = 'document' === $kind;
-		$policy        = Policy::validate( $policy, array_keys( wp_roles()->roles ), $document );
+		$document = 'document' === $kind;
+
 		$rules_lock    = $this->repository->lock( 'access-rules' );
 		$document_lock = null;
 		try {
@@ -116,6 +116,7 @@ final class DocumentService {
 			if ( ! $record || ! $this->permissions->can_read( $record, wp_get_current_user() ) ) {
 				throw new \DomainException( 'Access denied.' );
 			}
+			$policy = Policy::validate( $policy, array_keys( wp_roles()->roles ), $document || (int) $record['parent_id'] > 0 );
 			$this->audit->record( $kind . '_policy_change_requested', (int) $record['id'] );
 			$this->repository->update_policy( $document ? 'documents' : 'folders', (int) $record['id'], $policy );
 			$this->audit->record( $kind . '_policy_changed', (int) $record['id'] );
@@ -159,8 +160,9 @@ final class DocumentService {
 			'created_at' => $document['created_at'],
 			'detail_url' => add_query_arg(
 				array(
-					'action'   => 'filewarden_content',
-					'document' => $document['uuid'],
+					'action'       => 'filewarden_content',
+					'document'     => $document['uuid'],
+					'_fw_recovery' => 0 === (int) $document['folder_id'] ? wp_create_nonce( 'filewarden-recovery-' . $document['uuid'] ) : false,
 				),
 				admin_url( 'admin-post.php' )
 			),
@@ -178,23 +180,27 @@ final class DocumentService {
 	 */
 	public function create_folder( $name, $parent_id, $policy ) {
 		$this->require_capability( 'filewarden_manage_permissions' );
-		$this->require_folder( $parent_id );
-		$policy = Policy::validate( $policy, array_keys( wp_roles()->roles ) );
-		$name   = sanitize_text_field( $name );
-		if ( '' === $name || strlen( $name ) > 255 ) {
-			throw new \InvalidArgumentException( 'Invalid folder name.' );
-		}
-		$this->audit->record( 'folder_create_requested', $parent_id );
-		$id = $this->repository->insert(
-			'folders',
-			array(
-				'name'      => $name,
-				'parent_id' => $parent_id,
-				'policy'    => $policy,
-			)
-		);
-		$this->audit->record( 'folder_created', $id );
-		return $id;
+		$lock = $this->repository->lock( 'access-rules' );
+		try {
+			$this->require_folder( $parent_id );
+			$policy = Policy::validate( $policy, array_keys( wp_roles()->roles ), $parent_id > 0 );
+			$name   = sanitize_text_field( $name );
+			if ( '' === $name || strlen( $name ) > 255 ) {
+				throw new \InvalidArgumentException( 'Invalid folder name.' );
+			}
+			$this->audit->record( 'folder_create_requested', $parent_id );
+			$id = $this->repository->insert(
+				'folders',
+				array(
+					'name'      => $name,
+					'parent_id' => $parent_id,
+					'policy'    => $policy,
+				)
+			);
+			$this->audit->record( 'folder_created', $id );
+			return $id;
+		} finally {
+			$this->repository->unlock( $lock ); }
 	}
 
 	/**
@@ -222,7 +228,7 @@ final class DocumentService {
 	 * @return array<int,string> Folder labels indexed by ID.
 	 */
 	public function folder_choices() {
-		$choices = array( 0 => __( 'Root folder', 'filewarden' ) );
+		$choices = array( 0 => __( 'No parent folder', 'filewarden' ) );
 		$pending = array( 0 );
 		$user    = wp_get_current_user();
 		while ( $pending ) {
@@ -292,6 +298,8 @@ final class DocumentService {
 		$this->require_capability( 'filewarden_upload_files' );
 		// This milestone requires explicit policy management; delegated upload defaults follow later.
 		$this->require_capability( 'filewarden_manage_permissions' );
+		if ( $folder < 1 ) {
+			throw new \InvalidArgumentException( 'Choose a destination folder.' ); }
 		$this->require_folder( $folder );
 		$policy = Policy::validate( $policy ?? array( 'type' => 'inherit' ), array_keys( wp_roles()->roles ), true );
 		$this->storage->root();
@@ -317,6 +325,7 @@ final class DocumentService {
 		$key   = null;
 		$stage = null;
 		try {
+			$this->require_folder( $folder );
 			if ( $this->repository->duplicate( $folder, $name ) ) {
 				throw new \UnexpectedValueException( 'Rename this file before uploading. Version creation is not available yet.' );
 			}

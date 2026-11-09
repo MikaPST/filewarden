@@ -11,8 +11,8 @@ namespace FileWarden;
  * Installer implementation.
  */
 final class Installer {
-	const SCHEMA       = '3';
-	const CAPABILITIES = array( 'filewarden_read_all_files', 'filewarden_upload_files', 'filewarden_edit_files', 'filewarden_delete_files', 'filewarden_manage_permissions', 'filewarden_manage_settings', 'filewarden_view_audit' );
+	const SCHEMA       = '4';
+	const CAPABILITIES = array( 'filewarden_read_all_files', 'filewarden_upload_files', 'filewarden_edit_files', 'filewarden_delete_files', 'filewarden_manage_permissions', 'filewarden_manage_settings', 'filewarden_view_audit', 'filewarden_manage_audit' );
 
 	/**
 	 * Install the single-site schema and administrator capabilities.
@@ -66,6 +66,7 @@ final class Installer {
 			folder_id bigint(20) unsigned NOT NULL DEFAULT 0,
 			name varchar(255) NOT NULL,
 			storage_key char(64) NOT NULL,
+            retained_rules longtext DEFAULT NULL,
             trashed_at datetime DEFAULT NULL,
             purging tinyint(1) NOT NULL DEFAULT 0,
 			mime varchar(100) NOT NULL,
@@ -113,6 +114,8 @@ final class Installer {
 			add_option( 'filewarden_root_uuid', wp_generate_uuid4(), '', false );
 			if ( ! wp_is_uuid( get_option( 'filewarden_root_uuid' ), 4 ) ) {
 				throw new \RuntimeException( 'Invalid root UUID.' ); }
+			if ( self::SCHEMA !== get_option( 'filewarden_schema' ) && get_role( 'administrator' ) ) {
+				get_role( 'administrator' )->add_cap( 'filewarden_manage_audit' ); }
 			update_option( 'filewarden_schema', self::SCHEMA, false );
 		} finally {
 			$repository->unlock( $lock ); }

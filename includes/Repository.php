@@ -22,6 +22,8 @@ final class Repository {
 			return null;
 		}
 		$row['policy'] = json_decode( $row['policy'], true );
+		if ( ! empty( $row['retained_rules'] ) ) {
+			$row['retained_rules'] = json_decode( $row['retained_rules'], true ) ?? array( null ); }
 		return $row;
 	}
 
@@ -120,6 +122,8 @@ final class Repository {
 		}
 		if ( 'folders' === $kind ) {
 			$data['uuid'] = wp_generate_uuid4(); }
+		if ( isset( $data['retained_rules'] ) && is_array( $data['retained_rules'] ) ) {
+			$data['retained_rules'] = wp_json_encode( $data['retained_rules'] ); }
 		$data['policy']     = wp_json_encode( $data['policy'] );
 		$data['created_by'] = get_current_user_id();
 		$data['created_at'] = current_time( 'mysql', true );
@@ -225,5 +229,18 @@ final class Repository {
 			)
 		) ) {
 			throw new \RuntimeException( 'Purge failed.' ); }
+	}
+
+	/**
+	 * Fail closed rather than pretend rollback protects nontransactional tables.
+	 *
+	 * @throws \RuntimeException When transactions cannot protect the operation.
+	 */
+	public static function require_transactions() {
+		global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Verify engine capabilities before destructive transactions.
+		$engines = $wpdb->get_col( $wpdb->prepare( 'SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME IN (%s, %s, %s)', $wpdb->prefix . 'filewarden_documents', $wpdb->prefix . 'filewarden_folders', $wpdb->prefix . 'filewarden_audit_logs' ) );
+		if ( 3 !== count( $engines ) || array_filter( $engines, static fn( $engine ) => 'innodb' !== strtolower( $engine ) ) ) {
+			throw new \RuntimeException( 'Transactional storage required.' ); }
 	}
 }

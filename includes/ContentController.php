@@ -54,6 +54,10 @@ final class ContentController {
 				throw new \DomainException( 'Unavailable.' );
 			}
 			$document = $this->service->get( $uuid );
+            // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Recovery documents require a management nonce in addition to centralized capabilities.
+			$recovery_nonce = isset( $_GET['_fw_recovery'] ) && is_string( $_GET['_fw_recovery'] ) ? sanitize_text_field( wp_unslash( $_GET['_fw_recovery'] ) ) : '';
+			if ( 0 === (int) $document['folder_id'] && ! wp_verify_nonce( $recovery_nonce, 'filewarden-recovery-' . $uuid ) ) {
+				throw new \DomainException( 'Document unavailable.' ); }
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only navigation; authorization is independently enforced.
 			$download = isset( $_GET['download'] ) && '1' === $_GET['download'];
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only navigation with independent ACL checks.

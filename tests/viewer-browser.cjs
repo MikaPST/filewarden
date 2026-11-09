@@ -39,7 +39,8 @@ function pdfFixture() {
                 form: { log: 'fw_admin', pwd: 'disposable-test-password', testcookie: '1' }
             });
             assert.ok(login.url().includes('/wp-admin/'), 'Fixture login failed');
-            await page.goto(base + '/wp-admin/admin.php?page=filewarden&tab=add');
+            const fixture = JSON.parse(fs.readFileSync(process.env.FILEWARDEN_FIXTURES, 'utf8'));
+            await page.goto(base + '/wp-admin/admin.php?page=filewarden&tab=add&folder_id=' + fixture.public_folder_id);
             const filename = `browser-${name}.pdf`;
             assert.equal(await page.locator('#document-policy').inputValue(), 'inherit');
             await page.locator('#document-policy').selectOption('authenticated');
@@ -80,7 +81,6 @@ function pdfFixture() {
             assert.equal(forbidden.status(), 404);
             await anonymous.close();
             // Test a real image through the same direct-upload workflow and viewer.
-            const fixture = JSON.parse(fs.readFileSync(process.env.FILEWARDEN_FIXTURES, 'utf8'));
             await page.goto(base + '/wp-admin/admin.php?page=filewarden&folder_id=' + fixture.folder_id);
             assert.ok((await page.locator('.filewarden-access').textContent()).includes('Editor'));
             assert.equal(await page.locator('form[data-filewarden-upload]').count(), 0);
@@ -92,13 +92,27 @@ function pdfFixture() {
             await modal.waitFor({ state: 'hidden' });
             await page.goto(base + '/wp-admin/admin.php?page=filewarden-publication&folder_id=' + fixture.folder_id);
             assert.ok((await page.locator('#fw-shortcode').inputValue()).includes(fixture.folder_uuid));
+            await page.locator('[name="view"][value="grid"]').check();
+            assert.ok((await page.locator('#fw-shortcode').inputValue()).includes('view="grid"'));
+            await page.locator('[name="denied"][value="compact"]').check();
+            await page.locator('#fw-preview-denied').check();
+            await page.frameLocator('.filewarden-publication-frame').locator('.fw-denied-compact').waitFor();
+            assert.ok((await page.locator('#fw-shortcode').inputValue()).includes('denied="compact"'));
+            await page.screenshot({ path: 'build/screenshots/publication-' + name + '.png', fullPage: true });
+            await page.goto(base + '/wp-admin/admin.php?page=filewarden-audit');
+            await page.locator('.fw-terminal').waitFor();
+            await page.screenshot({ path: 'build/screenshots/audit-' + name + '.png', fullPage: true });
+            await page.goto(base + '/wp-admin/admin.php?page=filewarden-settings');
+            await page.screenshot({ path: 'build/screenshots/settings-' + name + '.png', fullPage: true });
+            const rootView = await context.request.get(base + '/wp-admin/admin-post.php?action=filewarden_folder&folder_id=' + fixture.root_uuid);
+            assert.equal(rootView.status(), 404);
             const deniedUUID = await context.request.get(base + '/wp-admin/admin-post.php?action=filewarden_folder&folder_id=00000000-0000-4000-8000-000000000000');
             assert.equal(deniedUUID.status(), 404);
             const publicContext = await browser.newContext();
             const privateFolder = await publicContext.request.get(base + '/wp-admin/admin-post.php?action=filewarden_folder&folder_id=' + fixture.folder_uuid);
             assert.equal(privateFolder.status(), 404);
             await publicContext.close();
-            await page.goto(base + '/wp-admin/admin-post.php?action=filewarden_folder&folder_id=' + fixture.root_uuid);
+            await page.goto(base + '/wp-admin/admin-post.php?action=filewarden_folder&folder_id=' + fixture.public_folder_uuid);
             await page.locator('#fw-search').fill(filename);
             await page.getByRole('button', { name: 'Search', exact: true }).click();
             assert.equal(await page.locator('.document').count(), 1);

@@ -19,7 +19,7 @@ FileWarden\Installer::migrate();
 $after = $repository->document( $ids['public'] );
 ksort( $before );
 ksort( $after );
-fw_assert( '3' === get_option( 'filewarden_schema' ) && $before === $after, 'Schema 2 upgrade changed existing document.' );
+fw_assert( '4' === get_option( 'filewarden_schema' ) && $before === $after, 'Schema 2 upgrade changed existing document.' );
 
 $life = new FileWarden\Lifecycle( $service );
 $destination = $service->create_folder( 'Lifecycle private', 0, array( 'type' => 'authenticated' ) );
@@ -47,28 +47,28 @@ wp_set_current_user( 0 );
 fw_assert( 404 === fw_request( 'GET', '/documents/' . $copy['id'] )->get_status(), 'Public copy bypassed private destination.' );
 wp_set_current_user( $users['subscriber'] );
 fw_reject( fn() => $life->trash( $source_uuid ), DomainException::class, 'Read override granted deletion.' );
-fw_reject( fn() => $life->transfer( 'copy', $source_uuid, 0, 'copy.pdf', $proof ), DomainException::class, 'Read override granted copy.' );
+fw_reject( fn() => $life->transfer( 'copy', $source_uuid, $public_folder, 'copy.pdf', $proof ), DomainException::class, 'Read override granted copy.' );
 wp_set_current_user( 1 );
 // Capability separation: management permission does not imply edit/upload/delete.
 $actor = new WP_User( $users['editor'] );
 $actor->add_cap( 'filewarden_manage_permissions' );
 wp_set_current_user( 0 ); wp_set_current_user( $actor->ID );
-$plan = $life->plan( $copy['id'], 0 );
+$plan = $life->plan( $copy['id'], $public_folder );
 foreach ( array( 'move', 'copy' ) as $operation ) {
-    fw_reject( fn() => $life->transfer( $operation, $copy['id'], 0, 'copy.pdf', $plan['proof'] ), DomainException::class, 'Permission management granted ' . $operation );
+    fw_reject( fn() => $life->transfer( $operation, $copy['id'], $public_folder, 'copy.pdf', $plan['proof'] ), DomainException::class, 'Permission management granted ' . $operation );
 }
 $actor->remove_cap( 'filewarden_manage_permissions' );
 wp_set_current_user( 1 );
 // Move preserves permanent link, private binary and own rule; only ancestry changes.
-$move_plan = $life->plan( $copy['id'], 0 );
-$moved = $life->transfer( 'move', $copy['id'], 0, 'moved-copy.pdf', $move_plan['proof'] );
+$move_plan = $life->plan( $copy['id'], $public_folder );
+$moved = $life->transfer( 'move', $copy['id'], $public_folder, 'moved-copy.pdf', $move_plan['proof'] );
 $moved_record = $repository->document( $moved['id'] );
 fw_assert( $copy['id'] === $moved['id'] && $copied['storage_key'] === $moved_record['storage_key'] && $copied['policy'] === $moved_record['policy'], 'Move changed identity, bytes or policy.' );
 wp_set_current_user( 0 );
 fw_assert( 200 === fw_request( 'GET', '/documents/' . $moved['id'] )->get_status(), 'Move failed to apply new public ancestry.' );
 wp_set_current_user( 1 );
-$plan = $life->plan( $moved['id'], 0 );
-fw_reject( fn() => $life->transfer( 'copy', $moved['id'], 0, 'public.pdf', $plan['proof'] ), UnexpectedValueException::class, 'Copy overwrote an active filename.' );
+$plan = $life->plan( $moved['id'], $public_folder );
+fw_reject( fn() => $life->transfer( 'copy', $moved['id'], $public_folder, 'public.pdf', $plan['proof'] ), UnexpectedValueException::class, 'Copy overwrote an active filename.' );
 // Trash denies all read routes, including administrator override; restore is idempotent.
 $life->trash( $moved['id'] );
 $life->trash( $moved['id'] );
@@ -80,8 +80,8 @@ $life->trash( $moved['id'], true );
 fw_assert( $moved_record === $repository->document( $moved['id'] ), 'Restore changed document data.' );
 // A replacement filename blocks restoration without overwriting either file.
 $life->trash( $moved['id'] );
-$plan = $life->plan( $source_uuid, 0 );
-$collision = $life->transfer( 'copy', $source_uuid, 0, 'moved-copy.pdf', $plan['proof'] );
+$plan = $life->plan( $source_uuid, $public_folder );
+$collision = $life->transfer( 'copy', $source_uuid, $public_folder, 'moved-copy.pdf', $plan['proof'] );
 fw_reject( fn() => $life->trash( $moved['id'], true ), UnexpectedValueException::class, 'Restoration overwrote a replacement.' );
 fw_assert( null === $repository->document( $moved['id'] ) && null !== $repository->document( $collision['id'] ), 'Failed restore changed active file.' );
 $life->trash( $collision['id'] );

@@ -34,6 +34,7 @@ final class Publication {
 			array(
 				'folder' => '0',
 				'view'   => 'list',
+				'denied' => 'centered',
 			),
 			$attributes,
 			'filewarden'
@@ -42,13 +43,15 @@ final class Publication {
 			$folder    = FolderReference::resolve( $attributes['folder'] );
 			$reference = FolderReference::uuid( $folder );
 		} catch ( \InvalidArgumentException $error ) {
-			return '';
+			$reference = 'unavailable';
 		}
 		$url = add_query_arg(
 			array(
 				'action'    => 'filewarden_folder',
 				'folder_id' => $reference,
 				'view'      => 'grid' === $attributes['view'] ? 'grid' : 'list',
+				'denied'    => self::denied_style( $attributes['denied'] ),
+				'return'    => get_permalink() ? get_permalink() : home_url( '/' ),
 			),
 			admin_url( 'admin-post.php' )
 		);
@@ -69,10 +72,21 @@ final class Publication {
 		header( 'X-Content-Type-Options: nosniff' );
 		header( "Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'; form-action 'self'; frame-ancestors 'self'; base-uri 'none'" );
 		header( 'Content-Type: text/html; charset=UTF-8' );
+		$style      = self::denied_style( self::query( 'denied', 'centered' ) );
+		$return_url = self::query( 'return', home_url( '/' ) );
+		if ( wp_parse_url( $return_url, PHP_URL_HOST ) !== wp_parse_url( home_url(), PHP_URL_HOST ) ) {
+			$return_url = home_url( '/' ); }
+		$return_url = wp_validate_redirect( $return_url, home_url( '/' ) );
 		try {
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Read-only request; integer() validates input and service enforces ACL.
-			$folder    = FolderReference::resolve( wp_unslash( $_GET['folder_id'] ?? '0' ) );
-			$reference = FolderReference::uuid( $folder );
+			$folder         = FolderReference::resolve( wp_unslash( $_GET['folder_id'] ?? '0' ) );
+			$reference      = FolderReference::uuid( $folder );
+			$root           = FolderReference::resolve( self::query( 'root', $reference ) );
+			$path           = FolderNavigation::path( $service, $root, $folder );
+			$root_reference = FolderReference::uuid( $root );
+			if ( '1' === self::query( 'demo' ) && current_user_can( 'filewarden_manage_settings' ) && wp_verify_nonce( self::query( '_wpnonce' ), 'filewarden-preview' ) ) {
+				self::denied( $style, $return_url, false, true );
+				exit; }
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Read-only pagination with strict integer validation.
 			$offset = RestController::integer( wp_unslash( $_GET['offset'] ?? null ) );
 			$service->require_folder( $folder );
@@ -83,14 +97,28 @@ final class Publication {
 			$rows  = self::page( $service, $folder, $search, $offset );
 			$title = $folder ? ( $service->repository->folder( $folder )['name'] ?? __( 'Documents', 'filewarden' ) ) : __( 'Documents at the root', 'filewarden' );
 		} catch ( \Throwable $error ) {
-			status_header( 404 );
-			echo esc_html__( 'Folder unavailable.', 'filewarden' );
+			status_header( $error instanceof \RuntimeException ? 503 : 404 );
+			self::denied( $style, $return_url, $error instanceof \RuntimeException );
 			exit;
 		}
 		$assets = plugins_url( 'assets/', FILEWARDEN_PATH . 'filewarden.php' );
 		// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- Standalone private frame independent of theme hooks.
 		echo '<!doctype html><html lang="' . esc_attr( get_bloginfo( 'language' ) ) . '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>' . esc_html( $title ) . '</title><link rel="stylesheet" href="' . esc_url( $assets . 'publication.css?ver=' . FILEWARDEN_VERSION ) . '"></head><body><main><header><span class="eyebrow">FILEWARDEN</span><h1>' . esc_html( $title ) . '</h1></header>';
-		echo '<form method="get" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '"><input type="hidden" name="action" value="filewarden_folder"><input type="hidden" name="folder_id" value="' . esc_attr( $reference ) . '"><label for="fw-search">' . esc_html__( 'Search this folder', 'filewarden' ) . '</label><div class="toolbar"><input id="fw-search" type="search" name="search" maxlength="200" value="' . esc_attr( $search ) . '" placeholder="' . esc_attr__( 'Search documents…', 'filewarden' ) . '"><button name="view" value="' . esc_attr( $view ) . '">' . esc_html__( 'Search', 'filewarden' ) . '</button><div class="views">';
+		$context = array(
+			'action' => 'filewarden_folder',
+			'root'   => $root_reference,
+			'view'   => $view,
+			'denied' => $style,
+			'return' => $return_url,
+		);
+		echo '<nav class="fw-breadcrumbs" aria-label="' . esc_attr__( 'Folder navigation', 'filewarden' ) . '">';
+		foreach ( $path as $part ) {
+			echo '<a href="' . esc_url( add_query_arg( $context + array( 'folder_id' => $part['uuid'] ), admin_url( 'admin-post.php' ) ) ) . '">' . esc_html( $part['name'] ) . '</a>'; }
+		echo '</nav><div class="fw-subfolders">';
+		foreach ( FolderNavigation::children( $service, $folder ) as $child ) {
+			echo '<a href="' . esc_url( add_query_arg( $context + array( 'folder_id' => $child['uuid'] ), admin_url( 'admin-post.php' ) ) ) . '"><img width="28" height="28" alt="" src="' . esc_url( $assets . 'icons/folder.svg' ) . '">' . esc_html( $child['name'] ) . '</a>'; }
+		echo '</div>';
+		echo '<form method="get" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '"><input type="hidden" name="action" value="filewarden_folder"><input type="hidden" name="folder_id" value="' . esc_attr( $reference ) . '"><input type="hidden" name="root" value="' . esc_attr( $root_reference ) . '"><input type="hidden" name="denied" value="' . esc_attr( $style ) . '"><input type="hidden" name="return" value="' . esc_attr( $return_url ) . '"><label for="fw-search">' . esc_html__( 'Search this folder', 'filewarden' ) . '</label><div class="toolbar"><input id="fw-search" type="search" name="search" maxlength="200" value="' . esc_attr( $search ) . '" placeholder="' . esc_attr__( 'Search documents…', 'filewarden' ) . '"><button name="view" value="' . esc_attr( $view ) . '">' . esc_html__( 'Search', 'filewarden' ) . '</button><div class="views">';
 		foreach ( array(
 			'list' => __( 'Detailed list', 'filewarden' ),
 			'grid' => __( 'Grid', 'filewarden' ),
@@ -125,6 +153,9 @@ final class Publication {
 						'action'    => 'filewarden_folder',
 						'folder_id' => $reference,
 						'offset'    => $position,
+						'root'      => $root_reference,
+						'denied'    => $style,
+						'return'    => $return_url,
 						'search'    => $search,
 						'view'      => $view,
 					),
@@ -135,6 +166,45 @@ final class Publication {
 		}
 		echo '</nav></main></body></html>';
 		exit;
+	}
+
+	/**
+	 * Read display-only scalar query fields.
+	 *
+	 * @param string $key Field.
+	 * @param string $fallback Fallback.
+	 * @return string Value.
+	 */
+	private static function query( $key, $fallback = '' ) {
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only fields; objects are independently authorized.
+		return isset( $_GET[ $key ] ) && is_string( $_GET[ $key ] ) ? sanitize_text_field( wp_unslash( $_GET[ $key ] ) ) : $fallback;
+	}
+	/**
+	 * Allowlist presentation variants.
+	 *
+	 * @param mixed $style Requested variant.
+	 * @return string Safe CSS suffix.
+	 */
+	public static function denied_style( $style ) {
+		return in_array( $style, array( 'compact', 'centered', 'editorial' ), true ) ? $style : 'centered';
+	}
+	/**
+	 * Render a private-information-free, fully styled unavailable state.
+	 *
+	 * @param string $style Variant.
+	 * @param string $return_url Safe return URL.
+	 * @param bool   $technical Temporary technical failure.
+	 * @param bool   $anonymous_preview Authorized admin presentation preview only.
+	 */
+	private static function denied( $style, $return_url, $technical = false, $anonymous_preview = false ) {
+		$logged_in = is_user_logged_in() && ! $anonymous_preview;
+		$title     = $technical ? __( 'Temporarily unavailable', 'filewarden' ) : ( $logged_in ? __( 'Access not authorized', 'filewarden' ) : __( 'A reserved space', 'filewarden' ) );
+		$message   = $technical ? __( 'Please try again later.', 'filewarden' ) : ( $logged_in ? __( 'Your account cannot access this space, or it is no longer available.', 'filewarden' ) : __( 'Sign in to view the documents you are allowed to access.', 'filewarden' ) );
+        // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- Standalone protected frame.
+		echo '<!doctype html><html lang="' . esc_attr( get_bloginfo( 'language' ) ) . '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>' . esc_html( $title ) . '</title><link rel="stylesheet" href="' . esc_url( plugins_url( 'assets/publication.css?ver=' . FILEWARDEN_VERSION, FILEWARDEN_PATH . 'filewarden.php' ) ) . '"></head><body><main class="fw-denied-wrap"><section class="fw-denied fw-denied-' . esc_attr( self::denied_style( $style ) ) . '"><div class="fw-denied-symbol" aria-hidden="true">&#128274;</div><div class="fw-denied-copy"><h1>' . esc_html( $title ) . '</h1><p>' . esc_html( $message ) . '</p>';
+		if ( ! $technical && ! $logged_in ) {
+			echo '<a class="fw-login" target="_top" href="' . esc_url( wp_login_url( $return_url ) ) . '">' . esc_html__( 'Sign in', 'filewarden' ) . '</a>'; }
+		echo '</div></section></main></body></html>';
 	}
 
 	/**

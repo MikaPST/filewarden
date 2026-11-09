@@ -38,8 +38,11 @@ final class PermissionService {
 	public function can_read( array $record, $user ) {
 		if ( ! empty( $record['trashed_at'] ) || ! empty( $record['purging'] ) ) {
 			return false; }
+		// Unfiled content is a management-only recovery collection, never public.
+		if ( isset( $record['folder_id'] ) && 0 === (int) $record['folder_id'] && ! ( $user->has_cap( 'filewarden_manage_settings' ) && $user->has_cap( 'filewarden_manage_permissions' ) ) ) {
+			return false; }
 		// Resolve the complete ancestry first: missing parents and cycles fail closed.
-		$policies = array( $record['policy'] ?? null );
+		$policies = array_merge( array( $record['policy'] ?? null ), is_array( $record['retained_rules'] ?? null ) ? $record['retained_rules'] : ( empty( $record['retained_rules'] ) ? array() : array( null ) ) );
 		$parent   = (int) ( $record['folder_id'] ?? $record['parent_id'] ?? 0 );
 		$seen     = array();
 		while ( $parent ) {

@@ -52,10 +52,13 @@ final class Lifecycle {
 	 * @param string $uuid Source UUID.
 	 * @param int    $destination Destination ID.
 	 * @return array Confirmation digest and prospective record.
+	 * @throws \InvalidArgumentException For a recovery-collection destination.
 	 */
 	public function plan( $uuid, $destination ) {
 		$this->service->require_capability( 'filewarden_manage_permissions' );
 		$row = $this->record( $uuid );
+		if ( $destination < 1 ) {
+			throw new \InvalidArgumentException( 'Choose a destination folder.' ); }
 		$this->service->require_folder( $destination );
 		$prospective              = $row;
 		$prospective['folder_id'] = $destination;
@@ -172,9 +175,11 @@ final class Lifecycle {
 	public function trash( $uuid, $restore = false ) {
 		$this->service->require_capability( 'filewarden_delete_files' );
 		$repo        = $this->service->repository;
-		$lock        = $repo->lock( 'document:' . $uuid );
+		$rules_lock  = $repo->lock( 'access-rules' );
+		$lock        = null;
 		$folder_lock = null;
 		try {
+			$lock   = $repo->lock( 'document:' . $uuid );
 			$row    = $this->record( $uuid, true );
 			$folder = (int) $row['folder_id'];
 			if ( empty( $row['trashed_at'] ) === $restore ) {
@@ -198,7 +203,9 @@ final class Lifecycle {
 			if ( $folder_lock ) {
 				$repo->unlock( $folder_lock );
 			}
-			$repo->unlock( $lock );
+			if ( $lock ) {
+				$repo->unlock( $lock ); }
+			$repo->unlock( $rules_lock );
 		}
 	}
 
@@ -207,10 +214,12 @@ final class Lifecycle {
 		$repo   = $this->service->repository;
 		$cutoff = gmdate( 'Y-m-d H:i:s', time() - max( 1, (int) get_option( 'filewarden_trash_days', 30 ) ) * DAY_IN_SECONDS );
 		foreach ( $repo->expired( $cutoff ) as $uuid ) {
-			$lock = null;
+			$rules_lock = null;
+			$lock       = null;
 			try {
-				$lock = $repo->lock( 'document:' . $uuid );
-				$row  = $repo->document( $uuid, true );
+				$rules_lock = $repo->lock( 'access-rules' );
+				$lock       = $repo->lock( 'document:' . $uuid );
+				$row        = $repo->document( $uuid, true );
 				if ( ! $row || ( empty( $row['purging'] ) && ( empty( $row['trashed_at'] ) || $cutoff <= $row['trashed_at'] ) ) ) {
 					continue;
 				}
@@ -226,6 +235,8 @@ final class Lifecycle {
 				if ( $lock ) {
 					$repo->unlock( $lock );
 				}
+				if ( $rules_lock ) {
+					$repo->unlock( $rules_lock ); }
 			}
 		}
 	}

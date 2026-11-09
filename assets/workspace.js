@@ -52,6 +52,22 @@
         select.addEventListener('change', update);
         update();
     });
+    const parentPicker = workspace.querySelector('#folder-parent');
+    if (parentPicker) {
+        const policy = parentPicker.closest('form').querySelector('[name="policy_type"]');
+        const inherit = policy?.querySelector('option[value="inherit"]');
+        if (inherit) {
+            const sync = (changed) => {
+                inherit.disabled = parentPicker.value === '0';
+                if (changed || (inherit.disabled && policy.value === 'inherit')) {
+                    policy.value = inherit.disabled ? 'authenticated' : 'inherit';
+                    policy.dispatchEvent(new Event('change'));
+                }
+            };
+            parentPicker.addEventListener('change', () => sync(true));
+            sync(false);
+        }
+    }
     const heading = workspace.querySelector('.fw-inspector h2');
     if (heading) {
         const focus = () => heading.focus({ preventScroll: true });

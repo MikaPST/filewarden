@@ -26,3 +26,7 @@ Folder and document access rules can be changed after creation by an authorized 
 
 ## Administration workspace and lifecycle (0.1.10)
 Task tabs, authorized folder tree, contextual inspector, explicit/effective policy warnings, confirmed moves/copies, trash and restore are implemented. Trash cleanup is configurable (30 days by default). Content replacement/version history, categories/tags, bulk actions and native editor integrations remain pending.
+
+## Lot en développement : navigation et interfaces
+
+Voir docs/lot-navigation-interfaces.md et SUIVI.md pour le périmètre validé, les vérifications et l’état réel. La publication est distincte de la validation du code.

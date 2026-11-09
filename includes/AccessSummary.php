@@ -50,7 +50,7 @@ final class AccessSummary {
 	 * @throws \DomainException For broken ancestry.
 	 */
 	public static function chain( array $record, Repository $repository ) {
-		$rules  = array( $record['policy'] ?? null );
+		$rules  = array_merge( array( $record['policy'] ?? null ), is_array( $record['retained_rules'] ?? null ) ? $record['retained_rules'] : array() );
 		$parent = (int) ( $record['folder_id'] ?? $record['parent_id'] ?? 0 );
 		$seen   = array();
 		while ( $parent ) {
@@ -75,6 +75,12 @@ final class AccessSummary {
 	 * @return array Label and public-conflict flag.
 	 */
 	public static function effective( array $record, Repository $repository ) {
+		if ( isset( $record['folder_id'] ) && 0 === (int) $record['folder_id'] ) {
+			return array(
+				'label'    => __( 'Not published', 'filewarden' ),
+				'conflict' => true,
+			);
+		}
 		try {
 			$rules = self::chain( $record, $repository );
 		} catch ( \DomainException $error ) {

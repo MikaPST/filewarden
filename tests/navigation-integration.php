@@ -1,0 +1,46 @@
+<?php
+/** New navigation, recovery and audit acceptance on disposable WordPress only. */
+if ( ! defined( 'WP_CLI' ) || ! WP_CLI || '1' !== getenv( 'FILEWARDEN_TESTING' ) ) { exit( 1 ); }
+wp_set_current_user( 1 );
+$parent = $service->create_folder( 'Navigation public', 0, array( 'type' => 'public' ) );
+$nested = $service->create_folder( 'Inherited child', $parent, array( 'type' => 'inherit' ) );
+$hidden = $service->create_folder( 'Connected child', $parent, array( 'type' => 'authenticated' ) );
+wp_set_current_user( 0 );
+fw_assert( array( $nested ) === array_map( 'intval', array_column( FileWarden\FolderNavigation::children( $service, $parent ), 'id' ) ), 'Unauthorized child leaked.' );
+fw_assert( 2 === count( FileWarden\FolderNavigation::path( $service, $parent, $nested ) ), 'Nested breadcrumb failed.' );
+fw_reject( fn() => FileWarden\FolderNavigation::path( $service, $nested, $parent ), DomainException::class, 'Navigation escaped published root.' );
+fw_reject( fn() => FileWarden\FolderNavigation::path( $service, 0, 0 ), DomainException::class, 'Recovery collection published.' );
+wp_set_current_user( 1 );
+fw_reject( fn() => FileWarden\FolderLifecycle::remove( $service, $parent ), DomainException::class, 'Non-leaf folder deleted.' );
+fw_assert( 0 === FileWarden\FolderLifecycle::remove( $service, $nested ), 'Empty leaf failed deletion.' );
+$life = new FileWarden\Lifecycle( $service );
+$plan = $life->plan( $ids['public'], $hidden );
+$recovered = $life->transfer( 'copy', $ids['public'], $hidden, 'recovered.pdf', $plan['proof'] );
+$old = $repository->document( $recovered['id'] );
+fw_assert( 1 === FileWarden\FolderLifecycle::remove( $service, $hidden ), 'Recovery count incorrect.' );
+$after = $repository->document( $recovered['id'] );
+fw_assert( 0 === (int) $after['folder_id'] && $old['storage_key'] === $after['storage_key'] && ! empty( $after['retained_rules'] ), 'Recovery lost identity, bytes or restrictions.' );
+wp_set_current_user( 0 );
+fw_assert( 404 === fw_request( 'GET', '/documents/' . $recovered['id'] )->get_status(), 'Recovered file publicly readable.' );
+wp_set_current_user( 1 );
+$plan = $life->plan( $recovered['id'], $public_folder );
+$life->transfer( 'move', $recovered['id'], $public_folder, 'recovered.pdf', $plan['proof'] );
+wp_set_current_user( 0 );
+fw_assert( 404 === fw_request( 'GET', '/documents/' . $recovered['id'] )->get_status(), 'Reclassification widened inherited rights.' );
+wp_set_current_user( $users['editor'] );
+fw_assert( 200 === fw_request( 'GET', '/documents/' . $recovered['id'] )->get_status(), 'Retained authenticated access denied.' );
+fw_reject( fn() => FileWarden\AuditHistory::upper(), DomainException::class, 'Audit leaked without capability.' );
+wp_set_current_user( 1 );
+$filters = FileWarden\AuditHistory::filters( array( 'event' => 'audit_fixture', 'from' => '', 'until' => '' ) );
+fw_reject( fn() => FileWarden\AuditHistory::filters( array( 'from' => '2026-02-31T12:00' ) ), InvalidArgumentException::class, 'Invalid date accepted.' );
+$service->audit->record( 'audit_fixture' );
+$upper = FileWarden\AuditHistory::upper();
+$review = FileWarden\AuditHistory::review( $filters, $upper );
+fw_assert( 1 === $review['count'], 'Purge filter count differs.' );
+$service->audit->record( 'audit_fixture' );
+fw_reject( fn() => FileWarden\AuditHistory::purge( $filters, $upper, 'invalid' ), InvalidArgumentException::class, 'Unreviewed purge accepted.' );
+FileWarden\AuditHistory::purge( $filters, $upper, $review['proof'] );
+fw_assert( 1 === count( FileWarden\AuditHistory::rows( $filters, FileWarden\AuditHistory::upper() ) ), 'Purge removed new events outside snapshot.' );
+$traces = FileWarden\AuditHistory::filters( array( 'event' => 'audit_purged' ) );
+fw_assert( 1 === count( FileWarden\AuditHistory::rows( $traces, FileWarden\AuditHistory::upper() ) ), 'Purge trace missing.' );
+fw_assert( 0 === FileWarden\AuditHistory::review( $traces, FileWarden\AuditHistory::upper() )['count'], 'Manual purge can erase its own traces.' );

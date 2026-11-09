@@ -411,3 +411,162 @@ msgstr "Limite d’envoi (Mo, également limitée par le serveur)"
 
 msgid "You do not have permission to perform this operation."
 msgstr "Vous n’avez pas les droits nécessaires pour effectuer cette opération."
+
+msgid "The most restrictive rules apply: those of the file and its folder. A Public file stays private when its folder is restricted."
+msgstr "Les règles les plus restrictives s’appliquent : celles du fichier et de son dossier. Un fichier « Public » reste privé si son dossier est restreint."
+
+msgid "Inherit: automatically follow the folder rules."
+msgstr "Hériter : suivre automatiquement les droits du dossier."
+
+msgid "Limits and retention"
+msgstr "Limites et conservation"
+
+msgid "Documents to classify"
+msgstr "Documents à classer"
+
+msgid "Your folders"
+msgstr "Vos dossiers"
+
+msgid "Not published"
+msgstr "Non publié"
+
+msgid "Delete folder"
+msgstr "Supprimer le dossier"
+
+msgid "Choose a folder or create your first folder to add documents."
+msgstr "Choisissez un dossier ou créez votre premier dossier pour ajouter des documents."
+
+msgid "Recovered file: restrictions from its former folder remain in force after reclassification."
+msgstr "Fichier récupéré : les restrictions de son ancien dossier restent applicables après son reclassement."
+
+msgid "Remove subfolders first. No files have been changed."
+msgstr "Supprimez d’abord les sous-dossiers. Aucun fichier n’a été modifié."
+
+msgid "Delete this folder? Its files will be recovered in Documents to classify, unpublished and without automatic deletion. Existing file restrictions will be retained."
+msgstr "Supprimer ce dossier ? Ses fichiers seront récupérés dans Documents à classer, sans publication ni suppression automatique des fichiers actifs. Leurs restrictions seront conservées."
+
+msgid "Confirm folder deletion"
+msgstr "Confirmer la suppression du dossier"
+
+msgid "Recorded events"
+msgstr "Événements enregistrés"
+
+msgid "Times shown in the site timezone:"
+msgstr "Horaires affichés dans le fuseau du site :"
+
+msgid "No matching events."
+msgstr "Aucun événement correspondant."
+
+msgid "Older events"
+msgstr "Événements précédents"
+
+msgid "Filters and exports"
+msgstr "Filtres et exports"
+
+msgid "Event type"
+msgstr "Type d’événement"
+
+msgid "All events"
+msgstr "Tous les événements"
+
+msgid "From"
+msgstr "Du"
+
+msgid "Until"
+msgstr "Au"
+
+msgid "Apply filters"
+msgstr "Appliquer les filtres"
+
+msgid "Review purge"
+msgstr "Préparer la purge"
+
+msgid "Exports use the current filters. Export before purging if you need a copy."
+msgstr "Les exports utilisent les filtres actuels. Exportez avant la purge si vous souhaitez conserver une copie."
+
+msgid "Irreversible purge"
+msgstr "Purge irréversible"
+
+msgid "events selected. New events and purge traces are excluded."
+msgstr "événements sélectionnés. Les nouveaux événements et les traces de purge sont exclus."
+
+msgid "I understand these events cannot be restored."
+msgstr "Je comprends que ces événements ne pourront pas être restaurés."
+
+msgid "Permanently purge selected events"
+msgstr "Supprimer définitivement les événements sélectionnés"
+
+msgid "Select between 1 and 10000 events by narrowing the filters."
+msgstr "Affinez les filtres pour sélectionner entre 1 et 10 000 événements."
+
+msgid "Audit unavailable. Check your permissions and date filters."
+msgstr "Journal indisponible. Vérifiez vos droits et les dates sélectionnées."
+
+msgid "Audit action refused. Review your filters, permissions and confirmation."
+msgstr "Action refusée. Vérifiez les filtres, vos droits et la confirmation."
+
+msgid "No parent folder"
+msgstr "Aucun dossier parent"
+
+msgid "Folder navigation"
+msgstr "Navigation dans les dossiers"
+
+msgid "Temporarily unavailable"
+msgstr "Temporairement indisponible"
+
+msgid "Access not authorized"
+msgstr "Accès non autorisé"
+
+msgid "A reserved space"
+msgstr "Un espace réservé"
+
+msgid "Please try again later."
+msgstr "Veuillez réessayer plus tard."
+
+msgid "Your account cannot access this space, or it is no longer available."
+msgstr "Votre compte n’a pas accès à cet espace, ou celui-ci n’est plus disponible."
+
+msgid "Sign in to view the documents you are allowed to access."
+msgstr "Connectez-vous pour consulter les documents auxquels vous avez accès."
+
+msgid "Sign in"
+msgstr "Se connecter"
+
+msgid "Create a folder before publishing documents."
+msgstr "Créez un dossier avant de publier des documents."
+
+msgid "Unavailable space design"
+msgstr "Présentation d’un espace inaccessible"
+
+msgid "Compact"
+msgstr "Compact"
+
+msgid "Centered card"
+msgstr "Carte centrée"
+
+msgid "Editorial banner"
+msgstr "Bandeau éditorial"
+
+msgid "Update preview"
+msgstr "Actualiser l’aperçu"
+
+msgid "Shortcode copied."
+msgstr "Code court copié."
+
+msgid "Copy failed. Select the shortcode and copy it manually."
+msgstr "Échec de la copie. Sélectionnez le code court et copiez-le manuellement."
+
+msgid "Preview anonymous unavailable state"
+msgstr "Simuler l’accès refusé à un visiteur"
+
+msgid "The live preview uses your account permissions. Visitors may see fewer documents."
+msgstr "L’aperçu utilise les droits de votre compte. Les visiteurs peuvent voir moins de documents."
+
+msgid "Loading preview…"
+msgstr "Chargement de l’aperçu…"
+
+msgid "Preview updated."
+msgstr "Aperçu actualisé."
+
+msgid "Selected events purged. A purge trace has been retained."
+msgstr "Événements sélectionnés supprimés. Une trace de la purge a été conservée."

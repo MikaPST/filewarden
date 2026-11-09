@@ -18,6 +18,7 @@
       <element value="filewarden_manage_permissions"/>
       <element value="filewarden_manage_settings"/>
       <element value="filewarden_view_audit"/>
+      <element value="filewarden_manage_audit"/>
     </property></properties>
   </rule>
   <rule ref="WordPress.Security.ValidatedSanitizedInput">
