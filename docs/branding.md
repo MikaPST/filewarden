@@ -138,6 +138,34 @@ Official brand assets should be stored in:
 
 The original approved PNG should remain available as the visual reference for future exports.
 
+
+### Favicon and Application Icons
+
+FileWarden provides official favicon and application icon assets derived from the approved Guardian logo.
+
+All assets must preserve the official colors, proportions and visual identity.
+
+| Asset | Dimensions | Usage |
+| --- | --- | --- |
+| `favicon.ico` | 16, 32, 48 px | Browser compatibility |
+| `favicon-16x16.png` | 16 × 16 | Browser tabs |
+| `favicon-32x32.png` | 32 × 32 | Browser tabs |
+| `apple-touch-icon.png` | 180 × 180 | Apple devices |
+| `android-chrome-192x192.png` | 192 × 192 | Android and PWA |
+| `android-chrome-512x512.png` | 512 × 512 | Android and PWA |
+
+Official favicon assets are stored in `assets/favicon/`.
+
+#### Usage requirements
+
+- Always use approved favicon assets.
+- Do not recreate or modify the official logo without explicit maintainer approval.
+- Preserve the original colors, proportions and transparency where supported.
+- Optimize image sizes without degrading visual quality.
+- Maintain consistency across the official website, documentation and application interfaces.
+- Do not generate replacement assets using AI when approved assets already exist.
+- Any new favicon variants must be validated before inclusion.
+
 ---
 
 ## 4. Typography
