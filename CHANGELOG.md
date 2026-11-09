@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.11-dev — unreleased
+
+- Navigate authorized subfolders with a bounded breadcrumb and dynamic inheritance.
+- Replace root publishing with the management-only Documents to classify collection. Existing root publications stop serving files until reclassification.
+- Confirm deletion of leaf folders, preserving document identities and ancestor restrictions during recovery. Folders containing subfolders cannot be deleted.
+- Refresh folder icons, file inspector, Publication and Settings. Live shortcode, copy feedback, list/grid selection and three access-denied layouts.
+- Add filtered audit console, CSV/TXT exports and separately authorized, reviewed manual purge with retained trace.
+- Schema 4 adds retained rules; no live deployment or release publication as part of this batch.
+
 ## 0.1.10-dev
 
 - Task tabs, collapsible folder tree, searchable document table and contextual rights/action inspector.

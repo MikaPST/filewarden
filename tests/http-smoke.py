@@ -98,7 +98,9 @@ assert "result=denied" in request(reader, "/wp-admin/admin-post.php", data=urlli
 }).encode())[3], "Reader must not be allowed to import"
 
 
-def upload(name, payload, folder=0):
+def upload(name, payload, folder=None):
+    if folder is None:
+        folder = fixtures["public_folder_id"]
     boundary = "fw-" + uuid.uuid4().hex
     chunks = []
     fields = {"action": "filewarden_admin", "operation": "add_document", "source": "upload", "_wpnonce": nonce,
@@ -111,6 +113,7 @@ def upload(name, payload, folder=0):
 
 
 pdf = b"%PDF-1.4\n1 0 obj<</Type/Catalog>>endobj\n%%EOF\n"
+assert "result=format" in upload("root-refused.pdf", pdf, 0)[3]
 assert "result=success" in upload("upload-test.pdf", pdf)[3]
 assert "result=duplicate" in upload("upload-test.pdf", pdf)[3]
 assert "result=format" in upload("malicious.php", b"<?php echo 'blocked';")[3]
@@ -170,3 +173,26 @@ assert 'result=policy_saved' in policy_change('folder_policy', 'public')[3]
 assert 'result=policy_saved' in policy_change('document_policy', 'inherit', fixtures['policy_inherit'])[3]
 assert request(anon, policy_binary)[0] == 200
 print('Policy editing HTTP checks passed: inheritance, file restriction, folder ceiling, immediate revocation and CSRF.')
+
+# New audit exports and private recovery/publication boundaries.
+import html
+root_view = '/wp-admin/admin-post.php?' + urllib.parse.urlencode({'action': 'filewarden_folder', 'folder_id': fixtures['root_uuid']})
+assert request(admin, root_view)[0] == 404
+assert request(anon, root_view)[0] == 404
+for style in ('compact', 'centered', 'editorial'):
+    status, headers, body, _ = request(anon, folder_view + '&denied=' + style)
+    assert status == 404 and ('fw-denied-' + style).encode() in body
+    assert b'target="_top"' in body and b'Private child' not in body
+    assert 'no-store' in headers['Cache-Control']
+status, _, audit_page, _ = request(admin, '/wp-admin/admin.php?page=filewarden-audit&event=document_read')
+assert status == 200 and b'fw-terminal' in audit_page
+links = [html.unescape(v) for v in re.findall(r'href="([^"]+)"', audit_page.decode())]
+for fmt in ('csv', 'txt'):
+    url = next(v for v in links if 'action=filewarden_audit' in v and 'format=' + fmt in v)
+    url = url.removeprefix(base)
+    status, headers, body, _ = request(admin, url)
+    assert status == 200 and ('filewarden-audit.' + fmt) in headers['Content-Disposition']
+    assert b'created_at_UTC' in body
+    assert request(editor, url)[0] != 200
+    assert request(admin, re.sub(r'([?&])_wpnonce=[^&]+', r'\1_wpnonce=invalid', url))[0] != 200
+print('Navigation denial styles, root quarantine and authorized CSV/TXT export checks passed.')
