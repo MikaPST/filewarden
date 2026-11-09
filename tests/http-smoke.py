@@ -113,7 +113,7 @@ def upload(name, payload, folder=None):
 
 
 pdf = b"%PDF-1.4\n1 0 obj<</Type/Catalog>>endobj\n%%EOF\n"
-assert "result=format" in upload("root-refused.pdf", pdf, 0)[3]
+assert "result=invalid" in upload("root-refused.pdf", pdf, 0)[3]
 assert "result=success" in upload("upload-test.pdf", pdf)[3]
 assert "result=duplicate" in upload("upload-test.pdf", pdf)[3]
 assert "result=format" in upload("malicious.php", b"<?php echo 'blocked';")[3]
@@ -196,3 +196,4 @@ for fmt in ('csv', 'txt'):
     assert request(editor, url)[0] != 200
     assert request(admin, re.sub(r'([?&])_wpnonce=[^&]+', r'\1_wpnonce=invalid', url))[0] != 200
 print('Navigation denial styles, root quarantine and authorized CSV/TXT export checks passed.')
+
