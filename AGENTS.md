@@ -15,6 +15,7 @@ Before changing code, read:
 4. `docs/permissions.md`
 5. `docs/security.md`
 6. `docs/roadmap.md`
+7. `docs/branding.md`
 
 Follow documented decisions. If requirements conflict or are incomplete, explain the trade-off and ask for a decision rather than silently redefining behavior. Do not create features beyond the agreed milestone without approval. Keep specifications and documentation aligned with implementation. Communicate with the project owner **in French**; write code identifiers and developer-facing technical comments in clear English.
 
@@ -58,6 +59,21 @@ Follow documented decisions. If requirements conflict or are incomplete, explain
 - Ship release ZIPs with runtime dependencies and built assets, excluding development-only files and secrets.
 - Keep translations ready with the `filewarden` text domain.
 - Do not delete user documents on plugin deactivation or uninstall without a separately designed, explicit policy.
+
+## Branding & UI Guidelines
+
+Before implementing or modifying any visual component,
+read `docs/branding.md`.
+
+- Follow the official FileWarden brand identity.
+- Use centralized design tokens.
+- Do not introduce arbitrary brand colors.
+- Preserve the official logo and its proportions.
+- Support accessible light and dark themes.
+- Respect WCAG 2.2 AA contrast requirements where applicable.
+- Keep frontend document displays customizable to match the host WordPress site's branding.
+- Avoid overriding global WordPress styles.
+- Ask for approval before changing the brand identity.
 
 ## How to work on a task
 1. Inspect relevant code, docs, and tests before editing.
