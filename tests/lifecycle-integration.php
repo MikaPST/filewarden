@@ -17,6 +17,8 @@ update_option( 'filewarden_schema', '2' );
 FileWarden\Installer::migrate();
 FileWarden\Installer::migrate();
 $after = $repository->document( $ids['public'] );
+ksort( $before );
+ksort( $after );
 fw_assert( '3' === get_option( 'filewarden_schema' ) && $before === $after, 'Schema 2 upgrade changed existing document.' );
 
 $life = new FileWarden\Lifecycle( $service );
