@@ -2,6 +2,8 @@
 
 **Private Document Management for WordPress**
 
+[Suivi court du projet et organisation des prochains lots](SUIVI.md)
+
 > **Status: 0.1.10-dev pre-alpha foundation. Not production-ready. Do not use confidential documents before deployment security validation.**
 
 FileWarden is a free, open-source WordPress document-management plugin focused on private storage, inherited access control and modern publishing interfaces. Single-site only for the first version, confirmed by the owner.

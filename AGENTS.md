@@ -6,6 +6,8 @@ FileWarden is a **free, open-source WordPress document-management plugin** licen
 **Current status: pre-alpha 0.1.0-dev foundation implemented; integration and target-host acceptance are pending. Storage, inherited ACL, upload/download, minimal administration and audit services exist. Never describe the plugin as production-ready or safe for confidential files until implementation and security tests demonstrate it. Single-site only initially, confirmed by the owner.**
 
 ## Source of truth and workflow
+Read `SUIVI.md` first for the current batch, remaining work, evidence and owner approvals. Check Git state before relying on that snapshot. The owner requires a consolidated request summary and explicit agreement before coding each new batch, plus separate explicit approval before publishing its release/tag. Keep this short status file current; do not reconstruct completed work from the entire chat history when the recorded evidence suffices.
+
 Before changing code, read:
 1. `README.md`
 2. `docs/specifications/requirements.md`
