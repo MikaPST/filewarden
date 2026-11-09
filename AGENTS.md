@@ -62,18 +62,50 @@ Follow documented decisions. If requirements conflict or are incomplete, explain
 
 ## Branding & UI Guidelines
 
-Before implementing or modifying any visual component,
-read `docs/branding.md`.
+Before implementing or modifying any visual component, AI coding agents and contributors MUST read `docs/branding.md`.
+
+This document is the authoritative source for FileWarden's visual identity and design guidelines.
+
+### Brand Identity
 
 - Follow the official FileWarden brand identity.
-- Use centralized design tokens.
-- Do not introduce arbitrary brand colors.
-- Preserve the official logo and its proportions.
-- Support accessible light and dark themes.
-- Respect WCAG 2.2 AA contrast requirements where applicable.
-- Keep frontend document displays customizable to match the host WordPress site's branding.
+- Use centralized design tokens defined in the branding guidelines.
+- Do not introduce arbitrary or unapproved brand colors.
+- Ask for maintainer approval before changing the official brand identity, logo, colors or typography.
+
+### Official Brand Assets
+
+- Use the approved logo assets located in `assets/branding/`.
+- Use the approved favicon and application icons located in `assets/favicon/`.
+- Never recreate, recolor, distort or modify the official logo without approval.
+- Preserve the original logo proportions, colors and transparency.
+- Prefer SVG assets for scalable interfaces when a validated vector version is available.
+- Use appropriately sized PNG assets when raster images are required.
+- Do not introduce duplicate or unofficial logo variants.
+- Optimize image assets without compromising visual quality.
+
+### Interface Design & Accessibility
+
+- Support accessible light and dark themes where implemented.
+- Respect WCAG 2.2 AA accessibility requirements where applicable.
+- Use semantic design tokens instead of hardcoded colors.
+- Maintain consistent spacing, typography and component styling.
+- Ensure responsive layouts and keyboard accessibility.
 - Avoid overriding global WordPress styles.
-- Ask for approval before changing the brand identity.
+- Follow WordPress administration interface conventions.
+
+### Frontend Customization
+
+- Keep frontend document displays customizable to match the host WordPress site's branding.
+- Do not impose FileWarden's official colors or visual identity on frontend document displays.
+- Maintain separation between internal FileWarden branding and user-configurable frontend styles.
+
+### Branding Governance
+
+- Consult `docs/branding.md` before introducing new visual assets or UI patterns.
+- Reuse existing approved assets whenever possible.
+- Any modification to the official brand identity requires maintainer approval.
+- Keep branding documentation consistent with implemented assets.
 
 ## How to work on a task
 1. Inspect relevant code, docs, and tests before editing.
