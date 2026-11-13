@@ -9,6 +9,8 @@
     const demo = document.getElementById('fw-preview-denied');
     const frame = document.querySelector('.fw-publisher .filewarden-publication-frame');
     const status = document.getElementById('fw-preview-status');
+    let pending;
+    const failed = () => { clearTimeout(pending); status.textContent = status.dataset.failure; };
     const update = () => {
         const uuid = folder.selectedOptions[0].dataset.uuid;
         const view = form.querySelector('[name="view"]:checked').value;
@@ -19,6 +21,8 @@
         url.search = new URLSearchParams({ action: 'filewarden_folder', folder_id: uuid, view, denied, return: form.dataset.return });
         if (demo.checked) { url.searchParams.set('demo', '1'); url.searchParams.set('_wpnonce', form.dataset.nonce); }
         status.textContent = status.dataset.loading;
+        clearTimeout(pending);
+        pending = setTimeout(failed, 20000);
         frame.src = url.href;
     };
     form.querySelector('.fw-publisher-fallback').hidden = true;
@@ -26,7 +30,12 @@
     form.addEventListener('change', update);
     form.addEventListener('submit', event => { event.preventDefault(); update(); });
     demo.addEventListener('change', update);
-    frame.addEventListener('load', () => { status.textContent = status.dataset.ready; });
+    frame.addEventListener('load', () => {
+        clearTimeout(pending);
+        try { status.textContent = frame.contentDocument?.querySelector('main') ? status.dataset.ready : status.dataset.failure; }
+        catch (_) { failed(); }
+    });
+    frame.addEventListener('error', failed);
     copy.addEventListener('click', async () => {
         try { await navigator.clipboard.writeText(code.value); feedback.textContent = feedback.dataset.success; }
         catch (_) { code.focus(); code.select(); feedback.textContent = feedback.dataset.failure; }

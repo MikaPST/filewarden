@@ -1,6 +1,6 @@
 # FileWarden — suivi court
 
-Mis à jour le 9 novembre 2026. Lire ce fichier à la reprise, puis vérifier l’état Git et les seuls fichiers utiles au lot. Ce résumé ne remplace pas les spécifications ni les règles de sécurité.
+Mis à jour le 13 novembre 2026. Lire ce fichier à la reprise, puis vérifier l’état Git et les seuls fichiers utiles au lot. Ce résumé ne remplace pas les spécifications ni les règles de sécurité.
 
 ## État actuel
 
@@ -20,7 +20,7 @@ Mis à jour le 9 novembre 2026. Lire ce fichier à la reprise, puis vérifier l�
 - Autorisation de coder : accord explicite reçu le 9 novembre 2026.
 - Vérifications automatisées regroupées : organisation à définir ensemble ensuite ; aucune nouvelle commande à développer maintenant.
 - Publication du prochain lot : non autorisée à ce stade ; accord distinct requis.
-- Progression : code du lot écrit (récupération sécurisée, navigation, Publication dynamique, Réglages, Audit, traductions). Contrôles de style et 48 tests PHP / 8 JavaScript existants réussis ; nouveaux tests de sécurité et tests WordPress/navigateur à exécuter. Aucun tag, aucune release ni déploiement effectués.
+- Progression : code 0.1.11-dev écrit et commité jusqu’à da73970. CI 42602555486 réussie : 50 tests PHP / 71 assertions sur PHP 8.2–8.4, 8 tests JavaScript, WordPress 6.8/latest et Chromium/Firefox. Finitions du 13 novembre : retour d’erreur d’aperçu, icône/badge de récupération, hauteur des cartes, documentation et contrôle mobile ; validation finale en cours. Aucun tag, release ni déploiement du lot.
 - Prochaine étape : exécuter les nouveaux tests puis la CI WordPress/Chromium/Firefox ; corriger les échecs et contrôler les captures avant de proposer la publication.
 
 ## Organisation convenue

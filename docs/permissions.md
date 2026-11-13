@@ -14,7 +14,7 @@ Folder/document policy editing is implemented in the administration UI; WordPres
 
 ## Editable policies (0.1.9)
 
-New documents default to `inherit`: no additional file restriction, so the containing folder governs access dynamically. The existing complete ancestor intersection is preserved. At the virtual root there is no folder restriction, so inherited documents are public; the UI explicitly states this. Existing documents retain their stored policy.
+New documents default to `inherit`: no additional file restriction, so the containing folder governs access dynamically. The existing complete ancestor intersection is preserved. The former virtual root is now a management-only recovery collection: inherited documents there are never published. Existing documents retain their stored policy.
 
 A file may restrict its folder policy, never broaden it. All applicable predicates must be satisfied, including each selected-role predicate (there is no simple ranking of arbitrary role sets). Global-read administrators remain the explicit read-only override.
 

@@ -570,3 +570,6 @@ msgstr "Aperçu actualisé."
 
 msgid "Selected events purged. A purge trace has been retained."
 msgstr "Événements sélectionnés supprimés. Une trace de la purge a été conservée."
+
+msgid "Preview unavailable. Change a setting to retry."
+msgstr "Aperçu indisponible. Modifiez un paramètre pour réessayer."

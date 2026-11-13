@@ -128,7 +128,7 @@ final class AdminWorkspace {
 						'collection' => 'unfiled',
 					)
 				)
-			) . '">' . esc_html__( 'Documents to classify', 'filewarden' ) . '</a>';
+			) . '"><span class="dashicons dashicons-archive" aria-hidden="true"></span><span>' . esc_html__( 'Documents to classify', 'filewarden' ) . '</span><small class="fw-unfiled-badge">' . esc_html__( 'Not published', 'filewarden' ) . '</small></a>';
 			$this->tree( 0, array() );
 			if ( isset( $tabs['folder'] ) ) {
 				echo '<a class="fw-tree-create" href="' . esc_url( $this->url( array( 'tab' => 'folder' ) ) ) . '">+ ' . esc_html__( 'Create folder', 'filewarden' ) . '</a>';

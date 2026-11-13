@@ -98,6 +98,13 @@ function pdfFixture() {
             await page.locator('#fw-preview-denied').check();
             await page.frameLocator('.filewarden-publication-frame').locator('.fw-denied-compact').waitFor();
             assert.ok((await page.locator('#fw-shortcode').inputValue()).includes('denied="compact"'));
+            await page.locator('#fw-preview-status').filter({ hasText: 'Preview updated.' }).waitFor();
+            await page.locator('[name="denied"][value="centered"]').check();
+            await page.frameLocator('.filewarden-publication-frame').locator('.fw-denied-centered').waitFor();
+            await page.setViewportSize({ width: 375, height: 812 });
+            assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+            await page.screenshot({ path: 'build/screenshots/publication-mobile-' + name + '.png', fullPage: true });
+            await page.setViewportSize({ width: 1280, height: 900 });
             await page.screenshot({ path: 'build/screenshots/publication-' + name + '.png', fullPage: true });
             await page.goto(base + '/wp-admin/admin.php?page=filewarden-audit');
             await page.locator('.fw-terminal').waitFor();
