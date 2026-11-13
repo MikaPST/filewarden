@@ -1,8 +1,8 @@
 # FileWarden — Brand & Design Guidelines
 
 **Project:** FileWarden for WordPress  
-**Version:** 1.0  
-**Status:** Initial brand guidelines  
+**Version:** 1.1  
+**Status:** Approved brand guidelines  
 **License:** GPL-2.0-or-later (project code)  
 **Maintainer:** MikaPST
 
@@ -47,10 +47,10 @@ The FileWarden identity should feel:
 The official brand palette consists of five colors.
 
 | Name | HEX | Primary usage |
-| --- | --- | --- |
+|---|---|---|
 | Midnight Navy | `#0B162C` | Primary dark background, dark surfaces |
-| Deep Navy | `#1C2942` | Secondary dark surfaces, navigation |
-| Slate Blue | `#3B556D` | Supporting elements, secondary accents |
+| Deep Navy | `#1C2942` | Secondary dark surfaces, navigation and primary actions |
+| Slate Blue | `#3B556D` | Supporting elements, secondary accents and permission management |
 | Turquoise | `#5FC2BA` | Primary brand accent, highlights |
 | White | `#FFFFFF` | Light surfaces, text on dark backgrounds |
 
@@ -70,6 +70,58 @@ These are **brand tokens**, not a complete interface color system.
 
 Functional colors for errors, warnings, success states, disabled controls, focus indicators, borders and backgrounds must be defined separately.
 
+### Semantic UI Colors
+
+In addition to the five official brand colors, FileWarden uses semantic interface colors to distinguish actions and communicate their importance.
+
+**Semantic colors are part of the interface design system and must not be considered additional official brand colors.**
+
+| Name | HEX | Primary usage |
+|---|---|---|
+| Danger Red | `#B42318` | Destructive actions, deletion confirmations and critical errors |
+| Deep Navy | `#1C2942` | Primary actions, document and folder creation, publication |
+| Slate Blue | `#3B556D` | Permission management and sensitive non-destructive actions |
+| Turquoise | `#5FC2BA` | Positive accents, highlights and progress indicators |
+
+The use of semantic colors must remain consistent throughout the FileWarden administration interface.
+
+### Semantic Action Tokens
+
+```css
+:root {
+  --fw-action-primary: var(--fw-brand-navy);
+  --fw-action-permissions: var(--fw-brand-slate);
+  --fw-action-danger: #B42318;
+  --fw-action-accent: var(--fw-brand-turquoise);
+}
+```
+
+### Action Button Guidelines
+
+The following conventions define the approved appearance of common FileWarden administration actions.
+
+| Action | Color | Icon |
+|---|---|---|
+| Create folder | Deep Navy `#1C2942` | `folder-plus` |
+| Add documents | Deep Navy `#1C2942` | `file-plus-2` |
+| Publish folder | Deep Navy `#1C2942` | None |
+| Edit permissions | Slate Blue `#3B556D` | `shield-check` |
+| Delete folder | Danger Red `#B42318` | `trash-2` |
+| Confirm deletion | Danger Red `#B42318` | `trash-2` |
+
+#### Button implementation requirements
+
+- Use consistent colors for identical actions throughout the administration interface.
+- Primary actions must use Deep Navy unless a specific semantic state requires another color.
+- Permission-management actions must use Slate Blue.
+- Destructive actions must use Danger Red.
+- The "Publish folder" button must not include an icon.
+- Buttons must provide accessible hover, focus, active, disabled and loading states.
+- Use clear labels and appropriate pictograms; color alone must never communicate an action's meaning.
+- Preserve existing authorization checks and confirmation requirements.
+- Do not introduce arbitrary button colors outside the approved design system.
+- Use centralized CSS variables rather than hardcoded colors in individual components.
+
 ### Color usage guidelines
 
 - Use Midnight Navy and Deep Navy to establish the product's visual identity.
@@ -78,6 +130,7 @@ Functional colors for errors, warnings, success states, disabled controls, focus
 - Do not use Turquoise as small text on white backgrounds without verifying accessibility.
 - Avoid introducing unrelated accent colors without design approval.
 - Preserve the official brand colors when creating FileWarden marketing materials.
+- Reserve Danger Red for destructive actions and critical error states.
 
 ### Color accessibility
 
@@ -120,7 +173,7 @@ The logo must communicate both **document organization** and **security**.
 The following variants are recommended:
 
 | Asset | Purpose |
-| --- | --- |
+|---|---|
 | `filewarden-logo.svg` | Vector logo for websites and scalable interfaces |
 | `filewarden-logo-4096.png` | High-resolution master raster asset |
 | `filewarden-logo-1024.png` | GitHub, presentations and general branding |
@@ -138,7 +191,6 @@ Official brand assets should be stored in:
 
 The original approved PNG should remain available as the visual reference for future exports.
 
-
 ### Favicon and Application Icons
 
 FileWarden provides official favicon and application icon assets derived from the approved Guardian logo.
@@ -146,7 +198,7 @@ FileWarden provides official favicon and application icon assets derived from th
 All assets must preserve the official colors, proportions and visual identity.
 
 | Asset | Dimensions | Usage |
-| --- | --- | --- |
+|---|---|---|
 | `favicon.ico` | 16, 32, 48 px | Browser compatibility |
 | `favicon-16x16.png` | 16 × 16 | Browser tabs |
 | `favicon-32x32.png` | 32 × 32 | Browser tabs |
@@ -190,7 +242,6 @@ Manrope is an open-source sans-serif typeface distributed under the SIL Open Fon
 - Respect native WordPress administration typography where appropriate.
 - Prioritize readability and accessibility.
 
-
 ---
 
 ## 5. Interface Design Principles
@@ -216,6 +267,7 @@ The WordPress administration interface should:
 - Avoid unnecessary dependencies and heavy UI frameworks.
 - Provide a modern document manager with clear navigation and actions.
 - Support accessible light and dark themes where implemented.
+- Apply the approved semantic action colors consistently across all administration screens.
 
 ### Frontend document displays
 
@@ -253,11 +305,15 @@ The interface should define semantic tokens for:
 - Page and component surfaces.
 - Borders and separators.
 - Primary and secondary actions.
+- Permission-management actions.
+- Destructive actions and deletion confirmations.
 - Hover, active, selected and disabled states.
 - Success, warning and error feedback.
 - Keyboard focus indicators.
 
 Semantic tokens must support accessible light and dark variants.
+
+The approved action tokens are defined in **Section 2 — Semantic Action Tokens**.
 
 ### Naming conventions
 
@@ -265,6 +321,7 @@ Semantic tokens must support accessible light and dark variants.
 - Prefer semantic names for component styling.
 - Avoid coupling component behavior to a specific hex color.
 - Keep brand tokens separate from user-configurable frontend display tokens.
+- Do not duplicate semantic color definitions across individual components.
 
 ---
 
@@ -316,6 +373,8 @@ Any change to the following requires maintainer approval:
 
 Minor implementation adjustments may be made to improve accessibility, responsiveness or WordPress compatibility, provided they do not alter the approved brand identity.
 
+Semantic interface colors may be extended only when required by a documented functional need and approved by the maintainer.
+
 ### AI development instructions
 
 AI coding agents, including Codex, must consult this document before implementing or modifying FileWarden visual components.
@@ -326,6 +385,7 @@ They must:
 - Respect the official logo.
 - Preserve accessibility requirements.
 - Keep frontend displays customizable.
+- Apply approved semantic colors and action button conventions.
 - Avoid introducing unapproved brand colors or design systems.
 - Clearly distinguish implemented features from planned features.
 
