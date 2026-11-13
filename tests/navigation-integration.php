@@ -96,7 +96,9 @@ fw_assert( 'fw_deleted_actor' === $stored_actor->invoke( null, array( 'actor_id'
 fw_assert( '' === $stored_actor->invoke( null, array( 'actor_id' => 999999999, 'actor_login' => '' ) ), 'Legacy event invented a login for a missing WordPress account.' );
 
 // Audit read permission alone must not grant purge or private document metadata.
-$audit_reader = get_userdata( $users['subscriber'] );
+$audit_reader_id = wp_insert_user( array( 'user_login' => 'fw_audit_reader', 'user_pass' => 'disposable-audit-password', 'role' => 'subscriber' ) );
+fw_assert( ! is_wp_error( $audit_reader_id ), 'Audit-only user fixture could not be created.' );
+$audit_reader = new WP_User( $audit_reader_id );
 $audit_reader->add_cap( 'filewarden_view_audit' );
 wp_set_current_user( $audit_reader->ID );
 FileWarden\AuditHistory::authorize();
