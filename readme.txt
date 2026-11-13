@@ -10,7 +10,7 @@ Pre-alpha document-management foundation. Not ready for production.
 
 == Description ==
 
-FileWarden 0.1.11-dev implements private-storage checks, inherited permissions, PDF/image uploads, protected downloads and tabbed administration, folder trees, file move/copy and recoverable trash. It also provides protected previews, Media Library import and an Elementor-compatible shortcode. Integration and hosting validation are still required. Versions and native editor widgets remain future work.
+FileWarden 0.1.12-dev implements private-storage checks, inherited permissions, PDF/image uploads, protected downloads and tabbed administration, folder trees, file move/copy and recoverable trash. It also provides protected previews, Media Library import, an Elementor-compatible shortcode and filtered audit exports in CSV, TXT and JSONL. Integration and hosting validation are still required. Versions and native editor widgets remain future work.
 
 == Installation ==
 

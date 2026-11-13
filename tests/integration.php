@@ -23,7 +23,7 @@ function fw_request( $method, $route, $params = array() ) {
 wp_set_current_user( 1 );
 FileWarden\Installer::activate();
 FileWarden\Installer::migrate();
-fw_assert( '4' === get_option( 'filewarden_schema' ), 'Repeatable migration failed.' );
+fw_assert( '5' === get_option( 'filewarden_schema' ), 'Repeatable migration failed.' );
 
 $repository = new FileWarden\Repository();
 $permission = new FileWarden\PermissionService( array( $repository, 'folder' ) );

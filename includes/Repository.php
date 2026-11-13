@@ -65,6 +65,19 @@ final class Repository {
 	}
 
 	/**
+	 * Retrieve a document by its internal audit identifier.
+	 *
+	 * @param int  $id Internal document ID.
+	 * @param bool $include_trash Include soft-deleted records.
+	 * @return array|null Document record or null.
+	 */
+	public function document_by_id( $id, $include_trash = false ) {
+		global $wpdb;
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Internal audit lookup is prepared and called only after audit authorization.
+		return $this->decode( $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}filewarden_documents WHERE id = %d AND (%d = 1 OR (trashed_at IS NULL AND purging = 0))", $id, $include_trash ? 1 : 0 ), ARRAY_A ) );
+	}
+
+	/**
 	 * Retrieve a bounded document batch.
 	 *
 	 * @param mixed $folder folder value.

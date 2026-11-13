@@ -30,3 +30,7 @@ Trash retains bytes for 30 days by default (`filewarden_trash_days`, 1–3650). 
 Schéma 4 : colonne documents.retained_rules nullable pour les restrictions conservées après suppression du dossier. Migration répétable, sans déplacement physique des fichiers ni changement des UUID. FolderLifecycle récupère et supprime dans une transaction InnoDB vérifiée ; verrou global des droits puis verrou du dossier. Les transferts, changements de droits, création et corbeille partagent le verrou des droits. Les uploads verrouillent puis revérifient le dossier.
 
 FolderNavigation borne les chemins publiés et filtre les sous-dossiers. Publisher produit le code court et l’aperçu dynamiques sans modifier les droits. AuditHistory porte filtres, pagination et purge ; AuditConsole contrôle les accès, nonces et exports CSV/TXT sans fichier temporaire public.
+
+## Audit log updates (0.1.12-dev)
+
+Schema 5 adds `actor_login` to audit records as a point-in-time WordPress `user_login` snapshot alongside `actor_id`. It contains no email address. Existing records remain intact; the new field defaults to an empty string, and authorized audit views may resolve older IDs against the current WordPress account when available. The audit console supports simplified and technical views and actor filtering. CSV, tab-separated TXT, and JSONL downloads share the same filtered snapshot and retain technical IDs; JSONL writes one object per line. Exports stream in bounded batches and never create a public temporary file.

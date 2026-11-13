@@ -21,16 +21,20 @@ final class AuditService {
 	 */
 	public function record( $event, $object_id = 0 ) {
 		global $wpdb;
+		$actor_id    = get_current_user_id();
+		$actor       = $actor_id ? get_userdata( $actor_id ) : false;
+		$actor_login = $actor ? (string) $actor->user_login : '';
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Custom tables require fresh authorization data and prepared database access.
 		$result = $wpdb->insert(
 			$wpdb->prefix . 'filewarden_audit_logs',
 			array(
-				'actor_id'   => get_current_user_id(),
-				'event'      => $event,
-				'object_id'  => $object_id,
-				'created_at' => current_time( 'mysql', true ),
+				'actor_id'    => $actor_id,
+				'actor_login' => $actor_login,
+				'event'       => $event,
+				'object_id'   => $object_id,
+				'created_at'  => current_time( 'mysql', true ),
 			),
-			array( '%d', '%s', '%d', '%s' )
+			array( '%d', '%s', '%s', '%d', '%s' )
 		);
 		if ( false === $result ) {
 			throw new \RuntimeException( 'Audit unavailable.' );
@@ -62,6 +66,6 @@ final class AuditService {
 			return array();
 		}
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Custom tables require fresh authorization data and prepared database access.
-		return $wpdb->get_results( "SELECT actor_id, event, object_id, created_at FROM {$wpdb->prefix}filewarden_audit_logs ORDER BY id DESC LIMIT 50", ARRAY_A ) ?? array();
+		return $wpdb->get_results( "SELECT actor_id, actor_login, event, object_id, created_at FROM {$wpdb->prefix}filewarden_audit_logs ORDER BY id DESC LIMIT 50", ARRAY_A ) ?? array();
 	}
 }

@@ -61,6 +61,8 @@ final class AdminController {
 		if ( 'toplevel_page_filewarden' !== $hook ) {
 			if ( 'filewarden_page_filewarden-publication' === $hook ) {
 				wp_enqueue_script( 'filewarden-publisher', plugins_url( 'assets/publisher.js', FILEWARDEN_PATH . 'filewarden.php' ), array(), FILEWARDEN_VERSION, true ); }
+			if ( 'filewarden_page_filewarden-audit' === $hook ) {
+				wp_enqueue_script( 'filewarden-workspace', plugins_url( 'assets/workspace.js', FILEWARDEN_PATH . 'filewarden.php' ), array(), FILEWARDEN_VERSION, true ); }
 			return;
 		}
 		wp_enqueue_script( 'filewarden-preview', plugins_url( 'assets/preview.js', FILEWARDEN_PATH . 'filewarden.php' ), array(), FILEWARDEN_VERSION, true );

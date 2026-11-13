@@ -184,16 +184,23 @@ for style in ('compact', 'centered', 'editorial'):
     assert status == 404 and ('fw-denied-' + style).encode() in body
     assert b'target="_top"' in body and b'Private child' not in body
     assert 'no-store' in headers['Cache-Control']
-status, _, audit_page, _ = request(admin, '/wp-admin/admin.php?page=filewarden-audit&event=document_read')
-assert status == 200 and b'fw-terminal' in audit_page
+status, _, audit_page, _ = request(admin, '/wp-admin/admin.php?page=filewarden-audit')
+assert status == 200 and b'fw-terminal' in audit_page and b'fw-actor-login' in audit_page and b'fw_admin' in audit_page
+assert b'actor_login' in audit_page and b'view=technical' in audit_page
 links = [html.unescape(v) for v in re.findall(r'href="([^"]+)"', audit_page.decode())]
-for fmt in ('csv', 'txt'):
+for fmt in ('csv', 'txt', 'jsonl'):
     url = next(v for v in links if 'action=filewarden_audit' in v and 'format=' + fmt in v)
     url = url.removeprefix(base)
     status, headers, body, _ = request(admin, url)
-    assert status == 200 and ('filewarden-audit.' + fmt) in headers['Content-Disposition']
-    assert b'created_at_UTC' in body
+    assert status == 200 and re.search(r'filewarden-audit-\d{4}-\d{2}-\d{2}\.' + fmt, headers['Content-Disposition'])
+    assert b'actor_login' in body
+    if fmt == 'jsonl':
+        records = [json.loads(line) for line in body.decode().splitlines() if line]
+        assert records and all({'id', 'created_at_UTC', 'event', 'actor_id', 'actor_login', 'object_id_or_count'} <= record.keys() for record in records)
+        assert any(record['actor_login'] == 'fw_admin' for record in records)
+    else:
+        assert b'created_at_UTC' in body and b'fw_admin' in body
     assert request(editor, url)[0] != 200
     assert request(admin, re.sub(r'([?&])_wpnonce=[^&]+', r'\1_wpnonce=invalid', url))[0] != 200
-print('Navigation denial styles, root quarantine and authorized CSV/TXT export checks passed.')
+print('Navigation denial styles, root quarantine and authorized CSV/TXT/JSONL actor export checks passed.')
 

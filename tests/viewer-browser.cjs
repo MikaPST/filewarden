@@ -110,6 +110,7 @@ function pdfFixture() {
             await page.goto(base + '/wp-admin/admin.php?page=filewarden-audit');
             await page.locator('.fw-terminal').waitFor();
             await page.screenshot({ path: 'build/screenshots/audit-' + name + '.png', fullPage: true });
+            await require('./audit-browser.cjs')({ page, base, name });
             await page.goto(base + '/wp-admin/admin.php?page=filewarden-settings');
             await page.screenshot({ path: 'build/screenshots/settings-' + name + '.png', fullPage: true });
             const rootView = await context.request.get(base + '/wp-admin/admin-post.php?action=filewarden_folder&folder_id=' + fixture.root_uuid);

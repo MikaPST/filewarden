@@ -19,9 +19,10 @@ final class AuditHistory {
 	 */
 	public static function filters( array $input ) {
 		$result = array(
-			'event' => '',
-			'from'  => '',
-			'until' => '',
+			'event'       => '',
+			'actor_login' => '',
+			'from'        => '',
+			'until'       => '',
 		);
 		foreach ( $result as $key => $unused ) {
 			$value = $input[ $key ] ?? '';
@@ -33,12 +34,21 @@ final class AuditHistory {
 				if ( ! preg_match( '/^[a-z0-9_]{1,64}$/D', $value ) ) {
 					throw new \InvalidArgumentException( 'Invalid event.' ); }
 				$result[ $key ] = $value;
+			} elseif ( 'actor_login' === $key ) {
+				if ( strlen( $value ) > 60 ) {
+					throw new \InvalidArgumentException( 'Invalid actor.' ); }
+				$result[ $key ] = $value;
 			} else {
 				$date = \DateTimeImmutable::createFromFormat( '!Y-m-d\TH:i', $value, wp_timezone() );
 				if ( ! $date || $date->format( 'Y-m-d\TH:i' ) !== $value ) {
 					throw new \InvalidArgumentException( 'Invalid date.' ); }
 				$result[ $key ] = $date->setTimezone( new \DateTimeZone( 'UTC' ) )->format( 'Y-m-d H:i:' ) . ( 'until' === $key ? '59' : '00' );
 			}
+		}
+		if ( $result['actor_login'] ) {
+			$user = get_user_by( 'login', $result['actor_login'] );
+			if ( $user ) {
+				$result['actor_id'] = (int) $user->ID; }
 		}
 		if ( $result['from'] && $result['until'] && $result['from'] > $result['until'] ) {
 			throw new \InvalidArgumentException( 'Invalid date range.' ); }
@@ -64,6 +74,12 @@ final class AuditHistory {
                 // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Expressions are fixed literals above; values are prepared.
 				$where .= ' AND ' . $wpdb->prepare( $expression, $filters[ $key ] );
 			}
+		}
+		if ( ! empty( $filters['actor_login'] ) ) {
+			if ( ! empty( $filters['actor_id'] ) ) {
+				$where .= $wpdb->prepare( " AND (actor_login = %s OR (actor_login = '' AND actor_id = %d))", $filters['actor_login'], $filters['actor_id'] );
+			} else {
+				$where .= $wpdb->prepare( ' AND actor_login = %s', $filters['actor_login'] ); }
 		}
 		if ( $purge ) {
 			$where .= " AND event <> 'audit_purged'"; }
@@ -102,7 +118,7 @@ final class AuditHistory {
 		self::authorize();
 		$where = self::where( $filters, $upper );
         // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- where() returns exclusively prepared conditions.
-		$rows = $wpdb->get_results( $wpdb->prepare( "SELECT id, created_at, event, actor_id, object_id FROM {$wpdb->prefix}filewarden_audit_logs WHERE $where ORDER BY id DESC LIMIT %d", min( 1000, max( 1, $limit ) ) ), ARRAY_A );
+		$rows = $wpdb->get_results( $wpdb->prepare( "SELECT id, created_at, event, actor_id, actor_login, object_id FROM {$wpdb->prefix}filewarden_audit_logs WHERE $where ORDER BY id DESC LIMIT %d", min( 1000, max( 1, $limit ) ) ), ARRAY_A );
 		if ( $wpdb->last_error ) {
 			throw new \RuntimeException( 'Audit query failed.' ); }
 		return $rows ?? array();

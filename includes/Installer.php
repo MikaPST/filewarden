@@ -11,7 +11,7 @@ namespace FileWarden;
  * Installer implementation.
  */
 final class Installer {
-	const SCHEMA       = '4';
+	const SCHEMA       = '5';
 	const CAPABILITIES = array( 'filewarden_read_all_files', 'filewarden_upload_files', 'filewarden_edit_files', 'filewarden_delete_files', 'filewarden_manage_permissions', 'filewarden_manage_settings', 'filewarden_view_audit', 'filewarden_manage_audit' );
 
 	/**
@@ -84,6 +84,7 @@ final class Installer {
 				"CREATE TABLE {$prefix}audit_logs (
 			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			actor_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			actor_login varchar(60) NOT NULL DEFAULT '',
 			event varchar(64) NOT NULL,
 			object_id bigint(20) unsigned NOT NULL DEFAULT 0,
 			created_at datetime NOT NULL,

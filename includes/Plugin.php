@@ -21,7 +21,7 @@ final class Plugin {
 			return;
 		}
 		$migration_failed = false;
-		if ( in_array( get_option( 'filewarden_schema' ), array( '1', '2', '3' ), true ) ) {
+		if ( in_array( get_option( 'filewarden_schema' ), array( '1', '2', '3', '4' ), true ) ) {
 			try {
 				Installer::migrate();
 			} catch ( \Throwable $error ) {

@@ -13,6 +13,16 @@ Mis à jour le 13 novembre 2026. Lire ce fichier à la reprise, puis vérifier l
 
 ## Lot en cours / prochaine action
 
+- **Statut : développement de 0.1.12-dev ; validation complète en cours avant publication.**
+- Accord utilisateur reçu le 13 novembre 2026 pour terminer les 10 évolutions, les tester et publier la release GitHub si l’ensemble des tests réussit. Cet accord inclut le tag, le ZIP et les notes de version ; il n’autorise pas une installation sur le site utilisateur.
+- Cahier des charges validé : [évolutions 0.1.12-dev](docs/specifications/evolutions-v0.1.12-dev.md). Les chantiers 1 à 7 reposent largement sur les fonctionnalités déjà présentes dans 0.1.11-dev ; les préserver et les vérifier avant toute retouche.
+- Travaux en cours sur le journal d’audit : vues simplifiée/technique, filtre par `user_login`, noms de ressources affichés uniquement si le lecteur d’audit possède aussi le droit de lecture, export CSV/TXT/JSONL et migration du schéma 4 vers 5.
+- L’acteur d’une nouvelle entrée conserve l’ID WordPress et un instantané `user_login` (pas d’adresse e-mail). Les anciennes entrées sont rapprochées du compte courant si disponible ; sinon l’ID reste affiché.
+- Vérifications locales passées : syntaxe PHP, PHPCS, 50 tests PHP / 71 assertions, 8 tests JavaScript et compilation de 238 traductions françaises. Le blocage PHPUnit était lié aux restrictions d’accès locales ; l’exécution autorisée passe.
+- Prochaine étape : pousser le code pour exécuter les tests WordPress/MySQL HTTP et Chromium/Firefox dans la CI jetable, vérifier les captures et publier uniquement après leur réussite. Voir [le compte rendu 0.1.12-dev](docs/lot-v0.1.12-dev.md).
+
+### Historique du lot 0.1.11-dev
+
 - **Statut : développement terminé et testé ; validation utilisateur avant publication.**
 - Lot proposé : navigation dans les sous-dossiers, héritage des dossiers, retrait de Racine de l’usage courant, icônes/explications, accès restreint frontend, refonte Publication/Réglages/Audit et exports de logs. Voir [le compte rendu du lot](docs/lot-navigation-interfaces.md).
 - Décisions reçues : Carte centrée par défaut avec choix des trois designs dans Publication ; Documents à classer comme collection de récupération non publiable ; pas d’import de logs ; purge manuelle avec confirmation incluse. Ajout demandé : suppression de dossier. Modalités validées : récupérer les fichiers, bloquer si sous-dossiers, préserver les restrictions lors du reclassement.

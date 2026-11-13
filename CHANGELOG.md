@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.12-dev — unreleased
+
+- Capture WordPress login identifiers alongside actor IDs in audit records; migrate schema 4 safely to schema 5.
+- Add simplified and technical audit views, expandable event details, readable event labels, resource names where available, and filtering by WordPress login.
+- Add direct JSONL audit downloads and dedicated CSV/TXT/JSONL controls; keep every export aligned with applied filters and independent of pagination or display mode.
+- Preserve authorization checks, reviewed purge semantics, purge traces, and legacy audit history.
+
 ## 0.1.11-dev — unreleased
 
 - Navigate authorized subfolders with a bounded breadcrumb and dynamic inheritance.

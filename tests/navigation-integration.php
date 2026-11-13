@@ -35,6 +35,10 @@ $filters = FileWarden\AuditHistory::filters( array( 'event' => 'audit_fixture', 
 fw_reject( fn() => FileWarden\AuditHistory::filters( array( 'from' => '2026-02-31T12:00' ) ), InvalidArgumentException::class, 'Invalid date accepted.' );
 $service->audit->record( 'audit_fixture' );
 $upper = FileWarden\AuditHistory::upper();
+$fixture_rows = FileWarden\AuditHistory::rows( $filters, $upper );
+fw_assert( get_userdata( 1 )->user_login === $fixture_rows[0]['actor_login'], 'Audit event did not retain the WordPress login identifier.' );
+$actor_filter = FileWarden\AuditHistory::filters( array( 'actor_login' => get_userdata( 1 )->user_login ) );
+fw_assert( count( FileWarden\AuditHistory::rows( $actor_filter, $upper ) ) > 0, 'Audit actor filter did not find the WordPress user.' );
 $review = FileWarden\AuditHistory::review( $filters, $upper );
 fw_assert( 1 === $review['count'], 'Purge filter count differs.' );
 $service->audit->record( 'audit_fixture' );
@@ -44,3 +48,62 @@ fw_assert( 1 === count( FileWarden\AuditHistory::rows( $filters, FileWarden\Audi
 $traces = FileWarden\AuditHistory::filters( array( 'event' => 'audit_purged' ) );
 fw_assert( 1 === count( FileWarden\AuditHistory::rows( $traces, FileWarden\AuditHistory::upper() ) ), 'Purge trace missing.' );
 fw_assert( 0 === FileWarden\AuditHistory::review( $traces, FileWarden\AuditHistory::upper() )['count'], 'Manual purge can erase its own traces.' );
+
+// Schema 4 databases gain the login snapshot without losing audit history.
+$audit_count_before = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}filewarden_audit_logs" );
+$wpdb->query( "ALTER TABLE {$wpdb->prefix}filewarden_audit_logs DROP COLUMN actor_login" );
+update_option( 'filewarden_schema', '4' );
+FileWarden\Installer::migrate();
+fw_assert( '5' === get_option( 'filewarden_schema' ), 'Schema 4 audit upgrade did not complete.' );
+fw_assert( $audit_count_before === (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}filewarden_audit_logs" ), 'Schema 4 audit upgrade lost history.' );
+$service->audit->record( 'audit_actor_snapshot' );
+$actor_rows = FileWarden\AuditHistory::rows( FileWarden\AuditHistory::filters( array( 'event' => 'audit_actor_snapshot' ) ), FileWarden\AuditHistory::upper() );
+fw_assert( get_userdata( 1 )->user_login === $actor_rows[0]['actor_login'], 'Migrated audit table did not store the WordPress login.' );
+$wpdb->insert(
+	$wpdb->prefix . 'filewarden_audit_logs',
+	array( 'actor_id' => 1, 'actor_login' => '', 'event' => 'audit_legacy_actor', 'object_id' => 0, 'created_at' => current_time( 'mysql', true ) ),
+	array( '%d', '%s', '%s', '%d', '%s' )
+);
+$legacy_actor_filter = FileWarden\AuditHistory::filters( array( 'actor_login' => get_userdata( 1 )->user_login ) );
+fw_assert( count( FileWarden\AuditHistory::rows( $legacy_actor_filter, FileWarden\AuditHistory::upper() ) ) > 1, 'Current WordPress login did not resolve legacy audit records.' );
+$stream = fopen( 'php://temp', 'w+' );
+$line   = new ReflectionMethod( FileWarden\AuditConsole::class, 'line' );
+$line->setAccessible( true );
+$line->invoke( null, $stream, array( 123, '2026-11-13 16:45:00', 'audit_fixture', 1, 'fw_admin', 42 ), 'jsonl' );
+rewind( $stream );
+$jsonl = json_decode( stream_get_contents( $stream ), true );
+fclose( $stream );
+fw_assert( is_array( $jsonl ) && 'fw_admin' === $jsonl['actor_login'] && 1 === $jsonl['actor_id'] && 42 === $jsonl['object_id_or_count'], 'JSONL audit record schema or field types are invalid.' );
+$stream = fopen( 'php://temp', 'w+' );
+$line->invoke( null, $stream, array( 124, '2026-11-13 16:45:00', '=1+1', 1, 'fw_admin', 42 ), 'csv' );
+rewind( $stream );
+$csv_line = stream_get_contents( $stream );
+fclose( $stream );
+fw_assert( false !== strpos( $csv_line, "'=1+1" ), 'CSV export did not neutralize spreadsheet formulas.' );
+
+// A full filtered export must traverse more than one server batch and screen page.
+for ( $i = 0; $i < 1005; ++$i ) {
+	$service->audit->record( 'audit_export_fixture', $i );
+}
+$export_filters = FileWarden\AuditHistory::filters( array( 'event' => 'audit_export_fixture' ) );
+$first_batch = FileWarden\AuditHistory::rows( $export_filters, FileWarden\AuditHistory::upper(), 1000 );
+fw_assert( 1000 === count( $first_batch ), 'Audit export batch did not contain 1000 events.' );
+$second_batch = FileWarden\AuditHistory::rows( $export_filters, (int) $first_batch[999]['id'] - 1, 1000 );
+fw_assert( 5 === count( $second_batch ), 'Audit export cursor lost or duplicated events.' );
+fw_assert( array() === FileWarden\AuditHistory::rows( FileWarden\AuditHistory::filters( array( 'actor_login' => "' OR 1=1 --" ) ), FileWarden\AuditHistory::upper() ), 'Audit actor input changed the SQL filter scope.' );
+$stored_actor = new ReflectionMethod( FileWarden\AuditConsole::class, 'actor_login' );
+fw_assert( 'fw_deleted_actor' === $stored_actor->invoke( null, array( 'actor_id' => 999999999, 'actor_login' => 'fw_deleted_actor' ) ), 'Stored login disappeared when its WordPress account was unavailable.' );
+fw_assert( '' === $stored_actor->invoke( null, array( 'actor_id' => 999999999, 'actor_login' => '' ) ), 'Legacy event invented a login for a missing WordPress account.' );
+
+// Audit read permission alone must not grant purge or private document metadata.
+$audit_reader = get_userdata( $users['subscriber'] );
+$audit_reader->add_cap( 'filewarden_view_audit' );
+wp_set_current_user( $audit_reader->ID );
+FileWarden\AuditHistory::authorize();
+fw_reject( fn() => FileWarden\AuditHistory::review( $export_filters, $upper ), DomainException::class, 'Audit read capability granted purge review.' );
+$resource = new ReflectionMethod( FileWarden\AuditConsole::class, 'resource_name' );
+$private_record = $repository->document( $ids['private'] );
+fw_assert( '' === $resource->invoke( null, array( 'event' => 'document_uploaded', 'object_id' => $private_record['id'] ) ), 'Audit reader learned a private document name without content access.' );
+fw_assert( '' === $resource->invoke( null, array( 'event' => 'folder_created', 'object_id' => $folder ) ), 'Audit reader learned a private folder name without content access.' );
+$audit_reader->remove_cap( 'filewarden_view_audit' );
+wp_set_current_user( 1 );

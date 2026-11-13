@@ -573,3 +573,141 @@ msgstr "Événements sélectionnés supprimés. Une trace de la purge a été co
 
 msgid "Preview unavailable. Change a setting to retry."
 msgstr "Aperçu indisponible. Modifiez un paramètre pour réessayer."
+
+msgid "Simplified"
+msgstr "Simplifiée"
+
+msgid "Technical"
+msgstr "Technique"
+
+msgid "Event display mode"
+msgstr "Mode d’affichage des événements"
+
+msgid "Advanced filters"
+msgstr "Filtres avancés"
+
+msgid "WordPress username"
+msgstr "Identifiant WordPress"
+
+msgid "Reset"
+msgstr "Réinitialiser"
+
+msgid "Preparing your %s download…"
+msgstr "Préparation du téléchargement %s…"
+
+msgid "Download %s audit file"
+msgstr "Télécharger le fichier d’audit %s"
+
+msgid "Unavailable"
+msgstr "Indisponible"
+
+msgid "%1$s · WordPress user #%2$d"
+msgstr "%1$s · compte WordPress n°%2$d"
+
+msgid "WordPress user #%d"
+msgstr "Compte WordPress n°%d"
+
+msgid "Record #%1$d · related ID or count #%2$d"
+msgstr "Événement n°%1$d · identifiant lié ou nombre n°%2$d"
+
+msgid "Access denied"
+msgstr "Accès refusé"
+
+msgid "Document added"
+msgstr "Document ajouté"
+
+msgid "Folder created"
+msgstr "Dossier créé"
+
+msgid "Settings changed"
+msgstr "Réglages modifiés"
+
+msgid "Audit export requested"
+msgstr "Export du journal demandé"
+
+msgid "Audit events purged"
+msgstr "Événements du journal purgés"
+
+msgid "Folder deleted; documents recovered"
+msgstr "Dossier supprimé ; documents récupérés"
+
+msgid "Document permission change requested"
+msgstr "Modification des droits du document demandée"
+
+msgid "Document permissions changed"
+msgstr "Droits du document modifiés"
+
+msgid "Document move requested"
+msgstr "Déplacement du document demandé"
+
+msgid "Document moved"
+msgstr "Document déplacé"
+
+msgid "Document copy requested"
+msgstr "Copie du document demandée"
+
+msgid "Document copied"
+msgstr "Document copié"
+
+msgid "Document removal requested"
+msgstr "Mise à la corbeille du document demandée"
+
+msgid "Document moved to trash"
+msgstr "Document placé dans la corbeille"
+
+msgid "Document restoration requested"
+msgstr "Restauration du document demandée"
+
+msgid "Document restored"
+msgstr "Document restauré"
+
+msgid "Document purge requested"
+msgstr "Purge définitive du document demandée"
+
+msgid "Document permanently deleted"
+msgstr "Document définitivement supprimé"
+
+msgid "Folder creation requested"
+msgstr "Création du dossier demandée"
+
+msgid "Folder deletion requested"
+msgstr "Suppression du dossier demandée"
+
+msgid "Document preview requested"
+msgstr "Aperçu du document demandé"
+
+msgid "Document download started"
+msgstr "Téléchargement du document commencé"
+
+msgid "Document metadata requested"
+msgstr "Métadonnées du document demandées"
+
+msgid "Document upload requested"
+msgstr "Ajout du document demandé"
+
+msgid "Document upload failed"
+msgstr "Échec de l’ajout du document"
+
+msgid "No authenticated WordPress account (ID 0)"
+msgstr "Aucun compte WordPress authentifié (ID 0)"
+
+msgid "Export events"
+msgstr "Exporter les événements"
+
+msgid "Exports use all events matching the applied filters, regardless of the current page or display mode."
+msgstr "Les exports incluent tous les événements correspondant aux filtres appliqués, quelle que soit la page ou le mode d’affichage."
+
+msgid "Audit maintenance"
+msgstr "Maintenance du journal"
+
+msgid "Export the selected events before purging if you need a copy."
+msgstr "Exportez les événements sélectionnés avant la purge si vous souhaitez en conserver une copie."
+
+msgid "Prepare purge"
+msgstr "Préparer la purge"
+
+msgid "File received. Your browser has been asked to download it."
+msgstr "Fichier reçu. Le téléchargement a été demandé à votre navigateur."
+
+msgid "Download failed. Check your connection and permissions, then retry."
+msgstr "Échec du téléchargement. Vérifiez votre connexion et vos droits, puis réessayez."

@@ -3,6 +3,37 @@
     'use strict';
     const workspace = document.querySelector('.fw-workspace');
     if (!workspace) return;
+    const exportStatus = workspace.querySelector('.fw-export-status');
+    workspace.querySelectorAll('.fw-export-button').forEach(button => {
+        button.addEventListener('click', async event => {
+            event.preventDefault();
+            if (button.getAttribute('aria-busy') === 'true') return;
+            if (exportStatus) exportStatus.textContent = button.dataset.exportMessage || '';
+            button.setAttribute('aria-busy', 'true');
+            button.setAttribute('aria-disabled', 'true');
+            try {
+                const response = await fetch(button.href, { credentials: 'same-origin', cache: 'no-store' });
+                const disposition = response.headers.get('Content-Disposition') || '';
+                const filename = /^attachment; filename="(filewarden-audit-\d{4}-\d{2}-\d{2}\.(?:csv|txt|jsonl))"$/.exec(disposition);
+                if (!response.ok || response.redirected || !filename) throw new Error('Export refused');
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = filename[1];
+                document.body.append(link);
+                link.click();
+                link.remove();
+                setTimeout(() => URL.revokeObjectURL(url), 30000);
+                if (exportStatus) exportStatus.textContent = button.dataset.exportSuccess || '';
+            } catch {
+                if (exportStatus) exportStatus.textContent = button.dataset.exportError || '';
+            } finally {
+                button.removeAttribute('aria-busy');
+                button.removeAttribute('aria-disabled');
+            }
+        });
+    });
     const contexts = [...workspace.querySelectorAll('.fw-context')];
     const closeMenus = except => contexts.forEach(menu => { if (menu !== except) menu.open = false; });
     const position = menu => {
