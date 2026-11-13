@@ -119,4 +119,12 @@ final class FileValidatorTest extends TestCase {
         $path = $this->zip(array('[Content_Types].xml'=>'<Types/>','word/document.xml'=>'<document/>','_rels/.rels'=>$encoded));
         $this->expectException(\InvalidArgumentException::class); FileValidator::validate($path,'docx');
     }
+    public function test_odf_external_formula_is_refused(): void {
+        $path = $this->zip(array('mimetype'=>FileValidator::MIMES['ods'],'content.xml'=>'<o:document-content xmlns:o="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:t="urn:oasis:names:tc:opendocument:xmlns:table:1.0"><t:table-cell t:formula="of:=WEBSERVICE(&quot;https://example.test&quot;)"/></o:document-content>'));
+        $this->expectException(\InvalidArgumentException::class); FileValidator::validate($path,'ods');
+    }
+    public function test_odf_external_embedded_content_is_refused(): void {
+        $path = $this->zip(array('mimetype'=>FileValidator::MIMES['odt'],'content.xml'=>'<o:document-content xmlns:o="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:x="http://www.w3.org/1999/xlink"><o:section x:href="file:///private/secret"/></o:document-content>'));
+        $this->expectException(\InvalidArgumentException::class); FileValidator::validate($path,'odt');
+    }
 }

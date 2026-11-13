@@ -104,11 +104,6 @@ final class AdminWorkspace {
 			);
 			echo '<div class="wrap filewarden-admin fw-workspace"><header class="fw-heading"><div><span class="fw-brand">FILEWARDEN</span><h1>' . esc_html__( 'Document library', 'filewarden' ) . '</h1></div><span class="fw-version">' . esc_html( FILEWARDEN_VERSION ) . '</span></header>';
 			$this->notices();
-			if ( 'trash' === $this->tab ) {
-				TrashConsole::page( $this->service, $this->ui );
-				echo '</div>';
-				ob_end_flush();
-				return; }
 			$tabs = array( 'documents' => __( 'Documents', 'filewarden' ) );
 			if ( current_user_can( 'filewarden_upload_files' ) && current_user_can( 'filewarden_manage_permissions' ) ) {
 				$tabs['add'] = __( 'Add documents', 'filewarden' );
@@ -127,6 +122,11 @@ final class AdminWorkspace {
 			if ( ! isset( $tabs[ $this->tab ] ) ) {
 				throw new \DomainException( 'Access denied.' );
 			}
+			if ( 'trash' === $this->tab ) {
+				TrashConsole::page( $this->service, $this->ui );
+				echo '</div>';
+				ob_end_flush();
+				return; }
 			$panel = $this->input( 'panel' );
 			echo '<div class="fw-layout' . ( $panel ? ' has-panel' : '' ) . '"><aside class="fw-tree"><h2>' . esc_html__( 'Folders', 'filewarden' ) . '</h2><a class="fw-root fw-unfiled" href="' . esc_url(
 				$this->url(

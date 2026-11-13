@@ -58,6 +58,21 @@ module.exports = async ({ page, context, base, fixture, name }) => {
     await page.locator('[name=filewarden_save]').click();
     await page.waitForURL(/result=unsafe_file/);
     assert.ok((await page.locator('.notice-error').textContent()).includes('Scripts, macros'));
+    // Drop two files into the real drop target; a rejected member does not prevent a valid upload.
+    await page.locator('.fw-dropzone').evaluate((zone, files) => {
+        const transfer = new DataTransfer();
+        for (const file of files) transfer.items.add(new File([Uint8Array.from(atob(file.bytes), c => c.charCodeAt(0))], file.name));
+        zone.dispatchEvent(new DragEvent('drop', { bubbles: true, cancelable: true, dataTransfer: transfer }));
+    }, [
+        { name: 'dropped-' + name + '.txt', bytes: Buffer.from('Dropped text fixture\n').toString('base64') },
+        { name: 'dropped-unsafe-' + name + '.zip', bytes: fixture.unsafe_zip_base64 }
+    ]);
+    assert.equal(await page.locator('.fw-upload-item').count(), 2);
+    await page.locator('[name=filewarden_save]').click();
+    await page.waitForFunction(() => document.querySelector('form[data-filewarden-upload]').getAttribute('aria-busy') === null);
+    assert.match(await page.locator('.fw-upload-item').nth(0).textContent(), /Saved and verified/);
+    assert.match(await page.locator('.fw-upload-item').nth(1).textContent(), /Scripts, macros/);
+    await page.screenshot({ path: 'build/screenshots/upload-queue-' + name + '.png', fullPage: true });
     // 05/06: create using the selected parent and inherited policy, then confirm leaf deletion.
     await page.goto(publicFolder + '&tab=folder');
     await page.locator('#fw-name').fill('created-ui-' + name);
@@ -85,6 +100,8 @@ module.exports = async ({ page, context, base, fixture, name }) => {
     const formData = await purgeForm.evaluate(form => Object.fromEntries(new FormData(form)));
     const endpoint = await purgeForm.getAttribute('action');
     assert.equal((await context.request.post(endpoint, { form: { ...formData, confirm: '1', _wpnonce: 'invalid' } })).status(), 403);
+    const noConfirmation = await context.request.post(endpoint, { form: formData });
+    assert.ok(noConfirmation.url().includes('result=invalid'), 'Permanent disposal accepted absent confirmation');
     assert.ok(await page.locator('.fw-trash-confirm').getByRole('button', { name: 'Confirm permanent deletion' }).isVisible());
     await purgeForm.locator('[name=confirm]').check();
     await purgeForm.getByRole('button', { name: 'Confirm permanent deletion' }).click();
@@ -95,6 +112,19 @@ module.exports = async ({ page, context, base, fixture, name }) => {
     await page.getByRole('heading', { name: 'Permanently delete these documents?', exact: true }).waitFor();
     assert.equal(await page.locator('.fw-trash-confirm [name=confirm]').isChecked(), false);
     await page.goto(documents + '&tab=trash'); // cancel; no irreversible bulk request is sent.
+    if (name === 'firefox') {
+        await page.goto(publicFolder);
+        const queued = page.locator('tbody tr').filter({ hasText: 'queued-' + name + '.zip' });
+        await queued.locator('.fw-context summary').click();
+        await go(queued.getByRole('link', { name: 'Move to trash', exact: true }));
+        await page.getByRole('button', { name: 'Move to trash', exact: true }).click();
+        await page.waitForURL(/result=success/);
+        await page.goto(documents + '&tab=trash&trash_action=empty');
+        await page.locator('.fw-trash-confirm [name=confirm]').check();
+        await page.locator('.fw-trash-confirm').getByRole('button', { name: 'Confirm permanent deletion' }).click();
+        await page.waitForURL(/result=success/);
+        assert.equal(await page.getByRole('link', { name: 'Restore', exact: true }).count(), 0);
+    }
     await page.setViewportSize({ width: 375, height: 812 });
     await page.screenshot({ path: 'build/screenshots/global-trash-mobile-' + name + '.png', fullPage: true });
     await page.setViewportSize({ width: 1280, height: 900 });

@@ -223,8 +223,12 @@ final class FileValidator {
 						throw new \InvalidArgumentException( 'Active Office content is not allowed.' ); }
 					if ( 'instr' === $attribute->localName ) {
 						$instruction = $attribute->value; }
+					if ( 'formula' === $attribute->localName && preg_match( '/DDE(?:AUTO)?\b|WEBSERVICE\s*\(|HYPERLINK\s*\(|RTD\s*\(|\|/i', $attribute->value ) ) {
+						throw new \InvalidArgumentException( 'Active Office content is not allowed.' ); }
+					if ( 'href' === $attribute->localName && preg_match( '#^(?:[a-z][a-z0-9+.-]*:|//)|(?:^|/)\.\.(?:/|$)#i', trim( $attribute->value ) ) ) {
+						throw new \InvalidArgumentException( 'Active Office content is not allowed.' ); }
 				}
-				if ( in_array( $node->localName, array( 'script', 'scripts', 'event-listener', 'event-listeners' ), true ) || str_contains( (string) $node->namespaceURI, 'opendocument:xmlns:script' ) ) {
+				if ( in_array( $node->localName, array( 'script', 'scripts', 'event-listener', 'event-listeners', 'dde-link', 'dde-links', 'dde-source' ), true ) || str_contains( (string) $node->namespaceURI, 'opendocument:xmlns:script' ) ) {
 					throw new \InvalidArgumentException( 'Active Office content is not allowed.' ); }
 				if ( in_array( $node->localName, array( 'instrText', 'fldSimple', 'f' ), true ) && preg_match( '/DDE(?:AUTO)?\b|INCLUDETEXT|WEBSERVICE\s*\(|HYPERLINK\s*\(|RTD\s*\(|\|/i', $node->textContent . ' ' . $instruction ) ) {
 					throw new \InvalidArgumentException( 'Active Office content is not allowed.' ); }

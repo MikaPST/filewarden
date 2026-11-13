@@ -3,6 +3,12 @@
 if ( ! defined( 'WP_CLI' ) || ! WP_CLI || '1' !== getenv( 'FILEWARDEN_TESTING' ) ) { exit( 1 ); }
 wp_set_current_user( 1 );
 $life = new FileWarden\Lifecycle( $service );
+$restricted_counter = new WP_User( $users['subscriber'] );
+$restricted_counter->add_cap( 'filewarden_manage_permissions' );
+wp_set_current_user( $restricted_counter->ID );
+fw_assert( array() === FileWarden\DocumentCollection::rows( $service, false ), 'Permission-management capability disclosed recovery without settings access.' );
+$restricted_counter->remove_cap( 'filewarden_manage_permissions' );
+wp_set_current_user( 1 );
 $initial_count = count( FileWarden\DocumentCollection::rows( $service, false ) );
 $recovery_fixtures = array();
 for ( $i = 0; $i < 3; ++$i ) {
@@ -47,6 +53,30 @@ fw_reject( fn() => $life->trash( $trashed['id'], true ), InvalidArgumentExceptio
 $life->trash( $trashed['id'], true, $public_folder );
 fw_assert( $public_folder === (int) $repository->document( $trashed['id'] )['folder_id'], 'Recovered trash restoration did not use the explicit destination.' );
 
+// A mid-recovery database failure rolls back earlier updates and preserves the folder.
+$rollback_folder = $service->create_folder( 'Recovery rollback fixture', 0, array( 'type' => 'authenticated' ) );
+$rollback_rows = array();
+for ( $i = 0; $i < 2; ++$i ) {
+    $plan = $life->plan( $ids['public'], $rollback_folder );
+    $copy = $life->transfer( 'copy', $ids['public'], $rollback_folder, 'rollback-' . $i . '.pdf', $plan['proof'] );
+    $rollback_rows[$copy['id']] = $repository->document( $copy['id'], true );
+}
+$writes = 0;
+$fail_second = static function ( $sql ) use ( &$writes, $wpdb ) {
+    if ( str_starts_with( $sql, 'UPDATE `' . $wpdb->prefix . 'filewarden_documents`' ) && str_contains( $sql, '`folder_id` = 0' ) && ++$writes === 2 ) {
+        return 'FILEWARDEN_INTENTIONAL_RECOVERY_FAILURE';
+    }
+    return $sql;
+};
+$previous_errors = $wpdb->suppress_errors( true );
+add_filter( 'query', $fail_second );
+try { fw_reject( fn() => FileWarden\FolderLifecycle::remove( $service, $rollback_folder ), RuntimeException::class, 'Injected recovery failure was accepted.' ); }
+finally { remove_filter( 'query', $fail_second ); $wpdb->suppress_errors( $previous_errors ); }
+fw_assert( 2 === $writes && null !== $repository->folder( $rollback_folder ), 'Rollback fixture did not exercise the second write or lost its folder.' );
+foreach ( $rollback_rows as $uuid => $before ) {
+    fw_assert( $before === $repository->document( $uuid, true ), 'Failed folder deletion partially moved a document.' );
+}
+
 // Explicit disposal needs a current review, never permits active files or read-only users.
 $life->trash( $trashed['id'] );
 $review = FileWarden\TrashService::review( $service, $trashed['id'] );
@@ -68,9 +98,17 @@ $export = new ReflectionMethod( FileWarden\AuditConsole::class, 'export_record' 
 $event = $export->invoke( null, $audit_rows[0] );
 fw_assert( 2 === $event['schema_version'] && 1 === preg_match( '/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/', $event['created_at_UTC'] ), 'Audit JSONL version or UTC ISO 8601 date is missing.' );
 fw_assert( 'deleted-origin.pdf' === $event['resource_name'], 'Authorized audit export lost a deleted resource name.' );
+$malformed = $audit_rows[0];
+$malformed['resource_rules'] = '{"policies":"invalid"}';
+fw_assert( '' === (new ReflectionMethod(FileWarden\AuditConsole::class,'resource_name'))->invoke(null,$malformed), 'Invalid stored resource rules disclosed a deleted name.' );
 wp_set_current_user( 0 );
 fw_assert( '' === (new ReflectionMethod(FileWarden\AuditConsole::class,'resource_name'))->invoke(null,$audit_rows[0]), 'Deleted private resource snapshot leaked to an anonymous reader.' );
+$service->audit->record( 'audit_system_fixture' );
 wp_set_current_user( 1 );
+$system_rows = FileWarden\AuditHistory::rows( FileWarden\AuditHistory::filters( array('event'=>'audit_system_fixture') ), FileWarden\AuditHistory::upper() );
+fw_assert( 'system' === $system_rows[0]['actor_type'] && 0 === (int) $system_rows[0]['actor_id'], 'CLI action was labelled as an anonymous visitor.' );
+$legacy = $system_rows[0]; $legacy['actor_type'] = '';
+fw_assert( 'unknown' === $export->invoke(null,$legacy)['actor_type'], 'Legacy actor zero was invented as visitor or system.' );
 
 // Partial settings save cannot reset any other category.
 update_option( 'filewarden_trash_days', 47 );
