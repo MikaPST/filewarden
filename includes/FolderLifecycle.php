@@ -69,7 +69,7 @@ final class FolderLifecycle {
 							) : null ),
 						),
 						array( 'id' => $row['id'] ),
-						array( '%d', '%s' ),
+						array( '%d', '%s', '%s' ),
 						array( '%d' )
 					) ) {
 						throw new \RuntimeException( 'Recovery write failed.' ); }

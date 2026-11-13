@@ -208,11 +208,16 @@ final class AuditConsole {
 			return ( new PermissionService( array( $repo, 'folder' ) ) )->can_read( $record, $user ) ? (string) ( ! empty( $row['resource_name'] ) ? $row['resource_name'] : $record['name'] ) : '';
 		}
 		$saved = json_decode( $row['resource_rules'] ?? '', true );
-		if ( empty( $saved['policies'] ) || empty( $row['resource_name'] ) ) {
+		if ( ! is_array( $saved ) || empty( $saved['policies'] ) || ! is_array( $saved['policies'] ) || ! array_is_list( $saved['policies'] ) || empty( $row['resource_name'] ) ) {
 			return ''; }
 		if ( ! empty( $saved['recovery'] ) && ! ( $user->has_cap( 'filewarden_manage_settings' ) && $user->has_cap( 'filewarden_manage_permissions' ) ) ) {
 			return ''; }
 		foreach ( $saved['policies'] as $policy ) {
+			try {
+				Policy::validate( $policy, array_keys( wp_roles()->roles ), true );
+			} catch ( \InvalidArgumentException $error ) {
+				return '';
+			}
 			if ( ! $user->has_cap( 'filewarden_read_all_files' ) && ! Policy::allows( $policy, $user->exists(), $user->roles ) ) {
 				return ''; }
 		}
@@ -228,17 +233,19 @@ final class AuditConsole {
 		$date  = \DateTimeImmutable::createFromFormat( '!Y-m-d H:i:s', $row['created_at'], new \DateTimeZone( 'UTC' ) );
 		$event = (string) $row['event'];
 		$type  = $row['resource_type'] ?? '';
+		$login = self::actor_login( $row );
+		$name  = self::resource_name( $row );
 		return array(
 			'schema_version'     => 2,
 			'id'                 => (int) $row['id'],
 			'created_at_UTC'     => $date ? $date->format( 'Y-m-d\TH:i:s\Z' ) : null,
 			'event'              => $event,
 			'actor_id'           => (int) $row['actor_id'],
-			'actor_login'        => self::actor_login( $row ) ? self::actor_login( $row ) : null,
+			'actor_login'        => $login ? $login : null,
 			'actor_type'         => ! empty( $row['actor_type'] ) ? $row['actor_type'] : ( $row['actor_id'] ? 'user' : 'unknown' ),
 			'resource_type'      => $type ? $type : null,
 			'resource_id'        => $type ? (int) $row['object_id'] : null,
-			'resource_name'      => self::resource_name( $row ) ? self::resource_name( $row ) : null,
+			'resource_name'      => $name ? $name : null,
 			'outcome'            => str_contains( $event, 'denied' ) ? 'denied' : ( str_contains( $event, 'failed' ) ? 'failure' : ( str_ends_with( $event, '_requested' ) ? 'requested' : 'success' ) ),
 			'object_id_or_count' => (int) $row['object_id'],
 		);
