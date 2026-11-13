@@ -25,7 +25,7 @@ Le propriétaire a autorisé le développement et la publication GitHub après r
 - La lecture d’audit et la purge conservent leurs capacités distinctes. Un nom de document/dossier exige aussi la lecture du contenu selon les règles existantes. Les exports restent réservés aux lecteurs d’audit avec nonce valide ; aucune ressource temporaire publique.
 - Les exports utilisent le même instantané et les mêmes filtres, par lots serveur de 1 000 lignes. CSV/TXT neutralisent les formules et séparateurs ; JSONL encode les caractères au format JSON.
 - Avec JavaScript, le navigateur reçoit le fichier dans un Blob avant de déclencher son téléchargement, ce qui permet de signaler les refus et erreurs réseau. Cela utilise de la mémoire proportionnelle à l’export. Sans JavaScript, les liens conservent le téléchargement natif avec flux serveur. L’interface annonce la réception et la demande de téléchargement ; elle ne prétend pas confirmer une sauvegarde sur disque.
-- Les couleurs d’action utilisent les jetons sémantiques de la charte 1.1 intégrée depuis GitHub. Les règles de contenu frontend restent configurables.
+- Les couleurs d’action utilisent les jetons sémantiques de la charte 1.1 intégrée depuis GitHub. Les pictogrammes approuvés `folder-plus`, `file-plus-2`, `shield-check` et `trash-2` sont embarqués depuis Lucide 0.468.0 avec leur licence ISC, sans dépendance d’exécution. Publication reste sans pictogramme. Les règles de contenu frontend restent configurables.
 
 ## État des validations
 

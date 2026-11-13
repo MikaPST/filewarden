@@ -30,6 +30,7 @@ foreach ( new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $root .
 foreach ( glob( $root . '/assets/icons/*.svg' ) as $file ) {
 $files[] = 'assets/icons/' . basename( $file );
 }
+$files[] = 'assets/icons/LICENSE-lucide.txt';
 foreach ( glob( $root . '/includes/*.php' ) as $file ) {
 	$files[] = 'includes/' . basename( $file );
 }

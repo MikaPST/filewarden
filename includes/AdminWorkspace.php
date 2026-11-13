@@ -131,14 +131,14 @@ final class AdminWorkspace {
 			) . '"><span class="dashicons dashicons-archive" aria-hidden="true"></span><span>' . esc_html__( 'Documents to classify', 'filewarden' ) . '</span><small class="fw-unfiled-badge">' . esc_html__( 'Not published', 'filewarden' ) . '</small></a>';
 			$this->tree( 0, array() );
 			if ( isset( $tabs['folder'] ) ) {
-				echo '<a class="fw-tree-create" href="' . esc_url( $this->url( array( 'tab' => 'folder' ) ) ) . '">+ ' . esc_html__( 'Create folder', 'filewarden' ) . '</a>';
+				echo '<a class="fw-tree-create" href="' . esc_url( $this->url( array( 'tab' => 'folder' ) ) ) . '"><span class="fw-action-icon fw-icon-folder-plus" aria-hidden="true"></span>' . esc_html__( 'Create folder', 'filewarden' ) . '</a>';
 			}
 			echo '</aside><section class="fw-content"><div class="fw-folder-heading"><div><span class="fw-eyebrow">' . esc_html__( 'Current folder', 'filewarden' ) . '</span><h2>' . esc_html( $current['name'] ) . '</h2></div><div class="filewarden-access"><span class="filewarden-policy">' . esc_html( $this->folder ? AccessSummary::effective( $current, $this->service->repository )['label'] : __( 'Not published', 'filewarden' ) ) . '</span>';
 			if ( $this->folder && current_user_can( 'filewarden_manage_permissions' ) ) {
-				echo '<a class="button" href="' . esc_url( $this->url( array( 'panel' => 'folder_rights' ) ) ) . '">' . esc_html__( 'Edit access rules', 'filewarden' ) . '</a>';
+				echo '<a class="button" href="' . esc_url( $this->url( array( 'panel' => 'folder_rights' ) ) ) . '"><span class="fw-action-icon fw-icon-shield-check" aria-hidden="true"></span>' . esc_html__( 'Edit access rules', 'filewarden' ) . '</a>';
 			}
 			if ( $this->folder && $this->can_action( 'delete_folder' ) ) {
-				echo '<a class="button" href="' . esc_url( $this->url( array( 'panel' => 'delete_folder' ) ) ) . '">' . esc_html__( 'Delete folder', 'filewarden' ) . '</a>'; }
+				echo '<a class="button" href="' . esc_url( $this->url( array( 'panel' => 'delete_folder' ) ) ) . '"><span class="fw-action-icon fw-icon-trash-2" aria-hidden="true"></span>' . esc_html__( 'Delete folder', 'filewarden' ) . '</a>'; }
 			echo '</div></div>';
 			if ( 'documents' === $this->tab || 'trash' === $this->tab ) {
 				if ( ! $this->folder && 'unfiled' !== $this->input( 'collection' ) && 'documents' === $this->tab ) {
@@ -161,7 +161,7 @@ final class AdminWorkspace {
 				$this->ui->form_start( 'folder' );
 				echo '<p><label for="fw-name">' . esc_html__( 'Folder name', 'filewarden' ) . '</label><input id="fw-name" name="name" maxlength="255" required></p>';
 				$this->ui->policy_fields( 'folder', $this->folder );
-				submit_button( __( 'Create folder', 'filewarden' ) );
+				echo '<p class="submit"><button class="button button-primary" type="submit" name="submit"><span class="fw-action-icon fw-icon-folder-plus" aria-hidden="true"></span>' . esc_html__( 'Create folder', 'filewarden' ) . '</button></p>';
 				echo '</form></section>';
 			}
 			echo '</section>';
@@ -339,7 +339,7 @@ final class AdminWorkspace {
 		}
 		echo '</nav><p class="fw-explanation">' . esc_html__( 'A file can restrict access, never broaden the access allowed by its folder. Global-read administrators remain an explicit exception.', 'filewarden' ) . '</p>';
 		if ( ! $trash && $this->folder ) {
-			echo '<a class="button" href="' . esc_url(
+			echo '<a class="button button-primary" href="' . esc_url(
 				add_query_arg(
 					array(
 						'page'      => 'filewarden-publication',
@@ -396,7 +396,7 @@ final class AdminWorkspace {
 					$this->ui->form_start( 'delete_folder' );
 					$this->hidden( 'folder_id', $this->folder );
 					echo '<p class="fw-warning">' . esc_html__( 'Delete this folder? Its files will be recovered in Documents to classify, unpublished and without automatic deletion. Existing file restrictions will be retained.', 'filewarden' ) . '</p>';
-					submit_button( __( 'Confirm folder deletion', 'filewarden' ), 'primary', 'confirm_action', false );
+					echo '<button class="button button-primary fw-button-danger" type="submit" name="confirm_action"><span class="fw-action-icon fw-icon-trash-2" aria-hidden="true"></span>' . esc_html__( 'Confirm folder deletion', 'filewarden' ) . '</button>';
 					echo '</form>';
 					}
 			} elseif ( 'rights' === $action || $is_folder ) {
@@ -415,7 +415,7 @@ final class AdminWorkspace {
 					echo '<p class="description">' . esc_html__( 'Changing this folder immediately changes access to its documents. File-specific restrictions are preserved.', 'filewarden' ) . '</p>';
 				}
 				echo '<p class="fw-warning fw-public-warning"' . ( $effective['conflict'] ? '' : ' hidden' ) . '>' . esc_html( $is_folder ? __( 'This folder cannot be made public while an ancestor is restricted. All ancestor restrictions remain in force.', 'filewarden' ) : __( 'This file cannot be made public here. Its folder is restricted. Selecting Public does not remove the folder restrictions: unauthorized visitors will still not see or download this file.', 'filewarden' ) ) . '</p>';
-				submit_button( __( 'Save access rules', 'filewarden' ), 'primary', 'save_policy', false );
+				echo '<button class="button button-primary" type="submit" name="save_policy"><span class="fw-action-icon fw-icon-shield-check" aria-hidden="true"></span>' . esc_html__( 'Save access rules', 'filewarden' ) . '</button>';
 				echo '</form></div>';
 			} elseif ( 'move' === $action || 'copy' === $action ) {
 				$this->transfer_panel( $action, $row, $lifecycle );

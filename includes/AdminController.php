@@ -363,7 +363,7 @@ final class AdminController {
 			echo '<p><button type="button" class="button" id="fw-media-picker">' . esc_html__( 'Choose a media file', 'filewarden' ) . '</button> <span id="fw-media-title" role="status">' . esc_html( $title ) . '</span></p></fieldset>';
 		}
 		$this->policy_fields( 'document', $folder );
-		submit_button( __( 'Add to this folder', 'filewarden' ), 'primary', 'filewarden_save' );
+		echo '<p class="submit"><button class="button button-primary" type="submit" name="filewarden_save"><span class="fw-action-icon fw-icon-file-plus-2" aria-hidden="true"></span>' . esc_html__( 'Add to this folder', 'filewarden' ) . '</button></p>';
 		echo '</form>';
 	}
 
