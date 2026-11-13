@@ -711,3 +711,249 @@ msgstr "Fichier reçu. Le téléchargement a été demandé à votre navigateur.
 
 msgid "Download failed. Check your connection and permissions, then retry."
 msgstr "Échec du téléchargement. Vérifiez votre connexion et vos droits, puis réessayez."
+
+msgid "Dismiss notification"
+msgstr "Fermer la notification"
+
+msgid "Invalid extension, empty file or size limit exceeded."
+msgstr "Extension invalide, fichier vide ou taille maximale dépassée."
+
+msgid "Ready for server validation"
+msgstr "Prêt pour la validation du serveur"
+
+msgid "Uploading and validating…"
+msgstr "Téléversement et validation…"
+
+msgid "Saved and verified"
+msgstr "Enregistré et vérifié"
+
+msgid "Upload failed. Check the file, permissions and connection, then retry."
+msgstr "Échec de l’ajout. Vérifiez le fichier, les droits et la connexion, puis réessayez."
+
+msgid "Parent folder"
+msgstr "Dossier parent"
+
+msgid "Documents to classify — Not published"
+msgstr "Documents à classer — Non publié"
+
+msgid "Drop your documents here or select files"
+msgstr "Glissez vos documents ici ou sélectionnez des fichiers"
+
+msgid "The parent folder rules will be inherited according to FileWarden permissions."
+msgstr "Les droits du dossier parent seront hérités selon les règles FileWarden."
+
+msgid "File refused: unsafe content or archive limits exceeded. Scripts, macros, encrypted and nested archives are not accepted."
+msgstr "Fichier refusé : contenu dangereux ou limites des archives dépassées. Les scripts, macros et archives chiffrées ou imbriquées sont refusés."
+
+msgid "Secure file inspection is unavailable. Ask your host to check PHP ZIP, XML support and the private temporary directory."
+msgstr "Le contrôle sécurisé des fichiers est indisponible. Demandez à votre hébergeur de vérifier PHP ZIP, XML et le dossier temporaire privé."
+
+msgid "Remove the subfolders first. The folder and its documents were preserved."
+msgstr "Supprimez d’abord les sous-dossiers. Le dossier et ses documents ont été conservés."
+
+msgid "Folder deletion requires transactional database tables (InnoDB). Ask your host to check the three FileWarden tables. No folder was deleted."
+msgstr "La suppression exige des tables de base de données transactionnelles (InnoDB). Demandez à votre hébergeur de vérifier les trois tables FileWarden. Aucun dossier n’a été supprimé."
+
+msgid "Folder recovery could not be completed. The transaction was rolled back; check the database and retry."
+msgstr "La récupération du dossier n’a pas pu aboutir. La transaction a été annulée ; vérifiez la base de données et réessayez."
+
+msgid "Classify later"
+msgstr "Classer plus tard"
+
+msgid "Remove this document from publication?"
+msgstr "Retirer ce document de la publication ?"
+
+msgid "The document will no longer be accessible from FileWarden publications. It will remain available in Documents to classify for authorized users."
+msgstr "Le document ne sera plus accessible depuis les publications FileWarden. Il restera disponible dans Documents à classer pour les utilisateurs autorisés."
+
+msgid "Confirm classification"
+msgstr "Confirmer le déplacement"
+
+msgid "Visitor not logged in"
+msgstr "Visiteur non connecté"
+
+msgid "System action"
+msgstr "Action système"
+
+msgid "Unknown legacy actor"
+msgstr "Acteur historique non renseigné"
+
+msgid "Folder permission change requested"
+msgstr "Modification des droits du dossier demandée"
+
+msgid "Folder permissions changed"
+msgstr "Droits du dossier modifiés"
+
+msgid "FileWarden currently supports single-site WordPress only."
+msgstr "FileWarden prend actuellement en charge uniquement WordPress en site unique."
+
+msgid "Enable the PHP Sodium extension for this site, then reload this page."
+msgstr "Activez l’extension PHP Sodium pour ce site, puis rechargez cette page."
+
+msgid "The FileWarden storage directory is a symbolic link. Use a regular directory."
+msgstr "Le dossier de stockage FileWarden est un lien symbolique. Utilisez un dossier ordinaire."
+
+msgid "PHP cannot create or write the FileWarden storage directory. Check the owner and permissions of wp-content and filewarden-storage with your host."
+msgstr "PHP ne peut pas créer le dossier de stockage FileWarden ou y écrire. Vérifiez avec votre hébergeur le propriétaire et les permissions de wp-content et filewarden-storage."
+
+msgid "FileWarden requires reactivation to install its database schema."
+msgstr "FileWarden doit être réactivé pour installer son schéma de base de données."
+
+msgid "Preview state"
+msgstr "État de l’aperçu"
+
+msgid "Authorized display"
+msgstr "Affichage autorisé"
+
+msgid "Resource unavailable."
+msgstr "Ressource indisponible."
+
+msgid "Invalid input, file type or size."
+msgstr "Champ, type de fichier ou taille invalide."
+
+msgid "Rename the file or cancel. Version creation is not available yet."
+msgstr "Renommez le fichier ou annulez. La création de versions n’est pas encore disponible."
+
+msgid "Operation unavailable. Check FileWarden diagnostics."
+msgstr "Opération indisponible. Consultez le diagnostic FileWarden."
+
+msgid "Not verified"
+msgstr "Non vérifié"
+
+msgid "Verified"
+msgstr "Vérifié"
+
+msgid "Critical"
+msgstr "Critique"
+
+msgid "FileWarden health"
+msgstr "État de FileWarden"
+
+msgid "Storage"
+msgstr "Stockage"
+
+msgid "Configuration"
+msgstr "Configuration"
+
+msgid "Warning: server upload limits or ZIP support restrict available imports."
+msgstr "Avertissement : les limites du serveur ou la prise en charge ZIP restreignent les imports disponibles."
+
+msgid "Required upload capabilities are available."
+msgstr "Les capacités nécessaires à l’ajout de documents sont disponibles."
+
+msgid "Last check"
+msgstr "Dernière vérification"
+
+msgid "General"
+msgstr "Général"
+
+msgid "Storage and security"
+msgstr "Stockage et sécurité"
+
+msgid "Documents and limits"
+msgstr "Documents et limites"
+
+msgid "Retention"
+msgstr "Conservation"
+
+msgid "Settings categories"
+msgstr "Catégories de réglages"
+
+msgid "Single-site document management. Publishing and document permissions remain independent of these limits."
+msgstr "Gestion documentaire pour un site unique. La publication et les droits des documents restent indépendants de ces limites."
+
+msgid "Documents are stored separately from the plugin. Storage operations remain blocked until protection is verified."
+msgstr "Les documents sont stockés séparément de l’extension. Les opérations de stockage restent bloquées jusqu’à la vérification de leur protection."
+
+msgid "ZIP files remain downloadable archives; they are inspected but never extracted automatically."
+msgstr "Les fichiers ZIP restent des archives téléchargeables ; ils sont inspectés mais jamais extraits automatiquement."
+
+msgid "Executable files, active content, macros and unsafe archives are refused."
+msgstr "Les exécutables, contenus actifs, macros et archives dangereuses sont refusés."
+
+msgid "Open audit log"
+msgstr "Ouvrir le journal d’audit"
+
+msgid "Global trash"
+msgstr "Corbeille globale"
+
+msgid "All deleted documents you are allowed to manage. Automatic retention still applies."
+msgstr "Tous les documents supprimés que vous êtes autorisé à gérer. La conservation automatique reste applicable."
+
+msgid "Folder"
+msgstr "Dossier"
+
+msgid "All folders"
+msgstr "Tous les dossiers"
+
+msgid "Original location"
+msgstr "Emplacement d’origine"
+
+msgid "Deleted on"
+msgstr "Date de suppression"
+
+msgid "Unknown original location"
+msgstr "Emplacement d’origine inconnu"
+
+msgid "Delete permanently"
+msgstr "Supprimer définitivement"
+
+msgid "Empty trash"
+msgstr "Vider la corbeille"
+
+msgid "The original folder is unavailable. Choose an authorized destination before restoring."
+msgstr "Le dossier d’origine n’est plus disponible. Choisissez une destination autorisée avant de restaurer."
+
+msgid "Select a destination"
+msgstr "Sélectionner une destination"
+
+msgid "Permanently delete these documents?"
+msgstr "Supprimer définitivement ces documents ?"
+
+msgid "documents selected. This action cannot be undone."
+msgstr "documents sélectionnés. Cette action est irréversible."
+
+msgid "I understand these documents cannot be restored."
+msgstr "Je comprends que ces documents ne pourront pas être restaurés."
+
+msgid "Confirm permanent deletion"
+msgstr "Confirmer la suppression définitive"
+
+msgid "Preview unavailable, access expired or document protected by a password. You can try downloading the document."
+msgstr "Aperçu indisponible, accès expiré ou document protégé par un mot de passe. Vous pouvez essayer de télécharger le document."
+
+msgid "Loading document…"
+msgstr "Chargement du document…"
+
+msgid "Page"
+msgstr "Page"
+
+msgid "Document actions"
+msgstr "Actions du document"
+
+msgid "Open in new tab"
+msgstr "Ouvrir dans un nouvel onglet"
+
+msgid "Viewer controls"
+msgstr "Commandes de l’aperçu"
+
+msgid "Previous page"
+msgstr "Page précédente"
+
+msgid "Next page"
+msgstr "Page suivante"
+
+msgid "Zoom"
+msgstr "Zoom"
+
+msgid "Fit width"
+msgstr "Adapter à la largeur"
+
+msgid "Enable JavaScript to use the viewer, or download the document."
+msgstr "Activez JavaScript pour utiliser l’aperçu, ou téléchargez le document."
+
+msgid "Server limits or missing PHP extensions restrict imports. Review Storage and security before uploading."
+msgstr "Les limites du serveur ou des extensions PHP manquantes restreignent les imports. Consultez Stockage et sécurité avant d’ajouter des fichiers."
+
+msgid "Only authorized deleted documents are shown. Restoring requires an authorized destination."
+msgstr "Seuls les documents supprimés autorisés sont affichés. La restauration exige une destination autorisée."

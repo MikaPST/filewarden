@@ -23,7 +23,7 @@ function fw_request( $method, $route, $params = array() ) {
 wp_set_current_user( 1 );
 FileWarden\Installer::activate();
 FileWarden\Installer::migrate();
-fw_assert( '5' === get_option( 'filewarden_schema' ), 'Repeatable migration failed.' );
+fw_assert( '6' === get_option( 'filewarden_schema' ), 'Repeatable migration failed.' );
 
 $repository = new FileWarden\Repository();
 $permission = new FileWarden\PermissionService( array( $repository, 'folder' ) );
@@ -201,4 +201,5 @@ fw_assert( 'public' === $repository->folder( $policy_folder )['policy']['type'],
 file_put_contents( getenv( 'FILEWARDEN_FIXTURES' ), wp_json_encode( $ids ) );
 require __DIR__ . '/lifecycle-integration.php';
 require __DIR__ . '/navigation-integration.php';
+require __DIR__ . '/ten-evolutions-integration.php';
 WP_CLI::success( 'Integration assertions passed.' );

@@ -118,7 +118,7 @@ final class AuditHistory {
 		self::authorize();
 		$where = self::where( $filters, $upper );
         // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- where() returns exclusively prepared conditions.
-		$rows = $wpdb->get_results( $wpdb->prepare( "SELECT id, created_at, event, actor_id, actor_login, object_id FROM {$wpdb->prefix}filewarden_audit_logs WHERE $where ORDER BY id DESC LIMIT %d", min( 1000, max( 1, $limit ) ) ), ARRAY_A );
+		$rows = $wpdb->get_results( $wpdb->prepare( "SELECT id, created_at, event, actor_id, actor_login, object_id, actor_type, resource_type, resource_name, resource_rules FROM {$wpdb->prefix}filewarden_audit_logs WHERE $where ORDER BY id DESC LIMIT %d", min( 1000, max( 1, $limit ) ) ), ARRAY_A );
 		if ( $wpdb->last_error ) {
 			throw new \RuntimeException( 'Audit query failed.' ); }
 		return $rows ?? array();

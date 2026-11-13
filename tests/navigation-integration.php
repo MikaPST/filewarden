@@ -54,7 +54,7 @@ $audit_count_before = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix
 $wpdb->query( "ALTER TABLE {$wpdb->prefix}filewarden_audit_logs DROP COLUMN actor_login" );
 update_option( 'filewarden_schema', '4' );
 FileWarden\Installer::migrate();
-fw_assert( '5' === get_option( 'filewarden_schema' ), 'Schema 4 audit upgrade did not complete.' );
+fw_assert( '6' === get_option( 'filewarden_schema' ), 'Schema 4 audit upgrade did not complete.' );
 fw_assert( $audit_count_before === (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}filewarden_audit_logs" ), 'Schema 4 audit upgrade lost history.' );
 $service->audit->record( 'audit_actor_snapshot' );
 $actor_rows = FileWarden\AuditHistory::rows( FileWarden\AuditHistory::filters( array( 'event' => 'audit_actor_snapshot' ) ), FileWarden\AuditHistory::upper() );

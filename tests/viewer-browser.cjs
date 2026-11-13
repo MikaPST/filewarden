@@ -95,8 +95,9 @@ function pdfFixture() {
             assert.ok((await page.locator('#fw-shortcode').inputValue()).includes(fixture.folder_uuid));
             await page.locator('[name="view"][value="grid"]').check();
             assert.ok((await page.locator('#fw-shortcode').inputValue()).includes('view="grid"'));
+            await page.locator('[data-preview-mode="denied"]').click();
             await page.locator('[name="denied"][value="compact"]').check();
-            await page.locator('#fw-preview-denied').check();
+            assert.equal(await page.locator('[data-preview-mode="denied"]').getAttribute('aria-selected'), 'true');
             await page.frameLocator('.filewarden-publication-frame').locator('.fw-denied-compact').waitFor();
             assert.ok((await page.locator('#fw-shortcode').inputValue()).includes('denied="compact"'));
             await page.locator('#fw-preview-status').filter({ hasText: 'Preview updated.' }).waitFor();
@@ -138,6 +139,8 @@ function pdfFixture() {
             await page.getByRole('button', { name: 'Search', exact: true }).click();
             assert.equal(await page.locator('.document').count(), 0);
             await require('./workspace-browser.cjs')({ page, context, base, fixture, name });
+            await require('./ten-evolutions-browser.cjs')({ page, context, base, fixture, name });
+            await require('./notifications-browser.cjs')({ context, base });
             console.log(name + ': workspace, ACL, lifecycle, upload, previews and publication passed');
         } catch (error) {
             // Preserve synthetic fixture evidence instead of concealing a browser failure with retries.

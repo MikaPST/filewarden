@@ -87,8 +87,10 @@ final class AdminWorkspace {
 		ob_start();
 		try {
 			$this->folder = RestController::integer( $this->input( 'folder_id', '0' ) );
+			$this->tab    = $this->input( 'tab', 'documents' );
+			if ( 'trash' === $this->tab ) {
+				$this->folder = 0; }
 			$this->service->require_folder( $this->folder );
-			$this->tab = $this->input( 'tab', 'documents' );
 			if ( ! in_array( $this->tab, array( 'documents', 'add', 'folder', 'trash' ), true ) ) {
 				$this->tab = 'documents';
 			}
@@ -102,6 +104,11 @@ final class AdminWorkspace {
 			);
 			echo '<div class="wrap filewarden-admin fw-workspace"><header class="fw-heading"><div><span class="fw-brand">FILEWARDEN</span><h1>' . esc_html__( 'Document library', 'filewarden' ) . '</h1></div><span class="fw-version">' . esc_html( FILEWARDEN_VERSION ) . '</span></header>';
 			$this->notices();
+			if ( 'trash' === $this->tab ) {
+				TrashConsole::page( $this->service, $this->ui );
+				echo '</div>';
+				ob_end_flush();
+				return; }
 			$tabs = array( 'documents' => __( 'Documents', 'filewarden' ) );
 			if ( current_user_can( 'filewarden_upload_files' ) && current_user_can( 'filewarden_manage_permissions' ) ) {
 				$tabs['add'] = __( 'Add documents', 'filewarden' );
@@ -128,7 +135,7 @@ final class AdminWorkspace {
 						'collection' => 'unfiled',
 					)
 				)
-			) . '"><span class="dashicons dashicons-archive" aria-hidden="true"></span><span>' . esc_html__( 'Documents to classify', 'filewarden' ) . '</span><small class="fw-unfiled-badge">' . esc_html__( 'Not published', 'filewarden' ) . '</small></a>';
+			) . '"><span class="dashicons dashicons-archive" aria-hidden="true"></span><span>' . esc_html__( 'Documents to classify', 'filewarden' ) . ' <span class="fw-recovery-count">(' . esc_html( current_user_can( 'filewarden_manage_permissions' ) ? number_format_i18n( count( DocumentCollection::rows( $this->service, false ) ) ) : '—' ) . ')</span></span><small class="fw-unfiled-badge">' . esc_html__( 'Not published', 'filewarden' ) . '</small></a>';
 			$this->tree( 0, array() );
 			if ( isset( $tabs['folder'] ) ) {
 				echo '<a class="fw-tree-create" href="' . esc_url( $this->url( array( 'tab' => 'folder' ) ) ) . '"><span class="fw-action-icon fw-icon-folder-plus" aria-hidden="true"></span>' . esc_html__( 'Create folder', 'filewarden' ) . '</a>';
@@ -161,6 +168,7 @@ final class AdminWorkspace {
 				$this->ui->form_start( 'folder' );
 				echo '<p><label for="fw-name">' . esc_html__( 'Folder name', 'filewarden' ) . '</label><input id="fw-name" name="name" maxlength="255" required></p>';
 				$this->ui->policy_fields( 'folder', $this->folder );
+				echo '<p class="description">' . esc_html__( 'The parent folder rules will be inherited according to FileWarden permissions.', 'filewarden' ) . '</p>';
 				echo '<p class="submit"><button class="button button-primary" type="submit" name="submit"><span class="fw-action-icon fw-icon-folder-plus" aria-hidden="true"></span>' . esc_html__( 'Create folder', 'filewarden' ) . '</button></p>';
 				echo '</form></section>';
 			}
@@ -183,6 +191,11 @@ final class AdminWorkspace {
 			return;
 		}
 		$messages = array(
+			'unsafe_file'  => __( 'File refused: unsafe content or archive limits exceeded. Scripts, macros, encrypted and nested archives are not accepted.', 'filewarden' ),
+			'inspection'   => __( 'Secure file inspection is unavailable. Ask your host to check PHP ZIP, XML support and the private temporary directory.', 'filewarden' ),
+			'subfolders'   => __( 'Remove the subfolders first. The folder and its documents were preserved.', 'filewarden' ),
+			'transaction'  => __( 'Folder deletion requires transactional database tables (InnoDB). Ask your host to check the three FileWarden tables. No folder was deleted.', 'filewarden' ),
+			'recovery'     => __( 'Folder recovery could not be completed. The transaction was rolled back; check the database and retry.', 'filewarden' ),
 			'policy_saved' => __( 'Access rules saved. The most restrictive rules apply immediately.', 'filewarden' ),
 			'success'      => __( 'Operation completed.', 'filewarden' ),
 			'duplicate'    => __( 'A file with this name exists. Rename it or cancel. Versions arrive in a later milestone.', 'filewarden' ),
@@ -457,15 +470,19 @@ final class AdminWorkspace {
 		}
 		echo '<p><label for="fw-destination">' . esc_html__( 'Destination folder', 'filewarden' ) . '</label><select id="fw-destination" name="destination_id">';
 		foreach ( $this->service->folder_choices() as $id => $label ) {
-			if ( ! $id ) {
+			if ( ! $id && ( 'move' !== $action || ! current_user_can( 'filewarden_manage_settings' ) ) ) {
 				continue; }
+			if ( ! $id ) {
+				$label = __( 'Documents to classify — Not published', 'filewarden' ); }
 			echo '<option value="' . esc_attr( $id ) . '"' . selected( $destination, $id, false ) . '>' . esc_html( $label ) . '</option>';
 		}
-		echo '</select></p><button class="button">' . esc_html__( 'Review destination', 'filewarden' ) . '</button></form>';
+		echo '</select></p><button class="button">' . esc_html__( 'Review destination', 'filewarden' ) . '</button>' . ( 'move' === $action ? '<button class="button" name="destination_id" value="0" data-classify-later>' . esc_html__( 'Classify later', 'filewarden' ) . '</button>' : '' ) . '</form>';
 		if ( '' === $this->input( 'destination_id' ) ) {
 			return;
 		}
-		$plan      = $lifecycle->plan( $row['uuid'], $destination );
+		$plan = $lifecycle->plan( $row['uuid'], $destination );
+		if ( 0 === $destination ) {
+			echo '<h3>' . esc_html__( 'Remove this document from publication?', 'filewarden' ) . '</h3><p class="fw-warning">' . esc_html__( 'The document will no longer be accessible from FileWarden publications. It will remain available in Documents to classify for authorized users.', 'filewarden' ) . '</p>'; }
 		$effective = AccessSummary::effective( $plan['record'], $this->service->repository );
 		echo '<div class="fw-destination-review"><h3>' . esc_html__( 'Access at destination', 'filewarden' ) . '</h3><p class="filewarden-policy">' . esc_html( $effective['label'] ) . '</p><p>' . esc_html__( 'The file rule is preserved; inherited rules change with the destination. Moving or copying into a public folder can broaden access. Check this result before confirming.', 'filewarden' ) . '</p></div>';
 		$this->ui->form_start( $action );
@@ -478,7 +495,7 @@ final class AdminWorkspace {
 			$this->hidden( $key, $value );
 		}
 		echo '<p><label for="fw-transfer-name">' . esc_html__( 'Filename', 'filewarden' ) . '</label><input id="fw-transfer-name" name="name" value="' . esc_attr( $row['name'] ) . '" maxlength="255" required></p>';
-		submit_button( 'move' === $action ? __( 'Confirm move', 'filewarden' ) : __( 'Confirm copy', 'filewarden' ), 'primary', 'confirm_action', false );
+		submit_button( 'move' === $action ? ( 0 === $destination ? __( 'Confirm classification', 'filewarden' ) : __( 'Confirm move', 'filewarden' ) ) : __( 'Confirm copy', 'filewarden' ), 'primary', 'confirm_action', false );
 		echo '</form>';
 	}
 

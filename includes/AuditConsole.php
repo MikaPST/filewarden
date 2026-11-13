@@ -45,8 +45,9 @@ final class AuditConsole {
 			) as $mode => $label ) {
 				$view_url = add_query_arg(
 					$input + array(
-						'page' => 'filewarden-audit',
-						'view' => $mode,
+						'page'   => 'filewarden-audit',
+						'view'   => $mode,
+						'before' => $cursor,
 					),
 					admin_url( 'admin.php' )
 				);
@@ -55,20 +56,14 @@ final class AuditConsole {
 			echo '</nav><div class="fw-terminal" role="log" aria-label="' . esc_attr__( 'Audit log', 'filewarden' ) . '">';
 			foreach ( array_slice( $rows, 0, 50 ) as $row ) {
 				$login     = self::actor_login( $row );
-				$technical = array(
-					'id'                 => (int) $row['id'],
-					'created_at_UTC'     => $row['created_at'],
-					'event'              => $row['event'],
-					'actor_id'           => (int) $row['actor_id'],
-					'actor_login'        => $login,
-					'object_id_or_count' => (int) $row['object_id'],
-				);
+				$technical = self::export_record( $row );
 				if ( 'technical' === $view ) {
 					echo '<details class="fw-log-line"><summary><time>' . esc_html( get_date_from_gmt( $row['created_at'], 'Y-m-d H:i:s' ) ) . '</time> <strong>' . esc_html( $row['event'] ) . '</strong> <span>' . esc_html( sprintf( 'WordPress: %s · #%d', $login ? $login : __( 'Unavailable', 'filewarden' ), $row['actor_id'] ) ) . '</span></summary><pre><code>' . esc_html( wp_json_encode( $technical, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE ) ) . '</code></pre></details>';
 				} else {
 					$actor_id = (int) $row['actor_id'];
 					if ( 0 === $actor_id ) {
-						$actor = __( 'No authenticated WordPress account (ID 0)', 'filewarden' );
+						$actor = match ( $row['actor_type'] ?? '' ) {
+							'visitor' => __( 'Visitor not logged in', 'filewarden' ), 'system' => __( 'System action', 'filewarden' ), default => __( 'Unknown legacy actor', 'filewarden' ) };
 					} elseif ( $login ) {
 						/* translators: 1: WordPress account login; 2: numeric WordPress user ID. */
 						$actor = sprintf( __( '%1$s · WordPress user #%2$d', 'filewarden' ), $login, $actor_id );
@@ -146,7 +141,14 @@ final class AuditConsole {
 			}
 			echo '</div><p class="fw-export-status" aria-live="polite" role="status"></p><hr><h3>' . esc_html__( 'Audit maintenance', 'filewarden' ) . '</h3><p>' . esc_html__( 'Export the selected events before purging if you need a copy.', 'filewarden' ) . '</p>';
 			if ( current_user_can( 'filewarden_manage_audit' ) ) {
-				echo '<button class="button fw-button-danger" form="fw-audit-filters" name="review" value="1"><span class="dashicons dashicons-trash" aria-hidden="true"></span> ' . esc_html__( 'Prepare purge', 'filewarden' ) . '</button>'; }
+				echo '<form method="get" class="fw-purge-applied-scope">';
+				foreach ( $input + array(
+					'page'   => 'filewarden-audit',
+					'view'   => $view,
+					'review' => 1,
+				) as $key => $value ) {
+					echo '<input type="hidden" name="' . esc_attr( $key ) . '" value="' . esc_attr( $value ) . '">'; }
+				echo '<button class="button fw-button-danger"><span class="dashicons dashicons-trash" aria-hidden="true"></span> ' . esc_html__( 'Prepare purge', 'filewarden' ) . '</button></form>'; }
             // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Review is read-only; purge POST requires a fresh nonce and capability.
 			if ( isset( $_GET['review'] ) && current_user_can( 'filewarden_manage_audit' ) ) {
 				$review = AuditHistory::review( $filters, $upper );
@@ -193,19 +195,55 @@ final class AuditConsole {
 		$id    = (int) $row['object_id'];
 		if ( $id < 1 ) {
 			return ''; }
-		$repository = new Repository();
-		if ( str_starts_with( $event, 'document_' ) || in_array( $event, array( 'preview_requested', 'download_started', 'download_head' ), true ) ) {
-			$document    = $repository->document_by_id( $id );
-			$permissions = new PermissionService( array( $repository, 'folder' ) );
-			return $document && $permissions->can_read( $document, wp_get_current_user() ) ? (string) $document['name'] : '';
+		$type = $row['resource_type'] ?? '';
+		if ( ! $type ) {
+			$type = str_starts_with( $event, 'document_' ) || in_array( $event, array( 'preview_requested', 'download_started', 'download_head' ), true ) ? 'document' : ( str_starts_with( $event, 'folder_' ) || 'upload_requested' === $event || str_starts_with( $event, 'upload_failed_' ) ? 'folder' : '' ); }
+		if ( ! $type ) {
+			return ''; }
+		$repo   = new Repository();
+		$record = 'document' === $type ? $repo->document_by_id( $id, true ) : $repo->folder( $id );
+		$user   = wp_get_current_user();
+		if ( $record ) {
+			unset( $record['trashed_at'], $record['purging'] );
+			return ( new PermissionService( array( $repo, 'folder' ) ) )->can_read( $record, $user ) ? (string) ( ! empty( $row['resource_name'] ) ? $row['resource_name'] : $record['name'] ) : '';
 		}
-		if ( str_starts_with( $event, 'folder_' ) || 'upload_requested' === $event || str_starts_with( $event, 'upload_failed_' ) ) {
-			$folder      = $repository->folder( $id );
-			$permissions = new PermissionService( array( $repository, 'folder' ) );
-			return $folder && $permissions->can_read( $folder, wp_get_current_user() ) ? (string) $folder['name'] : '';
+		$saved = json_decode( $row['resource_rules'] ?? '', true );
+		if ( empty( $saved['policies'] ) || empty( $row['resource_name'] ) ) {
+			return ''; }
+		if ( ! empty( $saved['recovery'] ) && ! ( $user->has_cap( 'filewarden_manage_settings' ) && $user->has_cap( 'filewarden_manage_permissions' ) ) ) {
+			return ''; }
+		foreach ( $saved['policies'] as $policy ) {
+			if ( ! $user->has_cap( 'filewarden_read_all_files' ) && ! Policy::allows( $policy, $user->exists(), $user->roles ) ) {
+				return ''; }
 		}
-		return '';
+		return (string) $row['resource_name'];
 	}
+
+	/** Normalize one authorized audit record for both views and versioned exports.
+	 *
+	 * @param array $row Database event.
+	 * @return array Stable schema 2 record.
+	 */
+	private static function export_record( array $row ) {
+		$date  = \DateTimeImmutable::createFromFormat( '!Y-m-d H:i:s', $row['created_at'], new \DateTimeZone( 'UTC' ) );
+		$event = (string) $row['event'];
+		$type  = $row['resource_type'] ?? '';
+		return array(
+			'schema_version'     => 2,
+			'id'                 => (int) $row['id'],
+			'created_at_UTC'     => $date ? $date->format( 'Y-m-d\TH:i:s\Z' ) : null,
+			'event'              => $event,
+			'actor_id'           => (int) $row['actor_id'],
+			'actor_login'        => self::actor_login( $row ) ? self::actor_login( $row ) : null,
+			'actor_type'         => ! empty( $row['actor_type'] ) ? $row['actor_type'] : ( $row['actor_id'] ? 'user' : 'unknown' ),
+			'resource_type'      => $type ? $type : null,
+			'resource_id'        => $type ? (int) $row['object_id'] : null,
+			'resource_name'      => self::resource_name( $row ) ? self::resource_name( $row ) : null,
+			'outcome'            => str_contains( $event, 'denied' ) ? 'denied' : ( str_contains( $event, 'failed' ) ? 'failure' : ( str_ends_with( $event, '_requested' ) ? 'requested' : 'success' ) ),
+			'object_id_or_count' => (int) $row['object_id'],
+		);
+	}
+
 	/**
 	 * Translate known event codes and keep unknown codes readable.
 	 *
@@ -214,6 +252,8 @@ final class AuditConsole {
 	 */
 	private static function event_label( $event ) {
 		$labels = array(
+			'folder_policy_change_requested'   => __( 'Folder permission change requested', 'filewarden' ),
+			'folder_policy_changed'            => __( 'Folder permissions changed', 'filewarden' ),
 			'access_denied'                    => __( 'Access denied', 'filewarden' ),
 			'document_uploaded'                => __( 'Document added', 'filewarden' ),
 			'document_policy_change_requested' => __( 'Document permission change requested', 'filewarden' ),
@@ -287,14 +327,13 @@ final class AuditConsole {
 			header( 'Content-Disposition: attachment; filename="filewarden-audit-' . wp_date( 'Y-m-d' ) . '.' . $format . '"' );
             // phpcs:ignore WordPress.WP.AlternativeFunctions -- Stream download without creating a public temporary file.
 			$stream  = fopen( 'php://output', 'wb' );
-			$headers = array( 'id', 'created_at_UTC', 'event', 'actor_id', 'actor_login', 'object_id_or_count' );
+			$headers = array( 'schema_version', 'id', 'created_at_UTC', 'event', 'actor_id', 'actor_login', 'actor_type', 'resource_type', 'resource_id', 'resource_name', 'outcome', 'object_id_or_count' );
 			if ( 'jsonl' !== $format ) {
 				self::line( $stream, $headers, $format ); }
 			do {
 				$rows = AuditHistory::rows( $filters, $upper, 1000 );
 				foreach ( $rows as $row ) {
-					$row['actor_login'] = self::actor_login( $row );
-					self::line( $stream, array_values( $row ), $format );
+					self::line( $stream, self::export_record( $row ), $format );
 					$upper = (int) $row['id'] - 1; }
 				$batch_count = count( $rows );
 			} while ( 1000 === $batch_count );
@@ -313,21 +352,18 @@ final class AuditConsole {
 	 * @throws \RuntimeException When a JSONL record cannot be encoded.
 	 */
 	private static function line( $stream, array $values, $format ) {
+		if ( array_is_list( $values ) && 6 === count( $values ) && is_numeric( $values[0] ) ) {
+			$values = self::export_record( array_combine( array( 'id', 'created_at', 'event', 'actor_id', 'actor_login', 'object_id' ), $values ) );
+		}
 		if ( 'jsonl' === $format ) {
-			$record                       = array_combine( array( 'id', 'created_at_UTC', 'event', 'actor_id', 'actor_login', 'object_id_or_count' ), $values );
-			$record['id']                 = (int) $record['id'];
-			$record['actor_id']           = (int) $record['actor_id'];
-			$record['object_id_or_count'] = (int) $record['object_id_or_count'];
-			$record['actor_login']        = '' === $record['actor_login'] ? null : (string) $record['actor_login'];
-			$json                         = wp_json_encode( $record, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
+			$json = wp_json_encode( $values, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
 			if ( false === $json ) {
 				throw new \RuntimeException( 'Audit JSONL encoding failed.' ); }
-			// phpcs:ignore WordPress.WP.AlternativeFunctions -- Stream one JSON Lines record without a temporary public file.
-			fwrite( $stream, $json . "\n" );
+            // phpcs:ignore WordPress.WP.AlternativeFunctions -- Stream a versioned, authorized JSON record.
+			if ( false === fwrite( $stream, $json . "\n" ) ) {
+				throw new \RuntimeException( 'Audit stream failed.' ); }
 			return;
 		}
-		if ( 6 === count( $values ) && '' === $values[4] ) {
-			$values[4] = null; }
 		$values = array_map(
 			static function ( $value ) {
 				$value = preg_replace( '/[\r\n\t]/', ' ', (string) $value );

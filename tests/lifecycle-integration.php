@@ -19,7 +19,7 @@ FileWarden\Installer::migrate();
 $after = $repository->document( $ids['public'] );
 ksort( $before );
 ksort( $after );
-fw_assert( '5' === get_option( 'filewarden_schema' ) && $before === $after, 'Schema 2 upgrade changed existing document.' );
+fw_assert( '6' === get_option( 'filewarden_schema' ) && $before === $after, 'Schema 2 upgrade changed existing document.' );
 
 $life = new FileWarden\Lifecycle( $service );
 $destination = $service->create_folder( 'Lifecycle private', 0, array( 'type' => 'authenticated' ) );

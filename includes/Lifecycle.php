@@ -57,12 +57,18 @@ final class Lifecycle {
 	public function plan( $uuid, $destination ) {
 		$this->service->require_capability( 'filewarden_manage_permissions' );
 		$row = $this->record( $uuid );
-		if ( $destination < 1 ) {
+		if ( $destination < 0 ) {
 			throw new \InvalidArgumentException( 'Choose a destination folder.' ); }
+		if ( 0 === $destination ) {
+			$this->service->require_capability( 'filewarden_manage_settings' );
+		}
 		$this->service->require_folder( $destination );
 		$prospective              = $row;
 		$prospective['folder_id'] = $destination;
-		$context                  = array( $row['uuid'], $row['folder_id'], $row['name'], $destination, AccessSummary::chain( $row, $this->service->repository ), AccessSummary::chain( $prospective, $this->service->repository ) );
+		if ( 0 === $destination ) {
+			$prospective['retained_rules'] = AccessSummary::chain( $row, $this->service->repository );
+		}
+		$context = array( $row['uuid'], $row['folder_id'], $row['name'], $destination, AccessSummary::chain( $row, $this->service->repository ), AccessSummary::chain( $prospective, $this->service->repository ) );
 		return array(
 			'proof'  => wp_hash( wp_json_encode( $context ) ),
 			'record' => $prospective,
@@ -83,6 +89,8 @@ final class Lifecycle {
 	 * @throws \RuntimeException On corrupt copy.
 	 */
 	public function transfer( $operation, $uuid, $destination, $name, $proof ) {
+		if ( 'copy' === $operation && 0 === $destination ) {
+			throw new \InvalidArgumentException( 'Choose a destination folder.' ); }
 		if ( ! in_array( $operation, array( 'move', 'copy' ), true ) ) {
 			throw new \InvalidArgumentException( 'Invalid operation.' );
 		}
@@ -109,12 +117,16 @@ final class Lifecycle {
 			}
 			$this->service->audit->record( 'document_' . $operation . '_requested', (int) $row['id'] );
 			if ( 'move' === $operation ) {
+				$fields = array(
+					'folder_id' => $destination,
+					'name'      => $name,
+				);
+				if ( 0 === $destination ) {
+					$fields['retained_rules'] = wp_json_encode( $plan['record']['retained_rules'] );
+				}
 				$repo->update_document(
 					(int) $row['id'],
-					array(
-						'folder_id' => $destination,
-						'name'      => $name,
-					)
+					$fields
 				);
 			} else {
 				$stream = $this->service->storage->open( $row['storage_key'], (int) $row['size'] );
@@ -167,12 +179,14 @@ final class Lifecycle {
 	/**
 	 * Trash or restore without removing the encrypted bytes.
 	 *
-	 * @param string $uuid Document UUID.
-	 * @param bool   $restore Restore instead of trash.
+	 * @param string   $uuid Document UUID.
+	 * @param bool     $restore Restore instead of trash.
+	 * @param int|null $destination Replacement folder when the original is unavailable.
 	 * @return int Parent folder ID.
 	 * @throws \UnexpectedValueException If restoration collides with an active name.
+	 * @throws \InvalidArgumentException When a new restoration destination is required.
 	 */
-	public function trash( $uuid, $restore = false ) {
+	public function trash( $uuid, $restore = false, $destination = null ) {
 		$this->service->require_capability( 'filewarden_delete_files' );
 		$repo        = $this->service->repository;
 		$rules_lock  = $repo->lock( 'access-rules' );
@@ -182,6 +196,13 @@ final class Lifecycle {
 			$lock   = $repo->lock( 'document:' . $uuid );
 			$row    = $this->record( $uuid, true );
 			$folder = (int) $row['folder_id'];
+			if ( $restore && ( 0 === $folder || ! $repo->folder( $folder ) ) ) {
+				if ( null === $destination || $destination < 1 ) {
+					throw new \InvalidArgumentException( 'Choose a restoration folder.' ); }
+				$this->service->require_capability( 'filewarden_manage_permissions' );
+				$this->service->require_folder( $destination );
+				$folder = $destination;
+			}
 			if ( empty( $row['trashed_at'] ) === $restore ) {
 				return $folder;
 			}
@@ -196,7 +217,21 @@ final class Lifecycle {
 			}
 			$event = $restore ? 'document_restored' : 'document_trashed';
 			$this->service->audit->record( $event . '_requested', (int) $row['id'] );
-			$repo->update_document( (int) $row['id'], array( 'trashed_at' => $restore ? null : current_time( 'mysql', true ) ) );
+			$fields = array(
+				'trashed_at' => $restore ? null : current_time( 'mysql', true ),
+				'folder_id'  => $folder,
+			);
+			if ( $restore ) {
+				$fields['trash_origin'] = null; }
+			if ( ! $restore ) {
+				$fields['trash_origin'] = wp_json_encode(
+					array(
+						'folder_id' => $folder,
+						'path'      => DocumentCollection::path( $repo, $folder ),
+					)
+				);
+			}
+			$repo->update_document( (int) $row['id'], $fields );
 			$this->service->audit->record( $event, (int) $row['id'] );
 			return $folder;
 		} finally {
@@ -227,7 +262,7 @@ final class Lifecycle {
 				$repo->update_document( (int) $row['id'], array( 'purging' => 1 ) );
 				$this->service->storage->remove( $row['storage_key'] );
 				$repo->delete_purged( (int) $row['id'] );
-				$this->service->audit->record( 'document_purged', (int) $row['id'] );
+					$this->service->audit->record( 'document_purged', (int) $row['id'], $row );
 			} catch ( \Throwable $error ) {
 				// Leave the tombstone for the next cron run; never reactivate failed purges.
 				break;

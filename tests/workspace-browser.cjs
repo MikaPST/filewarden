@@ -73,8 +73,8 @@ module.exports = async ({ page, context, base, fixture, name }) => {
     assert.equal(await page.getByRole('link', { name: copyName, exact: true }).count(), 0);
     assert.equal((await context.request.get(permanentURL)).status(), 404);
     await page.locator('.fw-tabs').getByRole('link', { name: 'Trash', exact: true }).click();
-    await openAction(copyName, 'Restore');
-    await inspector.getByRole('button', { name: 'Restore', exact: true }).click();
+    await page.getByRole('link', { name: 'Restore', exact: true }).first().click();
+    await page.locator('.fw-trash-confirm').getByRole('button', { name: 'Restore', exact: true }).click();
     await page.waitForURL(/result=success/);
     assert.equal((await context.request.get(permanentURL)).status(), 200);
     await page.locator('.fw-tabs').getByRole('link', { name: 'Add documents', exact: true }).click();

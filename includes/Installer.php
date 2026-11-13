@@ -11,7 +11,7 @@ namespace FileWarden;
  * Installer implementation.
  */
 final class Installer {
-	const SCHEMA       = '5';
+	const SCHEMA       = '6';
 	const CAPABILITIES = array( 'filewarden_read_all_files', 'filewarden_upload_files', 'filewarden_edit_files', 'filewarden_delete_files', 'filewarden_manage_permissions', 'filewarden_manage_settings', 'filewarden_view_audit', 'filewarden_manage_audit' );
 
 	/**
@@ -68,6 +68,7 @@ final class Installer {
 			storage_key char(64) NOT NULL,
             retained_rules longtext DEFAULT NULL,
             trashed_at datetime DEFAULT NULL,
+            trash_origin longtext DEFAULT NULL,
             purging tinyint(1) NOT NULL DEFAULT 0,
 			mime varchar(100) NOT NULL,
 			size bigint(20) unsigned NOT NULL,
@@ -85,6 +86,10 @@ final class Installer {
 			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			actor_id bigint(20) unsigned NOT NULL DEFAULT 0,
 			actor_login varchar(60) NOT NULL DEFAULT '',
+			actor_type varchar(16) NOT NULL DEFAULT '',
+			resource_type varchar(16) NOT NULL DEFAULT '',
+			resource_name varchar(255) NOT NULL DEFAULT '',
+			resource_rules longtext DEFAULT NULL,
 			event varchar(64) NOT NULL,
 			object_id bigint(20) unsigned NOT NULL DEFAULT 0,
 			created_at datetime NOT NULL,

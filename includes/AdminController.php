@@ -58,6 +58,10 @@ final class AdminController {
 			return;
 		}
 		wp_enqueue_style( 'filewarden-admin', plugins_url( 'assets/admin.css', FILEWARDEN_PATH . 'filewarden.php' ), array(), FILEWARDEN_VERSION );
+		wp_enqueue_script( 'filewarden-notices', plugins_url( 'assets/notices.js', FILEWARDEN_PATH . 'filewarden.php' ), array(), FILEWARDEN_VERSION, true );
+		wp_localize_script( 'filewarden-notices', 'filewardenNotices', array( 'dismiss' => __( 'Dismiss notification', 'filewarden' ) ) );
+		if ( 'filewarden_page_filewarden-settings' === $hook ) {
+			wp_enqueue_script( 'filewarden-settings', plugins_url( 'assets/settings.js', FILEWARDEN_PATH . 'filewarden.php' ), array(), FILEWARDEN_VERSION, true ); }
 		if ( 'toplevel_page_filewarden' !== $hook ) {
 			if ( 'filewarden_page_filewarden-publication' === $hook ) {
 				wp_enqueue_script( 'filewarden-publisher', plugins_url( 'assets/publisher.js', FILEWARDEN_PATH . 'filewarden.php' ), array(), FILEWARDEN_VERSION, true ); }
@@ -76,6 +80,19 @@ final class AdminController {
 		);
 		wp_enqueue_script( 'filewarden-workspace', plugins_url( 'assets/workspace.js', FILEWARDEN_PATH . 'filewarden.php' ), array(), FILEWARDEN_VERSION, true );
 		wp_enqueue_script( 'filewarden-upload', plugins_url( 'assets/admin.js', FILEWARDEN_PATH . 'filewarden.php' ), array(), FILEWARDEN_VERSION, true );
+		wp_enqueue_script( 'filewarden-upload-queue', plugins_url( 'assets/upload-queue.js', FILEWARDEN_PATH . 'filewarden.php' ), array( 'filewarden-upload' ), FILEWARDEN_VERSION, true );
+		wp_localize_script(
+			'filewarden-upload-queue',
+			'filewardenQueue',
+			array(
+				'maxBytes' => min( (int) get_option( 'filewarden_upload_mb', 50 ) * MB_IN_BYTES, wp_max_upload_size() ),
+				'invalid'  => __( 'Invalid extension, empty file or size limit exceeded.', 'filewarden' ),
+				'ready'    => __( 'Ready for server validation', 'filewarden' ),
+				'sending'  => __( 'Uploading and validating…', 'filewarden' ),
+				'saved'    => __( 'Saved and verified', 'filewarden' ),
+				'failed'   => __( 'Upload failed. Check the file, permissions and connection, then retry.', 'filewarden' ),
+			)
+		);
 		wp_localize_script(
 			'filewarden-upload',
 			'filewardenUpload',
@@ -141,21 +158,7 @@ final class AdminController {
 			}
 			if ( 'settings' === $operation ) {
 				$page = 'filewarden-settings';
-				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- integer() strictly validates scalar nonnegative integers.
-				$size = RestController::integer( wp_unslash( $_POST['upload_mb'] ?? null ) );
-				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- integer() strictly validates scalar nonnegative integers.
-				$days = RestController::integer( wp_unslash( $_POST['audit_days'] ?? null ) );
-				if ( $size < 1 || $size > 1024 || $days < 1 || $days > 3650 ) {
-					throw new \InvalidArgumentException( 'Invalid settings.' );
-				}
-                // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Strict integer validation.
-				$trash_days = RestController::integer( wp_unslash( $_POST['trash_days'] ?? '30' ) );
-				if ( $trash_days < 1 || $trash_days > 3650 ) {
-					throw new \InvalidArgumentException( 'Invalid retention.' ); }
-				$this->service->audit->record( 'settings_changed' );
-				update_option( 'filewarden_upload_mb', $size );
-				update_option( 'filewarden_audit_days', $days );
-				update_option( 'filewarden_trash_days', $trash_days );
+				SettingsConsole::save( $_POST, $this->service->audit );
 			} else {
 				$type   = isset( $_POST['policy_type'] ) && is_string( $_POST['policy_type'] ) ? sanitize_key( $_POST['policy_type'] ) : '';
 				$roles  = isset( $_POST['roles'] ) && is_array( $_POST['roles'] ) ? array_map( 'sanitize_key', wp_unslash( $_POST['roles'] ) ) : array();
@@ -165,13 +168,21 @@ final class AdminController {
 				);
 				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- integer() strictly validates scalar nonnegative integers.
 				$folder = RestController::integer( wp_unslash( $_POST['folder_id'] ?? null ) );
-				if ( in_array( $operation, array( 'move', 'copy', 'trash', 'restore' ), true ) ) {
+				if ( 'purge_trash' === $operation ) {
+					$uuid  = isset( $_POST['document'] ) && is_string( $_POST['document'] ) ? sanitize_text_field( wp_unslash( $_POST['document'] ) ) : '';
+					$proof = isset( $_POST['proof'] ) && is_string( $_POST['proof'] ) ? sanitize_text_field( wp_unslash( $_POST['proof'] ) ) : '';
+					if ( '1' !== sanitize_text_field( wp_unslash( $_POST['confirm'] ?? '' ) ) ) {
+						throw new \InvalidArgumentException( 'Confirmation required.' ); }
+					TrashService::purge( $this->service, $uuid, $proof );
+				} elseif ( in_array( $operation, array( 'move', 'copy', 'trash', 'restore' ), true ) ) {
 					$uuid = isset( $_POST['document'] ) && is_string( $_POST['document'] ) ? sanitize_text_field( wp_unslash( $_POST['document'] ) ) : '';
 					if ( ! wp_is_uuid( $uuid, 4 ) ) {
 						throw new \InvalidArgumentException( 'Invalid document.' ); }
 					$lifecycle = new Lifecycle( $this->service );
 					if ( in_array( $operation, array( 'trash', 'restore' ), true ) ) {
-						$folder = $lifecycle->trash( $uuid, 'restore' === $operation );
+						// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Strict integer validation.
+						$destination = isset( $_POST['destination_id'] ) ? RestController::integer( wp_unslash( $_POST['destination_id'] ) ) : null;
+						$folder      = $lifecycle->trash( $uuid, 'restore' === $operation, $destination );
 					} else {
                         // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Strict integer validation.
 						$destination = RestController::integer( wp_unslash( $_POST['destination_id'] ?? null ) );
@@ -208,13 +219,17 @@ final class AdminController {
 		} catch ( \UnexpectedValueException $error ) {
 			$result = 'duplicate';
 		} catch ( \DomainException $error ) {
-			$result = 'denied';
+			$result = 'Remove subfolders first.' === $error->getMessage() ? 'subfolders' : 'denied';
 		} catch ( \InvalidArgumentException $error ) {
 			$result = match ( $error->getMessage() ) {
+				'Transactional storage required.' => 'transaction',
+				'Recovery transaction unavailable.', 'Recovery read failed.', 'Recovery write failed.', 'Folder deletion failed.', 'Recovery commit failed.', 'Recovery rules invalid.' => 'recovery',
 				'Destination rules changed. Review again.' => 'review',
 				'Invalid filename or file size.', 'Upload exceeds server limit.' => 'size',
 				'Unsupported file type.', 'Invalid image.', 'Invalid PDF.' => 'format',
 				'Invalid upload.' => 'missing_file',
+				'Active text content is not allowed.', 'Active spreadsheet formulas are not allowed.', 'Nested ZIP archives are not allowed.', 'Invalid ZIP container.', 'Archive entry limit exceeded.', 'Unsafe archive path.', 'Encrypted archives and symbolic links are not allowed.', 'Archive expansion limit exceeded.', 'Active archive content is not allowed.', 'Unreadable archive member.', 'Archive integrity check failed.', 'Unsupported Office container member.', 'Active Office content is not allowed.', 'Office container does not match its extension.', 'Invalid Office container.', 'Invalid Office XML.' => 'unsafe_file',
+				'ZIP validation requires the PHP ZIP extension.', 'Private archive inspection unavailable.', 'Archive inspection write failed.' => 'inspection',
 				'Media unavailable.', 'Media is not a readable local file in WordPress uploads.' => 'media',
 				default => 'invalid',
 			};
@@ -237,7 +252,7 @@ final class AdminController {
 					'result'     => $result,
 					'created'    => $created['id'] ?? false,
 					'collection' => 0 === $folder ? 'unfiled' : false,
-					'tab'        => ! in_array( $result, array( 'success', 'policy_saved' ), true ) && in_array( $operation, array( 'upload', 'import' ), true ) ? 'add' : 'documents',
+					'tab'        => in_array( $operation, array( 'restore', 'purge_trash' ), true ) ? 'trash' : ( ! in_array( $result, array( 'success', 'policy_saved' ), true ) && in_array( $operation, array( 'upload', 'import' ), true ) ? 'add' : 'documents' ),
 				),
 				admin_url( 'admin.php' )
 			)
@@ -267,7 +282,7 @@ final class AdminController {
 	 */
 	public function policy_fields( $prefix, $folder ) {
 		echo '<p>';
-		$this->folder_picker( $prefix . '-parent', $folder, __( 'Destination folder', 'filewarden' ) );
+		$this->folder_picker( $prefix . '-parent', $folder, 'folder' === $prefix ? __( 'Parent folder', 'filewarden' ) : __( 'Destination folder', 'filewarden' ) );
 		echo '</p>';
 		$document = 'document' === $prefix;
 		$this->policy_controls(
@@ -319,8 +334,8 @@ final class AdminController {
 		echo '<label for="' . esc_attr( $id ) . '">' . esc_html( $label ) . '</label> <select id="' . esc_attr( $id ) . '" name="folder_id">';
 		$this->folder_labels ??= $this->service->folder_choices();
 		foreach ( $this->folder_labels as $value => $name ) {
-			if ( 0 === $value && 'folder-parent' !== $id ) {
-				continue; }
+			if ( 0 === $value ) {
+				$name = 'folder-parent' === $id ? __( 'No parent folder', 'filewarden' ) : __( 'Documents to classify — Not published', 'filewarden' ); }
 			echo '<option value="' . esc_attr( $value ) . '"' . selected( $folder, $value, false ) . '>' . esc_html( $name ) . '</option>';
 		}
 		echo '</select>';
@@ -352,10 +367,10 @@ final class AdminController {
 		if ( current_user_can( 'upload_files' ) ) {
 			echo '<label><input type="radio" name="source" value="import"' . checked( (bool) $title, true, false ) . '> ' . esc_html__( 'From the Media Library', 'filewarden' ) . '</label>';
 		}
-		echo '</fieldset><fieldset data-filewarden-source="upload"><legend>' . esc_html__( 'Choose a PDF, JPEG or PNG', 'filewarden' ) . '</legend>';
+		echo '</fieldset><fieldset data-filewarden-source="upload" class="fw-dropzone"><legend>' . esc_html__( 'Drop your documents here or select files', 'filewarden' ) . '</legend>';
 		/* translators: %s: effective maximum file size. */
 		echo '<p>' . esc_html( sprintf( __( 'Maximum file size: %s. Saving is confirmed only after storage and destination verification.', 'filewarden' ), size_format( min( max( 1, (int) get_option( 'filewarden_upload_mb', 50 ) ) * MB_IN_BYTES, wp_max_upload_size() ) ) ) ) . '</p>';
-		echo '<p><label for="fw-file">' . esc_html__( 'File', 'filewarden' ) . '</label> <input type="file" id="fw-file" name="file" accept=".pdf,.jpg,.jpeg,.png"></p></fieldset>';
+		echo '<p><label for="fw-file">' . esc_html__( 'File', 'filewarden' ) . '</label> <input type="file" id="fw-file" name="file" accept=".pdf,.jpg,.jpeg,.png,.txt,.csv,.zip,.docx,.xlsx,.pptx,.odt,.ods,.odp"></p><ul class="fw-upload-selection" aria-live="polite"></ul></fieldset>';
 		if ( current_user_can( 'upload_files' ) ) {
 			echo '<fieldset data-filewarden-source="import"><legend>' . esc_html__( 'Choose an existing document', 'filewarden' ) . '</legend>';
 			echo '<p>' . esc_html__( 'FileWarden creates a protected copy. The original stays in WordPress Media and may remain publicly accessible.', 'filewarden' ) . '</p>';
@@ -378,34 +393,7 @@ final class AdminController {
 	 * Render settings in their own administration screen.
 	 */
 	public function settings_page() {
-		if ( ! current_user_can( 'filewarden_manage_settings' ) ) {
-			return;
-		}
-		echo '<div class="wrap fw-workspace fw-settings"><header class="fw-heading"><h1>' . esc_html__( 'FileWarden settings', 'filewarden' ) . '</h1></header>';
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only notice from the POST redirect.
-		if ( isset( $_GET['result'] ) && 'success' === $_GET['result'] ) {
-			echo '<div class="notice notice-success"><p>' . esc_html__( 'Settings saved.', 'filewarden' ) . '</p></div>';
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only notice from the POST redirect.
-		} elseif ( isset( $_GET['result'] ) ) {
-			echo '<div class="notice notice-error"><p>' . esc_html__( 'Settings could not be saved.', 'filewarden' ) . '</p></div>';
-		}
-		echo '<section class="fw-content filewarden-diagnostics"><h2>' . esc_html__( 'Storage diagnostics', 'filewarden' ) . '</h2>';
-		try {
-			$this->service->storage->root();
-			echo '<p>' . esc_html__( 'Storage directory checks passed.', 'filewarden' ) . '</p>';
-			echo '<p>' . esc_html__( 'FileWarden folders are virtual. In managed mode, all encrypted files are stored in wp-content/filewarden-storage under opaque names.', 'filewarden' ) . '</p>';
-		} catch ( \Throwable $error ) {
-			$message = $error instanceof \RuntimeException ? $error->getMessage() : __( 'Unexpected storage error.', 'filewarden' );
-			echo '<div class="notice notice-error inline"><p>' . esc_html__( 'Storage blocked.', 'filewarden' ) . ' ' . esc_html( $message ) . '</p></div>';
-		}
-		echo '</section><section class="fw-content"><h2>' . esc_html__( 'Limits and retention', 'filewarden' ) . '</h2>';
-		$this->form_start( 'settings' );
-		echo '<p><label for="fw-size">' . esc_html__( 'Upload limit (MB, also bounded by server limits)', 'filewarden' ) . '</label> <input type="number" id="fw-size" name="upload_mb" min="1" max="1024" value="' . esc_attr( get_option( 'filewarden_upload_mb', 50 ) ) . '" required></p>';
-		echo '<p><label for="fw-days">' . esc_html__( 'Audit retention (days)', 'filewarden' ) . '</label> <input type="number" id="fw-days" name="audit_days" min="1" max="3650" value="' . esc_attr( get_option( 'filewarden_audit_days', 365 ) ) . '" required></p>';
-		echo '<p><label for="fw-trash-days">' . esc_html__( 'Trash retention (days)', 'filewarden' ) . '</label> <input type="number" id="fw-trash-days" name="trash_days" min="1" max="3650" value="' . esc_attr( get_option( 'filewarden_trash_days', 30 ) ) . '" required></p><p class="description">' . esc_html__( 'Expired trashed files are permanently removed by scheduled cleanup. Active documents are never removed by this setting.', 'filewarden' ) . '</p>';
-		submit_button( __( 'Save settings', 'filewarden' ) );
-		echo '</form></section></div>';
-	}
+		SettingsConsole::page( $this->service, $this ); }
 
 	/**
 	 * Render the restricted audit screen.

@@ -208,7 +208,7 @@ final class Repository {
 	 */
 	public function update_document( $id, array $fields ) {
 		global $wpdb;
-		if ( array_diff( array_keys( $fields ), array( 'folder_id', 'name', 'trashed_at', 'purging' ) ) ) {
+		if ( array_diff( array_keys( $fields ), array( 'folder_id', 'name', 'trashed_at', 'trash_origin', 'retained_rules', 'purging' ) ) ) {
 			throw new \InvalidArgumentException( 'Invalid fields.' ); }
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- wpdb prepares values for a fixed custom table.
 		if ( false === $wpdb->update( $wpdb->prefix . 'filewarden_documents', $fields, array( 'id' => $id ) ) ) {

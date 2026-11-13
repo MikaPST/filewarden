@@ -4,7 +4,9 @@ Mis à jour le 13 novembre 2026. Lire ce fichier à la reprise, puis vérifier l
 
 ## État actuel
 
-- **Lot 0.1.12-dev terminé, validé et publié le 13 novembre 2026.**
+- **Correction en cours des dix évolutions réelles, autorisée le 14 novembre 2026.** La release 0.1.12-dev a bien été publiée, mais sa conformité complète avait été annoncée à tort : le cahier utilisé avait remplacé une partie des demandes par l’ancien lot. Le document `docs/specifications/evolutions-v0.1.12-dev.md` contient désormais la référence UI/UX fournie par le propriétaire, avec sa numérotation originale.
+- Branche : `fix/ten-approved-evolutions`. Conserver les fonctions existantes ; réception par critère et installation du ZIP en WordPress jetable obligatoires avant de déclarer le correctif terminé.
+- Décisions reçues : ZIP conservés comme documents téléchargeables, sans extraction automatique ; ajout TXT, CSV, DOCX, XLSX, PPTX, ODT, ODS, ODP sans macros, avec validation du contenu. Aucun nouveau tag ni nouvelle publication effectués dans ce correctif à ce stade.
 - Accord utilisateur du 13 novembre 2026 : développer les dix évolutions du [cahier des charges](docs/specifications/evolutions-v0.1.12-dev.md), tester, puis publier la release et le ZIP si les tests passent. L’installation sur son site n’est pas incluse.
 - Le lot conserve la navigation, l’héritage, la récupération, la suppression des dossiers et les interfaces déjà livrés en 0.1.11-dev ; il complète l’audit, les acteurs WordPress, les filtres et les téléchargements CSV/TXT/JSONL. Voir [le compte rendu](docs/lot-v0.1.12-dev.md) et [les notes de version](docs/releases/v0.1.12-dev.md).
 - Acteurs : ID + instantané du login WordPress ; aucun e-mail ajouté. Schéma 5, migration sans suppression des journaux ou documents. Les noms des ressources restent soumis aux droits de lecture du contenu.

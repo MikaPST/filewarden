@@ -11,12 +11,8 @@ namespace FileWarden;
  * DocumentService implementation.
  */
 final class DocumentService {
-	const TYPES = array(
-		'pdf'  => 'application/pdf',
-		'jpg'  => 'image/jpeg',
-		'jpeg' => 'image/jpeg',
-		'png'  => 'image/png',
-	);
+	const TYPES = FileValidator::MIMES;
+
 	/**
 	 * Service state.
 	 *
@@ -298,8 +294,10 @@ final class DocumentService {
 		$this->require_capability( 'filewarden_upload_files' );
 		// This milestone requires explicit policy management; delegated upload defaults follow later.
 		$this->require_capability( 'filewarden_manage_permissions' );
-		if ( $folder < 1 ) {
+		if ( $folder < 0 ) {
 			throw new \InvalidArgumentException( 'Choose a destination folder.' ); }
+		if ( 0 === $folder ) {
+			$this->require_capability( 'filewarden_manage_settings' ); }
 		$this->require_folder( $folder );
 		$policy = Policy::validate( $policy ?? array( 'type' => 'inherit' ), array_keys( wp_roles()->roles ), true );
 		$this->storage->root();
@@ -310,20 +308,10 @@ final class DocumentService {
 			throw new \InvalidArgumentException( 'Invalid filename or file size.' );
 		}
 		$extension = strtolower( pathinfo( $name, PATHINFO_EXTENSION ) );
-		$mime      = FileIO::attempt( fn() => ( new \finfo( FILEINFO_MIME_TYPE ) )->file( $file['tmp_name'] ) );
-		if ( ! isset( self::TYPES[ $extension ] ) || self::TYPES[ $extension ] !== $mime ) {
-			throw new \InvalidArgumentException( 'Unsupported file type.' );
-		}
-		if ( str_starts_with( $mime, 'image/' ) && false === FileIO::attempt( fn() => getimagesize( $file['tmp_name'] ) ) ) {
-			throw new \InvalidArgumentException( 'Invalid image.' );
-		}
-		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Read the signature of a verified local upload.
-		if ( 'application/pdf' === $mime && '%PDF-' !== FileIO::attempt( fn() => file_get_contents( $file['tmp_name'], false, null, 0, 5 ) ) ) {
-			throw new \InvalidArgumentException( 'Invalid PDF.' );
-		}
-		$lock  = $this->repository->lock( $folder );
-		$key   = null;
-		$stage = null;
+		$mime      = FileValidator::validate( $file['tmp_name'], $extension );
+		$lock      = $this->repository->lock( $folder );
+		$key       = null;
+		$stage     = null;
 		try {
 			$this->require_folder( $folder );
 			if ( $this->repository->duplicate( $folder, $name ) ) {

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: FileWarden
  * Description: Private document management for WordPress (pre-alpha foundation).
- * Version: 0.1.12-dev
+ * Version: 0.1.12-dev.1
  * Requires at least: 6.8
  * Requires PHP: 8.2
  * Author: MikaPST
@@ -16,7 +16,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'FILEWARDEN_VERSION', '0.1.12-dev' );
+define( 'FILEWARDEN_VERSION', '0.1.12-dev.1' );
 define( 'FILEWARDEN_PATH', plugin_dir_path( __FILE__ ) );
 
 spl_autoload_register(

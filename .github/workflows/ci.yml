@@ -62,12 +62,13 @@ jobs:
     env:
       FILEWARDEN_TESTING: '1'
       FILEWARDEN_FIXTURES: /tmp/filewarden-fixtures.json
+      FILEWARDEN_UPGRADE_FIXTURE: /tmp/filewarden-upgrade.json
     steps:
       - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
-          extensions: mysqli, mbstring, fileinfo
+          extensions: mysqli, mbstring, fileinfo, zip, dom, sodium
           tools: wp-cli
           coverage: none
       - name: Prepare disposable WordPress
@@ -80,8 +81,14 @@ jobs:
           wp config set FILEWARDEN_STORAGE_DIR /tmp/fw-private --path=/tmp/fw-wordpress
           wp config set FILEWARDEN_STORAGE_VERIFIED true --raw --path=/tmp/fw-wordpress
           wp core install --path=/tmp/fw-wordpress --url=http://127.0.0.1:8080 --title=FileWarden --admin_user=fw_admin --admin_password=disposable-test-password --admin_email=admin@example.test --skip-email
-          ln -s "$GITHUB_WORKSPACE" /tmp/fw-wordpress/wp-content/plugins/filewarden
-          wp plugin activate filewarden --path=/tmp/fw-wordpress
+          curl --fail --location --retry 3 https://github.com/MikaPST/filewarden/releases/download/v0.1.11-dev/filewarden-0.1.11-dev.zip -o /tmp/filewarden-0.1.11-dev.zip
+          curl --fail --location --retry 3 https://github.com/MikaPST/filewarden/releases/download/v0.1.11-dev/filewarden-0.1.11-dev.zip.sha256 -o /tmp/filewarden-0.1.11-dev.zip.sha256
+          (cd /tmp && sha256sum --check filewarden-0.1.11-dev.zip.sha256)
+          wp plugin install /tmp/filewarden-0.1.11-dev.zip --activate --path=/tmp/fw-wordpress
+          FILEWARDEN_UPGRADE_STAGE=before wp eval-file "$GITHUB_WORKSPACE/tests/upgrade-fixture.php" --path=/tmp/fw-wordpress
+          php tools/build.php
+          wp plugin install "$GITHUB_WORKSPACE/build/$(basename build/filewarden-*.zip)" --force --activate --path=/tmp/fw-wordpress
+          FILEWARDEN_UPGRADE_STAGE=after wp eval-file "$GITHUB_WORKSPACE/tests/upgrade-fixture.php" --path=/tmp/fw-wordpress
           wp eval-file "$GITHUB_WORKSPACE/tests/integration.php" --path=/tmp/fw-wordpress
       - name: Test WordPress Sodium PHP fallback
         run: php tests/sodium-compat.php /tmp/fw-wordpress/wp-includes/sodium_compat/autoload.php

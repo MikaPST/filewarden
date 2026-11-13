@@ -34,7 +34,8 @@ final class FolderLifecycle {
 			$service->require_folder( $id );
 			if ( $service->repository->folders( $id ) ) {
 				throw new \DomainException( 'Remove subfolders first.' ); }
-			$parents = AccessSummary::chain( $service->repository->folder( $id ), $service->repository );
+			$snapshot = $service->repository->folder( $id );
+			$parents  = AccessSummary::chain( $snapshot, $service->repository );
 			$service->audit->record( 'folder_delete_requested', $id );
 			if ( false === $wpdb->query( 'START TRANSACTION' ) ) {
 				throw new \RuntimeException( 'Recovery transaction unavailable.' ); }
@@ -60,6 +61,12 @@ final class FolderLifecycle {
 						array(
 							'folder_id'      => 0,
 							'retained_rules' => $saved,
+							'trash_origin'   => ! empty( $row['trash_origin'] ) ? $row['trash_origin'] : ( ! empty( $row['trashed_at'] ) ? wp_json_encode(
+								array(
+									'folder_id' => $id,
+									'path'      => DocumentCollection::path( $service->repository, $id ),
+								)
+							) : null ),
 						),
 						array( 'id' => $row['id'] ),
 						array( '%d', '%s' ),
@@ -72,7 +79,7 @@ final class FolderLifecycle {
 			} while ( 100 === $batch_count );
 			if ( 1 !== $wpdb->delete( $wpdb->prefix . 'filewarden_folders', array( 'id' => $id ), array( '%d' ) ) ) {
 				throw new \RuntimeException( 'Folder deletion failed.' ); }
-			$service->audit->record( 'folder_deleted_files_recovered', $id );
+			$service->audit->record( 'folder_deleted_files_recovered', $id, $snapshot );
 			if ( false === $wpdb->query( 'COMMIT' ) ) {
 				throw new \RuntimeException( 'Recovery commit failed.' ); }
 			$transaction = false;
