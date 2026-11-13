@@ -1,4 +1,21 @@
-# FileWarden
+
+<p align="center">
+  <img
+    src="assets/branding/filewarden-logo-512.png"
+    alt="FileWarden Logo"
+    width="160"
+  />
+</p>
+
+<h1 align="center">FileWarden</h1>
+
+<p align="center">
+  <strong>Your files. Your control.</strong>
+</p>
+
+<p align="center">
+  Secure document management for WordPress.
+</p>
 
 **Private Document Management for WordPress**
 
