@@ -53,3 +53,4 @@
 
 .fw-tree .fw-unfiled{display:grid;grid-template-columns:20px minmax(0,1fr);gap:6px;align-items:center}.fw-unfiled-badge{grid-column:2;justify-self:start;font-size:10px;line-height:1.5;background:#fff;border:1px solid #d6b57d;border-radius:4px;padding:1px 5px}
 .fw-settings>.fw-content,.fw-publisher>.fw-content{min-height:0}
+@media(max-width:600px){.fw-shortcode-row #fw-shortcode{flex:none}}
