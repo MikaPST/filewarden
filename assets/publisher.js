@@ -9,6 +9,12 @@
     const demo = document.getElementById('fw-preview-denied');
     const frame = document.querySelector('.fw-publisher .filewarden-publication-frame');
     const status = document.getElementById('fw-preview-status');
+    const fitCode = () => {
+        code.style.height = 'auto';
+        code.style.height = (code.scrollHeight + 2) + 'px';
+    };
+    window.addEventListener('resize', fitCode);
+    requestAnimationFrame(fitCode);
     let pending;
     const failed = () => { clearTimeout(pending); status.textContent = status.dataset.failure; };
     const update = () => {
@@ -16,6 +22,7 @@
         const view = form.querySelector('[name="view"]:checked').value;
         const denied = form.querySelector('[name="denied"]:checked').value;
         code.value = `[filewarden folder="${uuid}" view="${view}" denied="${denied}"]`;
+        fitCode();
         feedback.textContent = '';
         const url = new URL(form.dataset.endpoint, document.baseURI);
         url.search = new URLSearchParams({ action: 'filewarden_folder', folder_id: uuid, view, denied, return: form.dataset.return });

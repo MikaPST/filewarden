@@ -103,6 +103,7 @@ function pdfFixture() {
             await page.frameLocator('.filewarden-publication-frame').locator('.fw-denied-centered').waitFor();
             await page.setViewportSize({ width: 375, height: 812 });
             assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+            await page.waitForFunction(() => { const code = document.getElementById('fw-shortcode'); return code.scrollHeight <= code.clientHeight; });
             await page.screenshot({ path: 'build/screenshots/publication-mobile-' + name + '.png', fullPage: true });
             await page.setViewportSize({ width: 1280, height: 900 });
             await page.screenshot({ path: 'build/screenshots/publication-' + name + '.png', fullPage: true });
