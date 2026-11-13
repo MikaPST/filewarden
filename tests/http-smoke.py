@@ -202,5 +202,16 @@ for fmt in ('csv', 'txt', 'jsonl'):
         assert b'created_at_UTC' in body and b'fw_admin' in body
     assert request(editor, url)[0] != 200
     assert request(admin, re.sub(r'([?&])_wpnonce=[^&]+', r'\1_wpnonce=invalid', url))[0] != 200
+    parts = urllib.parse.urlsplit(url)
+    query = dict(urllib.parse.parse_qsl(parts.query, keep_blank_values=True))
+    query['event'] = 'audit_no_matching_fixture'
+    empty_url = urllib.parse.urlunsplit(('', '', parts.path, urllib.parse.urlencode(query), ''))
+    empty_status, empty_headers, empty_body, _ = request(admin, empty_url)
+    assert empty_status == 200 and 'attachment;' in empty_headers['Content-Disposition']
+    assert 'no-store' in empty_headers['Cache-Control']
+    if fmt == 'jsonl':
+        assert empty_body == b''
+    else:
+        assert len(empty_body.decode().splitlines()) == 1 and b'actor_login' in empty_body
 print('Navigation denial styles, root quarantine and authorized CSV/TXT/JSONL actor export checks passed.')
 
