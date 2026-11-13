@@ -1,6 +1,6 @@
 <?php
 /**
- * Minimal audit records: no filenames, IP addresses, tokens or filesystem paths.
+ * Audit actors and ACL-protected logical resource snapshots; no IPs, tokens or storage paths.
  *
  * @package FileWarden
  */
@@ -33,6 +33,10 @@ final class AuditService {
 			$repo     = new Repository();
 			$resource = $snapshot ? $snapshot : ( 'document' === $type ? $repo->document_by_id( $object_id, true ) : $repo->folder( $object_id ) );
 			if ( $resource ) {
+				if ( is_string( $resource['policy'] ?? null ) ) {
+					$resource['policy'] = json_decode( $resource['policy'], true ); }
+				if ( is_string( $resource['retained_rules'] ?? null ) ) {
+					$resource['retained_rules'] = json_decode( $resource['retained_rules'], true ); }
 				try {
 					$rules = wp_json_encode(
 						array(

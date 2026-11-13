@@ -113,7 +113,12 @@ def upload(name, payload, folder=None):
 
 
 pdf = b"%PDF-1.4\n1 0 obj<</Type/Catalog>>endobj\n%%EOF\n"
-assert "result=invalid" in upload("root-refused.pdf", pdf, 0)[3]
+status, _, listing, root_url = upload("root-unpublished.pdf", pdf, 0)
+assert status == 200 and "result=success" in root_url
+root_document = urllib.parse.parse_qs(urllib.parse.urlsplit(root_url).query)["created"][0]
+root_binary = "/wp-admin/admin-post.php?" + urllib.parse.urlencode({"action": "filewarden_content", "document": root_document, "download": "1"})
+assert request(admin, root_binary)[2] == pdf, "Unpublished upload bytes were not preserved"
+assert request(anon, root_binary)[0] == 404 and request(reader, root_binary)[0] == 404, "Unpublished document became accessible to ordinary readers"
 assert "result=success" in upload("upload-test.pdf", pdf)[3]
 assert "result=duplicate" in upload("upload-test.pdf", pdf)[3]
 assert "result=format" in upload("malicious.php", b"<?php echo 'blocked';")[3]

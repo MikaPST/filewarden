@@ -235,6 +235,8 @@ final class AdminController {
 			};
 		} catch ( \RuntimeException $error ) {
 			$result = match ( $error->getMessage() ) {
+				'Transactional storage required.' => 'transaction',
+				'Recovery transaction unavailable.', 'Recovery read failed.', 'Recovery write failed.', 'Folder deletion failed.', 'Recovery commit failed.', 'Recovery rules invalid.' => 'recovery',
 				'Upload failed at storage.' => 'storage',
 				'Upload failed at database.' => 'database',
 				'Upload failed at audit.' => 'audit',

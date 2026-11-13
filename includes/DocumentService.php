@@ -308,7 +308,7 @@ final class DocumentService {
 			throw new \InvalidArgumentException( 'Invalid filename or file size.' );
 		}
 		$extension = strtolower( pathinfo( $name, PATHINFO_EXTENSION ) );
-		$mime      = FileValidator::validate( $file['tmp_name'], $extension );
+		$mime      = FileIO::attempt( fn() => FileValidator::validate( $file['tmp_name'], $extension ) );
 		$lock      = $this->repository->lock( $folder );
 		$key       = null;
 		$stage     = null;

@@ -52,9 +52,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     try {
                         const response = await fetch(form.getAttribute('action'), { method: 'POST', credentials: 'same-origin', body: data });
                         const url = new URL(response.url);
-                        if (!response.ok || url.origin !== location.origin || url.searchParams.get('page') !== 'filewarden' || url.searchParams.get('result') !== 'success') throw new Error('Upload refused');
+                        if (!response.ok || url.origin !== location.origin || url.searchParams.get('page') !== 'filewarden') throw new Error('Upload refused');
+                        if (url.searchParams.get('result') !== 'success') {
+                            const html = new DOMParser().parseFromString(await response.text(), 'text/html');
+                            item.state = 'failed';
+                            item.output.textContent = html.querySelector('.fw-workspace .notice-error p')?.textContent || messages.failed;
+                            continue;
+                        }
                         item.state = 'saved'; item.output.textContent = messages.saved;
-                        const html = new DOMParser().parseFromString(await response.text(), 'text/html');
+                        // A confirmed save must not be retried if reading optional feedback fails.
+                        const html = new DOMParser().parseFromString(await response.text().catch(() => ''), 'text/html');
                         const count = html.querySelector('.fw-recovery-count');
                         const current = document.querySelector('.fw-recovery-count');
                         if (count && current) current.textContent = count.textContent;

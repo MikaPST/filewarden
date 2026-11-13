@@ -206,7 +206,7 @@ final class AdminWorkspace {
 			'busy'         => __( 'Another operation is using this folder. Try again in a moment.', 'filewarden' ),
 			'denied'       => __( 'You do not have permission to perform this operation.', 'filewarden' ),
 			'size'         => __( 'The file is empty or exceeds the allowed upload size. Check FileWarden settings and your PHP upload limit.', 'filewarden' ),
-			'format'       => __( 'Choose a valid PDF, JPEG or PNG file.', 'filewarden' ),
+			'format'       => __( 'Choose a valid PDF, JPEG, PNG, TXT, CSV, ZIP or supported macro-free Office document.', 'filewarden' ),
 			'missing_file' => __( 'No complete upload was received. Select the file again and check the server upload limit.', 'filewarden' ),
 			'media'        => __( 'Choose a local Media Library file that you are allowed to edit.', 'filewarden' ),
 			'invalid'      => __( 'Check the folder, access policy and form fields.', 'filewarden' ),
