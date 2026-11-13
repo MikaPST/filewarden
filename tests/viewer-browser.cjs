@@ -30,9 +30,10 @@ function pdfFixture() {
 (async () => {
     for (const [name, engine] of [['chromium', chromium], ['firefox', firefox]]) {
         const browser = await engine.launch();
+        let page;
         try {
             const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
-            const page = await context.newPage();
+            page = await context.newPage();
             // Authenticate the disposable context without waiting on dashboard third-party resources.
             await context.request.get(base + '/wp-login.php');
             const login = await context.request.post(base + '/wp-login.php', {
@@ -138,6 +139,25 @@ function pdfFixture() {
             assert.equal(await page.locator('.document').count(), 0);
             await require('./workspace-browser.cjs')({ page, context, base, fixture, name });
             console.log(name + ': workspace, ACL, lifecycle, upload, previews and publication passed');
+        } catch (error) {
+            // Preserve synthetic fixture evidence instead of concealing a browser failure with retries.
+            if (page && !page.isClosed()) {
+                await page.screenshot({ path: 'build/screenshots/failure-' + name + '.png', fullPage: true }).catch(() => {});
+                console.error('Browser failure state:', await page.evaluate(() => {
+                    const frame = document.querySelector('.filewarden-publication-frame');
+                    const source = frame ? new URL(frame.src) : null;
+                    return {
+                        page: location.pathname,
+                        panel: new URL(location.href).searchParams.get('panel'),
+                        previewStatus: document.querySelector('#fw-preview-status')?.textContent,
+                        requestedDesign: source?.searchParams.get('denied'),
+                        requestedDemo: source?.searchParams.get('demo'),
+                        renderedMain: frame?.contentDocument?.querySelector('main')?.className,
+                        errorNotice: document.querySelector('.notice-error')?.textContent
+                    };
+                }).catch(() => 'Page unavailable'));
+            }
+            throw error;
         } finally { await browser.close(); }
     }
 })().catch(error => { console.error(error); process.exitCode = 1; });

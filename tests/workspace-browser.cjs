@@ -6,14 +6,18 @@ module.exports = async ({ page, context, base, fixture, name }) => {
     const workspaceURL = base + '/wp-admin/admin.php?page=filewarden&folder_id=' + fixture.policy_folder;
     await page.goto(workspaceURL);
     const inspector = page.locator('.fw-inspector');
+    const navigate = async link => {
+        const target = await link.getAttribute('href');
+        await Promise.all([page.waitForURL(target), link.click()]);
+    };
     const openFolderRights = async () => {
-        await page.locator('.fw-folder-heading').getByRole('link', { name: 'Edit access rules' }).click();
+        await navigate(page.locator('.fw-folder-heading').getByRole('link', { name: 'Edit access rules' }));
         await inspector.locator('#inspector-policy').waitFor();
     };
     const openAction = async (filename, label) => {
         const row = page.locator('tbody tr').filter({ hasText: filename });
         await row.locator('.fw-context summary').click();
-        await row.locator('.fw-context-menu').getByRole('link', { name: label, exact: true }).click();
+        await navigate(row.locator('.fw-context-menu').getByRole('link', { name: label, exact: true }));
         await inspector.waitFor();
     };
     await openFolderRights();
