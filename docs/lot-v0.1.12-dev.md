@@ -32,3 +32,5 @@ Le propriétaire a autorisé le développement et la publication GitHub après r
 Contrôles locaux réussis : 50 tests PHP / 71 assertions, 8 tests JavaScript, PHPCS, syntaxe PHP/JavaScript et compilation de 238 traductions françaises. Le ZIP de développement a été généré.
 
 Les tests d’intégration WordPress/MySQL, HTTP et Chromium/Firefox ont réussi sur WordPress 6.8 et la version courante : [preuve du code final b6968e4](https://github.com/MikaPST/filewarden/actions/runs/43488511977). Les captures ordinateur/mobile ont été inspectées. Les scénarios attendent la fin de la navigation des panneaux et conservent des preuves en cas d’échec. Les preuves de publication sont consignées dans SUIVI.md après réussite du workflow de release. Ces tests ne remplacent pas la réception sur l’hébergement réel.
+
+La [release v0.1.12-dev](https://github.com/MikaPST/filewarden/releases/tag/v0.1.12-dev) est publiée après réussite du [workflow de release](https://github.com/MikaPST/filewarden/actions/runs/43489504775). Son ZIP a été téléchargé, inspecté et son empreinte SHA-256 vérifiée ; le suivi contient l’empreinte complète et les preuves définitives.

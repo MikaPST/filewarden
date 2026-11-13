@@ -8,7 +8,7 @@
 - Nouveaux contrôles : migration du journal 4 vers 5 sans perte, login WordPress mémorisé, rapprochement historique, filtre hostile, accès à l’audit sans droit de purge ni noms de documents privés, exports CSV/TXT/JSONL de 1 005 événements et exports sans résultat, refus des nonces/capacités et retour d’erreur navigateur.
 - Captures ordinateur/mobile inspectées ; ZIP local inspecté (265 entrées runtime), version et schéma vérifiés, outils de développement exclus, licence des pictogrammes incluse.
 - Les parcours attendent explicitement la navigation du panneau avant de manipuler ses formulaires et conservent des captures/diagnostics en cas d’échec. Les échecs intermédiaires restent consultables dans les exécutions précédentes de la branche de validation.
-- La publication dispose de sa propre validation avant mise en ligne. Les liens définitifs et la vérification du ZIP publié sont consignés dans SUIVI.md. Réception sur l’hébergement utilisateur toujours distincte.
+- [CI sur main](https://github.com/MikaPST/filewarden/actions/runs/43489443735) et [validation de release](https://github.com/MikaPST/filewarden/actions/runs/43489504775) également réussies ; préversion v0.1.12-dev publiée. ZIP publié téléchargé et inspecté, empreinte vérifiée contre le fichier `.sha256` et les métadonnées GitHub : `9d83b8116631ff1fa32047a52ea8a3c9ae5c62399f14c9f228f94931232b324d`. Réception sur l’hébergement utilisateur toujours distincte.
 
 
 ## Local results — 2026-11-07
