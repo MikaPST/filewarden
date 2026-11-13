@@ -117,6 +117,10 @@ status, _, listing, root_url = upload("root-unpublished.pdf", pdf, 0)
 assert status == 200 and "result=success" in root_url
 root_document = urllib.parse.parse_qs(urllib.parse.urlsplit(root_url).query)["created"][0]
 root_binary = "/wp-admin/admin-post.php?" + urllib.parse.urlencode({"action": "filewarden_content", "document": root_document, "download": "1"})
+assert request(admin, root_binary)[0] == 404, "Recovery download accepted a publication URL without its management nonce"
+root_link = re.search(rb'href="([^"]+)"[^>]*>root-unpublished\.pdf</a>', listing)
+assert root_link, "Unpublished upload missing from management listing"
+root_binary = unescape(root_link.group(1).decode()).removeprefix(base) + "&download=1"
 assert request(admin, root_binary)[2] == pdf, "Unpublished upload bytes were not preserved"
 assert request(anon, root_binary)[0] == 404 and request(reader, root_binary)[0] == 404, "Unpublished document became accessible to ordinary readers"
 assert "result=success" in upload("upload-test.pdf", pdf)[3]

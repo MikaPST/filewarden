@@ -1,6 +1,6 @@
 /* Accessible, manually dismissible notices; only successful transient feedback expires. */
 (() => {
-    const scope = document.querySelector('.fw-workspace');
+    const scope = document.querySelector('#wpbody-content');
     if (!scope) return;
     const enhance = notice => {
         if (notice.dataset.fwNotice) return;

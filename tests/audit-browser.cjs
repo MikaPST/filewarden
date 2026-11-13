@@ -20,7 +20,12 @@ module.exports = async ({ page, base, name }) => {
         const data = await fs.readFile(await download.path(), 'utf8');
         const lines = data.trim().split(/\r?\n/);
         assert.equal(lines.length, format === 'jsonl' ? 1005 : 1006);
-        if (format === 'jsonl') assert.ok(lines.map(JSON.parse).every(row => row.actor_login === 'fw_admin' && row.event === 'audit_export_fixture'));
+        if (format === 'jsonl') {
+            const records = lines.map(JSON.parse);
+            assert.ok(records.every(row => row.actor_login === 'fw_admin' && row.actor_type === 'user' && row.event === 'audit_export_fixture'));
+            assert.ok(records.every(row => row.schema_version === 2 && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(row.created_at_UTC)));
+            assert.equal(new Set(records.map(row => row.id)).size, 1005);
+        }
         else assert.ok(data.includes('actor_login') && data.includes('fw_admin'));
         assert.ok((await page.locator('.fw-export-status').textContent()).includes('File received'));
         assert.equal(await page.locator('.fw-export-' + format).getAttribute('aria-busy'), null);

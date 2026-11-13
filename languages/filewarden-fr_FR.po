@@ -957,3 +957,6 @@ msgstr "Les limites du serveur ou des extensions PHP manquantes restreignent les
 
 msgid "Only authorized deleted documents are shown. Restoring requires an authorized destination."
 msgstr "Seuls les documents supprimés autorisés sont affichés. La restauration exige une destination autorisée."
+
+msgid "Choose a valid PDF, JPEG, PNG, TXT, CSV, ZIP or supported macro-free Office document."
+msgstr "Choisissez un PDF, JPEG, PNG, TXT, CSV, ZIP ou document bureautique pris en charge sans macros et valide."

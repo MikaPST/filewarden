@@ -81,6 +81,7 @@ jobs:
           wp config set FILEWARDEN_STORAGE_DIR /tmp/fw-private --path=/tmp/fw-wordpress
           wp config set FILEWARDEN_STORAGE_VERIFIED true --raw --path=/tmp/fw-wordpress
           wp core install --path=/tmp/fw-wordpress --url=http://127.0.0.1:8080 --title=FileWarden --admin_user=fw_admin --admin_password=disposable-test-password --admin_email=admin@example.test --skip-email
+          wp language core install fr_FR --path=/tmp/fw-wordpress
           curl --fail --location --retry 3 https://github.com/MikaPST/filewarden/releases/download/v0.1.11-dev/filewarden-0.1.11-dev.zip -o /tmp/filewarden-0.1.11-dev.zip
           curl --fail --location --retry 3 https://github.com/MikaPST/filewarden/releases/download/v0.1.11-dev/filewarden-0.1.11-dev.zip.sha256 -o /tmp/filewarden-0.1.11-dev.zip.sha256
           (cd /tmp && sha256sum --check filewarden-0.1.11-dev.zip.sha256)
@@ -111,6 +112,8 @@ jobs:
           done
           python3 tests/http-smoke.py
           NODE_PATH=/tmp/fw-browser/node_modules node tests/viewer-browser.cjs
+          wp user meta update fw_admin locale fr_FR --path=/tmp/fw-wordpress
+          NODE_PATH=/tmp/fw-browser/node_modules node tests/french-browser.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:

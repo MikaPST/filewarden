@@ -180,7 +180,7 @@ final class AdminWorkspace {
 			ob_end_flush();
 		} catch ( \Throwable $error ) {
 			ob_end_clean();
-			echo '<div class="notice notice-error"><p>' . esc_html__( 'This folder or action is unavailable. Return to Documents and check your permissions.', 'filewarden' ) . '</p></div>';
+			echo '<div class="wrap fw-workspace"><h1>' . esc_html__( 'Documents', 'filewarden' ) . '</h1><div class="notice notice-error"><p>' . esc_html__( 'This folder or action is unavailable. Return to Documents and check your permissions.', 'filewarden' ) . '</p></div></div>';
 		}
 	}
 
