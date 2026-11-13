@@ -38,7 +38,7 @@ A fully free, open-source WordPress document-management plugin. No paid tier or 
 - GPL-2.0-or-later; GitHub Actions tests and release ZIP packaging.
 
 ## Frontend library (implemented)
-The shortcode supports list/grid layouts, a filename search limited to its published folder, authorized pagination (12 documents), local file-type SVG icons, date/size and separate preview/download actions. Search and pagination filter inherited permissions before rendering. PDF/JPEG/PNG remain the accepted upload formats.
+The shortcode supports list/grid layouts, a filename search limited to its published folder, authorized pagination (12 documents), local file-type SVG icons, date/size and separate preview/download actions. Search and pagination filter inherited permissions before rendering. The corrective 0.1.12-dev.1 candidate extends uploads to TXT/CSV, macro-free DOCX/XLSX/PPTX/ODT/ODS/ODP and inspected ZIPs without automatic extraction. Previews remain PDF/JPEG/PNG only. See security.md for inspection limits and evolutions-v0.1.12-dev.md for the original ten requests.
 
 ## Folder references and access visibility (0.1.8)
 New publication shortcodes use a permanent UUID v4 for each folder, including the virtual root. Schema 2 automatically backfills existing folders without changing internal IDs, parent relationships, policies or files; numeric shortcodes remain compatible. UUIDs reduce predictability but never replace authorization. The backend shows each explicit policy, expandable inherited folder rules, a global-read override explanation and file-type icons. Policy editing remains a separate milestone.

@@ -21,13 +21,15 @@
 
 [Suivi court du projet et organisation des prochains lots](SUIVI.md)
 
-> **Status: 0.1.10-dev pre-alpha foundation. Not production-ready. Do not use confidential documents before deployment security validation.**
+> **Status: 0.1.12-dev.1 corrective development candidate. Not production-ready. Do not use confidential documents before deployment security validation.**
 
 FileWarden is a free, open-source WordPress document-management plugin focused on private storage, inherited access control and modern publishing interfaces. Single-site only for the first version, confirmed by the owner.
 
 ## Télécharger et installer
 
-Ouvre [GitHub Releases](https://github.com/MikaPST/filewarden/releases) et télécharge **filewarden-0.1.10-dev.zip** dans les fichiers joints. Dans WordPress : **Extensions → Ajouter → Téléverser une extension**. La préversion reste destinée aux tests. Consulte le [journal des changements](CHANGELOG.md).
+La branche `fix/ten-approved-evolutions` corrige les [dix évolutions originales](docs/specifications/evolutions-v0.1.12-dev.md). Le candidat **0.1.12-dev.1** n’est pas encore une release publiée ; le [tableau de réception](docs/lot-v0.1.12-dev.1.md) distingue les vérifications et les limites. La release 0.1.12-dev déjà présente sur GitHub ne contient pas ce correctif.
+
+L’archive de développement s’installe dans WordPress : **Extensions → Ajouter → Téléverser une extension**, puis remplacement de l’extension existante. Sauvegarder au préalable la base et le stockage séparé. Consulte le [journal des changements](CHANGELOG.md).
 
 Les documents restent dans `wp-content/filewarden-storage`, séparés du code remplacé lors des mises à jour. Les dossiers affichés sont virtuels ; les fichiers physiques sont chiffrés et portent des noms opaques.
 
@@ -37,7 +39,7 @@ Les documents restent dans `wp-content/filewarden-storage`, séparés du code re
 - Managed encrypted storage with HTTPS isolation checks, plus an explicit outside-webroot option.
 - Nested folder creation and strict intersection of document and ancestor policies.
 - Public, authenticated and role policies; explicit global read capability independent of write capabilities.
-- PDF/JPEG/PNG upload with provenance, extension, MIME, signature/image and size checks.
+- PDF/JPEG/PNG, TXT/CSV, macro-free DOCX/XLSX/PPTX/ODT/ODS/ODP and bounded ZIP inspection, with protected attachment downloads. ZIPs are preserved without automatic extraction; previews remain PDF/images only.
 - Logical URLs, authorized document details and attachment downloads; PDF byte ranges and HEAD responses.
 - REST metadata/upload/folder endpoints, tabbed administration with folder tree and contextual actions, diagnostics, settings and audit retention.
 - Unit tests, disposable WordPress/HTTP integration checks, CI and development ZIP packaging.

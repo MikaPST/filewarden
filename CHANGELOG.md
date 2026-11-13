@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.1.12-dev.1 — corrective candidate, not released
+
+- Restore the original ten-evolution specification supplied by the owner; the previous 0.1.12-dev report used an incorrect scope.
+- Count authorized unpublished documents, excluding trash; add reviewed moves into Documents to classify with stable identities and retained restrictions.
+- Preserve approved folder action colors; modernize creation and multi-file/drop uploads with per-file feedback.
+- Add TXT/CSV, macro-free Office documents and bounded, inspected ZIP attachment storage without automatic extraction.
+- Preserve original trash paths through folder removal, restore to an explicit authorized replacement destination, and require reviewed confirmation for permanent individual/global disposal.
+- Keep folder deletion transactional and show useful failures; add dismissible, accessible notifications with a 12-second minimum for temporary success feedback.
+- Add authorized/denied publication modes, bounded real preview, five settings categories, measured storage health and partial saves that preserve other values.
+- Distinguish WordPress users, anonymous visitors, system actions and unknown legacy actors; retain ACL-protected resource snapshots and export schema 2 with UTC ISO 8601 timestamps.
+- Exercise the installed ZIP after an upgrade from the published 0.1.11-dev archive. See docs/lot-v0.1.12-dev.1.md for test evidence and limits.
+
 ## 0.1.12-dev — 2026-11-13
 
 - Capture WordPress login identifiers alongside actor IDs in audit records; migrate schema 4 safely to schema 5.

@@ -56,7 +56,7 @@ final class SettingsConsole {
 			$message = __( 'Storage directory checks passed.', 'filewarden' );
 		} catch ( \Throwable $error ) {
 			$status  = str_contains( $error->getMessage(), 'verified' ) ? 'unverified' : 'critical';
-			$message = $error instanceof \RuntimeException ? $error->getMessage() : __( 'Unexpected storage error.', 'filewarden' );
+			$message = __( 'Storage protection could not be verified. File operations remain blocked. Check your hosting configuration.', 'filewarden' );
 		}
 		$checked = time();
 		update_option( 'filewarden_storage_checked_at', $checked, false );

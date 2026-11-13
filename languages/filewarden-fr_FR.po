@@ -960,3 +960,6 @@ msgstr "Seuls les documents supprimés autorisés sont affichés. La restauratio
 
 msgid "Choose a valid PDF, JPEG, PNG, TXT, CSV, ZIP or supported macro-free Office document."
 msgstr "Choisissez un PDF, JPEG, PNG, TXT, CSV, ZIP ou document bureautique pris en charge sans macros et valide."
+
+msgid "Storage protection could not be verified. File operations remain blocked. Check your hosting configuration."
+msgstr "La protection du stockage n’a pas pu être vérifiée. Les opérations sur les fichiers restent bloquées. Vérifiez la configuration de votre hébergement."

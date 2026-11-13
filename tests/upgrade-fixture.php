@@ -29,5 +29,9 @@ if ( 'before' === getenv( 'FILEWARDEN_UPGRADE_STAGE' ) ) {
     if ( $hash !== $before['bytes_sha256'] ) { throw new RuntimeException( 'ZIP upgrade damaged document bytes.' ); }
     FileWarden\Installer::migrate();
     if ( $repo->document( $after['uuid'] ) !== $after ) { throw new RuntimeException( 'Repeated upgrade changed data.' ); }
+    ob_start();
+    (new FileWarden\AdminWorkspace($service,new FileWarden\AdminController($service)))->render();
+    $empty_workspace = ob_get_clean();
+    if (!str_contains($empty_workspace, 'fw-recovery-count">(0)</span>')) { throw new RuntimeException('Empty installed recovery counter did not explicitly show zero.'); }
     WP_CLI::success( 'Actual ZIP upgrade preserved document bytes, UUID, policies, folders and storage keys.' );
 }

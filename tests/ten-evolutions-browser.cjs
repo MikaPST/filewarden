@@ -50,7 +50,7 @@ module.exports = async ({ page, context, base, fixture, name }) => {
     assert.equal(await page.locator('.fw-upload-item').count(), 2);
     await page.locator('[name=filewarden_save]').click();
     await page.waitForFunction(() => [...document.querySelectorAll('.fw-upload-item [role=status]')].every(el => el.textContent === 'Saved and verified'));
-    assert.equal(await page.locator('form[data-filewarden-upload]').getAttribute('aria-busy'), null);
+    await page.waitForFunction(() => document.querySelector('form[data-filewarden-upload]').getAttribute('aria-busy') === null);
     await page.goto(publicFolder);
     assert.equal(await page.getByRole('link', { name: 'queued-' + name + '.zip', exact: true }).count(), 1);
     await page.goto(publicFolder + '&tab=add');

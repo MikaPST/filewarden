@@ -1,5 +1,7 @@
 # FileWarden 0.1.12-dev — réalisation et réception
 
+> **Compte rendu historique non conforme au périmètre original.** Le tableau ci-dessous avait repris une numérotation reconstruite et ne prouve pas l’implémentation des dix demandes originales. Il est remplacé par [le compte rendu correctif](lot-v0.1.12-dev.1.md) et la référence fonctionnelle originale. La release déjà publiée reste inchangée.
+
 Référence : [cahier des charges validé](specifications/evolutions-v0.1.12-dev.md).
 Le propriétaire a autorisé le développement et la publication GitHub après réussite des tests le 13 novembre 2026. Aucune installation sur son site n’est incluse.
 

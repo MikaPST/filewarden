@@ -1,24 +1,17 @@
 # FileWarden — suivi court
 
-Mis à jour le 13 novembre 2026. Lire ce fichier à la reprise, puis vérifier l’état Git et les seuls fichiers utiles au lot. Ce résumé ne remplace pas les spécifications ni les règles de sécurité.
+Mis à jour le 14 novembre 2026. Lire ce fichier à la reprise, puis vérifier l’état Git et les fichiers utiles au lot.
 
 ## État actuel
 
-- **Correction en cours des dix évolutions réelles, autorisée le 14 novembre 2026.** La release 0.1.12-dev a bien été publiée, mais sa conformité complète avait été annoncée à tort : le cahier utilisé avait remplacé une partie des demandes par l’ancien lot. Le document `docs/specifications/evolutions-v0.1.12-dev.md` contient désormais la référence UI/UX fournie par le propriétaire, avec sa numérotation originale.
-- Branche : `fix/ten-approved-evolutions`. Conserver les fonctions existantes ; réception par critère et installation du ZIP en WordPress jetable obligatoires avant de déclarer le correctif terminé.
-- Décisions reçues : ZIP conservés comme documents téléchargeables, sans extraction automatique ; ajout TXT, CSV, DOCX, XLSX, PPTX, ODT, ODS, ODP sans macros, avec validation du contenu. Aucun nouveau tag ni nouvelle publication effectués dans ce correctif à ce stade.
-- Accord utilisateur du 13 novembre 2026 : développer les dix évolutions du [cahier des charges](docs/specifications/evolutions-v0.1.12-dev.md), tester, puis publier la release et le ZIP si les tests passent. L’installation sur son site n’est pas incluse.
-- Le lot conserve la navigation, l’héritage, la récupération, la suppression des dossiers et les interfaces déjà livrés en 0.1.11-dev ; il complète l’audit, les acteurs WordPress, les filtres et les téléchargements CSV/TXT/JSONL. Voir [le compte rendu](docs/lot-v0.1.12-dev.md) et [les notes de version](docs/releases/v0.1.12-dev.md).
-- Acteurs : ID + instantané du login WordPress ; aucun e-mail ajouté. Schéma 5, migration sans suppression des journaux ou documents. Les noms des ressources restent soumis aux droits de lecture du contenu.
-- Charte 1.1 intégrée ; couleurs et pictogrammes d’action approuvés, licence des icônes incluse dans le ZIP.
-- [Validation finale du code b6968e4](https://github.com/MikaPST/filewarden/actions/runs/43488511977) réussie : PHP 8.2–8.4, 50 tests PHP / 71 assertions, 8 tests JavaScript, PHPCS et audit Composer ; WordPress 6.8 et version courante, MySQL 8.0, HTTP, Chromium/Firefox. Exports filtrés sur 1 005 lignes, exports vides, refus de permissions/nonces, migrations et absence de fuite des noms privés vérifiés.
-- Captures ordinateur/mobile contrôlées ; ZIP inspecté : 265 fichiers runtime, version 0.1.12-dev et schéma 5, aucun outil de développement. 238 traductions françaises compilées. Les captures de CI utilisent WordPress en anglais.
-- Les essais intermédiaires ont corrigé un compte de test qui avait conservé une capacité globale et des attentes de navigation des panneaux ; les assertions n’ont pas été retirées. Le blocage PHPUnit local a été résolu par l’accès autorisé aux fichiers.
-- Publication : [release et ZIP v0.1.12-dev](https://github.com/MikaPST/filewarden/releases/tag/v0.1.12-dev), tag au commit `4f8a671`. Notes françaises publiées et empreinte SHA-256 jointe.
-- Preuves supplémentaires réussies : [CI sur main](https://github.com/MikaPST/filewarden/actions/runs/43489443735) et [workflow de release](https://github.com/MikaPST/filewarden/actions/runs/43489504775), incluant la matrice complète avant publication.
-- ZIP publié téléchargé puis inspecté : 265 entrées runtime, version 0.1.12-dev, schéma 5 et licence des icônes présents ; aucun outil de développement. Empreinte vérifiée contre le fichier publié et les métadonnées GitHub : `9d83b8116631ff1fa32047a52ea8a3c9ae5c62399f14c9f228f94931232b324d`.
-- Prochaine étape : l’utilisateur peut installer le ZIP via WordPress en remplaçant l’extension, puis réaliser la réception sur son hébergement. Aucun développement restant ni blocage connu sur ce lot après les vérifications décrites.
-- Hébergement utilisateur : installation et réception non effectuées par cette intervention. Le plugin reste une préversion ; l’acceptation du stockage et des accès sur l’hébergement réel reste nécessaire.
+- **Correction des dix évolutions originales en cours**, autorisée explicitement par le propriétaire. Le compte rendu de 0.1.12-dev avait utilisé un périmètre reconstruit et annoncé à tort une conformité complète. Le cahier de référence est maintenant la copie exacte du document fonctionnel/UIUX fourni : [les dix évolutions](docs/specifications/evolutions-v0.1.12-dev.md).
+- Branche isolée : **fix/ten-approved-evolutions** ; version candidate **0.1.12-dev.1**, schéma 6. Main, tag et release 0.1.12-dev restent inchangés. Aucun déploiement sur l’hébergement utilisateur dans ce correctif.
+- Décisions confirmées : ZIP contrôlé puis conservé comme document téléchargeable, sans extraction automatique ; TXT, CSV et DOCX/XLSX/PPTX/ODT/ODS/ODP sans macros ajoutés à PDF/JPEG/PNG. Les restrictions d’inspection sont documentées dans docs/security.md.
+- Fonctionnalités développées : compteur, retrait de publication confirmé, imports multiples/dépôt, notifications accessibles, création modernisée, corbeille globale et purge confirmée, modes de publication, cinq catégories de réglages et état mesuré, audit avec types d’acteurs/instantanés et JSONL versionné. Conserver les fonctions existantes et les restrictions héritées.
+- Vérifications locales actuelles : **72 tests PHP / 125 assertions** ; PHP 8.2–8.4, JavaScript, PHPCS et construction du ZIP réussissent en CI sur les premiers correctifs. La mise à jour réelle du ZIP 0.1.11-dev vers le candidat préserve les UUID, politiques, dossiers, clés et octets. Les contrôles HTTP passent.
+- **Réception navigateur complète encore en cours.** Les essais ont détecté puis corrigé le type d’écriture du chemin d’origine et les onglets manquants de la corbeille ; les tests restent présents. Des scénarios supplémentaires couvrent les annulations transactionnelles, le dépôt mixte, la purge et les écrans français. Ne pas déclarer le lot terminé avant leur réussite et l’examen des captures.
+- Détails et matrice : [réception corrective](docs/lot-v0.1.12-dev.1.md). Les preuves historiques de 0.1.12-dev démontraient l’ancien lot, pas les dix évolutions originales.
+- L’installation et la recette de l’hébergement réel ne sont pas réalisées. Préversion uniquement ; aucune garantie de sécurité absolue. Une publication officielle exige un accord distinct explicite.
 
 ## Organisation convenue
 
