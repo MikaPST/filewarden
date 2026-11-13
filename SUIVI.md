@@ -13,15 +13,17 @@ Mis à jour le 13 novembre 2026. Lire ce fichier à la reprise, puis vérifier l
 
 ## Lot en cours / prochaine action
 
-- **Statut : développement autorisé et en cours.**
+- **Statut : développement terminé et testé ; validation utilisateur avant publication.**
 - Lot proposé : navigation dans les sous-dossiers, héritage des dossiers, retrait de Racine de l’usage courant, icônes/explications, accès restreint frontend, refonte Publication/Réglages/Audit et exports de logs. Voir [le compte rendu du lot](docs/lot-navigation-interfaces.md).
 - Décisions reçues : Carte centrée par défaut avec choix des trois designs dans Publication ; Documents à classer comme collection de récupération non publiable ; pas d’import de logs ; purge manuelle avec confirmation incluse. Ajout demandé : suppression de dossier. Modalités validées : récupérer les fichiers, bloquer si sous-dossiers, préserver les restrictions lors du reclassement.
 - Conséquence explicitement validée par l’utilisateur : les fichiers à classer ne seront plus accessibles via leurs anciennes publications ou liens frontend ; aucun effacement.
 - Autorisation de coder : accord explicite reçu le 9 novembre 2026.
 - Vérifications automatisées regroupées : organisation à définir ensemble ensuite ; aucune nouvelle commande à développer maintenant.
 - Publication du prochain lot : non autorisée à ce stade ; accord distinct requis.
-- Progression : code 0.1.11-dev écrit et commité jusqu’à da73970. CI 42602555486 réussie : 50 tests PHP / 71 assertions sur PHP 8.2–8.4, 8 tests JavaScript, WordPress 6.8/latest et Chromium/Firefox. Finitions du 13 novembre : retour d’erreur d’aperçu, icône/badge de récupération, hauteur des cartes, documentation et contrôle mobile ; validation finale en cours. Aucun tag, release ni déploiement du lot.
-- Prochaine étape : exécuter les nouveaux tests puis la CI WordPress/Chromium/Firefox ; corriger les échecs et contrôler les captures avant de proposer la publication.
+- Progression : lot 0.1.11-dev terminé, code final au commit `8e1d805`. Finitions : erreur/délai d’aperçu, code court intégral sur mobile, icône et badge Non publié, hauteur des cartes de réglages. Ajouts distants de marque conservés par fusion ; pas de refonte supplémentaire de la charte dans ce lot.
+- Validation finale : [CI 43405917445](https://github.com/MikaPST/filewarden/actions/runs/43405917445) réussie : 50 tests PHP / 71 assertions, PHP 8.2–8.4, 8 tests JavaScript, WordPress 6.8/latest et Chromium/Firefox. Captures ordinateur/mobile contrôlées ; code court intégral vérifié, sans défilement intérieur. Les captures utilisent WordPress en anglais ; les traductions françaises sont incluses.
+- ZIP local : `build/filewarden-0.1.11-dev.zip`, reconstruit avec le code final ; aucune release/tag ni installation sur le site utilisateur.
+- Prochaine étape : validation utilisateur du lot, puis autorisation distincte de release. L’organisation d’une commande de vérification regroupée reste à convenir ; aucune nouvelle commande ajoutée.
 
 ## Organisation convenue
 
