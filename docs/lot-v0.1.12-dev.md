@@ -31,4 +31,4 @@ Le propriétaire a autorisé le développement et la publication GitHub après r
 
 Contrôles locaux réussis : 50 tests PHP / 71 assertions, 8 tests JavaScript, PHPCS, syntaxe PHP/JavaScript et compilation de 238 traductions françaises. Le ZIP de développement a été généré.
 
-Les tests d’intégration WordPress/MySQL, HTTP et Chromium/Firefox doivent être exécutés dans les environnements jetables de la CI avant la publication. Les preuves et l’état final sont consignés dans `SUIVI.md` une fois les exécutions terminées. Ces tests ne remplacent pas la réception sur l’hébergement réel.
+Les tests d’intégration WordPress/MySQL, HTTP et Chromium/Firefox ont réussi sur WordPress 6.8 et la version courante : [preuve du code final b6968e4](https://github.com/MikaPST/filewarden/actions/runs/43488511977). Les captures ordinateur/mobile ont été inspectées. Les scénarios attendent la fin de la navigation des panneaux et conservent des preuves en cas d’échec. Les preuves de publication sont consignées dans SUIVI.md après réussite du workflow de release. Ces tests ne remplacent pas la réception sur l’hébergement réel.

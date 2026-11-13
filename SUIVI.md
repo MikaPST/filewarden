@@ -4,36 +4,16 @@ Mis à jour le 13 novembre 2026. Lire ce fichier à la reprise, puis vérifier l
 
 ## État actuel
 
-- Dernier lot terminé : refonte du backend, préversion **0.1.10-dev**, code livré au commit `1579dc9`.
-- Réalisé : onglets, arborescence, panneau contextuel, affichage des droits effectifs et avertissement Public sous dossier restreint ; déplacement, copie, corbeille et restauration.
-- [Release et ZIP](https://github.com/MikaPST/filewarden/releases/tag/v0.1.10-dev) publiés ; ZIP téléchargé et empreinte SHA-256 vérifiée.
-- Tests de ce lot : 48 tests PHP / 66 assertions, 8 tests JavaScript ; intégration WordPress 6.8 et version courante avec Chromium/Firefox réussie. Rendu ordinateur/mobile contrôlé.
-- Preuves : [CI du code livré](https://github.com/MikaPST/filewarden/actions/runs/42587862914), [publication](https://github.com/MikaPST/filewarden/actions/runs/42588245303). Ces résultats concernent cette version, pas les modifications futures.
-- Site utilisateur : installation du ZIP à effectuer par l’utilisateur ; réception sur son hébergement non confirmée. Le plugin reste une préversion.
-
-## Lot en cours / prochaine action
-
-- **Statut : développement de 0.1.12-dev ; validation complète en cours avant publication.**
-- Accord utilisateur reçu le 13 novembre 2026 pour terminer les 10 évolutions, les tester et publier la release GitHub si l’ensemble des tests réussit. Cet accord inclut le tag, le ZIP et les notes de version ; il n’autorise pas une installation sur le site utilisateur.
-- Cahier des charges validé : [évolutions 0.1.12-dev](docs/specifications/evolutions-v0.1.12-dev.md). Les chantiers 1 à 7 reposent largement sur les fonctionnalités déjà présentes dans 0.1.11-dev ; les préserver et les vérifier avant toute retouche.
-- Travaux en cours sur le journal d’audit : vues simplifiée/technique, filtre par `user_login`, noms de ressources affichés uniquement si le lecteur d’audit possède aussi le droit de lecture, export CSV/TXT/JSONL et migration du schéma 4 vers 5.
-- L’acteur d’une nouvelle entrée conserve l’ID WordPress et un instantané `user_login` (pas d’adresse e-mail). Les anciennes entrées sont rapprochées du compte courant si disponible ; sinon l’ID reste affiché.
-- Vérifications locales passées : syntaxe PHP, PHPCS, 50 tests PHP / 71 assertions, 8 tests JavaScript et compilation de 238 traductions françaises. Le blocage PHPUnit était lié aux restrictions d’accès locales ; l’exécution autorisée passe.
-- Prochaine étape : pousser le code pour exécuter les tests WordPress/MySQL HTTP et Chromium/Firefox dans la CI jetable, vérifier les captures et publier uniquement après leur réussite. Voir [le compte rendu 0.1.12-dev](docs/lot-v0.1.12-dev.md).
-
-### Historique du lot 0.1.11-dev
-
-- **Statut : développement terminé et testé ; validation utilisateur avant publication.**
-- Lot proposé : navigation dans les sous-dossiers, héritage des dossiers, retrait de Racine de l’usage courant, icônes/explications, accès restreint frontend, refonte Publication/Réglages/Audit et exports de logs. Voir [le compte rendu du lot](docs/lot-navigation-interfaces.md).
-- Décisions reçues : Carte centrée par défaut avec choix des trois designs dans Publication ; Documents à classer comme collection de récupération non publiable ; pas d’import de logs ; purge manuelle avec confirmation incluse. Ajout demandé : suppression de dossier. Modalités validées : récupérer les fichiers, bloquer si sous-dossiers, préserver les restrictions lors du reclassement.
-- Conséquence explicitement validée par l’utilisateur : les fichiers à classer ne seront plus accessibles via leurs anciennes publications ou liens frontend ; aucun effacement.
-- Autorisation de coder : accord explicite reçu le 9 novembre 2026.
-- Vérifications automatisées regroupées : organisation à définir ensemble ensuite ; aucune nouvelle commande à développer maintenant.
-- Publication du prochain lot : non autorisée à ce stade ; accord distinct requis.
-- Progression : lot 0.1.11-dev terminé, code final au commit `8e1d805`. Finitions : erreur/délai d’aperçu, code court intégral sur mobile, icône et badge Non publié, hauteur des cartes de réglages. Ajouts distants de marque conservés par fusion ; pas de refonte supplémentaire de la charte dans ce lot.
-- Validation finale : [CI 43405917445](https://github.com/MikaPST/filewarden/actions/runs/43405917445) réussie : 50 tests PHP / 71 assertions, PHP 8.2–8.4, 8 tests JavaScript, WordPress 6.8/latest et Chromium/Firefox. Captures ordinateur/mobile contrôlées ; code court intégral vérifié, sans défilement intérieur. Les captures utilisent WordPress en anglais ; les traductions françaises sont incluses.
-- ZIP local : `build/filewarden-0.1.11-dev.zip`, reconstruit avec le code final ; aucune release/tag ni installation sur le site utilisateur.
-- Prochaine étape : validation utilisateur du lot, puis autorisation distincte de release. L’organisation d’une commande de vérification regroupée reste à convenir ; aucune nouvelle commande ajoutée.
+- **Lot 0.1.12-dev terminé et validé ; publication GitHub autorisée et en préparation.**
+- Accord utilisateur du 13 novembre 2026 : développer les dix évolutions du [cahier des charges](docs/specifications/evolutions-v0.1.12-dev.md), tester, puis publier la release et le ZIP si les tests passent. L’installation sur son site n’est pas incluse.
+- Le lot conserve la navigation, l’héritage, la récupération, la suppression des dossiers et les interfaces déjà livrés en 0.1.11-dev ; il complète l’audit, les acteurs WordPress, les filtres et les téléchargements CSV/TXT/JSONL. Voir [le compte rendu](docs/lot-v0.1.12-dev.md) et [les notes de version](docs/releases/v0.1.12-dev.md).
+- Acteurs : ID + instantané du login WordPress ; aucun e-mail ajouté. Schéma 5, migration sans suppression des journaux ou documents. Les noms des ressources restent soumis aux droits de lecture du contenu.
+- Charte 1.1 intégrée ; couleurs et pictogrammes d’action approuvés, licence des icônes incluse dans le ZIP.
+- [Validation finale du code b6968e4](https://github.com/MikaPST/filewarden/actions/runs/43488511977) réussie : PHP 8.2–8.4, 50 tests PHP / 71 assertions, 8 tests JavaScript, PHPCS et audit Composer ; WordPress 6.8 et version courante, MySQL 8.0, HTTP, Chromium/Firefox. Exports filtrés sur 1 005 lignes, exports vides, refus de permissions/nonces, migrations et absence de fuite des noms privés vérifiés.
+- Captures ordinateur/mobile contrôlées ; ZIP inspecté : 265 fichiers runtime, version 0.1.12-dev et schéma 5, aucun outil de développement. 238 traductions françaises compilées. Les captures de CI utilisent WordPress en anglais.
+- Les essais intermédiaires ont corrigé un compte de test qui avait conservé une capacité globale et des attentes de navigation des panneaux ; les assertions n’ont pas été retirées. Le blocage PHPUnit local a été résolu par l’accès autorisé aux fichiers.
+- Prochaine étape : intégrer le code testé à main, créer le tag v0.1.12-dev, attendre la réussite du workflow de release, vérifier le ZIP publié et son empreinte, puis consigner les liens définitifs ici.
+- Hébergement utilisateur : installation et réception non effectuées par cette intervention. Le plugin reste une préversion ; l’acceptation du stockage et des accès sur l’hébergement réel reste nécessaire.
 
 ## Organisation convenue
 

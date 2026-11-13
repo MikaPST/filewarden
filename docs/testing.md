@@ -1,5 +1,16 @@
 # Validation
 
+## Lot 0.1.12-dev — 2026-11-13
+
+- [CI finale du code b6968e4](https://github.com/MikaPST/filewarden/actions/runs/43488511977) : tous les jobs réussis.
+- PHP 8.2–8.4 : 50 tests unitaires, 71 assertions ; syntaxe, PHPCS, audit Composer et génération du ZIP réussis. 8 tests JavaScript réussis.
+- WordPress 6.8 et version courante (7.1.4 lors de cette exécution), MySQL 8.0 : migrations, HTTP, ACL et parcours Chromium/Firefox réussis dans des installations jetables.
+- Nouveaux contrôles : migration du journal 4 vers 5 sans perte, login WordPress mémorisé, rapprochement historique, filtre hostile, accès à l’audit sans droit de purge ni noms de documents privés, exports CSV/TXT/JSONL de 1 005 événements et exports sans résultat, refus des nonces/capacités et retour d’erreur navigateur.
+- Captures ordinateur/mobile inspectées ; ZIP local inspecté (265 entrées runtime), version et schéma vérifiés, outils de développement exclus, licence des pictogrammes incluse.
+- Les parcours attendent explicitement la navigation du panneau avant de manipuler ses formulaires et conservent des captures/diagnostics en cas d’échec. Les échecs intermédiaires restent consultables dans les exécutions précédentes de la branche de validation.
+- La publication dispose de sa propre validation avant mise en ligne. Les liens définitifs et la vérification du ZIP publié sont consignés dans SUIVI.md. Réception sur l’hébergement utilisateur toujours distincte.
+
+
 ## Local results — 2026-11-07
 
 - PHP 8.2.35 with Sodium: **45 unit tests, 57 assertions passed**, including a multi-frame encryption round trip and rejection of altered, truncated, appended and wrong-key ciphertext.
