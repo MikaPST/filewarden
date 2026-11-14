@@ -58,7 +58,7 @@ final class AuditConsole {
 				$login     = self::actor_login( $row );
 				$technical = self::export_record( $row );
 				if ( 'technical' === $view ) {
-					echo '<details class="fw-log-line"><summary><time>' . esc_html( get_date_from_gmt( $row['created_at'], 'Y-m-d H:i:s' ) ) . '</time> <strong>' . esc_html( $row['event'] ) . '</strong> <span>' . esc_html( sprintf( 'WordPress: %s · #%d', $login ? $login : __( 'Unavailable', 'filewarden' ), $row['actor_id'] ) ) . '</span></summary><pre><code>' . esc_html( wp_json_encode( $technical, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE ) ) . '</code></pre></details>';
+					echo '<details class="fw-log-line" data-event-id="' . esc_attr( $row['id'] ) . '"><summary><time>' . esc_html( get_date_from_gmt( $row['created_at'], 'Y-m-d H:i:s' ) ) . '</time> <strong>' . esc_html( $row['event'] ) . '</strong> <span>' . esc_html( sprintf( 'WordPress: %s · #%d', $login ? $login : __( 'Unavailable', 'filewarden' ), $row['actor_id'] ) ) . '</span></summary><pre><code>' . esc_html( wp_json_encode( $technical, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE ) ) . '</code></pre></details>';
 				} else {
 					$actor_id = (int) $row['actor_id'];
 					if ( 0 === $actor_id ) {
@@ -72,11 +72,8 @@ final class AuditConsole {
 						$actor = sprintf( __( 'WordPress user #%d', 'filewarden' ), $actor_id );
 					}
 					$resource = self::resource_name( $row );
-					/* translators: 1: audit record ID; 2: related object ID or event count. */
-					$detail = sprintf( __( 'Record #%1$d · related ID or count #%2$d', 'filewarden' ), $row['id'], $row['object_id'] );
-					if ( $resource ) {
-						$detail .= ' · ' . $resource; }
-					echo '<details class="fw-log-line"><summary><time>' . esc_html( get_date_from_gmt( $row['created_at'], 'Y-m-d H:i:s' ) ) . '</time> <strong>' . esc_html( self::event_label( $row['event'] ) ) . '</strong> <span>' . esc_html( $actor ) . '</span></summary><p>' . esc_html( $detail ) . '</p><pre><code>' . esc_html( wp_json_encode( $technical, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE ) ) . '</code></pre></details>';
+					$detail   = $resource ? ( 'folder' === $technical['resource_type'] ? __( 'Folder', 'filewarden' ) : __( 'Document', 'filewarden' ) ) . ' : ' . $resource : __( 'Resource name unavailable', 'filewarden' );
+					echo '<article class="fw-log-line fw-log-simple" data-event-id="' . esc_attr( $row['id'] ) . '"><div class="fw-log-summary"><time>' . esc_html( get_date_from_gmt( $row['created_at'], 'Y-m-d H:i:s' ) ) . '</time> <strong>' . esc_html( self::event_label( $row['event'] ) ) . '</strong> <span>' . esc_html( $actor ) . '</span></div><p class="fw-log-resource">' . esc_html( $detail ) . '</p><details><summary>' . esc_html__( 'Show technical details', 'filewarden' ) . '</summary><pre><code>' . esc_html( wp_json_encode( $technical, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE ) ) . '</code></pre></details></article>';
 				}
 			}
 			if ( ! $rows ) {

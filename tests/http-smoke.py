@@ -127,6 +127,17 @@ assert "result=success" in upload("upload-test.pdf", pdf)[3]
 assert "result=duplicate" in upload("upload-test.pdf", pdf)[3]
 assert "result=format" in upload("malicious.php", b"<?php echo 'blocked';")[3]
 assert "result=format" in upload("fake.pdf", b"not a PDF")[3]
+from format_fixtures import document_fixtures
+for extension, (payload, mime) in document_fixtures().items():
+    status, _, _, uploaded_url = upload("format-http." + extension, payload)
+    assert status == 200 and "result=success" in uploaded_url, f"Allowed {extension} upload was refused: {uploaded_url}"
+    document_id = urllib.parse.parse_qs(urllib.parse.urlsplit(uploaded_url).query)["created"][0]
+    binary_url = "/wp-admin/admin-post.php?" + urllib.parse.urlencode({"action": "filewarden_content", "document": document_id, "download": "1"})
+    status, headers, saved_bytes, _ = request(admin, binary_url)
+    assert status == 200 and saved_bytes == payload and headers["Content-Type"] == mime, f"{extension} bytes or attachment type changed"
+    assert "attachment;" in headers["Content-Disposition"] and "no-store" in headers["Cache-Control"]
+    assert request(anon, binary_url)[0] == 404, f"Private {extension} became public"
+print("All nine additional formats passed real HTTP upload, attachment MIME, byte identity and anonymous denial.")
 large_pdf = pdf + b" " * 100000
 status, _, listing, url = upload("large-upload.pdf", large_pdf, fixtures["folder_id"])
 assert status == 200 and "result=success" in url and b"large-upload.pdf saved and verified" in listing

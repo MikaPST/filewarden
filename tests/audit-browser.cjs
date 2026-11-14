@@ -3,10 +3,17 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs/promises');
 
 module.exports = async ({ page, base, name }) => {
+    const navigate = async link => {
+        const href = await link.getAttribute('href');
+        await Promise.all([page.waitForURL(href), link.click()]);
+        await page.locator('.fw-terminal').waitFor();
+    };
     await page.goto(base + '/wp-admin/admin.php?page=filewarden-audit&event=audit_export_fixture');
     assert.equal(await page.locator('.fw-log-line').count(), 50);
     assert.ok((await page.locator('.fw-terminal').textContent()).includes('fw_admin'));
-    await page.getByRole('link', { name: 'Technical', exact: true }).click();
+    const simpleIds = await page.locator('.fw-log-line').evaluateAll(rows=>rows.map(row=>row.dataset.eventId));
+    await navigate(page.getByRole('link', { name: 'Technical', exact: true }));
+    assert.deepEqual(await page.locator('.fw-log-line').evaluateAll(rows=>rows.map(row=>row.dataset.eventId)), simpleIds);
     await page.locator('.fw-log-line summary').first().click();
     assert.ok((await page.locator('.fw-log-line pre').first().textContent()).includes('actor_login'));
     await page.getByRole('button', { name: 'Apply filters', exact: true }).click();
@@ -30,7 +37,7 @@ module.exports = async ({ page, base, name }) => {
         assert.ok((await page.locator('.fw-export-status').textContent()).includes('File received'));
         assert.equal(await page.locator('.fw-export-' + format).getAttribute('aria-busy'), null);
     }
-    await page.getByRole('link', { name: 'Older events', exact: true }).click();
+    await navigate(page.getByRole('link', { name: 'Older events', exact: true }));
     assert.equal(await page.locator('.fw-log-line').count(), 50);
     const route = /\/wp-admin\/admin-post\.php\?.*action=filewarden_audit/;
     await page.route(route, handler => handler.fulfill({ status: 403, contentType: 'text/html', body: 'Denied' }));
@@ -38,7 +45,7 @@ module.exports = async ({ page, base, name }) => {
     await page.waitForFunction(() => document.querySelector('.fw-export-status').textContent.includes('Download failed'));
     assert.equal(await page.locator('.fw-export-jsonl').getAttribute('aria-busy'), null);
     await page.unroute(route);
-    await page.getByRole('link', { name: 'Reset', exact: true }).click();
+    await navigate(page.getByRole('link', { name: 'Reset', exact: true }));
     assert.equal(await page.locator('#fw-event').inputValue(), '');
     assert.ok(page.url().includes('view=technical'));
     await page.setViewportSize({ width: 375, height: 812 });

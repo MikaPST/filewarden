@@ -963,3 +963,9 @@ msgstr "Choisissez un PDF, JPEG, PNG, TXT, CSV, ZIP ou document bureautique pris
 
 msgid "Storage protection could not be verified. File operations remain blocked. Check your hosting configuration."
 msgstr "La protection du stockage n’a pas pu être vérifiée. Les opérations sur les fichiers restent bloquées. Vérifiez la configuration de votre hébergement."
+
+msgid "Resource name unavailable"
+msgstr "Nom de la ressource indisponible"
+
+msgid "Show technical details"
+msgstr "Afficher les détails techniques"
