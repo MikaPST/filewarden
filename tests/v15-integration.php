@@ -33,7 +33,13 @@ FileWarden\Installer::activate();
 fw_assert($pending_checkpoint===get_option(FileWarden\DatabaseUpgrade::CHECKPOINT),'Reactivation erased or rewrote an interrupted repair.');
 fw_reject(fn()=>$service->create_folder('Must stay blocked',0,array('type'=>'public')), RuntimeException::class, 'Pending repair allowed document mutations.');
 fw_reject(fn()=>$service->audit->record('must_not_be_written'), RuntimeException::class, 'Pending repair allowed audit writes.');
-fw_reject(fn()=>FileWarden\AuditService::cleanup(),RuntimeException::class,'Pending repair allowed audit cleanup.');
+$audit_before_cleanup=$wpdb->get_results("SELECT * FROM {$wpdb->prefix}filewarden_audit_logs ORDER BY id",ARRAY_A);
+$later_cron_callback=false;
+$cron_probe=static function()use(&$later_cron_callback){$later_cron_callback=true;};
+add_action('filewarden_audit_cleanup',$cron_probe,100);
+try{do_action('filewarden_audit_cleanup');}finally{remove_action('filewarden_audit_cleanup',$cron_probe,100);}
+fw_assert($later_cron_callback,'Pending repair aborted later WordPress cron callbacks.');
+fw_assert($audit_before_cleanup===$wpdb->get_results("SELECT * FROM {$wpdb->prefix}filewarden_audit_logs ORDER BY id",ARRAY_A),'Pending repair allowed audit cleanup writes.');
 $original_name=$repository->folder($repair_leaf)['name'];
 $wpdb->update($wpdb->prefix.'filewarden_folders',array('name'=>'Simulated external drift'),array('id'=>$repair_leaf));
 try{fw_reject(fn()=>FileWarden\DatabaseUpgrade::repair(true),RuntimeException::class,'Repair ignored changed data since its checkpoint.');}

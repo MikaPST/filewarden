@@ -1,5 +1,9 @@
 # Validation
 
+## 0.1.15-dev — final corrective local candidate
+
+[Corrective local evidence](validation/v0.1.15-dev-corrections-local.json): fresh complete 6.8 acceptance passed; fresh 7.1.4 upgrade/integration and targeted rapid-preview/French/320px checks passed in both browsers. The final cleanup follow-up defers known maintenance/busy lock refusals, preserving audit records and allowing later WordPress cron callbacks; both installed ZIPs passed this targeted check. PHPUnit remains 75 tests/130 assertions, JS eight tests, PHPCS/syntax pass. The final local archive has 290 verified files, SHA-256 57bafc38e30ca435bd0c226096b0d7da9476c28c20cef5c31657d1da442e0e17. Final GitHub matrix and publication remain pending at this record; earlier evidence below refers to its own candidate.
+
 ## 0.1.15-dev — initial CI failure and corrective acceptance
 
 [Initial CI 43639555618](https://github.com/MikaPST/filewarden/actions/runs/43639555618), commit f7db9f4, passed PHP 8.2.35/8.3.36/8.4.27 (75 tests/130 assertions each), JS, and real MySQL 8.0.46 database/upgrade integration. Browser jobs failed: five at French repair width 320px in Firefox/Linux, one at a stale publication preview after rapid changes and two at restoration navigation synchronization. No release/tag was created. [Preserved failure summary](validation/v0.1.15-dev-ci-initial.json).

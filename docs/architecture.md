@@ -8,6 +8,8 @@
 
 `AdminBrand` shares the unchanged official header artwork; `AuditAppearance` provides presentation-only categories for simplified events. Neither changes access decisions, protected resource-name resolution, technical records or export schema 2.
 
+During a pending repair or temporary lock contention, scheduled audit cleanup defers its batch without writing or throwing the known maintenance refusal through the WordPress cron dispatcher. Later callbacks still run; ordinary privileged writes remain blocked by the checkpoint. Administration previews load eagerly and coalesce rapid choices before navigation, without changing frontend lazy frames or server authorization.
+
 WordPress PHP plugin with modular services: DocumentService, PermissionService, StorageService, AuditService. Admin interface may use WordPress React components; public interface should remain lightweight.
 
 Data tables (subject to detailed schema review): documents, folders, versions, permissions, audit_logs, download_stats, displays. WordPress prefix is dynamic.

@@ -1,0 +1,18 @@
+{
+  "version": "0.1.15-dev",
+  "date": "2026-11-14",
+  "status": "passed",
+  "scope": "Corrective candidate after initial CI failure; no tag/release created at this stage",
+  "wordpress_6_8": "Fresh actual ZIP upgrade from 0.1.14-dev/MyISAM, full integration, HTTP, Chromium/Firefox EN/FR passed",
+  "wordpress_7_1_4": "Fresh actual ZIP upgrade from 0.1.14-dev/MyISAM and all PHP integration passed; rapid preview stress and full French UI/320px/375px repair passed in Chromium/Firefox",
+  "rapid_preview": "Five repeated rapid-choice cycles in each browser on both WordPress versions settled on the final actual server-rendered design without stale errors",
+  "cron_followup": "Both installed final ZIPs passed the pending-repair cron check: records unchanged, maintenance write block retained, later WordPress callbacks executed; ordinary cleanup remains tested by integration",
+  "unit": {"php": "8.2.35", "tests": 75, "assertions": 130, "status": "passed"},
+  "javascript": {"tests": 8, "status": "passed"},
+  "phpcs_and_syntax": "passed",
+  "archive": {"files": 290, "sha256": "57bafc38e30ca435bd0c226096b0d7da9476c28c20cef5c31657d1da442e0e17", "verified_against": ["working sources", "both final installed ZIPs"]},
+  "previous_full_application_zip_sha256": "3cd0a731c0b088ab23ba6c56bc2ebc59df60b4f68e96205dd4af99334e623e5f",
+  "final_runtime_delta_from_that_zip": "AuditService cleanup defers known maintenance/busy lock refusals instead of interrupting other cron callbacks; tested on both WordPress versions",
+  "ci": "Final matrix still required before tag/release; initial failed run remains preserved separately",
+  "hosting": "No target-host deployment or migration performed"
+}

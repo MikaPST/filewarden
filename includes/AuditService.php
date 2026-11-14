@@ -91,19 +91,26 @@ final class AuditService {
 	 * Remove one expired audit batch.
 	 *
 	 * @return mixed Operation result.
+	 * @throws \RuntimeException On an unexpected lock failure.
 	 */
 	public static function cleanup() {
 		global $wpdb;
 		$repo = new Repository();
-		$lock = $repo->lock( 'audit-write' );
+		$lock = null;
 		try {
+			$lock = $repo->lock( 'audit-write' );
 			$days = max( 1, (int) get_option( 'filewarden_audit_days', 365 ) );
 			$end  = gmdate( 'Y-m-d H:i:s', time() - $days * DAY_IN_SECONDS );
 			// Bounded, repeatable cleanup: additional batches run on subsequent cron ticks.
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Custom tables require fresh authorization data and prepared database access.
 			$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}filewarden_audit_logs WHERE created_at < %s LIMIT 10000", $end ) );
+		} catch ( \RuntimeException $error ) {
+			if ( ! in_array( $error->getMessage(), array( 'Database repair pending.', 'Document is busy.' ), true ) ) {
+				throw $error; }
+			// Defer this batch without aborting later WordPress cron callbacks.
 		} finally {
-			$repo->unlock( $lock );
+			if ( $lock ) {
+				$repo->unlock( $lock ); }
 		}
 	}
 
