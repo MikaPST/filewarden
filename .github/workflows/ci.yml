@@ -47,11 +47,15 @@ jobs:
           path: build/filewarden-*.zip
           if-no-files-found: error
   integration:
+    name: integration (WP ${{ matrix.wordpress }}, from ${{ matrix.previous.version }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         wordpress: ['6.8', 'latest']
+        previous:
+          - {version: '0.1.11-dev', schema: '4'}
+          - {version: '0.1.12-dev', schema: '5'}
     services:
       mysql:
         image: mysql:8.0
@@ -64,6 +68,8 @@ jobs:
       FILEWARDEN_TESTING: '1'
       FILEWARDEN_FIXTURES: /tmp/filewarden-fixtures.json
       FILEWARDEN_UPGRADE_FIXTURE: /tmp/filewarden-upgrade.json
+      FILEWARDEN_PREVIOUS_VERSION: ${{ matrix.previous.version }}
+      FILEWARDEN_PREVIOUS_SCHEMA: ${{ matrix.previous.schema }}
     steps:
       - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2
@@ -83,10 +89,10 @@ jobs:
           wp config set FILEWARDEN_STORAGE_VERIFIED true --raw --path=/tmp/fw-wordpress
           wp core install --path=/tmp/fw-wordpress --url=http://127.0.0.1:8080 --title=FileWarden --admin_user=fw_admin --admin_password=disposable-test-password --admin_email=admin@example.test --skip-email
           wp language core install fr_FR --path=/tmp/fw-wordpress
-          curl --fail --location --retry 3 https://github.com/MikaPST/filewarden/releases/download/v0.1.11-dev/filewarden-0.1.11-dev.zip -o /tmp/filewarden-0.1.11-dev.zip
-          curl --fail --location --retry 3 https://github.com/MikaPST/filewarden/releases/download/v0.1.11-dev/filewarden-0.1.11-dev.zip.sha256 -o /tmp/filewarden-0.1.11-dev.zip.sha256
-          (cd /tmp && sha256sum --check filewarden-0.1.11-dev.zip.sha256)
-          wp plugin install /tmp/filewarden-0.1.11-dev.zip --activate --path=/tmp/fw-wordpress
+          curl --fail --location --retry 3 https://github.com/MikaPST/filewarden/releases/download/v${{ matrix.previous.version }}/filewarden-${{ matrix.previous.version }}.zip -o /tmp/filewarden-${{ matrix.previous.version }}.zip
+          curl --fail --location --retry 3 https://github.com/MikaPST/filewarden/releases/download/v${{ matrix.previous.version }}/filewarden-${{ matrix.previous.version }}.zip.sha256 -o /tmp/filewarden-${{ matrix.previous.version }}.zip.sha256
+          (cd /tmp && sha256sum --check filewarden-${{ matrix.previous.version }}.zip.sha256)
+          wp plugin install /tmp/filewarden-${{ matrix.previous.version }}.zip --activate --path=/tmp/fw-wordpress
           FILEWARDEN_UPGRADE_STAGE=before wp eval-file "$GITHUB_WORKSPACE/tests/upgrade-fixture.php" --path=/tmp/fw-wordpress
           php tools/build.php
           wp plugin install "$GITHUB_WORKSPACE/build/$(basename build/filewarden-*.zip)" --force --activate --path=/tmp/fw-wordpress
@@ -118,6 +124,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: workspace-screenshots-${{ matrix.wordpress }}
+          name: workspace-screenshots-${{ matrix.wordpress }}-from-${{ matrix.previous.version }}
           path: build/screenshots/*.png
           if-no-files-found: ignore

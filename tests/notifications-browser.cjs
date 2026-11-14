@@ -27,7 +27,7 @@ module.exports = async ({ context, base }) => {
         await page.locator('.notice-info[data-fw-notice]').waitFor();
         assert.equal(await page.locator('.notice-info .dashicons').count(), 1);
         await page.goto(base + '/wp-admin/admin.php?page=filewarden-settings');
-        await page.locator('.notice-warning[data-fw-notice]').waitFor();
-        assert.equal(await page.locator('.notice-warning .fw-notice-close').count(), 1);
+        await page.locator('.fw-settings .notice-warning[data-fw-notice]').waitFor();
+        assert.equal(await page.locator('.fw-settings .notice-warning .fw-notice-close').count(), 1);
     } finally { await page.close(); }
 };
