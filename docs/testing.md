@@ -1,5 +1,9 @@
 # Validation
 
+## GitHub CI 0.1.14-dev — 2026-11-14
+
+Code commit [58f6cfe](https://github.com/MikaPST/filewarden/commit/58f6cfee0963270897bea3ce7ef0fbba0b97478d) was pushed to main with owner approval. [CI run 43616653528](https://github.com/MikaPST/filewarden/actions/runs/43616653528) completed successfully: ten jobs, PHP 8.2–8.4 (75 tests / 130 assertions each), eight JavaScript tests, six actual ZIP upgrades from 0.1.11/12/13-dev across WordPress 6.8 and 7.1.4, MySQL 8.0, integration/HTTP and Chromium/Firefox EN/FR. The [exact tested ZIP](https://github.com/MikaPST/filewarden/actions/runs/43616653528/artifacts/14122811563) is preserved as an Actions artifact. See [structured evidence](validation/v0.1.14-dev-ci.json). Documentation tracking follows without runtime changes; no tag, release or user-hosting deployment was authorized or performed. Historical local evidence below is retained unchanged in scope.
+
 ## Corrective acceptance 0.1.14-dev — 2026-11-14
 
 The corrected ZIP (a89e68643c064308413464198285a4c71937d36c95b0c4ccf6efd1c94993961e, 279 runtime files) passed PHPUnit (75 tests / 130 assertions), eight JavaScript tests, syntax/PHPCS, Composer validation/audit and WordPress Sodium fallback locally. Fresh WordPress 6.8 and 7.1.4 installations on PHP 8.2.35/MariaDB 10.11.11 passed actual ZIP updates from 0.1.13-dev through the initial 0.1.14-dev candidate to the corrected same-version ZIP, integration/HTTP and Chromium/Firefox EN/FR. All runtime bytes match both final installations.

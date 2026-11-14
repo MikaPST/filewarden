@@ -1,6 +1,6 @@
 # FileWarden 0.1.14-dev — corrections et réception
 
-Les six retours de recette sont regroupés dans ce document. **Le propriétaire a donné son GO explicite au développement correctif le 14 novembre 2026. Les six corrections sont intégrées et réceptionnées localement ; le ZIP est prêt pour sa recette. Le push du code sur main est maintenant explicitement autorisé ; tag, release et déploiement restent soumis à des accords distincts.** Les acquis du candidat initial sont conservés, ainsi que son ZIP et ses preuves historiques. Le périmètre, l’ordre des travaux et les critères convenus ci-dessous restent la référence ; les résultats du nouveau candidat sont consignés séparément en fin de document.
+Les six retours de recette sont regroupés dans ce document. **Le propriétaire a donné son GO explicite au développement correctif le 14 novembre 2026. Les six corrections sont intégrées et réceptionnées ; le code a été poussé sur main sur son accord distinct et la CI GitHub est réussie. Tag, release et déploiement restent soumis à des accords distincts.** Les acquis du candidat initial sont conservés, ainsi que son ZIP et ses preuves historiques. Le périmètre, l’ordre des travaux et les critères convenus ci-dessous restent la référence ; les résultats du nouveau candidat sont consignés séparément en fin de document.
 
 ## Synthèse du périmètre
 
@@ -108,7 +108,7 @@ Réutiliser les suites et helpers existants, notamment `tests/notifications-brow
 
 ## État de la réception corrective
 
-GO explicite reçu ; corrections intégrées et réception locale terminée le 14 novembre 2026. Les preuves détaillées sont dans [le journal correctif](validation/v0.1.14-dev-corrections-local.txt). Les preuves du candidat initial restent inchangées et distinctes. **Candidat prêt pour la recette du propriétaire avant autorisation de push ; aucune validation de son hébergement n’est revendiquée.**
+GO explicite reçu ; corrections intégrées et réception locale terminée le 14 novembre 2026. Les preuves détaillées sont dans [le journal correctif](validation/v0.1.14-dev-corrections-local.txt). Les preuves du candidat initial restent inchangées et distinctes. **Candidat prêt pour la recette du propriétaire ; push du code puis CI réussis sur son autorisation. Aucune validation de son hébergement n’est revendiquée.**
 
 ### Matrice des six corrections
 
@@ -135,7 +135,7 @@ Les essais supplémentaires simulent le refus des métadonnées information_sche
 - Intégration/HTTP : dix évolutions originales, nouveaux formats contrôlés dont ZIP non extrait, import, autorisations et révocation immédiate, lecture/preview/téléchargement, ranges, CSRF, corbeille/restauration/purge, compteur, publication et exports CSV/TXT/JSONL avec acteurs WordPress. Les refus de métadonnées et pannes de récupération sont injectés uniquement dans les installations jetables ; **aucun crochet de panne n’est distribué**.
 - Chromium et Firefox sur les deux WordPress : parcours complets, horloge des notifications, focus/clavier, mobile, réduction des animations, réussite et refus effectifs. Réception française dans les deux navigateurs sur chaque WordPress. Captures finales françaises stabilisées après animation, avec vrai enregistrement serveur des réglages et test de carte au premier plan.
 - Les URL des fichiers CSS/JS servis sont vérifiées contre le SHA-256 de leurs octets : remplacement du même numéro de développement sans réutilisation d’une ancienne URL d’actif.
-- **Non exécutés pour ce lot :** CI GitHub, PHP 8.3/8.4, MySQL 8.0, recette humaine complète au lecteur d’écran et recette de l’hébergement utilisateur. Les résultats historiques d’autres versions ne comblent pas ces limites.
+- La réception locale ne couvrait pas PHP 8.3/8.4 ni MySQL 8.0 ; ces points ont ensuite été vérifiés par la CI ci-dessous. **Restent non exécutées :** recette humaine complète au lecteur d’écran et recette de l’hébergement utilisateur. Le journal local historique demeure inchangé.
 
 ### Archive à présenter avant push
 
@@ -144,4 +144,13 @@ Les essais supplémentaires simulent le refus des métadonnées information_sche
 - Les 279 fichiers ont été comparés octet par octet aux sources et aux deux installations finales. Version 0.1.14-dev et schéma 6 vérifiés. Pas de .tools, vendor, tests, MU fixture, secrets ou configuration d’hébergement dans le ZIP.
 - Comparaison au candidat initial : 12 fichiers runtime modifiés, cinq pictogrammes ajoutés ; les autres fichiers distribués sont identiques. Ancien ZIP conservé avec son SHA-256 b5ebe433bd93b5f0cc0bfacbee18a3b4e446eb09db8ea5d5f9f9075334ec79d5 et ses preuves historiques.
 - [Notes de version préparées](releases/v0.1.14-dev.md), [accueil français](../build/review-v0.1.14-dev/accueil-fr-chromium.png), [réglages et notification française](../build/review-v0.1.14-dev/reglages-notification-fr-chromium.png), [mobile](../build/review-v0.1.14-dev/reglages-notification-mobile-fr-firefox.png). Les captures de toutes les suites sont conservées dans les dossiers de recette locaux.
-- Base Git 0ca87e3 ; **push du code sur main autorisé le 14 novembre 2026** après présentation du candidat. Préparation du commit et suivi de la CI ; résultats distants à compléter. Aucun tag, release ou déploiement utilisateur autorisé. Préversion de développement uniquement.
+- Base Git 0ca87e3 ; **code poussé sur main au commit 58f6cfe le 14 novembre 2026**, sur l’accord reçu après présentation du candidat. CI réussie ; suivi documentaire publié ensuite sans modifier les fichiers runtime. Aucun tag, release ou déploiement utilisateur autorisé. Préversion de développement uniquement.
+
+### Push GitHub et validation distante — 14 novembre 2026
+
+- Commit fonctionnel : [58f6cfee0963270897bea3ce7ef0fbba0b97478d](https://github.com/MikaPST/filewarden/commit/58f6cfee0963270897bea3ce7ef0fbba0b97478d), branche main. Arbre de travail propre après le commit et push en avance rapide, sans tag.
+- [CI 43616653528](https://github.com/MikaPST/filewarden/actions/runs/43616653528) : **terminée avec succès, dix jobs réussis**. [Preuve structurée](validation/v0.1.14-dev-ci.json).
+- PHP 8.2, 8.3 et 8.4 : syntaxe, PHPCS, **75 tests/130 assertions par version**, audit Composer et construction du ZIP réussis ; huit tests JavaScript réussis.
+- MySQL 8.0 : six mises à jour réelles, depuis 0.1.11-dev, 0.1.12-dev et 0.1.13-dev, vers WordPress 6.8 et latest (7.1.4 dans les journaux). Intégration, HTTP, six corrections, dix évolutions originales et Chromium/Firefox FR/EN réussis sur chaque parcours.
+- [Artefact filewarden-tested-candidate](https://github.com/MikaPST/filewarden/actions/runs/43616653528/artifacts/14122811563) : ZIP réellement installé et testé par le job WordPress 6.8 depuis 0.1.13-dev. Il est construit par la CI Linux ; son archive Actions et son empreinte sont distinctes du ZIP local Windows ci-dessus. Ne pas confondre le digest du conteneur Actions avec celui du ZIP de plugin qu’il contient.
+- Code et documentation sont sur GitHub ; **aucune release, aucun tag ni déploiement utilisateur effectué**. Les limites de recette de l’hébergement et du lecteur d’écran restent applicables.

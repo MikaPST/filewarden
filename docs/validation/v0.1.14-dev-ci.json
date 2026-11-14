@@ -1,0 +1,121 @@
+{
+  "version": "0.1.14-dev",
+  "date": "2026-11-14",
+  "repository": "MikaPST/filewarden",
+  "branch": "main",
+  "commit": "58f6cfee0963270897bea3ce7ef0fbba0b97478d",
+  "run": {
+    "id": 43616653528,
+    "url": "https://github.com/MikaPST/filewarden/actions/runs/43616653528",
+    "status": "completed",
+    "conclusion": "success"
+  },
+  "jobs": [
+    {
+      "id": 132513075131,
+      "name": "javascript",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 132513075296,
+      "name": "integration (WP 6.8, from 0.1.13-dev)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 132513075353,
+      "name": "unit (8.2)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 132513075374,
+      "name": "integration (WP latest, from 0.1.13-dev)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 132513075385,
+      "name": "integration (WP 6.8, from 0.1.11-dev)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 132513075391,
+      "name": "integration (WP 6.8, from 0.1.12-dev)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 132513075395,
+      "name": "integration (WP latest, from 0.1.11-dev)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 132513075456,
+      "name": "unit (8.3)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 132513075461,
+      "name": "unit (8.4)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 132513075490,
+      "name": "integration (WP latest, from 0.1.12-dev)",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "checked": {
+    "php": [
+      "8.2",
+      "8.3",
+      "8.4"
+    ],
+    "unit_tests_per_php": 75,
+    "unit_assertions_per_php": 130,
+    "javascript_tests": 8,
+    "wordpress": [
+      "6.8",
+      "7.1.4"
+    ],
+    "previous_versions": [
+      "0.1.11-dev",
+      "0.1.12-dev",
+      "0.1.13-dev"
+    ],
+    "database": "MySQL 8.0",
+    "browsers": [
+      "Chromium",
+      "Firefox"
+    ],
+    "languages": [
+      "en",
+      "fr"
+    ]
+  },
+  "tested_artifact": {
+    "id": 14122811563,
+    "name": "filewarden-tested-candidate",
+    "url": "https://github.com/MikaPST/filewarden/actions/runs/43616653528/artifacts/14122811563",
+    "archive_digest": "sha256:83d8aba83df960d1b7360a22fa8b76de1a8b75b41da8a171b7124dd25a1903d1",
+    "digest_scope": "GitHub Actions artifact wrapper, not the inner plugin ZIP"
+  },
+  "authorization": {
+    "push": true,
+    "tag": false,
+    "release": false,
+    "user_site_deployment": false
+  },
+  "remaining_limits": [
+    "User-hosting deletion failure cause remains unconfirmed",
+    "No complete human screen-reader acceptance"
+  ],
+  "documentation_followup": "Documentation-only tracking commit follows this validated code; runtime files unchanged."
+}
