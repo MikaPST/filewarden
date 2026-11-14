@@ -34,6 +34,8 @@ module.exports = async ({ page, base, name }) => {
             assert.equal(new Set(records.map(row => row.id)).size, 1005);
         }
         else assert.ok(data.includes('actor_login') && data.includes('fw_admin'));
+        // Download events can arrive before Firefox finishes the UI callback.
+        await page.waitForFunction(format => document.querySelector('.fw-export-status').textContent.includes('File received') && document.querySelector('.fw-export-' + format).getAttribute('aria-busy') === null, format);
         assert.ok((await page.locator('.fw-export-status').textContent()).includes('File received'));
         assert.equal(await page.locator('.fw-export-' + format).getAttribute('aria-busy'), null);
     }
