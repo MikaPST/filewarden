@@ -29,5 +29,6 @@ module.exports = async ({ context, base }) => {
         await page.goto(base + '/wp-admin/admin.php?page=filewarden-settings');
         await page.locator('.fw-settings .notice-warning[data-fw-notice]').waitFor();
         assert.equal(await page.locator('.fw-settings .notice-warning .fw-notice-close').count(), 1);
+        await page.waitForFunction(() => !document.querySelector('.fw-heading .notice'));
     } finally { await page.close(); }
 };

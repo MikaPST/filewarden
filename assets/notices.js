@@ -42,6 +42,13 @@
             if (remaining <= 0) { clearInterval(timer); dismiss(); }
         }, 100);
     };
-    scope.querySelectorAll('.notice').forEach(enhance);
-    new MutationObserver(() => scope.querySelectorAll('.notice:not([data-fw-notice])').forEach(enhance)).observe(scope, { childList: true, subtree: true });
+    const refresh = () => scope.querySelectorAll('.notice').forEach(notice => {
+        // WordPress relocates notices after h1, which may be inside our flex header.
+        // Keep notifications full-width below the whole heading, including on mobile.
+        const heading = notice.closest('.fw-heading');
+        if (heading) heading.insertAdjacentElement('afterend', notice);
+        enhance(notice);
+    });
+    refresh();
+    new MutationObserver(refresh).observe(scope, { childList: true, subtree: true });
 })();

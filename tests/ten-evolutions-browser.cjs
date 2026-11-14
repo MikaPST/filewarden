@@ -78,6 +78,7 @@ module.exports = async ({ page, context, base, fixture, name }) => {
     await page.waitForFunction(() => document.querySelector('form[data-filewarden-upload]').getAttribute('aria-busy') === null);
     assert.match(await page.locator('.fw-upload-item').nth(0).textContent(), /Saved and verified/);
     assert.match(await page.locator('.fw-upload-item').nth(1).textContent(), /Scripts, macros/);
+    await page.evaluate(() => window.scrollTo(0, 0));
     await page.screenshot({ path: 'build/screenshots/upload-queue-' + name + '.png', fullPage: true });
     // 05/06: create using the selected parent and inherited policy, then confirm leaf deletion.
     await page.goto(publicFolder + '&tab=folder');

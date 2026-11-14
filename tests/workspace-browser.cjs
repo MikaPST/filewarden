@@ -54,9 +54,16 @@ module.exports = async ({ page, context, base, fixture, name }) => {
     // Each mutation uses the real form and its nonce, never test-only server hooks.
     await openAction('policy-public.pdf', 'Copy');
     await inspector.locator('#fw-destination').selectOption(String(fixture.policy_folder));
-    await inspector.getByRole('button', { name: 'Review destination' }).click();
+    await Promise.all([
+        page.waitForURL(url => url.searchParams.get('panel') === 'copy' && url.searchParams.has('destination_id')),
+        inspector.getByRole('button', { name: 'Review destination' }).click()
+    ]);
+    await page.waitForLoadState('load');
     await inspector.locator('#fw-transfer-name').fill('workspace-copy-' + name + '.pdf');
+    assert.equal(await inspector.locator('#fw-transfer-name').inputValue(), 'workspace-copy-' + name + '.pdf');
+    const copyRequest = page.waitForRequest(request => request.method() === 'POST' && new URLSearchParams(request.postData() || '').get('operation') === 'copy');
     await inspector.getByRole('button', { name: 'Confirm copy' }).click();
+    assert.equal(new URLSearchParams((await copyRequest).postData()).get('name'), 'workspace-copy-' + name + '.pdf');
     await page.waitForURL(/result=success/);
     const copyName = 'workspace-copy-' + name + '.pdf';
     const permanentURL = await page.getByRole('link', { name: copyName, exact: true }).getAttribute('href');
