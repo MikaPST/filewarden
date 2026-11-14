@@ -121,6 +121,13 @@ jobs:
           NODE_PATH=/tmp/fw-browser/node_modules node tests/viewer-browser.cjs
           wp user meta update fw_admin locale fr_FR --path=/tmp/fw-wordpress
           NODE_PATH=/tmp/fw-browser/node_modules node tests/french-browser.cjs
+      - name: Preserve the exact ZIP installed and tested
+        uses: actions/upload-artifact@v4
+        if: success() && matrix.wordpress == '6.8' && matrix.previous.version == '0.1.12-dev'
+        with:
+          name: filewarden-tested-candidate
+          path: build/filewarden-*.zip
+          if-no-files-found: error
       - uses: actions/upload-artifact@v4
         if: always()
         with:

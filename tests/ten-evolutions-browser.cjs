@@ -29,6 +29,8 @@ module.exports = async ({ page, context, base, fixture, name }) => {
     assert.ok((await page.locator('#fw-destination').textContent()).includes('Documents to classify'));
     await page.getByRole('button', { name: 'Classify later', exact: true }).click();
     await page.getByRole('heading', { name: 'Remove this document from publication?', exact: true }).waitFor();
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.screenshot({ path: 'build/screenshots/classify-confirmation-' + name + '.png', fullPage: true });
     await page.getByRole('button', { name: 'Confirm classification', exact: true }).click();
     await page.waitForURL(/result=success/);
     assert.equal(await count(), originalCount + 1);
@@ -85,6 +87,8 @@ module.exports = async ({ page, context, base, fixture, name }) => {
     await page.locator('#fw-name').fill('created-ui-' + name);
     await page.locator('#folder-parent').selectOption(String(fixture.public_folder_id));
     assert.equal(await page.locator('#folder-policy').inputValue(), 'inherit');
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.screenshot({ path: 'build/screenshots/create-folder-' + name + '.png', fullPage: true });
     await page.getByRole('button', { name: 'Create folder', exact: true }).click();
     await page.waitForURL(/result=success/);
     await go(page.locator('.fw-tree').getByRole('link', { name: 'created-ui-' + name, exact: true }));
@@ -104,6 +108,8 @@ module.exports = async ({ page, context, base, fixture, name }) => {
     assert.ok(await trashRow.isVisible());
     await go(trashRow.getByRole('link', { name: 'Delete permanently', exact: true }));
     const purgeForm = page.locator('.fw-trash-confirm form');
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.screenshot({ path: 'build/screenshots/trash-review-' + name + '.png', fullPage: true });
     const formData = await purgeForm.evaluate(form => Object.fromEntries(new FormData(form)));
     const endpoint = await purgeForm.getAttribute('action');
     assert.equal((await context.request.post(endpoint, { form: { ...formData, confirm: '1', _wpnonce: 'invalid' } })).status(), 403);

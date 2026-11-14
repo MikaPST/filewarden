@@ -69,6 +69,9 @@ final class FileValidator {
 			if ( 'csv' === $extension && preg_match( '/(?:^|[\r\n,;])\s*["\x27]?\s*(?:[=+@]|-[a-zA-Z])/m', $text ) ) {
 				throw new \InvalidArgumentException( 'Active spreadsheet formulas are not allowed.' ); }
 		} else {
+			// A self-extracting executable may also be readable by ZipArchive. Require a real ZIP header and MIME.
+			if ( "PK\x03\x04" !== file_get_contents( $path, false, null, 0, 4 ) || ! in_array( $mime, array( 'application/zip', 'application/x-zip-compressed', self::MIMES[ $extension ] ), true ) ) {
+				throw new \InvalidArgumentException( 'Invalid ZIP container.' ); }
 			if ( $inside_archive && 'zip' === $extension ) {
 				throw new \InvalidArgumentException( 'Nested ZIP archives are not allowed.' ); }
 			self::archive( $path, $extension, $budget );

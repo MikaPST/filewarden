@@ -49,6 +49,12 @@ final class FileValidatorTest extends TestCase {
         $this->expectException( \InvalidArgumentException::class );
         FileValidator::validate( $this->zip( array( '../outside.txt' => 'outside' ) ), 'zip' );
     }
+    public function test_self_extracting_executable_disguised_as_zip_is_refused(): void {
+        $path = $this->zip(array('safe.txt'=>'A safe document'));
+        file_put_contents($path, 'MZ' . str_repeat("\0",62) . file_get_contents($path));
+        $this->expectException(\InvalidArgumentException::class);
+        FileValidator::validate($path,'zip');
+    }
     public function test_windows_paths_are_refused(): void {
         $this->expectException( \InvalidArgumentException::class );
         FileValidator::validate( $this->zip( array( 'C:\\outside.txt' => 'outside' ) ), 'zip' );
