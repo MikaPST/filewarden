@@ -111,6 +111,19 @@ $legacy = $system_rows[0]; $legacy['actor_type'] = '';
 fw_assert( 'unknown' === $export->invoke(null,$legacy)['actor_type'], 'Legacy actor zero was invented as visitor or system.' );
 fw_assert( 'unknown' === $export->invoke(null,$legacy)['outcome'], 'Unknown legacy event was invented as successful.' );
 
+// Failure beyond the first export batch must not produce a successful partial download.
+$export_reads = 0;
+$fail_export = static function($sql) use (&$export_reads) {
+    if (str_starts_with($sql,'SELECT id, created_at, event,') && str_contains($sql,"'audit_export_fixture'") && str_contains($sql,'LIMIT 1000') && ++$export_reads === 2) return 'FILEWARDEN_INTENTIONAL_EXPORT_FAILURE';
+    return $sql;
+};
+$previous_errors = $wpdb->suppress_errors(true);
+add_filter('query',$fail_export);
+try {
+    fw_reject(fn()=>(new ReflectionMethod(FileWarden\AuditConsole::class,'prepare_export'))->invoke(null, FileWarden\AuditHistory::filters(array('event'=>'audit_export_fixture')), FileWarden\AuditHistory::upper(), 'jsonl'), RuntimeException::class, 'Partial export was treated as complete.');
+} finally { remove_filter('query',$fail_export); $wpdb->suppress_errors($previous_errors); }
+fw_assert(2 === $export_reads, 'Export failure did not exercise the second batch.');
+
 // Partial settings save cannot reset any other category.
 update_option( 'filewarden_trash_days', 47 );
 update_option( 'filewarden_audit_days', 123 );

@@ -297,8 +297,10 @@ final class AuditConsole {
 	 * Handle a reviewed purge or stream an authorized export.
 	 *
 	 * @throws \InvalidArgumentException Caught and rendered for invalid confirmations.
+	 * @throws \RuntimeException Caught if completed output cannot be streamed.
 	 */
 	public static function handle() {
+		$stream = null;
 		try {
 			AuditHistory::authorize();
 			check_admin_referer( 'filewarden_audit' );
@@ -328,12 +330,56 @@ final class AuditConsole {
 			if ( ! in_array( $format, array( 'csv', 'txt', 'jsonl' ), true ) ) {
 				throw new \InvalidArgumentException( 'Invalid export.' ); }
 			( new AuditService() )->record( 'audit_export_requested' );
+			$stream = self::prepare_export( $filters, $upper, $format );
+			$stat   = FileIO::attempt( fn() => fstat( $stream ) );
+			if ( ! $stat ) {
+				throw new \RuntimeException( 'Audit output unavailable.' ); }
 			nocache_headers();
 			header( 'X-Content-Type-Options: nosniff' );
 			header( 'Content-Type: ' . ( 'csv' === $format ? 'text/csv' : ( 'jsonl' === $format ? 'application/x-ndjson' : 'text/plain' ) ) . '; charset=UTF-8' );
 			header( 'Content-Disposition: attachment; filename="filewarden-audit-' . wp_date( 'Y-m-d' ) . '.' . $format . '"' );
-            // phpcs:ignore WordPress.WP.AlternativeFunctions -- Stream download without creating a public temporary file.
-			$stream  = fopen( 'php://output', 'wb' );
+			header( 'Content-Length: ' . (int) $stat['size'] );
+			while ( ob_get_level() > 0 ) {
+				if ( ! ob_end_clean() ) {
+					break; }
+			}
+			// phpcs:ignore WordPress.WP.AlternativeFunctions -- Stream only a fully generated private export; length detects interrupted responses.
+			$sent = FileIO::attempt( fn() => fpassthru( $stream ) );
+			if ( $sent !== (int) $stat['size'] ) {
+				throw new \RuntimeException( 'Audit output interrupted.' ); }
+		} catch ( \Throwable $error ) {
+			if ( is_resource( $stream ) ) {
+				// phpcs:ignore WordPress.WP.AlternativeFunctions -- Remove incomplete private export before rendering an error.
+				fclose( $stream );
+				$stream = null;
+			}
+			if ( headers_sent() ) {
+				exit; }
+			header_remove( 'Content-Disposition' );
+			header_remove( 'Content-Length' );
+			wp_die( esc_html__( 'Audit action refused. Review your filters, permissions and confirmation.', 'filewarden' ), '', array( 'response' => 400 ) ); }
+		if ( is_resource( $stream ) ) {
+			// phpcs:ignore WordPress.WP.AlternativeFunctions -- Closing removes the private completed export immediately.
+			fclose( $stream ); }
+		exit;
+	}
+
+	/** Generate the whole export before any successful download headers or bytes.
+	 *
+	 * @param array  $filters Applied filters.
+	 * @param int    $upper Snapshot boundary.
+	 * @param string $format Download format.
+	 * @return resource Complete, rewound private output.
+	 * @throws \RuntimeException On generation failure.
+	 * @throws \Throwable After closing incomplete output.
+	 */
+	private static function prepare_export( array $filters, $upper, $format ) {
+		$public_roots = array( ABSPATH, WP_CONTENT_DIR );
+		if ( isset( $_SERVER['DOCUMENT_ROOT'] ) && is_string( $_SERVER['DOCUMENT_ROOT'] ) && '' !== $_SERVER['DOCUMENT_ROOT'] ) {
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput -- Trusted server root must be kept byte-exact for isolation checks.
+			$public_roots[] = $_SERVER['DOCUMENT_ROOT']; }
+		$stream = FileIO::temporary( $public_roots );
+		try {
 			$headers = array( 'schema_version', 'id', 'created_at_UTC', 'event', 'actor_id', 'actor_login', 'actor_type', 'resource_type', 'resource_id', 'resource_name', 'outcome', 'object_id_or_count' );
 			if ( 'jsonl' !== $format ) {
 				self::line( $stream, $headers, $format ); }
@@ -341,14 +387,18 @@ final class AuditConsole {
 				$rows = AuditHistory::rows( $filters, $upper, 1000 );
 				foreach ( $rows as $row ) {
 					self::line( $stream, self::export_record( $row ), $format );
-					$upper = (int) $row['id'] - 1; }
+					$upper = (int) $row['id'] - 1;
+				}
 				$batch_count = count( $rows );
 			} while ( 1000 === $batch_count );
-            // phpcs:ignore WordPress.WP.AlternativeFunctions -- Close the response stream.
-			fclose( $stream );
+			if ( ! FileIO::attempt( fn() => rewind( $stream ) ) ) {
+				throw new \RuntimeException( 'Audit output unavailable.' ); }
+			return $stream;
 		} catch ( \Throwable $error ) {
-			wp_die( esc_html__( 'Audit action refused. Review your filters, permissions and confirmation.', 'filewarden' ), '', array( 'response' => 400 ) ); }
-		exit;
+			// phpcs:ignore WordPress.WP.AlternativeFunctions -- No partial export survives a query or encoding failure.
+			fclose( $stream );
+			throw $error;
+		}
 	}
 	/**
 	 * Write plain text safely, including spreadsheet formula protection.
@@ -367,7 +417,7 @@ final class AuditConsole {
 			if ( false === $json ) {
 				throw new \RuntimeException( 'Audit JSONL encoding failed.' ); }
             // phpcs:ignore WordPress.WP.AlternativeFunctions -- Stream a versioned, authorized JSON record.
-			if ( false === fwrite( $stream, $json . "\n" ) ) {
+			if ( strlen( $json ) + 1 !== FileIO::attempt( fn() => fwrite( $stream, $json . "\n" ) ) ) {
 				throw new \RuntimeException( 'Audit stream failed.' ); }
 			return;
 		}
@@ -379,9 +429,13 @@ final class AuditConsole {
 			$values
 		);
 		if ( 'csv' === $format ) {
-			fputcsv( $stream, $values, ',', '"', '' ); } else {
-            // phpcs:ignore WordPress.WP.AlternativeFunctions -- Text response stream.
-			fwrite( $stream, implode( "\t", $values ) . "\n" );
-			}
+			if ( false === FileIO::attempt( fn() => fputcsv( $stream, $values, ',', '"', '' ) ) ) {
+				throw new \RuntimeException( 'Audit stream failed.' ); }
+		} else {
+			$text = implode( "\t", $values ) . "\n";
+			// phpcs:ignore WordPress.WP.AlternativeFunctions -- Private, completed text output.
+			if ( strlen( $text ) !== FileIO::attempt( fn() => fwrite( $stream, $text ) ) ) {
+				throw new \RuntimeException( 'Audit stream failed.' ); }
+		}
 	}
 }

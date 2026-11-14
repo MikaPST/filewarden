@@ -157,7 +157,10 @@ function pdfFixture() {
                         requestedDesign: source?.searchParams.get('denied'),
                         requestedDemo: source?.searchParams.get('demo'),
                         renderedMain: frame?.contentDocument?.querySelector('main')?.className,
-                        errorNotice: document.querySelector('.notice-error')?.textContent
+                        errorNotice: document.querySelector('.notice-error')?.textContent,
+                        copyStatus: document.querySelector('#fw-copy-status')?.textContent,
+                        focused: document.hasFocus(),
+                        secure: isSecureContext
                     };
                 }).catch(() => 'Page unavailable'));
             }

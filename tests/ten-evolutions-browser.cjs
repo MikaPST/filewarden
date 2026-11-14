@@ -142,8 +142,12 @@ module.exports = async ({ page, context, base, fixture, name }) => {
     await page.locator('[data-preview-mode=authorized]').click();
     await page.frameLocator('.filewarden-publication-frame').locator('.documents').waitFor();
     assert.ok(await page.locator('.filewarden-publication-frame').evaluate(el => el.getBoundingClientRect().height <= 680));
+    await page.bringToFront();
+    // Chromium's headless permission prompt is granted for this real clipboard test only.
+    if (name === 'chromium') await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: base });
     await page.getByRole('button', { name: 'Copy', exact: true }).click();
     await page.locator('#fw-copy-status').filter({ hasText: 'Shortcode copied.' }).waitFor();
+    if (name === 'chromium') assert.equal(await page.evaluate(() => navigator.clipboard.readText()), await page.locator('#fw-shortcode').inputValue());
     await page.evaluate(() => Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: () => Promise.reject(new DOMException('Test denial', 'NotAllowedError')) } }));
     await page.getByRole('button', { name: 'Copy', exact: true }).click();
     await page.locator('#fw-copy-status').filter({ hasText: 'Copy failed.' }).waitFor();
