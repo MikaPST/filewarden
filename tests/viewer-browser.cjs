@@ -48,6 +48,7 @@ function pdfFixture() {
             await page.locator('#fw-file').setInputFiles({ name: filename, mimeType: 'application/pdf', buffer: pdfFixture() });
             await page.locator('[name="filewarden_save"]').click();
             await page.waitForURL(/result=success/, { timeout: 30000 });
+            await page.goto(base + '/wp-admin/admin.php?page=filewarden&folder_id=' + fixture.public_folder_id + '&search=' + encodeURIComponent(filename));
             assert.ok(await page.locator('.filewarden-access').isVisible());
             assert.ok(await page.locator('.filewarden-documents .fw-document-name img').first().evaluate(img => img.complete && img.naturalWidth > 0));
             assert.ok((await page.locator('.filewarden-rules').first().textContent()).length > 0);

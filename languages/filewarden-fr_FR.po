@@ -969,3 +969,6 @@ msgstr "Nom de la ressource indisponible"
 
 msgid "Show technical details"
 msgstr "Afficher les détails techniques"
+
+msgid "Accepted formats: PDF, JPEG, PNG, TXT, CSV, ZIP, DOCX, XLSX, PPTX, ODT, ODS and ODP. ZIPs are kept without extraction; macros and active content are refused."
+msgstr "Formats acceptés : PDF, JPEG, PNG, TXT, CSV, ZIP, DOCX, XLSX, PPTX, ODT, ODS et ODP. Les ZIP sont conservés sans extraction ; les macros et contenus actifs sont refusés."

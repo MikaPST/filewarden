@@ -34,3 +34,11 @@ FolderNavigation borne les chemins publiés et filtre les sous-dossiers. Publish
 ## Audit log updates (0.1.12-dev)
 
 Schema 5 adds `actor_login` to audit records as a point-in-time WordPress `user_login` snapshot alongside `actor_id`. It contains no email address. Existing records remain intact; the new field defaults to an empty string, and authorized audit views may resolve older IDs against the current WordPress account when available. The audit console supports simplified and technical views and actor filtering. CSV, tab-separated TXT, and JSONL downloads share the same filtered snapshot and retain technical IDs; JSONL writes one object per line. Exports stream in bounded batches and never create a public temporary file.
+
+## Original ten-evolution correction (0.1.12-dev.1 candidate)
+
+Schema 6 adds nullable `documents.trash_origin` and audit `actor_type`, `resource_type`, `resource_name`, `resource_rules`. Migration is repeatable and preserves prior records; missing historic values are not reconstructed as facts. AuditConsole shows current or saved names only after authorization, exports schema 2/UTC ISO 8601, and keeps unknown outcomes explicit.
+
+DocumentCollection filters recovery/trash rows through PermissionService before counting or displaying. FolderLifecycle snapshots the logical original path and transactionally retains ancestry; moving into recovery also retains the prior policy chain. TrashConsole is global without a tree. TrashService binds a user-specific review to exact UUIDs, deletion timestamps and effective policies under the access-rules lock, then serializes each disposal using document locks and existing retryable tombstones.
+
+FileValidator bounds ZIP/Office member streams, rejects active content and validates private anonymous temporary inspection paths. It does not extract members to their archive paths. upload-queue.js posts each selected/dropped file through the existing independently authorized transport; accepted files are not retried when another file is rejected. Media Library selection uses the same format allowlist. SettingsConsole validates provided fields before saving and does not reset absent categories. Progressive notices/settings/publication enhancements preserve the existing PHP forms and controls.

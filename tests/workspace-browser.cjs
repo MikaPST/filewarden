@@ -66,6 +66,7 @@ module.exports = async ({ page, context, base, fixture, name }) => {
     await inspector.getByRole('button', { name: 'Confirm move' }).click();
     await page.waitForURL(/result=success/);
     assert.equal(new URL(page.url()).searchParams.get('folder_id'), String(fixture.public_folder_id));
+    await page.goto(base + '/wp-admin/admin.php?page=filewarden&folder_id=' + fixture.public_folder_id + '&search=' + encodeURIComponent(copyName));
     assert.equal(await page.getByRole('link', { name: copyName, exact: true }).getAttribute('href'), permanentURL);
     await openAction(copyName, 'Move to trash');
     await inspector.getByRole('button', { name: 'Move to trash' }).click();

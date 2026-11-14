@@ -371,6 +371,7 @@ final class AdminController {
 			echo '<label><input type="radio" name="source" value="import"' . checked( (bool) $title, true, false ) . '> ' . esc_html__( 'From the Media Library', 'filewarden' ) . '</label>';
 		}
 		echo '</fieldset><fieldset data-filewarden-source="upload" class="fw-dropzone"><legend>' . esc_html__( 'Drop your documents here or select files', 'filewarden' ) . '</legend>';
+		echo '<p class="description">' . esc_html__( 'Accepted formats: PDF, JPEG, PNG, TXT, CSV, ZIP, DOCX, XLSX, PPTX, ODT, ODS and ODP. ZIPs are kept without extraction; macros and active content are refused.', 'filewarden' ) . '</p>';
 		/* translators: %s: effective maximum file size. */
 		echo '<p>' . esc_html( sprintf( __( 'Maximum file size: %s. Saving is confirmed only after storage and destination verification.', 'filewarden' ), size_format( min( max( 1, (int) get_option( 'filewarden_upload_mb', 50 ) ) * MB_IN_BYTES, wp_max_upload_size() ) ) ) ) . '</p>';
 		echo '<p><label for="fw-file">' . esc_html__( 'File', 'filewarden' ) . '</label> <input type="file" id="fw-file" name="file" accept=".pdf,.jpg,.jpeg,.png,.txt,.csv,.zip,.docx,.xlsx,.pptx,.odt,.ods,.odp"></p><ul class="fw-upload-selection" aria-live="polite"></ul></fieldset>';

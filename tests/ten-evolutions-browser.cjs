@@ -3,13 +3,18 @@ const assert = require('node:assert/strict');
 
 module.exports = async ({ page, context, base, fixture, name }) => {
     const documents = base + '/wp-admin/admin.php?page=filewarden';
-    const publicFolder = documents + '&folder_id=' + fixture.public_folder_id;
     const filename = 'browser-' + name + '.pdf';
+    const folderURL = documents + '&folder_id=' + fixture.public_folder_id;
+    const publicFolder = folderURL + '&search=' + encodeURIComponent(filename);
     const go = async link => {
         const href = await link.getAttribute('href');
         await Promise.all([page.waitForURL(href), link.click()]);
     };
     const action = async label => {
+        const url = new URL(page.url());
+        url.searchParams.set('search', filename);
+        url.searchParams.delete('panel');
+        await page.goto(url.href);
         const row = page.locator('tbody tr').filter({ hasText: filename });
         await row.locator('.fw-context summary').click();
         await go(row.getByRole('link', { name: label, exact: true }));
@@ -34,6 +39,7 @@ module.exports = async ({ page, context, base, fixture, name }) => {
     await page.getByRole('button', { name: 'Confirm move', exact: true }).click();
     await page.waitForURL(/result=success/);
     assert.equal(await count(), originalCount);
+    await page.goto(publicFolder);
     assert.equal(await page.getByRole('link', { name: filename, exact: true }).getAttribute('href'), originalURL);
     // 03: action hierarchy is visible in the real browser.
     assert.equal(await page.locator('.fw-folder-heading a').filter({ hasText: 'Delete folder' }).evaluate(el => getComputedStyle(el).backgroundColor), 'rgb(180, 35, 24)');
@@ -51,7 +57,7 @@ module.exports = async ({ page, context, base, fixture, name }) => {
     await page.locator('[name=filewarden_save]').click();
     await page.waitForFunction(() => [...document.querySelectorAll('.fw-upload-item [role=status]')].every(el => el.textContent === 'Saved and verified'));
     await page.waitForFunction(() => document.querySelector('form[data-filewarden-upload]').getAttribute('aria-busy') === null);
-    await page.goto(publicFolder);
+    await page.goto(folderURL + '&search=' + encodeURIComponent('queued-' + name + '.zip'));
     assert.equal(await page.getByRole('link', { name: 'queued-' + name + '.zip', exact: true }).count(), 1);
     await page.goto(publicFolder + '&tab=add');
     await page.locator('#fw-file').setInputFiles({ name: 'unsafe-' + name + '.zip', mimeType: 'application/zip', buffer: Buffer.from(fixture.unsafe_zip_base64, 'base64') });
@@ -113,7 +119,7 @@ module.exports = async ({ page, context, base, fixture, name }) => {
     assert.equal(await page.locator('.fw-trash-confirm [name=confirm]').isChecked(), false);
     await page.goto(documents + '&tab=trash'); // cancel; no irreversible bulk request is sent.
     if (name === 'firefox') {
-        await page.goto(publicFolder);
+        await page.goto(folderURL + '&search=' + encodeURIComponent('queued-' + name + '.zip'));
         const queued = page.locator('tbody tr').filter({ hasText: 'queued-' + name + '.zip' });
         await queued.locator('.fw-context summary').click();
         await go(queued.getByRole('link', { name: 'Move to trash', exact: true }));

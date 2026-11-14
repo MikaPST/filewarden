@@ -35,3 +35,11 @@ La collection système « Documents à classer » (ancien emplacement racine, ID
 Une suppression de dossier ne peut viser qu’une feuille. Les documents sont récupérés sans effacer leurs octets, UUID ni état de corbeille. Les restrictions des anciens ancêtres sont conservées dans retained_rules et continuent à s’appliquer après reclassement ou copie. Les règles explicites du fichier restent modifiables, sans annuler cette protection. Les fichiers actifs récupérés ne sont pas automatiquement supprimés ; ceux déjà en corbeille restent soumis à leur rétention.
 
 La purge manuelle d’audit requiert filewarden_manage_audit en plus de filewarden_view_audit, une confirmation et un nonce. Un périmètre signé et limité à 10 000 événements protège la confirmation ; les nouveaux événements et les traces de purge sont exclus.
+
+## Correctif des dix évolutions (candidat 0.1.12-dev.1)
+
+Le déplacement volontaire vers Documents à classer conserve UUID, stockage, règle du fichier et restrictions de ses anciens ancêtres. Il exige les droits de déplacement et de gestion des permissions, ainsi que l’accès de gestion à la récupération. Il retire le document des publications et des anciennes URL sans nonce de récupération. L’ajout direct dans cet espace exige aussi la capacité de réglages. La copie vers cet espace n’est pas proposée.
+
+La corbeille globale filtre les documents selon les mêmes règles de contenu et exige la capacité de suppression. La suppression définitive exige en plus un périmètre revu correspondant à l’utilisateur, une confirmation explicite et, sur l’interface, le nonce d’administration. Si le dossier d’origine est supprimé, la restauration exige une destination existante lisible et la gestion des permissions ; les restrictions retenues ne sont pas retirées. La lecture globale ne confère aucune de ces capacités d’écriture.
+
+Les noms historiques du journal restent des métadonnées protégées : contrôle de la ressource actuelle lorsqu’elle existe, ou des politiques sauvegardées lorsqu’elle a été supprimée. Une règle sauvegardée invalide ou une origine de récupération non autorisée masque le nom. Les règles internes ne sont pas exportées. Un ancien acteur nul ne devient jamais arbitrairement un visiteur ou une action système.
