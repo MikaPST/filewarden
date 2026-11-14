@@ -109,6 +109,7 @@ $system_rows = FileWarden\AuditHistory::rows( FileWarden\AuditHistory::filters( 
 fw_assert( 'system' === $system_rows[0]['actor_type'] && 0 === (int) $system_rows[0]['actor_id'], 'CLI action was labelled as an anonymous visitor.' );
 $legacy = $system_rows[0]; $legacy['actor_type'] = '';
 fw_assert( 'unknown' === $export->invoke(null,$legacy)['actor_type'], 'Legacy actor zero was invented as visitor or system.' );
+fw_assert( 'unknown' === $export->invoke(null,$legacy)['outcome'], 'Unknown legacy event was invented as successful.' );
 
 // Partial settings save cannot reset any other category.
 update_option( 'filewarden_trash_days', 47 );

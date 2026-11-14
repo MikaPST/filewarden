@@ -49,6 +49,7 @@ jobs:
   integration:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         wordpress: ['6.8', 'latest']
     services:

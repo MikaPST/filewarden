@@ -195,7 +195,7 @@ final class AuditConsole {
 		$type = $row['resource_type'] ?? '';
 		if ( ! $type ) {
 			$type = str_starts_with( $event, 'document_' ) || in_array( $event, array( 'preview_requested', 'download_started', 'download_head' ), true ) ? 'document' : ( str_starts_with( $event, 'folder_' ) || 'upload_requested' === $event || str_starts_with( $event, 'upload_failed_' ) ? 'folder' : '' ); }
-		if ( ! $type ) {
+		if ( ! in_array( $type, array( 'document', 'folder' ), true ) ) {
 			return ''; }
 		$repo   = new Repository();
 		$record = 'document' === $type ? $repo->document_by_id( $id, true ) : $repo->folder( $id );
@@ -230,8 +230,11 @@ final class AuditConsole {
 		$date  = \DateTimeImmutable::createFromFormat( '!Y-m-d H:i:s', $row['created_at'], new \DateTimeZone( 'UTC' ) );
 		$event = (string) $row['event'];
 		$type  = $row['resource_type'] ?? '';
-		$login = self::actor_login( $row );
-		$name  = self::resource_name( $row );
+		if ( ! in_array( $type, array( 'document', 'folder' ), true ) ) {
+			$type = ''; }
+		$login      = self::actor_login( $row );
+		$name       = self::resource_name( $row );
+		$successful = in_array( $event, array( 'document_uploaded', 'document_policy_changed', 'folder_policy_changed', 'document_move_completed', 'document_copy_completed', 'document_trashed', 'document_restored', 'document_purged', 'folder_created', 'folder_deleted_files_recovered', 'settings_changed', 'audit_purged', 'download_started', 'download_head' ), true );
 		return array(
 			'schema_version'     => 2,
 			'id'                 => (int) $row['id'],
@@ -243,7 +246,7 @@ final class AuditConsole {
 			'resource_type'      => $type ? $type : null,
 			'resource_id'        => $type ? (int) $row['object_id'] : null,
 			'resource_name'      => $name ? $name : null,
-			'outcome'            => str_contains( $event, 'denied' ) ? 'denied' : ( str_contains( $event, 'failed' ) ? 'failure' : ( str_ends_with( $event, '_requested' ) ? 'requested' : 'success' ) ),
+			'outcome'            => str_contains( $event, 'denied' ) ? 'denied' : ( str_contains( $event, 'failed' ) ? 'failure' : ( str_ends_with( $event, '_requested' ) ? 'requested' : ( $successful ? 'success' : 'unknown' ) ) ),
 			'object_id_or_count' => (int) $row['object_id'],
 		);
 	}

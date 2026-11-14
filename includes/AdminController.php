@@ -109,6 +109,7 @@ final class AdminController {
 		}
 		wp_enqueue_media();
 		wp_enqueue_script( 'filewarden-media', plugins_url( 'assets/media.js', FILEWARDEN_PATH . 'filewarden.php' ), array( 'media-views' ), FILEWARDEN_VERSION, true );
+		wp_localize_script( 'filewarden-media', 'filewardenMedia', array( 'types' => array_values( array_unique( DocumentService::TYPES ) ) ) );
 	}
 
 	/**

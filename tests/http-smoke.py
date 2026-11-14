@@ -134,7 +134,7 @@ for extension, (payload, mime) in document_fixtures().items():
     document_id = urllib.parse.parse_qs(urllib.parse.urlsplit(uploaded_url).query)["created"][0]
     binary_url = "/wp-admin/admin-post.php?" + urllib.parse.urlencode({"action": "filewarden_content", "document": document_id, "download": "1"})
     status, headers, saved_bytes, _ = request(admin, binary_url)
-    assert status == 200 and saved_bytes == payload and headers["Content-Type"] == mime, f"{extension} bytes or attachment type changed"
+    assert status == 200 and saved_bytes == payload and headers.get_content_type() == mime, f"{extension} bytes or attachment type changed (HTTP {status}, MIME {headers.get('Content-Type')})"
     assert "attachment;" in headers["Content-Disposition"] and "no-store" in headers["Cache-Control"]
     assert request(anon, binary_url)[0] == 404, f"Private {extension} became public"
 print("All nine additional formats passed real HTTP upload, attachment MIME, byte identity and anonymous denial.")
