@@ -1,5 +1,11 @@
 # Validation
 
+## 0.1.15-dev — initial CI failure and corrective acceptance
+
+[Initial CI 43639555618](https://github.com/MikaPST/filewarden/actions/runs/43639555618), commit f7db9f4, passed PHP 8.2.35/8.3.36/8.4.27 (75 tests/130 assertions each), JS, and real MySQL 8.0.46 database/upgrade integration. Browser jobs failed: five at French repair width 320px in Firefox/Linux, one at a stale publication preview after rapid changes and two at restoration navigation synchronization. No release/tag was created. [Preserved failure summary](validation/v0.1.15-dev-ci-initial.json).
+
+The corrective candidate constrains timestamps and repair buttons, makes only administration previews eager and coalesces rapid form changes before frame navigation. Tests retain the original assertions, await actual preview/restore navigation, exercise rapid final-choice rendering and preserve overflow diagnostics/screenshots. A new complete WordPress 6.8 ZIP-upgrade/integration/HTTP/Chromium/Firefox EN/FR run and five-cycle rapid-preview stress in both browsers passed locally. A new independent 7.1.4 fixture and the corrected CI matrix are pending at this stage. Earlier local evidence below describes the first Windows candidate and remains unchanged.
+
 ## 0.1.15-dev — local acceptance, 2026-11-14
 
 All nine approved changes and historical non-regression suites passed locally: PHP 8.2.35, MariaDB 10.11.11, actual ZIP upgrades from 0.1.14-dev with three MyISAM tables on fresh WordPress 6.8 and 7.1.4. InnoDB repair remained explicit and preserved existing data. Integration, HTTP, Chromium/Firefox EN/FR, 75 PHP tests/130 assertions, eight JavaScript tests, syntax, PHPCS, Composer validation/audit and WordPress Sodium fallback passed. New failure-injection, concurrent-gate, checkpoint/reactivation and French 320px/375px repair checks passed. See [structured local evidence](validation/v0.1.15-dev-local.json) and [the nine-point matrix and repair procedure](lot-v0.1.15-dev.md).

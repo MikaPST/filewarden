@@ -9,6 +9,8 @@
     const demo = document.getElementById('fw-preview-denied');
     const frame = document.querySelector('.fw-publisher .filewarden-publication-frame');
     const status = document.getElementById('fw-preview-status');
+    // An administration preview must load even while its controls hold scroll/focus.
+    frame.loading = 'eager';
     const fitCode = () => {
         code.style.height = 'auto';
         code.style.height = (code.scrollHeight + 2) + 'px';
@@ -17,6 +19,7 @@
     requestAnimationFrame(fitCode);
     let pending;
     let requested;
+    let navigation;
     const failed = () => {
         clearTimeout(pending); status.textContent = status.dataset.failure;
         globalThis.FileWardenNotices?.show({ type: 'error', message: status.dataset.failure });
@@ -34,8 +37,12 @@
         requested = url.href;
         status.textContent = status.dataset.loading;
         clearTimeout(pending);
-        pending = setTimeout(failed, 20000);
-        frame.src = url.href;
+        clearTimeout(navigation);
+        // Keep the shortcode immediate; coalesce rapid form changes into one final frame navigation.
+        navigation = setTimeout(() => {
+            pending = setTimeout(failed, 20000);
+            frame.src = url.href;
+        }, 120);
     };
     form.querySelector('.fw-publisher-fallback').hidden = true;
     copy.hidden = false;

@@ -34,6 +34,8 @@ La suppression de dossier conserve son contrôle transactionnel, ses capacités,
 
 ## Validation
 
+La première CI sur f7db9f4 a détecté des écarts non reproduits dans la recette Windows : débordement Firefox/Linux à 320 px et attentes d’aperçu/restauration. **Aucun tag ni release publié à ce stade.** [Trace et correctif](validation/v0.1.15-dev-ci-initial.json). Le candidat correctif borne le bouton et la date, regroupe les changements rapides d’aperçu et attend les véritables navigations/POST ; la nouvelle recette complète 6.8 et le stress d’aperçu passent localement. Les contrôles GitHub doivent être entièrement réussis avant publication.
+
 **Recette locale réussie** sur WordPress 6.8 et 7.1.4, PHP 8.2.35/MariaDB 10.11.11, Chromium/Firefox EN/FR : mises à jour réelles depuis 0.1.14-dev en MyISAM, intégration/HTTP, non-régression des dix évolutions originales, 75 tests PHP/130 assertions, huit tests JavaScript, syntaxe, PHPCS, audit Composer et secours Sodium. Les tests couvrent aussi la reprise après conversion partielle, le refus d’une divergence de données, la réactivation avec point de reprise et le verrou depuis une connexion indépendante. Le formulaire de réparation français est testé à 375 et 320 px. [Preuve locale et empreinte du ZIP](validation/v0.1.15-dev-local.json).
 
 Les fichiers `tests/v15-integration.php`, `tests/v15-browser.cjs` et `tests/v15-french-browser.cjs` complètent les suites historiques ; ils ne sont jamais inclus dans le ZIP. Les erreurs préliminaires du banc navigateur et leur correction sont consignées dans la preuve, distinctes des parcours finaux réussis. La CI et la publication sont encore en attente à cette étape ; leurs résultats seront ajoutés dans `docs/testing.md`, `SUIVI.md` et `docs/validation/`.

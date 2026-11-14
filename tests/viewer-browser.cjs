@@ -96,12 +96,27 @@ function pdfFixture() {
             assert.ok((await page.locator('#fw-shortcode').inputValue()).includes(fixture.folder_uuid));
             await page.locator('[name="view"][value="grid"]').check();
             assert.ok((await page.locator('#fw-shortcode').inputValue()).includes('view="grid"'));
+            await page.frameLocator('.filewarden-publication-frame').locator('.documents.grid').waitFor();
+            await page.locator('#fw-preview-status').filter({hasText:'Preview updated.'}).waitFor();
             await page.locator('[data-preview-mode="denied"]').click();
+            await page.frameLocator('.filewarden-publication-frame').locator('.fw-denied-centered').waitFor();
             await page.locator('[name="denied"][value="compact"]').check();
             assert.equal(await page.locator('[data-preview-mode="denied"]').getAttribute('aria-selected'), 'true');
             await page.frameLocator('.filewarden-publication-frame').locator('.fw-denied-compact').waitFor();
             assert.ok((await page.locator('#fw-shortcode').inputValue()).includes('denied="compact"'));
             await page.locator('#fw-preview-status').filter({ hasText: 'Preview updated.' }).waitFor();
+            await page.locator('[name="denied"][value="centered"]').check();
+            await page.frameLocator('.filewarden-publication-frame').locator('.fw-denied-centered').waitFor();
+            // Rapid choices must settle on the final design, without stale loads or false failure feedback.
+            await page.evaluate(()=>{
+                for(const value of ['compact','centered','editorial']){
+                    const radio=document.querySelector('[name="denied"][value="'+value+'"]');
+                    radio.checked=true;radio.dispatchEvent(new Event('change',{bubbles:true}));
+                }
+            });
+            await page.frameLocator('.filewarden-publication-frame').locator('.fw-denied-editorial').waitFor();
+            await page.locator('#fw-preview-status').filter({hasText:'Preview updated.'}).waitFor();
+            assert.equal(await page.locator('.fw-notice-error').count(),0,'Rapid preview choices emitted stale failure feedback');
             await page.locator('[name="denied"][value="centered"]').check();
             await page.frameLocator('.filewarden-publication-frame').locator('.fw-denied-centered').waitFor();
             await page.setViewportSize({ width: 375, height: 812 });
@@ -160,6 +175,10 @@ function pdfFixture() {
                         requestedDesign: source?.searchParams.get('denied'),
                         requestedDemo: source?.searchParams.get('demo'),
                         renderedMain: frame?.contentDocument?.querySelector('main')?.className,
+                        renderedDesign: frame?.contentDocument?.querySelector('.fw-denied')?.className,
+                        actualFrameDesign: frame?.contentDocument?.querySelector('.fw-denied')?.className,
+                        trashAction: new URL(location.href).searchParams.get('trash_action'),
+                        result: new URL(location.href).searchParams.get('result'),
                         errorNotice: document.querySelector('.fw-notice-error')?.textContent,
                         copyStatus: document.querySelector('#fw-copy-status')?.textContent,
                         focused: document.hasFocus(),

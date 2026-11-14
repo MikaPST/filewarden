@@ -1,0 +1,105 @@
+{
+  "version": "0.1.15-dev",
+  "commit": "f7db9f4ac2d927b09471f5c6a6e72a9cce3b495d",
+  "run_id": 43639555618,
+  "url": "https://github.com/MikaPST/filewarden/actions/runs/43639555618",
+  "status": "failed",
+  "published": false,
+  "counts": {
+    "success": 4,
+    "failure": 8
+  },
+  "jobs": [
+    {
+      "id": 132583821807,
+      "name": "unit (8.3)",
+      "conclusion": "success"
+    },
+    {
+      "id": 132583822046,
+      "name": "integration (WP 6.8, from 0.1.12-dev)",
+      "conclusion": "failure"
+    },
+    {
+      "id": 132583822057,
+      "name": "integration (WP 6.8, from 0.1.14-dev)",
+      "conclusion": "failure"
+    },
+    {
+      "id": 132583822064,
+      "name": "unit (8.4)",
+      "conclusion": "success"
+    },
+    {
+      "id": 132583822098,
+      "name": "unit (8.2)",
+      "conclusion": "success"
+    },
+    {
+      "id": 132583822131,
+      "name": "integration (WP 6.8, from 0.1.11-dev)",
+      "conclusion": "failure"
+    },
+    {
+      "id": 132583822140,
+      "name": "javascript",
+      "conclusion": "success"
+    },
+    {
+      "id": 132583822197,
+      "name": "integration (WP latest, from 0.1.14-dev)",
+      "conclusion": "failure"
+    },
+    {
+      "id": 132583822199,
+      "name": "integration (WP 6.8, from 0.1.13-dev)",
+      "conclusion": "failure"
+    },
+    {
+      "id": 132583822239,
+      "name": "integration (WP latest, from 0.1.11-dev)",
+      "conclusion": "failure"
+    },
+    {
+      "id": 132583822266,
+      "name": "integration (WP latest, from 0.1.12-dev)",
+      "conclusion": "failure"
+    },
+    {
+      "id": 132583822379,
+      "name": "integration (WP latest, from 0.1.13-dev)",
+      "conclusion": "failure"
+    }
+  ],
+  "failure_groups": [
+    {
+      "jobs": 5,
+      "cause": "French repair controls overflowed at 320px in Firefox/Linux; Windows local acceptance did not reveal the font/layout difference."
+    },
+    {
+      "jobs": 1,
+      "cause": "Publication preview did not settle on compact after successive changes; unavailable feedback and stale frame content were retained for diagnosis."
+    },
+    {
+      "jobs": 2,
+      "cause": "Workspace restoration checks proceeded without explicit confirmation-page navigation; screenshots retained the trash list and focused Restore link."
+    }
+  ],
+  "correction": {
+    "runtime": [
+      "Constrain repair button and timestamp to their available width, including wrapping.",
+      "Load the administration preview eagerly and coalesce rapid changes before iframe navigation; shortcode remains immediate."
+    ],
+    "tests": [
+      "Await each actual preview state and stress rapid choices.",
+      "Await trash/review navigation and the real restore POST response.",
+      "Preserve 320px screenshot and overflow metrics before failing; no assertions removed."
+    ]
+  },
+  "corrective_local": {
+    "wordpress_6_8": "complete integration/HTTP/Chromium/Firefox EN/FR passed",
+    "rapid_preview": "five rapid-choice cycles passed in both browsers",
+    "wordpress_7_1_4": "new independent fixture preparation in progress at this record",
+    "zip_sha256": "3cd0a731c0b088ab23ba6c56bc2ebc59df60b4f68e96205dd4af99334e623e5f"
+  }
+}

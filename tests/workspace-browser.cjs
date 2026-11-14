@@ -80,10 +80,15 @@ module.exports = async ({ page, context, base, fixture, name }) => {
     await page.waitForURL(/result=success/);
     assert.equal(await page.getByRole('link', { name: copyName, exact: true }).count(), 0);
     assert.equal((await context.request.get(permanentURL)).status(), 404);
-    await page.locator('.fw-tabs').getByRole('link', { name: 'Trash', exact: true }).click();
-    await page.locator('tbody tr').filter({ hasText: copyName }).getByRole('link', { name: 'Restore', exact: true }).click();
-    await page.locator('.fw-trash-confirm').getByRole('button', { name: 'Restore', exact: true }).click();
+    await navigate(page.locator('.fw-tabs').getByRole('link', { name: 'Trash', exact: true }));
+    await navigate(page.locator('tbody tr').filter({ hasText: copyName }).getByRole('link', { name: 'Restore', exact: true }));
+    await page.locator('.fw-trash-confirm').waitFor({state:'visible'});
+    await Promise.all([
+        page.waitForResponse(response=>response.request().method()==='POST'&&new URLSearchParams(response.request().postData()||'').get('operation')==='restore'),
+        page.locator('.fw-trash-confirm').getByRole('button', { name: 'Restore', exact: true }).click()
+    ]);
     await page.waitForURL(/result=success/);
+    await page.waitForLoadState('load');
     assert.equal((await context.request.get(permanentURL)).status(), 200);
     await page.locator('.fw-tabs').getByRole('link', { name: 'Add documents', exact: true }).click();
     await page.locator('form[data-filewarden-upload]').waitFor({ state: 'visible' });
