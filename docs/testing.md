@@ -1,5 +1,11 @@
 # Validation
 
+## Published 0.1.14-dev — 2026-11-14
+
+Tag v0.1.14-dev points to c51f6e5, with the same runtime as validated code 58f6cfe. [Main CI](https://github.com/MikaPST/filewarden/actions/runs/43623671639) and [release workflow](https://github.com/MikaPST/filewarden/actions/runs/43623671643) succeeded. The first release attempt failed only at Firefox clock.pauseAt (Cannot fast-forward to the past); requested failed-job rerun succeeded on attempt 2 without runtime changes. Preserve this trace and stabilize the test clock separately.
+
+The public release ZIP was downloaded: 279 runtime files match the tag byte-for-byte, version/schema and release notes verified. Its SHA-256 is 9a887e3bca9dc7e9ab9ec0505fb6c3eb4efac9c714934f8500a4c3b7fb91023b, confirmed against the attached checksum and GitHub asset digest. [Published evidence](validation/v0.1.14-dev-published.json). Hosting-specific deletion refusal remains open for 0.1.15-dev diagnosis; no deployment or human screen-reader acceptance claimed.
+
 ## GitHub CI 0.1.14-dev — 2026-11-14
 
 Code commit [58f6cfe](https://github.com/MikaPST/filewarden/commit/58f6cfee0963270897bea3ce7ef0fbba0b97478d) was pushed to main with owner approval. [CI run 43616653528](https://github.com/MikaPST/filewarden/actions/runs/43616653528) completed successfully: ten jobs, PHP 8.2–8.4 (75 tests / 130 assertions each), eight JavaScript tests, six actual ZIP upgrades from 0.1.11/12/13-dev across WordPress 6.8 and 7.1.4, MySQL 8.0, integration/HTTP and Chromium/Firefox EN/FR. The [exact tested ZIP](https://github.com/MikaPST/filewarden/actions/runs/43616653528/artifacts/14122811563) is preserved as an Actions artifact. See [structured evidence](validation/v0.1.14-dev-ci.json). Documentation tracking follows without runtime changes; no tag, release or user-hosting deployment was authorized or performed. Historical local evidence below is retained unchanged in scope.

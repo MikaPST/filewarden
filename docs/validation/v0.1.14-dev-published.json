@@ -1,0 +1,63 @@
+{
+  "version": "0.1.14-dev",
+  "tag": "v0.1.14-dev",
+  "commit": "c51f6e5766068ee4d40a052b167e4bdd3c52090c",
+  "release_url": "https://github.com/MikaPST/filewarden/releases/tag/v0.1.14-dev",
+  "prerelease": true,
+  "published_at": "2026-11-14T18:06:25Z",
+  "zip_sha256": "9a887e3bca9dc7e9ab9ec0505fb6c3eb4efac9c714934f8500a4c3b7fb91023b",
+  "zip_size": 2747464,
+  "runtime_files": 279,
+  "all_runtime_bytes_match_tag": true,
+  "checksum_verified": true,
+  "github_asset_digest_verified": true,
+  "release_notes_match_tag": true,
+  "release_workflow": "https://github.com/MikaPST/filewarden/actions/runs/43623671643",
+  "main_ci": "https://github.com/MikaPST/filewarden/actions/runs/43623671639",
+  "assets": [
+    {
+      "name": "filewarden-0.1.14-dev.zip",
+      "size": 2747464,
+      "url": "https://github.com/MikaPST/filewarden/releases/download/v0.1.14-dev/filewarden-0.1.14-dev.zip",
+      "digest": "sha256:9a887e3bca9dc7e9ab9ec0505fb6c3eb4efac9c714934f8500a4c3b7fb91023b"
+    },
+    {
+      "name": "filewarden-0.1.14-dev.zip.sha256",
+      "size": 92,
+      "url": "https://github.com/MikaPST/filewarden/releases/download/v0.1.14-dev/filewarden-0.1.14-dev.zip.sha256",
+      "digest": "sha256:8d48cdfdd9870618529b35a98c3bfe748027b84db3c6986f51f1fe9d70500c39"
+    }
+  ],
+  "schema": "6",
+  "deployment_to_user_site": false,
+  "workflows": [
+    {
+      "id": 43623671643,
+      "name": "Publish release",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "c51f6e5766068ee4d40a052b167e4bdd3c52090c",
+      "html_url": "https://github.com/MikaPST/filewarden/actions/runs/43623671643",
+      "run_attempt": 2
+    },
+    {
+      "id": 43623671639,
+      "name": "Quality and security checks",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "c51f6e5766068ee4d40a052b167e4bdd3c52090c",
+      "html_url": "https://github.com/MikaPST/filewarden/actions/runs/43623671639",
+      "run_attempt": 1
+    }
+  ],
+  "initial_release_attempt": {
+    "conclusion": "failure",
+    "job_id": 132534687106,
+    "cause": "Firefox clock.pauseAt: Cannot fast-forward to the past (notifications-browser.cjs:35)",
+    "action": "Requested rerun of failed jobs only; second workflow attempt succeeded without runtime changes"
+  },
+  "limits": [
+    "User-hosting acceptance remains separate",
+    "No complete human screen-reader acceptance"
+  ]
+}
