@@ -4,6 +4,8 @@ Mis à jour le 14 novembre 2026. Lire ce fichier à la reprise, puis vérifier l
 
 ## État actuel
 
+- **Publication 0.1.13-dev autorisée le 14 novembre 2026.** Reprise du candidat validé 0.1.12-dev.1 ; seuls la version, les notes et l’attente du test de mise à jour changent. Le schéma reste 6. Publication en cours après relance des contrôles ; voir [le compte rendu](docs/lot-v0.1.13-dev.md). La proposition d’accueil Documents demandée ensuite reste une proposition et ne modifie pas ce lot.
+
 - **Les dix évolutions originales sont implémentées et testées en WordPress jetable.** Leur développement a été autorisé explicitement par le propriétaire. Le compte rendu de 0.1.12-dev avait utilisé un périmètre reconstruit et annoncé à tort une conformité complète. Le cahier de référence est maintenant la copie exacte du document fonctionnel/UIUX fourni : [les dix évolutions](docs/specifications/evolutions-v0.1.12-dev.md).
 - Branche isolée : **fix/ten-approved-evolutions** ; version candidate **0.1.12-dev.1**, schéma 6. Main, tag et release 0.1.12-dev restent inchangés. Aucun déploiement sur l’hébergement utilisateur dans ce correctif.
 - Décisions confirmées : ZIP contrôlé puis conservé comme document téléchargeable, sans extraction automatique ; TXT, CSV et DOCX/XLSX/PPTX/ODT/ODS/ODP sans macros ajoutés à PDF/JPEG/PNG. Les restrictions d’inspection sont documentées dans docs/security.md.
@@ -12,7 +14,7 @@ Mis à jour le 14 novembre 2026. Lire ce fichier à la reprise, puis vérifier l
 - Captures ordinateur/mobile examinées : compteur, import moderne/file mixte, publication compacte, corbeille globale, cinq catégories de réglages et audit lisible. Les notifications comprimées par WordPress dans l’en-tête ont été corrigées ; les contrôles de copie attendent la fin de la revue de destination avant de saisir le nom. Aucun test n’a été supprimé ni remplacé par une simple vérification de version.
 - Livraison : archive de recette 0.1.12-dev.1, conservée après installation et tests par l’artefact « filewarden-tested-candidate ». Les derniers contrôles d’empaquetage utilisent le même runtime que la CI ci-dessus ; les notes et la matrice documentent ce qui est effectivement vérifié.
 - Détails et matrice : [réception corrective](docs/lot-v0.1.12-dev.1.md) ; [notes du candidat](docs/releases/v0.1.12-dev.1.md). Les preuves historiques de 0.1.12-dev démontraient l’ancien lot, pas les dix évolutions originales.
-- L’installation et la recette de l’hébergement réel ne sont pas réalisées. Préversion uniquement ; aucune garantie de sécurité absolue. Une publication officielle exige un accord distinct explicite.
+- L’installation et la recette de l’hébergement réel ne sont pas réalisées. Préversion uniquement ; aucune garantie de sécurité absolue. L’accord de publication 0.1.13-dev est reçu ; aucune installation sur le site n’est incluse.
 
 ## Organisation convenue
 

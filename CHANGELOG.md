@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.13-dev — 2026-11-14
+
+- Publish the validated 0.1.12-dev.1 corrective candidate under a distinct development version, with all ten original evolutions.
+- Preserve schema 6, existing documents, permissions, settings and audit history; no functional change from the validated candidate.
+- Publish the exact archive installed by the WordPress acceptance tests, with French release notes and SHA-256.
+- See docs/lot-v0.1.13-dev.md and the retained candidate acceptance matrix.
+
 ## 0.1.12-dev.1 — corrective candidate, not released
 
 - Restore the original ten-evolution specification supplied by the owner; the previous 0.1.12-dev report used an incorrect scope.

@@ -21,13 +21,13 @@
 
 [Suivi court du projet et organisation des prochains lots](SUIVI.md)
 
-> **Status: 0.1.12-dev.1 corrective development candidate. Not production-ready. Do not use confidential documents before deployment security validation.**
+> **Status: 0.1.13-dev development preview. Not production-ready. Do not use confidential documents before deployment security validation.**
 
 FileWarden is a free, open-source WordPress document-management plugin focused on private storage, inherited access control and modern publishing interfaces. Single-site only for the first version, confirmed by the owner.
 
 ## Télécharger et installer
 
-La branche `fix/ten-approved-evolutions` corrige les [dix évolutions originales](docs/specifications/evolutions-v0.1.12-dev.md). Le candidat **0.1.12-dev.1** n’est pas encore une release publiée ; le [tableau de réception](docs/lot-v0.1.12-dev.1.md) distingue les vérifications et les limites. La release 0.1.12-dev déjà présente sur GitHub ne contient pas ce correctif.
+La version **0.1.13-dev** reprend le correctif validé 0.1.12-dev.1 des [dix évolutions originales](docs/specifications/evolutions-v0.1.12-dev.md). Téléchargez **filewarden-0.1.13-dev.zip** depuis [la release GitHub](https://github.com/MikaPST/filewarden/releases/tag/v0.1.13-dev). Le [compte rendu de publication](docs/lot-v0.1.13-dev.md) complète les preuves du candidat.
 
 L’archive de développement s’installe dans WordPress : **Extensions → Ajouter → Téléverser une extension**, puis remplacement de l’extension existante. Sauvegarder au préalable la base et le stockage séparé. Consulte le [journal des changements](CHANGELOG.md).
 
@@ -44,7 +44,7 @@ Les documents restent dans `wp-content/filewarden-storage`, séparés du code re
 - REST metadata/upload/folder endpoints, tabbed administration with folder tree and contextual actions, diagnostics, settings and audit retention.
 - Unit tests, disposable WordPress/HTTP integration checks, CI and development ZIP packaging.
 
-The publication library offers folder-wide authorized search, detailed list/grid layouts, file-type icons, date/size metadata and separate preview/download actions. Use `[filewarden folder="1" view="grid"]` for a grid by default (list otherwise). Search is by filename within that folder, with 12 visible results per page; nested folders are not searched. The French frontend labels are bundled. Icons for Office and other formats are prepared, but uploads remain PDF/JPEG/PNG only.
+The publication library offers folder-wide authorized search, detailed list/grid layouts, file-type icons, date/size metadata and separate preview/download actions. Use `[filewarden folder="1" view="grid"]` for a grid by default (list otherwise). Search is by filename within that folder, with 12 visible results per page; nested folders are not searched. The French frontend labels are bundled. Office, text, CSV and ZIP attachments use the validated upload formats listed above.
 
 The testable publication workflow adds protected image and multipage PDF previews, local Media Library import, separate admin screens and a shortcode usable in Elementor. The bundled PDF.js viewer renders PDFs in the browser without Imagick. Administrator previews open in a dialog; publication links open the full viewer in a new tab. Folder/file policy editing, confirmed move/copy and recoverable trash are available. Replacing document content, versions, categories/tags, frontend upload UI, Gutenberg, the native Elementor widget and statistics remain future milestones.
 
