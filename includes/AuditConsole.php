@@ -38,7 +38,9 @@ final class AuditConsole {
             // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Read-only cursor strictly validated.
 			$cursor = isset( $_GET['before'] ) ? min( $upper, RestController::integer( wp_unslash( $_GET['before'] ) ) ) : $upper;
 			$rows   = AuditHistory::rows( $filters, $cursor );
-			echo '<div class="wrap fw-workspace"><header class="fw-heading"><div><span class="fw-brand">FILEWARDEN</span><h1>' . esc_html__( 'Audit log', 'filewarden' ) . '</h1></div></header><div class="fw-audit-layout"><section class="fw-content"><h2>' . esc_html__( 'Recorded events', 'filewarden' ) . '</h2><p>' . esc_html__( 'Times shown in the site timezone:', 'filewarden' ) . ' ' . esc_html( wp_timezone_string() ) . '</p><nav class="fw-audit-views" aria-label="' . esc_attr__( 'Event display mode', 'filewarden' ) . '">';
+			echo '<div class="wrap fw-workspace">';
+			AdminBrand::heading( __( 'Audit log', 'filewarden' ) );
+			echo '<div class="fw-audit-layout"><section class="fw-content"><h2>' . esc_html__( 'Recorded events', 'filewarden' ) . '</h2><p>' . esc_html__( 'Times shown in the site timezone:', 'filewarden' ) . ' ' . esc_html( wp_timezone_string() ) . '</p><nav class="fw-audit-views" aria-label="' . esc_attr__( 'Event display mode', 'filewarden' ) . '">';
 			foreach ( array(
 				'simple'    => __( 'Simplified', 'filewarden' ),
 				'technical' => __( 'Technical', 'filewarden' ),
@@ -71,9 +73,11 @@ final class AuditConsole {
 						/* translators: %d: numeric WordPress user ID. */
 						$actor = sprintf( __( 'WordPress user #%d', 'filewarden' ), $actor_id );
 					}
-					$resource = self::resource_name( $row );
-					$detail   = $resource ? ( 'folder' === $technical['resource_type'] ? __( 'Folder', 'filewarden' ) : __( 'Document', 'filewarden' ) ) . ' : ' . $resource : __( 'Resource name unavailable', 'filewarden' );
-					echo '<article class="fw-log-line fw-log-simple" data-event-id="' . esc_attr( $row['id'] ) . '"><div class="fw-log-summary"><time>' . esc_html( get_date_from_gmt( $row['created_at'], 'Y-m-d H:i:s' ) ) . '</time> <strong>' . esc_html( self::event_label( $row['event'] ) ) . '</strong> <span>' . esc_html( $actor ) . '</span></div><p class="fw-log-resource">' . esc_html( $detail ) . '</p><details><summary>' . esc_html__( 'Show technical details', 'filewarden' ) . '</summary><pre><code>' . esc_html( wp_json_encode( $technical, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE ) ) . '</code></pre></details></article>';
+					$resource   = self::resource_name( $row );
+					$detail     = $resource ? ( 'folder' === $technical['resource_type'] ? __( 'Folder', 'filewarden' ) : __( 'Document', 'filewarden' ) ) . ' : ' . $resource : __( 'Resource name unavailable', 'filewarden' );
+					$appearance = AuditAppearance::event( $row['event'] );
+					$icon       = plugins_url( 'assets/icons/' . $appearance[2] . '.svg', FILEWARDEN_PATH . 'filewarden.php' );
+					echo '<article class="fw-log-line fw-log-simple fw-log-' . esc_attr( $appearance[0] ) . '" data-event-id="' . esc_attr( $row['id'] ) . '"><div class="fw-log-summary"><time>' . esc_html( get_date_from_gmt( $row['created_at'], 'Y-m-d H:i:s' ) ) . '</time><div class="fw-log-event"><span class="fw-log-category"><span class="fw-log-icon" style="' . esc_attr( '--fw-log-icon:url(' . $icon . ')' ) . '" aria-hidden="true"></span>' . esc_html( $appearance[1] ) . '</span><strong>' . esc_html( self::event_label( $row['event'] ) ) . '</strong></div><span>' . esc_html( $actor ) . '</span></div><p class="fw-log-resource">' . esc_html( $detail ) . '</p><details><summary>' . esc_html__( 'Show technical details', 'filewarden' ) . '</summary><pre><code>' . esc_html( wp_json_encode( $technical, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE ) ) . '</code></pre></details></article>';
 				}
 			}
 			if ( ! $rows ) {
@@ -145,7 +149,7 @@ final class AuditConsole {
 					'review' => 1,
 				) as $key => $value ) {
 					echo '<input type="hidden" name="' . esc_attr( $key ) . '" value="' . esc_attr( $value ) . '">'; }
-				echo '<button class="button fw-button-danger"><span class="dashicons dashicons-trash" aria-hidden="true"></span> ' . esc_html__( 'Prepare purge', 'filewarden' ) . '</button></form>'; }
+				echo '<button class="button fw-button-danger"><span class="fw-action-icon fw-icon-trash-2" aria-hidden="true"></span>' . esc_html__( 'Prepare purge', 'filewarden' ) . '</button></form>'; }
             // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Review is read-only; purge POST requires a fresh nonce and capability.
 			if ( isset( $_GET['review'] ) && current_user_can( 'filewarden_manage_audit' ) ) {
 				$review = AuditHistory::review( $filters, $upper );
@@ -160,7 +164,7 @@ final class AuditConsole {
 						'proof'     => $review['proof'],
 					) as $key => $value ) {
 						echo '<input type="hidden" name="' . esc_attr( $key ) . '" value="' . esc_attr( $value ) . '">'; }
-					echo '<p><label><input type="checkbox" name="confirm" value="1" required> ' . esc_html__( 'I understand these events cannot be restored.', 'filewarden' ) . '</label></p><button class="button fw-button-danger"><span class="dashicons dashicons-trash" aria-hidden="true"></span> ' . esc_html__( 'Permanently purge selected events', 'filewarden' ) . '</button></form>';
+					echo '<p><label><input type="checkbox" name="confirm" value="1" required> ' . esc_html__( 'I understand these events cannot be restored.', 'filewarden' ) . '</label></p><button class="button fw-button-danger"><span class="fw-action-icon fw-icon-trash-2" aria-hidden="true"></span>' . esc_html__( 'Permanently purge selected events', 'filewarden' ) . '</button></form>';
 				} else {
 					echo '<p>' . esc_html__( 'Select between 1 and 10000 events by narrowing the filters.', 'filewarden' ) . '</p>'; }
 				echo '</div>';
@@ -234,7 +238,7 @@ final class AuditConsole {
 			$type = ''; }
 		$login      = self::actor_login( $row );
 		$name       = self::resource_name( $row );
-		$successful = in_array( $event, array( 'document_uploaded', 'document_policy_changed', 'folder_policy_changed', 'document_move_completed', 'document_copy_completed', 'document_trashed', 'document_restored', 'document_purged', 'folder_created', 'folder_deleted_files_recovered', 'settings_changed', 'audit_purged', 'download_started', 'download_head' ), true );
+		$successful = in_array( $event, array( 'document_uploaded', 'document_policy_changed', 'folder_policy_changed', 'document_move_completed', 'document_copy_completed', 'document_trashed', 'document_restored', 'document_purged', 'folder_created', 'folder_deleted_files_recovered', 'settings_changed', 'audit_purged', 'download_started', 'download_head', 'database_repaired' ), true );
 		return array(
 			'schema_version'     => 2,
 			'id'                 => (int) $row['id'],
@@ -259,6 +263,8 @@ final class AuditConsole {
 	 */
 	private static function event_label( $event ) {
 		$labels = array(
+			'database_repair_requested'        => __( 'Database repair requested', 'filewarden' ),
+			'database_repaired'                => __( 'Database tables repaired and verified', 'filewarden' ),
 			'folder_policy_change_requested'   => __( 'Folder permission change requested', 'filewarden' ),
 			'folder_policy_changed'            => __( 'Folder permissions changed', 'filewarden' ),
 			'access_denied'                    => __( 'Access denied', 'filewarden' ),

@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.15-dev — 2026-11-14
+
+- Require explicit InnoDB for newly created tables; provide a capability/nonce/backup-confirmed repair for existing MyISAM tables, with exact content/schema/index/collation/next-ID verification and resumable checkpoints. Never silently convert live tables on update.
+- Drain plugin writers through a reentrant connection gate during repair; keep partial repairs fail-closed and preserve transactional folder recovery and inherited restrictions. Record repair requests and verified completions separately.
+- Display the supplied PNG welcome illustration, unchanged official header logo, source icons, compact underlined task navigation and native-color outline folder-lock menu icon.
+- Add semantic categories and icons only to simplified audit records; retain technical details, authorization, filtering and versioned export formats. Harmonize purge buttons with white trash-2 icons.
+- Replace the large health card with a compact summary and keyboard-operable details; keep blocked storage and import warnings visible outside collapsed details.
+- Add real MyISAM/partial-failure/concurrent-gate tests and installed-ZIP UI/repair acceptance; extend the CI upgrade matrix to 0.1.14-dev and bound browser navigation checks.
+
+
 ## 0.1.14-dev — 2026-11-14 (local candidate, publication pending)
 
 - Add the essential Documents welcome and guided folder hierarchy with independently operable disclosure controls and a spaced secondary creation button.

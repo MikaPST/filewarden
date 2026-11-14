@@ -153,17 +153,30 @@ final class Repository {
 	 *
 	 * @param mixed $folder folder value.
 	 * @throws \RuntimeException When the operation cannot be completed safely.
+	 * @throws \Throwable After releasing the write gate on failure.
 	 * @return mixed Operation result.
 	 */
 	public function lock( $folder ) {
 		global $wpdb;
-		// Serialize a whole folder: database collations may equate differently spelled names.
-		$key = 'fw_' . substr( hash( 'sha256', $wpdb->prefix . ':' . $folder ), 0, 60 );
+		// A reentrant connection gate drains active plugin writers before explicit engine repair.
+		$gate = 'fw_' . substr( hash( 'sha256', $wpdb->prefix . ':database-write-gate' ), 0, 60 );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Named connection lock also covers uploads and independent audit writers.
+		if ( '1' !== (string) $wpdb->get_var( $wpdb->prepare( 'SELECT GET_LOCK(%s, 5)', $gate ) ) ) {
+			throw new \RuntimeException( 'Document is busy.' ); }
+		try {
+			DatabaseUpgrade::guard();
+			// Serialize a whole folder: database collations may equate differently spelled names.
+			$key = 'fw_' . substr( hash( 'sha256', $wpdb->prefix . ':' . $folder ), 0, 60 );
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Custom tables require fresh authorization data and prepared database access.
-		if ( '1' !== (string) $wpdb->get_var( $wpdb->prepare( 'SELECT GET_LOCK(%s, 5)', $key ) ) ) {
-			throw new \RuntimeException( 'Document is busy.' );
+			if ( '1' !== (string) $wpdb->get_var( $wpdb->prepare( 'SELECT GET_LOCK(%s, 5)', $key ) ) ) {
+				throw new \RuntimeException( 'Document is busy.' );
+			}
+			return $key;
+		} catch ( \Throwable $error ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Release this acquisition, preserving any outer reentrant gate.
+			$wpdb->get_var( $wpdb->prepare( 'SELECT RELEASE_LOCK(%s)', $gate ) );
+			throw $error;
 		}
-		return $key;
 	}
 
 	/**
@@ -176,6 +189,9 @@ final class Repository {
 		global $wpdb;
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Custom tables require fresh authorization data and prepared database access.
 		$wpdb->get_var( $wpdb->prepare( 'SELECT RELEASE_LOCK(%s)', $key ) );
+		$gate = 'fw_' . substr( hash( 'sha256', $wpdb->prefix . ':database-write-gate' ), 0, 60 );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Match exactly one acquisition by lock().
+		$wpdb->get_var( $wpdb->prepare( 'SELECT RELEASE_LOCK(%s)', $gate ) );
 	}
 
 	/**
@@ -264,8 +280,10 @@ final class Repository {
 				$engines = is_array( $rows ) ? array_column( $rows, 'Engine' ) : array();
 				sort( $names );
 				sort( $tables );
-				if ( $wpdb->last_error || $names !== $tables ) {
-					throw new \RuntimeException( 'Transactional storage required.' ); }
+				if ( $wpdb->last_error || ! is_array( $rows ) ) {
+					throw new \RuntimeException( 'Table metadata unavailable.' ); }
+				if ( $names !== $tables ) {
+					throw new \RuntimeException( 'Plugin table missing.' ); }
 			}
 			if ( 3 !== count( $engines ) || array_filter( $engines, static fn( $engine ) => ! is_string( $engine ) || 'innodb' !== strtolower( $engine ) ) ) {
 				throw new \RuntimeException( 'Transactional storage required.' ); }

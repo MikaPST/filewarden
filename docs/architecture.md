@@ -1,5 +1,13 @@
 # Architecture proposal
 
+## Legacy engine repair and administration identity (0.1.15-dev)
+
+`DatabaseUpgrade` measures the three exact prefixed tables and offers an explicit, backup-confirmed MyISAM-to-InnoDB repair through SettingsConsole/AdminController. Installation specifies InnoDB; engine repair does not change schema version 6. Ordered 200-row fingerprints include full column/index definitions, table collation and next ID. A durable options checkpoint survives partial conversion and rejects data drift before retrying.
+
+`Repository::lock()` acquires a reentrant common write gate before existing operation-specific locks; `unlock()` releases one matching acquisition. Audit writes/cleanup participate too, so engine repair drains active plugin writers before fingerprinting. The gate is connection-owned and the checkpoint blocks later writes after interruption. External SQL writers remain an operator responsibility. Current-schema reactivation preserves the checkpoint and leaves the repair interface accessible. ALTER TABLE has implicit commits; it is not a multi-table rollback transaction. See [MySQL implicit commits](https://dev.mysql.com/doc/refman/8.4/en/implicit-commit.html) and [named locking functions](https://dev.mysql.com/doc/refman/8.4/en/locking-functions.html).
+
+`AdminBrand` shares the unchanged official header artwork; `AuditAppearance` provides presentation-only categories for simplified events. Neither changes access decisions, protected resource-name resolution, technical records or export schema 2.
+
 WordPress PHP plugin with modular services: DocumentService, PermissionService, StorageService, AuditService. Admin interface may use WordPress React components; public interface should remain lightweight.
 
 Data tables (subject to detailed schema review): documents, folders, versions, permissions, audit_logs, download_stats, displays. WordPress prefix is dynamic.

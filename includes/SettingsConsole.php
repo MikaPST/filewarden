@@ -118,13 +118,28 @@ final class SettingsConsole {
 			'verified'   => __( 'Verified', 'filewarden' ),
 			'critical'   => __( 'Critical', 'filewarden' ),
 		);
-		echo '<div class="wrap fw-workspace fw-settings"><header class="fw-heading"><h1>' . esc_html__( 'FileWarden settings', 'filewarden' ) . '</h1></header><section class="fw-content fw-health" data-storage-status="' . esc_attr( $status ) . '"><h2>' . esc_html__( 'FileWarden health', 'filewarden' ) . '</h2><dl><dt>' . esc_html__( 'Storage', 'filewarden' ) . '</dt><dd><strong>' . esc_html( $labels[ $status ] ) . '</strong> — ' . esc_html( $message ) . '</dd><dt>' . esc_html__( 'Configuration', 'filewarden' ) . '</dt><dd>' . esc_html( $warning ? __( 'Warning: server upload limits or ZIP support restrict available imports.', 'filewarden' ) : __( 'Required upload capabilities are available.', 'filewarden' ) ) . '</dd><dt>' . esc_html__( 'Last check', 'filewarden' ) . '</dt><dd><time>' . esc_html( wp_date( 'Y-m-d H:i:s T', $checked ) ) . '</time></dd></dl></section>';
+		echo '<div class="wrap fw-workspace fw-settings">';
+		AdminBrand::heading( __( 'FileWarden settings', 'filewarden' ) );
+		echo '<section class="fw-content fw-health" data-storage-status="' . esc_attr( $status ) . '"><div class="fw-health-summary"><span class="fw-action-icon fw-icon-shield-check" aria-hidden="true"></span><h2>' . esc_html__( 'FileWarden health', 'filewarden' ) . '</h2><strong class="fw-health-status">' . esc_html__( 'Storage', 'filewarden' ) . ' : ' . esc_html( $labels[ $status ] ) . '</strong><span class="fw-health-check">' . esc_html__( 'Last check', 'filewarden' ) . ' <time datetime="' . esc_attr( gmdate( 'c', $checked ) ) . '">' . esc_html( wp_date( 'Y-m-d H:i:s T', $checked ) ) . '</time></span></div>';
+		if ( 'verified' !== $status ) {
+			echo '<p class="fw-health-alert">' . esc_html( $message ) . '</p>'; }
+		if ( $warning ) {
+			echo '<p class="fw-health-warning">' . esc_html__( 'Warning: server upload limits or ZIP support restrict available imports.', 'filewarden' ) . '</p>'; }
+		echo '<details class="fw-health-details"><summary>' . esc_html__( 'Details', 'filewarden' ) . '</summary><dl><dt>' . esc_html__( 'Storage', 'filewarden' ) . '</dt><dd><strong>' . esc_html( $labels[ $status ] ) . '</strong> — ' . esc_html( $message ) . '</dd><dt>' . esc_html__( 'Configuration', 'filewarden' ) . '</dt><dd>' . esc_html( $warning ? __( 'Warning: server upload limits or ZIP support restrict available imports.', 'filewarden' ) : __( 'Required upload capabilities are available.', 'filewarden' ) ) . '</dd><dt>' . esc_html__( 'Last check', 'filewarden' ) . '</dt><dd><time>' . esc_html( wp_date( 'Y-m-d H:i:s T', $checked ) ) . '</time></dd></dl></details></section>';
+		$database = DatabaseUpgrade::status();
+		$pending  = (bool) get_option( DatabaseUpgrade::CHECKPOINT );
+		if ( 'ready' !== $database['state'] || $pending ) {
+			echo '<p class="fw-database-alert">' . esc_html__( 'Database attention required. Review Storage and security; folder deletion remains blocked until transactional tables are verified.', 'filewarden' ) . '</p>'; }
 		if ( $warning ) {
 			Notice::show( __( 'Server limits or missing PHP extensions restrict imports. Review Storage and security before uploading.', 'filewarden' ), 'warning' ); }
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only post/redirect feedback, never authorization.
 		$result = isset( $_GET['result'] ) && is_string( $_GET['result'] ) ? sanitize_key( wp_unslash( $_GET['result'] ) ) : '';
 		if ( $result ) {
-			if ( 'success' !== $result || Notice::verified( $result ) ) {
+			if ( 'database_repaired' === $result && Notice::verified( $result ) ) {
+				Notice::show( __( 'The three FileWarden tables use InnoDB. Their records and indexes were verified. Folder deletion can now be retried.', 'filewarden' ), 'success', __( 'Database verified', 'filewarden' ) );
+			} elseif ( 'database_failed' === $result ) {
+				Notice::show( __( 'Database repair could not be confirmed. No table was reset. A partial conversion may have occurred; review the database and retry the repair after checking your backup.', 'filewarden' ), 'error', __( 'Database repair incomplete', 'filewarden' ), true );
+			} elseif ( 'success' !== $result || Notice::verified( $result ) ) {
 				Notice::show( 'success' === $result ? __( 'Settings saved.', 'filewarden' ) : __( 'Settings could not be saved.', 'filewarden' ), 'success' === $result ? 'success' : 'error', 'success' === $result ? __( 'Settings saved', 'filewarden' ) : __( 'Settings not saved', 'filewarden' ) ); }
 		}
 		$sections = self::sections();
@@ -148,6 +163,8 @@ final class SettingsConsole {
 				echo '</select></p><p id="fw-notification-help" class="description">' . esc_html__( 'Set how long notifications remain visible before they disappear automatically.', 'filewarden' ) . '</p>'; }
 			if ( 'storage' === $id ) {
 				echo '<p>' . esc_html__( 'Documents are stored separately from the plugin. Storage operations remain blocked until protection is verified.', 'filewarden' ) . '</p><p>' . esc_html( $message ) . '</p>'; }
+			if ( 'storage' === $id ) {
+				self::database_panel( $database, $pending ); }
 			$field = match ( $id ) {
 				'documents' => 'upload_mb', 'retention' => 'trash_days', 'audit' => 'audit_days', default => null };
 			if ( $field ) {
@@ -163,6 +180,33 @@ final class SettingsConsole {
 			echo '</section>';
 		}
 		submit_button( __( 'Save settings', 'filewarden' ) );
+		echo '</form>';
+		$ui->form_start( 'database_repair' );
 		echo '</form></section></div></div>';
+	}
+
+	/** Render an explicit repair offer; controls belong to a separate non-nested form.
+	 *
+	 * @param array $database Measured table engines.
+	 * @param bool  $pending Interrupted repair checkpoint.
+	 */
+	private static function database_panel( array $database, $pending ) {
+		echo '<div class="fw-database-panel"><h3>' . esc_html__( 'Transactional database tables', 'filewarden' ) . '</h3>';
+		$messages = array(
+			'ready'        => __( 'The three FileWarden tables use InnoDB.', 'filewarden' ),
+			'incompatible' => __( 'Existing MyISAM tables prevent safe folder deletion. Convert the three FileWarden tables to InnoDB after backing up.', 'filewarden' ),
+			'missing'      => __( 'A FileWarden table is missing or its engine is unreadable. Ask your host to verify the installation before repairing.', 'filewarden' ),
+			'unavailable'  => __( 'Table metadata could not be read. Ask your host to check database permissions. No engine change can be offered safely.', 'filewarden' ),
+			'unsupported'  => __( 'An unsupported database engine was found. Ask your host to review it; automatic conversion is unavailable.', 'filewarden' ),
+		);
+		echo '<p>' . esc_html( $messages[ $database['state'] ] ) . '</p><ul>';
+		foreach ( $database['engines'] as $table => $engine ) {
+			echo '<li><code>' . esc_html( $table ) . '</code> : ' . esc_html( $engine ) . '</li>'; }
+		echo '</ul>';
+		if ( $pending ) {
+			echo '<p class="fw-database-alert">' . esc_html__( 'A repair checkpoint remains. FileWarden writes are paused until the integrity check and repair succeed. Do not delete this checkpoint or reset the tables.', 'filewarden' ) . '</p>'; }
+		if ( 'incompatible' === $database['state'] || ( $pending && 'ready' === $database['state'] ) ) {
+			echo '<p>' . esc_html__( 'Back up the complete database, encryption key and document storage first. Pause external writers and allow time and free disk space for the conversion. ALTER TABLE commits each table separately; a failed repair may need to be resumed. Document files are not moved.', 'filewarden' ) . '</p><p><label><input type="checkbox" name="backup_confirmed" value="1" form="fw-database-repair" required> ' . esc_html__( 'I have a complete backup and have paused external writes for this maintenance operation.', 'filewarden' ) . '</label></p><button class="button" type="submit" form="fw-database-repair"><span class="fw-action-icon fw-icon-shield-check" aria-hidden="true"></span>' . esc_html__( 'Verify and repair database tables', 'filewarden' ) . '</button>'; }
+		echo '</div>';
 	}
 }

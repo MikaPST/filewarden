@@ -1,5 +1,13 @@
 # Validation
 
+## 0.1.15-dev — local acceptance, 2026-11-14
+
+All nine approved changes and historical non-regression suites passed locally: PHP 8.2.35, MariaDB 10.11.11, actual ZIP upgrades from 0.1.14-dev with three MyISAM tables on fresh WordPress 6.8 and 7.1.4. InnoDB repair remained explicit and preserved existing data. Integration, HTTP, Chromium/Firefox EN/FR, 75 PHP tests/130 assertions, eight JavaScript tests, syntax, PHPCS, Composer validation/audit and WordPress Sodium fallback passed. New failure-injection, concurrent-gate, checkpoint/reactivation and French 320px/375px repair checks passed. See [structured local evidence](validation/v0.1.15-dev-local.json) and [the nine-point matrix and repair procedure](lot-v0.1.15-dev.md).
+
+The final local ZIP has 290 files, verified against sources and both installed final archives; SHA-256 a8f0c1d0f9b3285473c079bc5884aab9c29d979a0572a731080f7cf96a636364. It differs from the full application-acceptance ZIP only in the WordPress release-note text and Lucide attribution inventory; all application bytes match. The CI/release archive will be independently built and tested on Linux, then verified against its tag.
+
+Preliminary browser failures were test-harness issues: cross-context simulated-clock leakage, an unbounded audit-navigation wait and an assumed initial folded-menu state. The notification suite now owns a separate browser context with a fixed clock; navigation is explicit/bounded and menu checks use actual state. Final complete runs passed without suppressing assertions. PHP 8.3/8.4 and MySQL 8.0 remain pending GitHub CI at this stage; target-host deployment/security acceptance and full human screen-reader review are not claimed.
+
 ## Published 0.1.14-dev — 2026-11-14
 
 Tag v0.1.14-dev points to c51f6e5, with the same runtime as validated code 58f6cfe. [Main CI](https://github.com/MikaPST/filewarden/actions/runs/43623671639) and [release workflow](https://github.com/MikaPST/filewarden/actions/runs/43623671643) succeeded. The first release attempt failed only at Firefox clock.pauseAt (Cannot fast-forward to the past); requested failed-job rerun succeeded on attempt 2 without runtime changes. Preserve this trace and stabilize the test clock separately.

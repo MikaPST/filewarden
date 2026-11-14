@@ -1,6 +1,8 @@
 /** Real installed component: server outcomes, clocks, combined pauses, overflow and keyboard access. */
 const assert = require('node:assert/strict');
-module.exports = async ({ context, base, name = 'browser' }) => {
+module.exports = async ({ context: parentContext, base, name = 'browser' }) => {
+    // Playwright's clock is context-scoped: do not freeze WordPress timers in later suites.
+    const context = await parentContext.browser().newContext({storageState:await parentContext.storageState(),viewport:{width:1280,height:900}});
     const page = await context.newPage();
     const settingsURL = base + '/wp-admin/admin.php?page=filewarden-settings';
     const reset = () => page.evaluate(() => document.querySelectorAll('.fw-notice[data-fw-notice]').forEach(el => window.FileWardenNotices.dismiss(el)));
@@ -9,7 +11,8 @@ module.exports = async ({ context, base, name = 'browser' }) => {
     }, {type,message,persistent});
     const progress = locator => locator.locator('.fw-notice-progress').evaluate(el => Number(el.style.transform.match(/scaleX\(([^)]+)\)/)[1]));
     try {
-        await page.clock.install();
+        await page.clock.install({time:new Date(2100, 0, 1)});
+        await page.clock.pauseAt(new Date(2100, 0, 1));
         await page.goto(settingsURL + '&result=success');
         assert.equal(await page.locator('.fw-notice-success').count(), 0, 'A forged result URL claimed success');
         assert.equal(await page.locator('[name=notification_seconds]').inputValue(), '10');
@@ -32,7 +35,6 @@ module.exports = async ({ context, base, name = 'browser' }) => {
             await page.reload();
             assert.equal(await page.locator('[name=notification_seconds]').inputValue(),duration);
             for (const field of ['upload_mb','trash_days','audit_days']) assert.equal(await page.locator(`[name=${field}]`).inputValue(),original[field]);
-            await page.clock.pauseAt((await page.evaluate(()=>Date.now()))+100);
             await reset(); await show('success','duration-'+duration,false);
             const card = page.locator('.fw-notice-success[data-fw-notice]');
             await page.mouse.move(0,0);
@@ -150,5 +152,5 @@ module.exports = async ({ context, base, name = 'browser' }) => {
             assert.equal(await notice.locator('.fw-notice-track').count(),0);
         } finally { await fallback.close(); }
         console.log(name+': notification durations, real settings saves, CSRF refusal, timing, combined pauses, persistent errors, overflow, reduced motion and safe text passed');
-    } finally { await page.close(); }
+    } finally { await context.close(); }
 };

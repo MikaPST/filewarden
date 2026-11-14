@@ -21,6 +21,23 @@ final class AuditService {
 	 * @return mixed Operation result.
 	 */
 	public function record( $event, $object_id = 0, array $snapshot = array() ) {
+		$repo = new Repository();
+		$lock = $repo->lock( 'audit-write' );
+		try {
+			$this->write( $event, $object_id, $snapshot );
+		} finally {
+			$repo->unlock( $lock );
+		}
+	}
+
+	/** Persist one event under the common database write gate.
+	 *
+	 * @param string $event Event code.
+	 * @param int    $object_id Resource ID.
+	 * @param array  $snapshot Authorized snapshot.
+	 * @throws \RuntimeException On persistence failure.
+	 */
+	private function write( $event, $object_id, array $snapshot ) {
 		global $wpdb;
 		$actor_id    = get_current_user_id();
 		$actor       = $actor_id ? get_userdata( $actor_id ) : false;
@@ -77,11 +94,17 @@ final class AuditService {
 	 */
 	public static function cleanup() {
 		global $wpdb;
-		$days = max( 1, (int) get_option( 'filewarden_audit_days', 365 ) );
-		$end  = gmdate( 'Y-m-d H:i:s', time() - $days * DAY_IN_SECONDS );
-		// Bounded, repeatable cleanup: additional batches run on subsequent cron ticks.
+		$repo = new Repository();
+		$lock = $repo->lock( 'audit-write' );
+		try {
+			$days = max( 1, (int) get_option( 'filewarden_audit_days', 365 ) );
+			$end  = gmdate( 'Y-m-d H:i:s', time() - $days * DAY_IN_SECONDS );
+			// Bounded, repeatable cleanup: additional batches run on subsequent cron ticks.
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Custom tables require fresh authorization data and prepared database access.
-		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}filewarden_audit_logs WHERE created_at < %s LIMIT 10000", $end ) );
+			$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}filewarden_audit_logs WHERE created_at < %s LIMIT 10000", $end ) );
+		} finally {
+			$repo->unlock( $lock );
+		}
 	}
 
 	/**

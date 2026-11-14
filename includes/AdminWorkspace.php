@@ -108,7 +108,8 @@ final class AdminWorkspace {
 				'policy'    => array( 'type' => 'authenticated' ),
 				'parent_id' => 0,
 			);
-			echo '<div class="wrap filewarden-admin fw-workspace"><header class="fw-heading"><div><span class="fw-brand">FILEWARDEN</span><h1>' . esc_html__( 'Document library', 'filewarden' ) . '</h1></div><span class="fw-version">' . esc_html( FILEWARDEN_VERSION ) . '</span></header>';
+			echo '<div class="wrap filewarden-admin fw-workspace">';
+			AdminBrand::heading( __( 'Document library', 'filewarden' ) );
 			$this->notices();
 			$tabs = array( 'documents' => __( 'Documents', 'filewarden' ) );
 			if ( current_user_can( 'filewarden_upload_files' ) && current_user_can( 'filewarden_manage_permissions' ) ) {
@@ -121,8 +122,14 @@ final class AdminWorkspace {
 				$tabs['trash'] = __( 'Trash', 'filewarden' );
 			}
 			echo '<nav class="fw-tabs" aria-label="' . esc_attr__( 'Document tasks', 'filewarden' ) . '">';
+			$icons = array(
+				'documents' => 'files',
+				'add'       => 'file-plus-2',
+				'folder'    => 'folder-plus',
+				'trash'     => 'trash-2',
+			);
 			foreach ( $tabs as $tab => $label ) {
-				echo '<a href="' . esc_url( $this->url( array( 'tab' => $tab ) ) ) . '"' . ( $tab === $this->tab ? ' aria-current="page"' : '' ) . '>' . esc_html( $label ) . '</a>';
+				echo '<a href="' . esc_url( $this->url( array( 'tab' => $tab ) ) ) . '"' . ( $tab === $this->tab ? ' aria-current="page"' : '' ) . '><span class="fw-action-icon fw-icon-' . esc_attr( $icons[ $tab ] ) . '" aria-hidden="true"></span>' . esc_html( $label ) . '</a>';
 			}
 			echo '</nav>';
 			if ( ! isset( $tabs[ $this->tab ] ) ) {
@@ -209,25 +216,28 @@ final class AdminWorkspace {
 			return;
 		}
 		$messages = array(
-			'unsafe_file'  => __( 'File refused: unsafe content or archive limits exceeded. Scripts, macros, encrypted and nested archives are not accepted.', 'filewarden' ),
-			'inspection'   => __( 'Secure file inspection is unavailable. Ask your host to check PHP ZIP, XML support and the private temporary directory.', 'filewarden' ),
-			'subfolders'   => __( 'Remove the subfolders first. The folder and its documents were preserved.', 'filewarden' ),
-			'transaction'  => __( 'Folder deletion requires transactional database tables (InnoDB). Ask your host to check the three FileWarden tables. No folder was deleted.', 'filewarden' ),
-			'recovery'     => __( 'Folder recovery could not be completed. The transaction was rolled back; check the database and retry.', 'filewarden' ),
-			'policy_saved' => __( 'Access rules saved. The most restrictive rules apply immediately.', 'filewarden' ),
-			'success'      => __( 'Operation completed.', 'filewarden' ),
-			'duplicate'    => __( 'A file with this name exists. Rename it or cancel. Versions arrive in a later milestone.', 'filewarden' ),
-			'failed'       => __( 'Operation refused or unavailable. Check permissions, inputs and storage configuration.', 'filewarden' ),
-			'storage'      => __( 'The file could not be written or read back from protected storage. No document was added.', 'filewarden' ),
-			'database'     => __( 'FileWarden could not confirm that the document was recorded in the selected folder. Check the list before retrying.', 'filewarden' ),
-			'audit'        => __( 'The file was saved, but the audit entry could not be confirmed. Check the folder before retrying.', 'filewarden' ),
-			'busy'         => __( 'Another operation is using this folder. Try again in a moment.', 'filewarden' ),
-			'denied'       => __( 'You do not have permission to perform this operation.', 'filewarden' ),
-			'size'         => __( 'The file is empty or exceeds the allowed upload size. Check FileWarden settings and your PHP upload limit.', 'filewarden' ),
-			'format'       => __( 'Choose a valid PDF, JPEG, PNG, TXT, CSV, ZIP or supported macro-free Office document.', 'filewarden' ),
-			'missing_file' => __( 'No complete upload was received. Select the file again and check the server upload limit.', 'filewarden' ),
-			'media'        => __( 'Choose a local Media Library file that you are allowed to edit.', 'filewarden' ),
-			'invalid'      => __( 'Check the folder, access policy and form fields.', 'filewarden' ),
+			'transaction_metadata' => __( 'FileWarden table metadata is unavailable. Review Storage and security. No folder was deleted.', 'filewarden' ),
+			'transaction_missing'  => __( 'A FileWarden database table is missing. Review Storage and security. No folder was deleted.', 'filewarden' ),
+			'database_pending'     => __( 'Database repair is pending. FileWarden writes remain paused. Review Storage and security to resume verification.', 'filewarden' ),
+			'unsafe_file'          => __( 'File refused: unsafe content or archive limits exceeded. Scripts, macros, encrypted and nested archives are not accepted.', 'filewarden' ),
+			'inspection'           => __( 'Secure file inspection is unavailable. Ask your host to check PHP ZIP, XML support and the private temporary directory.', 'filewarden' ),
+			'subfolders'           => __( 'Remove the subfolders first. The folder and its documents were preserved.', 'filewarden' ),
+			'transaction'          => __( 'Folder deletion requires transactional database tables (InnoDB). Ask your host to check the three FileWarden tables. No folder was deleted.', 'filewarden' ),
+			'recovery'             => __( 'Folder recovery could not be completed. The transaction was rolled back; check the database and retry.', 'filewarden' ),
+			'policy_saved'         => __( 'Access rules saved. The most restrictive rules apply immediately.', 'filewarden' ),
+			'success'              => __( 'Operation completed.', 'filewarden' ),
+			'duplicate'            => __( 'A file with this name exists. Rename it or cancel. Versions arrive in a later milestone.', 'filewarden' ),
+			'failed'               => __( 'Operation refused or unavailable. Check permissions, inputs and storage configuration.', 'filewarden' ),
+			'storage'              => __( 'The file could not be written or read back from protected storage. No document was added.', 'filewarden' ),
+			'database'             => __( 'FileWarden could not confirm that the document was recorded in the selected folder. Check the list before retrying.', 'filewarden' ),
+			'audit'                => __( 'The file was saved, but the audit entry could not be confirmed. Check the folder before retrying.', 'filewarden' ),
+			'busy'                 => __( 'Another operation is using this folder. Try again in a moment.', 'filewarden' ),
+			'denied'               => __( 'You do not have permission to perform this operation.', 'filewarden' ),
+			'size'                 => __( 'The file is empty or exceeds the allowed upload size. Check FileWarden settings and your PHP upload limit.', 'filewarden' ),
+			'format'               => __( 'Choose a valid PDF, JPEG, PNG, TXT, CSV, ZIP or supported macro-free Office document.', 'filewarden' ),
+			'missing_file'         => __( 'No complete upload was received. Select the file again and check the server upload limit.', 'filewarden' ),
+			'media'                => __( 'Choose a local Media Library file that you are allowed to edit.', 'filewarden' ),
+			'invalid'              => __( 'Check the folder, access policy and form fields.', 'filewarden' ),
 		);
 
 		$success = in_array( $result, array( 'success', 'policy_saved' ), true );

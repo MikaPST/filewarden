@@ -1,0 +1,41 @@
+{
+  "version": "0.1.15-dev",
+  "date": "2026-11-14",
+  "status": "passed",
+  "environment": {"php": "8.2.35", "database": "MariaDB 10.11.11", "wordpress": ["6.8", "7.1.4"], "browsers": ["Chromium", "Firefox"], "locales": ["en_US", "fr_FR"]},
+  "checks": {
+    "phpunit": {"tests": 75, "assertions": 130, "status": "passed"},
+    "javascript": {"tests": 8, "status": "passed"},
+    "phpcs": "passed, no violations",
+    "php_and_runtime_javascript_syntax": "passed",
+    "composer_validation": "passed",
+    "composer_audit": "passed, no advisories",
+    "wordpress_sodium_fallback": "passed",
+    "actual_zip_upgrade": "0.1.14-dev with three MyISAM tables to 0.1.15-dev; engines preserved until explicit repair; records, settings, history, UUID, policies, keys and bytes preserved",
+    "integration": "both WordPress versions passed all historical suites and v15-integration.php",
+    "http": "both passed ACL, inheritance, revocation, CSRF, protected bytes, ranges, media import, extra formats and CSV/TXT/JSONL exports",
+    "browsers": "both WordPress versions passed viewer-browser.cjs in Chromium/Firefox, including original ten evolutions, notifications, corrective paths and v15-browser.cjs",
+    "french": "both WordPress versions passed french-browser.cjs and v15-french-browser.cjs in Chromium/Firefox; repair at 375px and 320px",
+    "repair_failures": "real MyISAM, denied ALTER after partial conversion, checkpoint retention/resume, external data drift refusal, blocked writers/cleanup, reactivation, independent connection gate, missing table/metadata and capability/confirmation/nonce refusals passed",
+    "creation": "explicit InnoDB verified under a session default of MyISAM",
+    "visual_review": "desktop welcome/header, compact health, audit, folded WordPress menu and mobile captures inspected",
+    "diff_check": "passed"
+  },
+  "archive": {
+    "file": "filewarden-0.1.15-dev.zip",
+    "files": 290,
+    "sha256": "a8f0c1d0f9b3285473c079bc5884aab9c29d979a0572a731080f7cf96a636364",
+    "verification": "all files match working sources and both final installed ZIPs; no development files; version 0.1.15-dev and schema 6",
+    "application_tested_zip_sha256": "3977793d3913e79d25fba4506d34678bf73821450c08466133d9a62e73762e23",
+    "final_packaging_only_changes": ["readme.txt release notes", "assets/icons/LICENSE-lucide.txt attribution inventory"],
+    "application_bytes_unchanged": true,
+    "supplied_png_sha256": "1c53db681551b02161927461483fb472484f1d31d42fdd09e76a5133e5af236b"
+  },
+  "preliminary_test_issues": [
+    "Upgrade assertion still expected 0.1.14-dev; updated to the new target before acceptance.",
+    "An unbounded Firefox audit-navigation wait and a WordPress folded-menu test exposed a simulated-clock leak across browser pages. Notification timing is now isolated in a separate browser context, navigation waits are explicit/bounded and the real initial menu state is respected. Final complete runs passed.",
+    "The narrow French repair helper initially reused an identical fragment URL after server fixture mutation, leaving stale metadata on screen; explicit reload fixed the helper. Both final locale suites passed."
+  ],
+  "limitations": ["No target-host deployment or migration performed", "No PHP 8.3/8.4 or MySQL 8.0 result claimed locally; GitHub matrix pending", "No complete human screen-reader or hosting security acceptance claimed", "Development prerelease only"],
+  "authorization": "Owner explicitly authorized development and conditional GitHub push/tag/release after passing tests on 2026-11-14"
+}

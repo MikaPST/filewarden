@@ -2,6 +2,12 @@
 
 FileWarden is pre-alpha and must not be deployed for confidential documents.
 
+## Explicit legacy database-engine repair (0.1.15-dev)
+
+New tables explicitly require InnoDB. Existing MyISAM tables are never silently converted during an update: a settings-capability check, admin nonce and explicit backup/maintenance confirmation protect the repair action. A reentrant connection-level write gate drains plugin mutations and audit writers. Bounded content and schema/index/collation/next-ID fingerprints verify the exact three allowlisted tables; no document bytes, policies or identities are rewritten.
+
+ALTER TABLE commits implicitly, so a multi-table conversion has no global rollback guarantee. A durable checkpoint blocks further plugin writes on an incomplete repair; retry compares original fingerprints before resuming. Reactivation with an existing schema-6 checkpoint preserves access to the repair screen without schema writes. External database writers must be paused separately. Unknown engines, missing metadata/tables or any integrity mismatch fail closed. The operator must hold a complete database/key/storage backup; FileWarden does not claim to have created or verified that backup. See the [repair procedure and validation scope](lot-v0.1.15-dev.md).
+
 ## Design commitments
 
 - Deny by default, fail closed on insecure storage.

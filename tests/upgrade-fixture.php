@@ -22,10 +22,13 @@ if ( 'before' === getenv( 'FILEWARDEN_UPGRADE_STAGE' ) ) {
     global $wpdb;
     $audit = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}filewarden_audit_logs ORDER BY id",ARRAY_A);
     file_put_contents( $upgrade_file, wp_json_encode( array( 'document' => $repo->document( $uuid ), 'folder' => $repo->folder( $folder ), 'bytes_sha256' => hash( 'sha256', $bytes ), 'settings'=>$settings, 'audit'=>$audit ) ) );
+    if('MyISAM'===getenv('FILEWARDEN_PREVIOUS_ENGINE')){
+        foreach(array('documents','folders','audit_logs')as$kind){if(false===$wpdb->query($wpdb->prepare('ALTER TABLE %i ENGINE=MyISAM',$wpdb->prefix.'filewarden_'.$kind)))throw new RuntimeException('Previous-release MyISAM fixture failed.');}
+    }
     WP_CLI::success( 'Previous release ZIP activated and persistent upgrade fixture saved.' );
 } else {
     $before = json_decode( file_get_contents( $upgrade_file ), true );
-    if ( '6' !== get_option( 'filewarden_schema' ) || '0.1.14-dev' !== FILEWARDEN_VERSION ) { throw new RuntimeException( 'ZIP update did not install the corrective version and schema 6.' ); }
+    if ( '6' !== get_option( 'filewarden_schema' ) || '0.1.15-dev' !== FILEWARDEN_VERSION ) { throw new RuntimeException( 'ZIP update did not install 0.1.15-dev and schema 6.' ); }
     if (20 !== FileWarden\Notice::duration()) { throw new RuntimeException('ZIP update did not preserve the notification preference.'); }
     // Numeric options become strings when read back in a fresh WordPress process.
     foreach($before['settings'] as $key=>$value) { if((string)get_option($key)!==(string)$value) throw new RuntimeException('ZIP upgrade reset an existing setting: '.$key); }
@@ -42,6 +45,14 @@ if ( 'before' === getenv( 'FILEWARDEN_UPGRADE_STAGE' ) ) {
     if ( $hash !== $before['bytes_sha256'] ) { throw new RuntimeException( 'ZIP upgrade damaged document bytes.' ); }
     FileWarden\Installer::migrate();
     if ( $repo->document( $after['uuid'] ) !== $after ) { throw new RuntimeException( 'Repeated upgrade changed data.' ); }
+    if('MyISAM'===getenv('FILEWARDEN_PREVIOUS_ENGINE')){
+        if('incompatible'!==FileWarden\DatabaseUpgrade::status()['state'])throw new RuntimeException('ZIP update silently converted the legacy MyISAM tables.');
+        FileWarden\DatabaseUpgrade::repair(true);
+        if('ready'!==FileWarden\DatabaseUpgrade::status()['state']||$repo->document($after['uuid'])!==$after)throw new RuntimeException('Explicit post-upgrade repair lost document metadata.');
+        $stream=$storage->open($after['storage_key'],(int)$after['size']);$converted_hash=hash('sha256',stream_get_contents($stream));fclose($stream);
+        if($converted_hash!==$before['bytes_sha256'])throw new RuntimeException('Post-upgrade MyISAM repair changed document bytes.');
+        WP_CLI::success('Actual old-release MyISAM ZIP upgrade preserved engines until explicit repair, then verified InnoDB and preserved existing bytes and references.');
+    }
     ob_start();
     (new FileWarden\AdminWorkspace($service,new FileWarden\AdminController($service)))->render();
     $empty_workspace = ob_get_clean();

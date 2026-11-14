@@ -1080,3 +1080,84 @@ msgstr "Le dossier a été supprimé. Ses documents restent disponibles dans Doc
 
 msgid "Folder not deleted"
 msgstr "Dossier non supprimé"
+
+msgid "Details"
+msgstr "Détails"
+
+msgid "Configuration and access"
+msgstr "Configuration et accès"
+
+msgid "Completed"
+msgstr "Effectué"
+
+msgid "Trash and deletion requests"
+msgstr "Corbeille et demandes de suppression"
+
+msgid "Deleted"
+msgstr "Supprimé"
+
+msgid "Error or refusal"
+msgstr "Erreur ou refus"
+
+msgid "Other event"
+msgstr "Autre événement"
+
+msgid "Database attention required. Review Storage and security; folder deletion remains blocked until transactional tables are verified."
+msgstr "La base de données nécessite une intervention. Consultez Stockage et sécurité ; la suppression de dossier reste bloquée tant que les tables transactionnelles ne sont pas vérifiées."
+
+msgid "The three FileWarden tables use InnoDB. Their records and indexes were verified. Folder deletion can now be retried."
+msgstr "Les trois tables FileWarden utilisent InnoDB. Leurs données et index ont été vérifiés. Vous pouvez réessayer la suppression du dossier."
+
+msgid "Database verified"
+msgstr "Base de données vérifiée"
+
+msgid "Database repair could not be confirmed. No table was reset. A partial conversion may have occurred; review the database and retry the repair after checking your backup."
+msgstr "La réparation de la base n’a pas pu être confirmée. Aucune table n’a été réinitialisée. Une conversion partielle peut avoir eu lieu ; contrôlez la base et réessayez la réparation après vérification de votre sauvegarde."
+
+msgid "Database repair incomplete"
+msgstr "Réparation de la base incomplète"
+
+msgid "Transactional database tables"
+msgstr "Tables de base de données transactionnelles"
+
+msgid "The three FileWarden tables use InnoDB."
+msgstr "Les trois tables FileWarden utilisent InnoDB."
+
+msgid "Existing MyISAM tables prevent safe folder deletion. Convert the three FileWarden tables to InnoDB after backing up."
+msgstr "Les tables MyISAM existantes empêchent la suppression sécurisée des dossiers. Convertissez les trois tables FileWarden en InnoDB après sauvegarde."
+
+msgid "A FileWarden table is missing or its engine is unreadable. Ask your host to verify the installation before repairing."
+msgstr "Une table FileWarden est absente ou son moteur est illisible. Demandez à votre hébergeur de vérifier l’installation avant réparation."
+
+msgid "Table metadata could not be read. Ask your host to check database permissions. No engine change can be offered safely."
+msgstr "Les métadonnées des tables sont illisibles. Demandez à votre hébergeur de vérifier les permissions de la base. Aucun changement de moteur ne peut être proposé en sécurité."
+
+msgid "An unsupported database engine was found. Ask your host to review it; automatic conversion is unavailable."
+msgstr "Un moteur de base de données non pris en charge a été détecté. Demandez à votre hébergeur de le vérifier ; la conversion automatique est indisponible."
+
+msgid "A repair checkpoint remains. FileWarden writes are paused until the integrity check and repair succeed. Do not delete this checkpoint or reset the tables."
+msgstr "Un point de reprise de réparation subsiste. Les écritures FileWarden sont suspendues jusqu’à la réussite du contrôle d’intégrité et de la réparation. Ne supprimez pas ce point de reprise et ne réinitialisez pas les tables."
+
+msgid "Back up the complete database, encryption key and document storage first. Pause external writers and allow time and free disk space for the conversion. ALTER TABLE commits each table separately; a failed repair may need to be resumed. Document files are not moved."
+msgstr "Sauvegardez d’abord la base complète, la clé de chiffrement et le stockage documentaire. Suspendez les écritures externes et prévoyez du temps et de l’espace disque pour la conversion. ALTER TABLE valide chaque table séparément ; une réparation échouée peut devoir être reprise. Les fichiers des documents ne sont pas déplacés."
+
+msgid "I have a complete backup and have paused external writes for this maintenance operation."
+msgstr "Je dispose d’une sauvegarde complète et j’ai suspendu les écritures externes pour cette maintenance."
+
+msgid "Verify and repair database tables"
+msgstr "Vérifier et réparer les tables de la base"
+
+msgid "FileWarden table metadata is unavailable. Review Storage and security. No folder was deleted."
+msgstr "Les métadonnées des tables FileWarden sont indisponibles. Consultez Stockage et sécurité. Aucun dossier n’a été supprimé."
+
+msgid "A FileWarden database table is missing. Review Storage and security. No folder was deleted."
+msgstr "Une table de base de données FileWarden est absente. Consultez Stockage et sécurité. Aucun dossier n’a été supprimé."
+
+msgid "Database repair is pending. FileWarden writes remain paused. Review Storage and security to resume verification."
+msgstr "Une réparation de la base est en attente. Les écritures FileWarden restent suspendues. Consultez Stockage et sécurité pour reprendre la vérification."
+
+msgid "Database repair requested"
+msgstr "Réparation de la base demandée"
+
+msgid "Database tables repaired and verified"
+msgstr "Tables de la base réparées et vérifiées"

@@ -32,7 +32,7 @@ module.exports=async({context,base,name})=>{
    const element=page.locator(selector);const url=await element.getAttribute(selector.endsWith('-css')?'href':'src');
    const response=await context.request.get(url);assert.equal(response.status(),200);
    const digest=crypto.createHash('sha256').update(await response.body()).digest('hex').slice(0,12);
-   assert.equal(new URL(url).searchParams.get('ver'),'0.1.14-dev-'+digest,'The loaded asset URL has no content digest');
+   assert.equal(new URL(url).searchParams.get('ver'),'0.1.15-dev-'+digest,'The loaded asset URL has no content digest');
   }
   const panel=page.locator('.fw-settings-layout>.fw-content');const before=await panel.boundingBox();
   await page.locator('[name=notification_seconds]').focus();
@@ -117,7 +117,7 @@ module.exports=async({context,base,name})=>{
   }
   await page.setViewportSize({width:1280,height:900});
   await page.screenshot({path:'build/screenshots/correction-long-name-'+name+'.png',fullPage:true});
-  for(const [mode,result]of [['unverified-engines','transaction'],['transaction-failure','recovery'],['recovery-failure','recovery']]){
+  for(const [mode,result]of [['unverified-engines','transaction_metadata'],['transaction-failure','recovery'],['recovery-failure','recovery']]){
    assert.equal(await remove(folder,mode),result);
    const error=page.locator('.fw-notice-error');assert.ok(await error.isVisible());assert.match(await error.locator('.fw-notice-title').textContent(),/Folder not deleted/);
    assert.equal(await error.locator('.fw-notice-track').isVisible(),false);

@@ -323,6 +323,8 @@ The approved corrective batch uses a nonmodal fixed notification layer at the up
 
 The Documents welcome uses an 80-pixel filled folder illustration in Navy/Slate with a turquoise tab; it is an interface icon, not a replacement logo. The guided tree keeps its existing hierarchy with slightly denser rows. Settings use the approved compact vertical rail: icon and label, Navy/white selection, and the category description immediately below the heading in the right-hand panel.
 
+For 0.1.15-dev, the owner supplied replacement artwork for this welcome folder. Only `assets/illustrations/folder-welcome.png` is retained and connected to the interface/runtime archive. The supplied SVG copy was removed on request because it embedded the identical PNG rather than vector paths. Preserve the PNG's original colors, proportions, alpha channel and 80-pixel display box. This illustration does not replace the official logo, which is separately displayed beside the top-left title block using the unchanged official asset.
+
 ### Naming conventions
 
 - Prefix FileWarden CSS variables with `--fw-`.
@@ -400,3 +402,11 @@ They must:
 ---
 
 **FileWarden — Your files. Your control.**
+
+### Approved administration refinements — 0.1.15-dev
+
+Use the original official 512px logo in the shared administration header (56px desktop, 44px mobile), preserving colors, transparency and proportions. The welcome illustration uses only the owner-provided PNG in assets/illustrations at 80px; it is not a logo. The WordPress menu uses the approved **outline folder-lock** functional icon with native WordPress menu-state colors, including folded mode. Do not substitute the discarded filled-folder experiments.
+
+Sources use local Lucide laptop-minimal/library-big icons at 20px with 10px spacing. Task navigation uses compact underlined tabs and no visible “Navigation FileWarden” heading. The health summary keeps existing storage-state colors, keyboard-operable details and essential warnings visible when collapsed.
+
+Only simplified audit records use scoped semantic tones: information #8CB9FF, configuration/access #5FC2BA, confirmed additions/restorations #80D5A3, trash/destructive requests #FFC078, permanent deletion and failure/refusal #FFAAA3, unknown #B0C2DC, on Midnight Navy. Pair tones with explicit category labels and distinct icons; a deletion is not an error and a request is not completion. These are functional UI colors, not new official brand colors. Purge controls use the existing Danger Red and white trash-2 icon. New Lucide source assets are pinned to upstream 0.468.0 and retain the bundled Lucide license.

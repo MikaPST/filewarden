@@ -57,6 +57,7 @@ jobs:
           - {version: '0.1.11-dev', schema: '4'}
           - {version: '0.1.12-dev', schema: '5'}
           - {version: '0.1.13-dev', schema: '6'}
+          - {version: '0.1.14-dev', schema: '6'}
     services:
       mysql:
         image: mysql:8.0
@@ -71,6 +72,7 @@ jobs:
       FILEWARDEN_UPGRADE_FIXTURE: /tmp/filewarden-upgrade.json
       FILEWARDEN_PREVIOUS_VERSION: ${{ matrix.previous.version }}
       FILEWARDEN_PREVIOUS_SCHEMA: ${{ matrix.previous.schema }}
+      FILEWARDEN_PREVIOUS_ENGINE: ${{ matrix.previous.version == '0.1.14-dev' && 'MyISAM' || 'InnoDB' }}
     steps:
       - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2
@@ -126,7 +128,7 @@ jobs:
           NODE_PATH=/tmp/fw-browser/node_modules node tests/french-browser.cjs
       - name: Preserve the exact ZIP installed and tested
         uses: actions/upload-artifact@v4
-        if: success() && matrix.wordpress == '6.8' && matrix.previous.version == '0.1.13-dev'
+        if: success() && matrix.wordpress == '6.8' && matrix.previous.version == '0.1.14-dev'
         with:
           name: filewarden-tested-candidate
           path: build/filewarden-*.zip

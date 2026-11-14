@@ -41,7 +41,8 @@ final class AdminController {
 	 * @return mixed Operation result.
 	 */
 	public function menu() {
-		add_menu_page( 'FileWarden', 'FileWarden', 'filewarden_manage_settings', 'filewarden', array( $this, 'page' ), 'dashicons-media-document' );
+		add_menu_page( 'FileWarden', 'FileWarden', 'filewarden_manage_settings', 'filewarden', array( $this, 'page' ), 'none' );
+		add_action( 'admin_head', array( AdminBrand::class, 'menu_style' ) );
 		add_submenu_page( 'filewarden', __( 'Documents', 'filewarden' ), __( 'Documents', 'filewarden' ), 'filewarden_manage_settings', 'filewarden', array( $this, 'page' ) );
 		add_submenu_page( 'filewarden', __( 'Publication', 'filewarden' ), __( 'Publication', 'filewarden' ), 'filewarden_manage_settings', 'filewarden-publication', array( $this, 'publish_page' ) );
 		add_submenu_page( 'filewarden', __( 'Settings', 'filewarden' ), __( 'Settings', 'filewarden' ), 'filewarden_manage_settings', 'filewarden-settings', array( $this, 'settings_page' ) );
@@ -182,7 +183,10 @@ final class AdminController {
 				}
 				$operation = $source;
 			}
-			if ( 'settings' === $operation ) {
+			if ( 'database_repair' === $operation ) {
+				$page = 'filewarden-settings';
+				DatabaseUpgrade::repair( isset( $_POST['backup_confirmed'] ) && '1' === $_POST['backup_confirmed'] );
+			} elseif ( 'settings' === $operation ) {
 				$page = 'filewarden-settings';
 				SettingsConsole::save( $_POST, $this->service->audit );
 			} else {
@@ -241,7 +245,7 @@ final class AdminController {
 					throw new \InvalidArgumentException( 'Invalid operation.' );
 				}
 			}
-			$result = in_array( $operation, array( 'folder_policy', 'document_policy' ), true ) ? 'policy_saved' : 'success';
+			$result = 'database_repair' === $operation ? 'database_repaired' : ( in_array( $operation, array( 'folder_policy', 'document_policy' ), true ) ? 'policy_saved' : 'success' );
 		} catch ( \UnexpectedValueException $error ) {
 			$result = 'duplicate';
 		} catch ( \DomainException $error ) {
@@ -261,6 +265,9 @@ final class AdminController {
 			};
 		} catch ( \RuntimeException $error ) {
 			$result = match ( $error->getMessage() ) {
+				'Table metadata unavailable.' => 'transaction_metadata',
+				'Plugin table missing.' => 'transaction_missing',
+				'Database repair pending.' => 'database_pending',
 				'Transactional storage required.' => 'transaction',
 				'Recovery transaction unavailable.', 'Recovery read failed.', 'Recovery write failed.', 'Folder deletion failed.', 'Recovery commit failed.', 'Recovery rules invalid.' => 'recovery',
 				'Upload failed at storage.' => 'storage',
@@ -272,6 +279,8 @@ final class AdminController {
 		} catch ( \Throwable $error ) {
 			$result = 'failed';
 		}
+		if ( 'database_repair' === $operation && 'database_repaired' !== $result ) {
+			$result = 'database_failed'; }
 		wp_safe_redirect(
 			add_query_arg(
 				array(
@@ -298,7 +307,7 @@ final class AdminController {
 	 * @return mixed Operation result.
 	 */
 	public function form_start( $operation, $multipart = false ) {
-		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '"' . ( $multipart ? ' enctype="multipart/form-data" data-filewarden-upload="true"' : '' ) . '>';
+		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '"' . ( 'database_repair' === $operation ? ' id="fw-database-repair"' : '' ) . ( $multipart ? ' enctype="multipart/form-data" data-filewarden-upload="true"' : '' ) . '>';
 		echo '<input type="hidden" name="action" value="filewarden_admin"><input type="hidden" name="operation" value="' . esc_attr( $operation ) . '">';
 		wp_nonce_field( 'filewarden_admin' );
 	}
@@ -393,9 +402,9 @@ final class AdminController {
 		$title = current_user_can( 'upload_files' ) && $id && 'attachment' === get_post_type( $id ) && current_user_can( 'edit_post', $id ) ? get_the_title( $id ) : '';
 		$this->form_start( 'add_document', true );
 		echo '<fieldset class="filewarden-sources"><legend>' . esc_html__( 'Choose a source', 'filewarden' ) . '</legend>';
-		echo '<label><input type="radio" name="source" value="upload"' . checked( ! $title, true, false ) . '> ' . esc_html__( 'From my computer', 'filewarden' ) . '</label>';
+		echo '<label><input type="radio" name="source" value="upload"' . checked( ! $title, true, false ) . '><span class="fw-action-icon fw-icon-laptop-minimal" aria-hidden="true"></span>' . esc_html__( 'From my computer', 'filewarden' ) . '</label>';
 		if ( current_user_can( 'upload_files' ) ) {
-			echo '<label><input type="radio" name="source" value="import"' . checked( (bool) $title, true, false ) . '> ' . esc_html__( 'From the Media Library', 'filewarden' ) . '</label>';
+			echo '<label><input type="radio" name="source" value="import"' . checked( (bool) $title, true, false ) . '><span class="fw-action-icon fw-icon-library-big" aria-hidden="true"></span>' . esc_html__( 'From the Media Library', 'filewarden' ) . '</label>';
 		}
 		echo '</fieldset><fieldset data-filewarden-source="upload" class="fw-dropzone"><legend>' . esc_html__( 'Drop your documents here or select files', 'filewarden' ) . '</legend>';
 		echo '<p class="description">' . esc_html__( 'Accepted formats: PDF, JPEG, PNG, TXT, CSV, ZIP, DOCX, XLSX, PPTX, ODT, ODS and ODP. ZIPs are kept without extraction; macros and active content are refused.', 'filewarden' ) . '</p>';

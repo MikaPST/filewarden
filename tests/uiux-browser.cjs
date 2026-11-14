@@ -8,7 +8,7 @@ module.exports = async ({page,base,fixture,name}) => {
     assert.equal(await page.locator('.fw-folder-welcome h2').textContent(),'Open a folder');
     assert.equal(await page.locator('.fw-folder-welcome p').textContent(),'Select a folder in the sidebar to view its documents or create a new folder.');
     assert.equal(await page.locator('.fw-welcome-icon').evaluate(el=>getComputedStyle(el).width),'80px');
-    assert.match(await page.locator('.fw-welcome-icon').evaluate(el=>getComputedStyle(el).backgroundImage),/folder-welcome\.svg/);
+    assert.match(await page.locator('.fw-welcome-icon').evaluate(el=>getComputedStyle(el).backgroundImage),/folder-welcome\.png/);
     assert.equal(await page.locator('.fw-tree-create').evaluate(el=>getComputedStyle(el).gap),'10px');
     assert.equal(await page.locator('.fw-tree-folder').filter({hasText:'Public fixtures'}).evaluate(el=>el.getBoundingClientRect().height),40,'The compact single-line folder row did not retain its approved minimum target');
     // Select by exact URL parameter to avoid confusing a parent ID with an unrelated longer ID.

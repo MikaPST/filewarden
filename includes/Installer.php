@@ -24,7 +24,9 @@ final class Installer {
 		if ( is_multisite() || $network_wide ) {
 			wp_die( esc_html__( 'FileWarden currently supports single-site WordPress only.', 'filewarden' ) );
 		}
-		self::migrate();
+		// An interrupted engine repair must remain accessible after reactivation, without schema writes.
+		if ( self::SCHEMA !== get_option( 'filewarden_schema' ) || ! get_option( DatabaseUpgrade::CHECKPOINT ) ) {
+			self::migrate(); }
 		$role = get_role( 'administrator' );
 		if ( $role ) {
 			foreach ( self::CAPABILITIES as $capability ) {
@@ -59,7 +61,7 @@ final class Installer {
 			PRIMARY KEY  (id),
 			UNIQUE KEY uuid (uuid),
 			KEY parent_id (parent_id)
-			) $charset;",
+			) ENGINE=InnoDB $charset;",
 				"CREATE TABLE {$prefix}documents (
 			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			uuid char(36) NOT NULL,
@@ -81,7 +83,7 @@ final class Installer {
 			UNIQUE KEY storage_key (storage_key),
 			KEY folder_id (folder_id),
             KEY trashed_at (trashed_at)
-			) $charset;",
+			) ENGINE=InnoDB $charset;",
 				"CREATE TABLE {$prefix}audit_logs (
 			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			actor_id bigint(20) unsigned NOT NULL DEFAULT 0,
@@ -95,7 +97,7 @@ final class Installer {
 			created_at datetime NOT NULL,
 			PRIMARY KEY  (id),
 			KEY created_at (created_at)
-			) $charset;",
+			) ENGINE=InnoDB $charset;",
 			);
 			foreach ( $sql as $statement ) {
 				dbDelta( $statement );

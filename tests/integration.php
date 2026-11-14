@@ -204,4 +204,5 @@ require __DIR__ . '/navigation-integration.php';
 require __DIR__ . '/ten-evolutions-integration.php';
 require __DIR__ . '/notification-integration.php';
 require __DIR__ . '/corrections-integration.php';
+require __DIR__ . '/v15-integration.php';
 WP_CLI::success( 'Integration assertions passed.' );

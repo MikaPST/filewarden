@@ -1,5 +1,9 @@
 # Permissions proposal
 
+## Legacy database repair (0.1.15-dev)
+
+The explicit engine-repair transport requires `filewarden_manage_settings`, the existing admin nonce and an explicit backup/maintenance confirmation; the repair service independently checks the settings capability. It targets only the three current-prefix FileWarden tables. Global document read never grants this operation. Missing SQL ALTER permissions or unverifiable metadata do not bypass transaction safety. An incomplete repair checkpoint blocks plugin mutations, including audit writes, until a verified retry; external SQL writers must be paused separately. No user or role is granted a new capability by this release.
+
 - Public, authenticated and selected WordPress roles are content access predicates.
 - Effective content ACL is the intersection of document and every ancestor folder policy.
 - Administrator read override is an explicit capability (`filewarden_read_all_files`) assigned to administrators by default.

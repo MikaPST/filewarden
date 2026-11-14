@@ -3,6 +3,14 @@
 if ( ! defined('ABSPATH') || '1' !== getenv('FILEWARDEN_TESTING') ) { return; }
 add_action('init',static function(){
     if(!in_array($_SERVER['REMOTE_ADDR']??'',array('127.0.0.1','::1'),true)||!current_user_can('filewarden_manage_settings')){return;}
+    if('POST'===($_SERVER['REQUEST_METHOD']??'')&&'fw_v15_database_fixture'===($_POST['action']??'')){
+        check_admin_referer('filewarden_admin');
+        global $wpdb;
+        foreach(array('documents','folders','audit_logs')as$kind){
+            if(false===$wpdb->query($wpdb->prepare('ALTER TABLE %i ENGINE=MyISAM',$wpdb->prefix.'filewarden_'.$kind)))wp_send_json_error(null,500);
+        }
+        wp_send_json_success();
+    }
     if('1'===($_GET['fw_settings_fixture']??'')){
         add_filter('filewarden_settings_sections',static function($sections){$sections['acceptance-extra']=array('label'=>'Extra fixture category','description'=>'Registry acceptance description','icon'=>'files');return $sections;});
     }

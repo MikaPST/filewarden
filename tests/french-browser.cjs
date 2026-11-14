@@ -47,6 +47,7 @@ const base = process.env.FILEWARDEN_URL || 'http://127.0.0.1:8080';
             assert.match(await page.locator('.fw-terminal').textContent(), /Action système/);
             await page.goto(base + '/wp-admin/admin.php?page=filewarden-audit&event=audit_legacy_unknown');
             assert.match(await page.locator('.fw-terminal').textContent(), /Acteur historique non renseigné/);
+            await require('./v15-french-browser.cjs')({context,base,name});
             console.log(name + ': French installed UI, counter, queue, trash, settings and audit passed');
         } finally { await browser.close(); }
     }
