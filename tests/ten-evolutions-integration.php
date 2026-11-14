@@ -110,6 +110,7 @@ fw_assert( 'system' === $system_rows[0]['actor_type'] && 0 === (int) $system_row
 $legacy = $system_rows[0]; $legacy['actor_type'] = '';
 fw_assert( 'unknown' === $export->invoke(null,$legacy)['actor_type'], 'Legacy actor zero was invented as visitor or system.' );
 fw_assert( 'unknown' === $export->invoke(null,$legacy)['outcome'], 'Unknown legacy event was invented as successful.' );
+$wpdb->insert($wpdb->prefix.'filewarden_audit_logs',array('actor_id'=>0,'actor_login'=>'','event'=>'audit_legacy_unknown','object_id'=>0,'created_at'=>current_time('mysql',true)),array('%d','%s','%s','%d','%s'));
 
 // Failure beyond the first export batch must not produce a successful partial download.
 $export_reads = 0;

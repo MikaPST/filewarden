@@ -26,7 +26,8 @@ if ( 'before' === getenv( 'FILEWARDEN_UPGRADE_STAGE' ) ) {
 } else {
     $before = json_decode( file_get_contents( $upgrade_file ), true );
     if ( '6' !== get_option( 'filewarden_schema' ) || '0.1.12-dev.1' !== FILEWARDEN_VERSION ) { throw new RuntimeException( 'ZIP update did not install the corrective version and schema 6.' ); }
-    foreach($before['settings'] as $key=>$value) { if(get_option($key)!==$value) throw new RuntimeException('ZIP upgrade reset an existing setting.'); }
+    // Numeric options become strings when read back in a fresh WordPress process.
+    foreach($before['settings'] as $key=>$value) { if((string)get_option($key)!==(string)$value) throw new RuntimeException('ZIP upgrade reset an existing setting: '.$key); }
     global $wpdb;
     foreach($before['audit'] as $row) {
         $saved = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->prefix}filewarden_audit_logs WHERE id = %d",$row['id']),ARRAY_A);

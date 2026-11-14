@@ -19,4 +19,4 @@ Use single-site preproduction WordPress. Managed storage requires Sodium and ver
 == Changelog ==
 
 = Unreleased =
-First development foundation; not a stable release.
+0.1.12-dev.1 corrective candidate for the ten original evolutions: recovery count, reviewed classification, updated document uploads, global trash, accessible notifications, publication modes, categorized settings and versioned audit exports. Not a stable release.

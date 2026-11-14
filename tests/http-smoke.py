@@ -218,6 +218,9 @@ for fmt in ('csv', 'txt', 'jsonl'):
         records = [json.loads(line) for line in body.decode().splitlines() if line]
         assert records and all({'id', 'created_at_UTC', 'event', 'actor_id', 'actor_login', 'object_id_or_count'} <= record.keys() for record in records)
         assert any(record['actor_login'] == 'fw_admin' for record in records)
+        assert any(record['actor_id'] == 0 and record['actor_type'] == 'visitor' for record in records), 'Real anonymous actions were not identified as visitors'
+        assert any(record['actor_id'] == 0 and record['actor_type'] == 'system' for record in records), 'System actions were confused with visitors'
+        assert any(record['event'] == 'audit_legacy_unknown' and record['actor_type'] == 'unknown' and record['outcome'] == 'unknown' for record in records), 'Legacy missing information was invented'
     else:
         assert b'created_at_UTC' in body and b'fw_admin' in body
     assert request(editor, url)[0] != 200

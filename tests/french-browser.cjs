@@ -37,6 +37,10 @@ const base = process.env.FILEWARDEN_URL || 'http://127.0.0.1:8080';
             assert.ok(await page.locator('.fw-log-resource').first().isVisible());
             assert.match(await page.locator('.fw-log-simple details summary').first().textContent(), /Afficher les détails techniques/);
             await page.screenshot({ path: 'build/screenshots/audit-fr-' + name + '.png', fullPage: true });
+            await page.goto(base + '/wp-admin/admin.php?page=filewarden-audit&event=audit_system_fixture');
+            assert.match(await page.locator('.fw-terminal').textContent(), /Action système/);
+            await page.goto(base + '/wp-admin/admin.php?page=filewarden-audit&event=audit_legacy_unknown');
+            assert.match(await page.locator('.fw-terminal').textContent(), /Acteur historique non renseigné/);
             console.log(name + ': French installed UI, counter, queue, trash, settings and audit passed');
         } finally { await browser.close(); }
     }
