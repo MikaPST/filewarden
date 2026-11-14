@@ -27,6 +27,8 @@ The chosen limits deliberately reject some otherwise readable Office/ZIP files, 
 
 Manual trash disposal binds confirmation to the exact authorized selection and current policies. It verifies storage before marking records for deletion. An interrupted disposal leaves non-readable tombstones for the existing idempotent cleanup job. Database and document-storage backups remain a separate operator responsibility.
 
+Archive validation also requires a ZIP signature and an allowlisted detected MIME, so executable/self-extracting prefixes are refused. Audit downloads are fully generated in a verified private anonymous temporary stream before successful attachment headers are emitted. Any query/encoding failure closes and removes partial output. A response length detects interrupted transfers; an audit export never becomes a public temporary download URL.
+
 ## Browser viewer
 
 The 0.1.6 viewer uses locally bundled PDF.js 6.5.438 with evaluation disabled, XFA disabled, no scripting/annotation layer and canvas-rendered fonts. Each PDF/image request is independently authorized. Raw PDFs retain attachment disposition and a sandbox CSP; the trusted HTML viewer has a separate self-only CSP permitting its module, worker and WASM decoders. No document is transmitted to a remote viewer. Authorized users can save the bytes; this is not DRM. Maintain the pinned PDF.js distribution and its license notices with upstream security updates.
