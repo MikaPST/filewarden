@@ -65,7 +65,7 @@ module.exports = async ({ page, context, base, fixture, name }) => {
     await page.locator('#fw-file').setInputFiles({ name: 'unsafe-' + name + '.zip', mimeType: 'application/zip', buffer: Buffer.from(fixture.unsafe_zip_base64, 'base64') });
     await page.locator('[name=filewarden_save]').click();
     await page.waitForURL(/result=unsafe_file/);
-    assert.ok((await page.locator('.notice-error').textContent()).includes('Scripts, macros'));
+    assert.ok((await page.locator('.fw-notice-error').textContent()).includes('Scripts, macros'));
     // Drop two files into the real drop target; a rejected member does not prevent a valid upload.
     await page.locator('.fw-dropzone').evaluate((zone, files) => {
         const transfer = new DataTransfer();

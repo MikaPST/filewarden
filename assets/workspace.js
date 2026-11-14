@@ -9,6 +9,7 @@
             event.preventDefault();
             if (button.getAttribute('aria-busy') === 'true') return;
             if (exportStatus) exportStatus.textContent = button.dataset.exportMessage || '';
+            const notification = globalThis.FileWardenNotices?.show({ type: 'info', title: button.dataset.exportTitle, message: button.dataset.exportMessage, persistent: true });
             button.setAttribute('aria-busy', 'true');
             button.setAttribute('aria-disabled', 'true');
             try {
@@ -26,8 +27,10 @@
                 link.remove();
                 setTimeout(() => URL.revokeObjectURL(url), 30000);
                 if (exportStatus) exportStatus.textContent = button.dataset.exportSuccess || '';
+                globalThis.FileWardenNotices?.update(notification, { type: 'success', title: button.dataset.exportTitle, message: button.dataset.exportSuccess });
             } catch {
                 if (exportStatus) exportStatus.textContent = button.dataset.exportError || '';
+                globalThis.FileWardenNotices?.update(notification, { type: 'error', title: button.dataset.exportTitle, message: button.dataset.exportError });
             } finally {
                 button.removeAttribute('aria-busy');
                 button.removeAttribute('aria-disabled');

@@ -37,7 +37,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (form.querySelector('input[name=source]:checked')?.value !== 'upload' || items.length < 2) return;
             event.preventDefault(); event.stopImmediatePropagation();
             if (busy) return;
-            if (items.some(item => item.state === 'invalid')) { list.focus(); return; }
+            if (items.some(item => item.state === 'invalid')) {
+                globalThis.FileWardenNotices?.show({ type: 'warning', message: messages.invalid });
+                list.focus(); return;
+            }
             const fields = [...new FormData(form).entries()].filter(([key]) => key !== 'file');
             const controls = [...form.querySelectorAll('input, select, button')];
             const previous = controls.map(control => control.disabled);
@@ -56,10 +59,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (url.searchParams.get('result') !== 'success') {
                             const html = new DOMParser().parseFromString(await response.text(), 'text/html');
                             item.state = 'failed';
-                            item.output.textContent = html.querySelector('.fw-workspace .notice-error p')?.textContent || messages.failed;
+                            item.output.textContent = html.querySelector('.fw-workspace .fw-notice p')?.textContent || messages.failed;
+                            globalThis.FileWardenNotices?.show({ type: 'error', title: messages.failedTitle, message: item.output.textContent });
                             continue;
                         }
                         item.state = 'saved'; item.output.textContent = messages.saved;
+                        globalThis.FileWardenNotices?.show({ type: 'success', title: messages.savedTitle, message: item.file.name + ' — ' + messages.saved });
                         // A confirmed save must not be retried if reading optional feedback fails.
                         const html = new DOMParser().parseFromString(await response.text().catch(() => ''), 'text/html');
                         const count = html.querySelector('.fw-recovery-count');
@@ -67,6 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (count && current) current.textContent = count.textContent;
                     } catch {
                         item.state = 'failed'; item.output.textContent = messages.failed;
+                        globalThis.FileWardenNotices?.show({ type: 'error', title: messages.failedTitle, message: messages.failed });
                     }
                 }
             } finally {

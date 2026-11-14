@@ -202,4 +202,6 @@ file_put_contents( getenv( 'FILEWARDEN_FIXTURES' ), wp_json_encode( $ids ) );
 require __DIR__ . '/lifecycle-integration.php';
 require __DIR__ . '/navigation-integration.php';
 require __DIR__ . '/ten-evolutions-integration.php';
+require __DIR__ . '/notification-integration.php';
+require __DIR__ . '/corrections-integration.php';
 WP_CLI::success( 'Integration assertions passed.' );

@@ -251,9 +251,26 @@ final class Repository {
 	 */
 	public static function require_transactions() {
 		global $wpdb;
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Verify engine capabilities before destructive transactions.
-		$engines = $wpdb->get_col( $wpdb->prepare( 'SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME IN (%s, %s, %s)', $wpdb->prefix . 'filewarden_documents', $wpdb->prefix . 'filewarden_folders', $wpdb->prefix . 'filewarden_audit_logs' ) );
-		if ( 3 !== count( $engines ) || array_filter( $engines, static fn( $engine ) => 'innodb' !== strtolower( $engine ) ) ) {
-			throw new \RuntimeException( 'Transactional storage required.' ); }
+		$tables   = array( $wpdb->prefix . 'filewarden_documents', $wpdb->prefix . 'filewarden_folders', $wpdb->prefix . 'filewarden_audit_logs' );
+		$previous = $wpdb->suppress_errors( true );
+		try {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Read engine capabilities, never assume rollback support.
+			$engines = $wpdb->get_col( $wpdb->prepare( 'SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME IN (%s, %s, %s)', $tables[0], $tables[1], $tables[2] ) );
+			if ( $wpdb->last_error || ! is_array( $engines ) || 3 !== count( $engines ) ) {
+				// Some hosts restrict information_schema while allowing table-level metadata.
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Exact plugin tables, not an unbounded metadata dump.
+				$rows    = $wpdb->get_results( $wpdb->prepare( 'SHOW TABLE STATUS WHERE Name IN (%s, %s, %s)', $tables[0], $tables[1], $tables[2] ), ARRAY_A );
+				$names   = is_array( $rows ) ? array_column( $rows, 'Name' ) : array();
+				$engines = is_array( $rows ) ? array_column( $rows, 'Engine' ) : array();
+				sort( $names );
+				sort( $tables );
+				if ( $wpdb->last_error || $names !== $tables ) {
+					throw new \RuntimeException( 'Transactional storage required.' ); }
+			}
+			if ( 3 !== count( $engines ) || array_filter( $engines, static fn( $engine ) => ! is_string( $engine ) || 'innodb' !== strtolower( $engine ) ) ) {
+				throw new \RuntimeException( 'Transactional storage required.' ); }
+		} finally {
+			$wpdb->suppress_errors( $previous );
+		}
 	}
 }

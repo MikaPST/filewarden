@@ -1,5 +1,15 @@
 # Validation
 
+## Corrective acceptance 0.1.14-dev — 2026-11-14
+
+The corrected ZIP (a89e68643c064308413464198285a4c71937d36c95b0c4ccf6efd1c94993961e, 279 runtime files) passed PHPUnit (75 tests / 130 assertions), eight JavaScript tests, syntax/PHPCS, Composer validation/audit and WordPress Sodium fallback locally. Fresh WordPress 6.8 and 7.1.4 installations on PHP 8.2.35/MariaDB 10.11.11 passed actual ZIP updates from 0.1.13-dev through the initial 0.1.14-dev candidate to the corrected same-version ZIP, integration/HTTP and Chromium/Firefox EN/FR. All runtime bytes match both final installations.
+
+The six corrections include actual floating visibility, native-dialog stacking, generic WP notice-hiding compatibility, contained long names, compact tree and welcome icon, extensible settings without lost inputs, and successful/refused transactional deletion with preserved recovery. New failure-injection fixtures are test-only and excluded from the ZIP. Hosting-specific deletion failure remains unconfirmed; no CI, PHP 8.3/8.4, MySQL 8.0 or complete human screen-reader acceptance is claimed for this local batch. See [matrix and limits](corrections-v0.1.14-dev.md) and [sanitized evidence](validation/v0.1.14-dev-corrections-local.txt). Initial candidate evidence remains separate and unchanged.
+
+## Lot 0.1.14-dev — réception locale du 14 novembre 2026
+
+Les trois améliorations UI/UX et leurs non-régressions ont été testées sur le ZIP local installé dans WordPress 6.8 et 7.1.4 jetables, PHP 8.2.35/MariaDB 10.11.11, Chromium/Firefox EN/FR. Mise à jour réelle depuis 0.1.13-dev sans perte ; 75 tests PHP/130 assertions et huit tests JavaScript réussis, syntaxe/PHPCS/Composer et secours Sodium vérifiés. [Matrice, archive, résultats et limites](lot-v0.1.14-dev.md), [sorties finales](validation/v0.1.14-dev-local.txt). Aucun push ni CI GitHub exécuté pour ce candidat à cette étape ; publication soumise à l’accord explicite du propriétaire.
+
 ## Lot 0.1.12-dev — 2026-11-13
 
 - [CI finale du code b6968e4](https://github.com/MikaPST/filewarden/actions/runs/43488511977) : tous les jobs réussis.

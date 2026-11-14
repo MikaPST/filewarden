@@ -56,6 +56,7 @@ jobs:
         previous:
           - {version: '0.1.11-dev', schema: '4'}
           - {version: '0.1.12-dev', schema: '5'}
+          - {version: '0.1.13-dev', schema: '6'}
     services:
       mysql:
         image: mysql:8.0
@@ -110,6 +111,8 @@ jobs:
       - name: Exercise browser HTTP routes
         shell: bash
         run: |
+          mkdir -p /tmp/fw-wordpress/wp-content/mu-plugins
+          cp tests/corrections-http-fixture.php /tmp/fw-wordpress/wp-content/mu-plugins/filewarden-test-corrections.php
           php -S 127.0.0.1:8080 -t /tmp/fw-wordpress > /tmp/fw-http.log 2>&1 &
           server_pid=$!
           trap 'kill "$server_pid"' EXIT
@@ -123,7 +126,7 @@ jobs:
           NODE_PATH=/tmp/fw-browser/node_modules node tests/french-browser.cjs
       - name: Preserve the exact ZIP installed and tested
         uses: actions/upload-artifact@v4
-        if: success() && matrix.wordpress == '6.8' && matrix.previous.version == '0.1.12-dev'
+        if: success() && matrix.wordpress == '6.8' && matrix.previous.version == '0.1.13-dev'
         with:
           name: filewarden-tested-candidate
           path: build/filewarden-*.zip

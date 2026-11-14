@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.1.14-dev — 2026-11-14 (local candidate, publication pending)
+
+- Add the essential Documents welcome and guided folder hierarchy with independently operable disclosure controls and a spaced secondary creation button.
+- Replace FileWarden feedback with reusable four-type cards, independent synchronized countdowns, combined reading pauses, persistent intervention messages and accessible overflow.
+- Add a validated General/Notifications duration preference (5/10/15/20/30 seconds, default 10), preserving other settings and upgrades.
+- Bind successful redirect feedback to actual server outcomes and the current WordPress user; surface late failures from overflow and retain a safe non-JavaScript fallback.
+- Isolate notifications from generic WordPress notice collectors and workspace clipping; float above the interface below the admin bar, including the native preview dialog. Identify admin asset contents in their URLs when replacing a ZIP with the same development version.
+- Contain long document and folder names, compact the guided hierarchy and replace the oversized welcome outline with an 80-pixel filled folder illustration.
+- Add a compact vertical settings rail with descriptions in the right-hand panel and an extensible category registry; retain local switching and unsaved form values.
+- Verify transaction support using exact table-level metadata when information_schema is unavailable; keep unverifiable/nontransactional engines fail-closed and show explicit folder deletion/recovery outcomes.
+- Expand installed-ZIP settings/security, timing, keyboard, responsive, EN/FR and upgrade coverage. Publication requires separate owner approval; see docs/lot-v0.1.14-dev.md for actual evidence.
+
 ## 0.1.13-dev — 2026-11-14
 
 - Publish the validated 0.1.12-dev.1 corrective candidate under a distinct development version, with all ten original evolutions.

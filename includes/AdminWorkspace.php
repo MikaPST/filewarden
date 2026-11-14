@@ -34,6 +34,12 @@ final class AdminWorkspace {
 	 */
 	private $tab = 'documents';
 
+	/** Authorized ancestors of the selected folder, for navigation cues only.
+	 *
+	 * @var array
+	 */
+	private $ancestors = array();
+
 	/**
 	 * Initialize the workspace.
 	 *
@@ -127,7 +133,13 @@ final class AdminWorkspace {
 				echo '</div>';
 				ob_end_flush();
 				return; }
-			$panel = $this->input( 'panel' );
+			$panel    = $this->input( 'panel' );
+			$ancestor = $this->folder;
+			for ( $depth = 0; $ancestor && $depth < 100 && ! isset( $this->ancestors[ $ancestor ] ); ++$depth ) {
+				$this->ancestors[ $ancestor ] = true;
+				$ancestor                     = (int) ( $this->service->repository->folder( $ancestor )['parent_id'] ?? 0 );
+			}
+			$overview = ! $this->folder && 'unfiled' !== $this->input( 'collection' ) && 'documents' === $this->tab;
 			echo '<div class="fw-layout' . ( $panel ? ' has-panel' : '' ) . '"><aside class="fw-tree"><h2>' . esc_html__( 'Folders', 'filewarden' ) . '</h2><a class="fw-root fw-unfiled" href="' . esc_url(
 				$this->url(
 					array(
@@ -140,17 +152,21 @@ final class AdminWorkspace {
 			if ( isset( $tabs['folder'] ) ) {
 				echo '<a class="fw-tree-create" href="' . esc_url( $this->url( array( 'tab' => 'folder' ) ) ) . '"><span class="fw-action-icon fw-icon-folder-plus" aria-hidden="true"></span>' . esc_html__( 'Create folder', 'filewarden' ) . '</a>';
 			}
-			echo '</aside><section class="fw-content"><div class="fw-folder-heading"><div><span class="fw-eyebrow">' . esc_html__( 'Current folder', 'filewarden' ) . '</span><h2>' . esc_html( $current['name'] ) . '</h2></div><div class="filewarden-access"><span class="filewarden-policy">' . esc_html( $this->folder ? AccessSummary::effective( $current, $this->service->repository )['label'] : __( 'Not published', 'filewarden' ) ) . '</span>';
-			if ( $this->folder && current_user_can( 'filewarden_manage_permissions' ) ) {
-				echo '<a class="button" href="' . esc_url( $this->url( array( 'panel' => 'folder_rights' ) ) ) . '"><span class="fw-action-icon fw-icon-shield-check" aria-hidden="true"></span>' . esc_html__( 'Edit access rules', 'filewarden' ) . '</a>';
+			echo '</aside><section class="fw-content">';
+			if ( ! $overview ) {
+				echo '<div class="fw-folder-heading"><div><span class="fw-eyebrow">' . esc_html__( 'Current folder', 'filewarden' ) . '</span><h2>' . esc_html( $current['name'] ) . '</h2></div><div class="filewarden-access"><span class="filewarden-policy">' . esc_html( $this->folder ? AccessSummary::effective( $current, $this->service->repository )['label'] : __( 'Not published', 'filewarden' ) ) . '</span>';
+				if ( $this->folder && current_user_can( 'filewarden_manage_permissions' ) ) {
+					echo '<a class="button" href="' . esc_url( $this->url( array( 'panel' => 'folder_rights' ) ) ) . '"><span class="fw-action-icon fw-icon-shield-check" aria-hidden="true"></span>' . esc_html__( 'Edit access rules', 'filewarden' ) . '</a>';
+				}
+				if ( $this->folder && $this->can_action( 'delete_folder' ) ) {
+					echo '<a class="button" href="' . esc_url( $this->url( array( 'panel' => 'delete_folder' ) ) ) . '"><span class="fw-action-icon fw-icon-trash-2" aria-hidden="true"></span>' . esc_html__( 'Delete folder', 'filewarden' ) . '</a>'; }
+				echo '</div></div>';
 			}
-			if ( $this->folder && $this->can_action( 'delete_folder' ) ) {
-				echo '<a class="button" href="' . esc_url( $this->url( array( 'panel' => 'delete_folder' ) ) ) . '"><span class="fw-action-icon fw-icon-trash-2" aria-hidden="true"></span>' . esc_html__( 'Delete folder', 'filewarden' ) . '</a>'; }
-			echo '</div></div>';
 			if ( 'documents' === $this->tab || 'trash' === $this->tab ) {
 				if ( ! $this->folder && 'unfiled' !== $this->input( 'collection' ) && 'documents' === $this->tab ) {
-					echo '<p>' . esc_html__( 'Choose a folder or create your first folder to add documents.', 'filewarden' ) . '</p><div class="fw-folder-cards">';
-					$this->tree( 0, array() );
+					echo '<div class="fw-folder-welcome"><span class="fw-welcome-icon" aria-hidden="true"></span><h2>' . esc_html( count( $this->service->folder_choices() ) > 1 ? __( 'Open a folder', 'filewarden' ) : __( 'Create your first folder', 'filewarden' ) ) . '</h2><p>' . esc_html__( 'Select a folder in the sidebar to view its documents or create a new folder.', 'filewarden' ) . '</p>';
+					if ( isset( $tabs['folder'] ) ) {
+						echo '<a class="button button-primary" href="' . esc_url( $this->url( array( 'tab' => 'folder' ) ) ) . '"><span class="fw-action-icon fw-icon-folder-plus" aria-hidden="true"></span>' . esc_html__( 'Create folder', 'filewarden' ) . '</a>'; }
 					echo '</div>';
 				} else {
 					$this->listing(); }
@@ -160,7 +176,7 @@ final class AdminWorkspace {
 					$this->service->storage->root();
 					$this->ui->document_form( $this->folder );
 				} catch ( \Throwable $error ) {
-					echo '<p class="fw-warning">' . esc_html__( 'Storage blocked. Check FileWarden settings before uploading.', 'filewarden' ) . '</p>';
+					Notice::show( __( 'Storage blocked. Check FileWarden settings before uploading.', 'filewarden' ), 'error', __( 'Storage unavailable', 'filewarden' ) );
 				}
 				echo '</section>';
 			} else {
@@ -180,7 +196,9 @@ final class AdminWorkspace {
 			ob_end_flush();
 		} catch ( \Throwable $error ) {
 			ob_end_clean();
-			echo '<div class="wrap fw-workspace"><h1>' . esc_html__( 'Documents', 'filewarden' ) . '</h1><div class="notice notice-error"><p>' . esc_html__( 'This folder or action is unavailable. Return to Documents and check your permissions.', 'filewarden' ) . '</p></div></div>';
+			echo '<div class="wrap fw-workspace"><h1>' . esc_html__( 'Documents', 'filewarden' ) . '</h1>';
+			Notice::show( __( 'This folder or action is unavailable. Return to Documents and check your permissions.', 'filewarden' ), 'error' );
+			echo '</div>';
 		}
 	}
 
@@ -213,6 +231,8 @@ final class AdminWorkspace {
 		);
 
 		$success = in_array( $result, array( 'success', 'policy_saved' ), true );
+		if ( $success && ! Notice::verified( $result ) ) {
+			return; }
 		$message = $success ? __( 'Operation completed.', 'filewarden' ) : __( 'Operation refused. Check your permissions, the destination, filename and storage settings.', 'filewarden' );
 		$message = $messages[ $result ] ?? $message;
 		if ( 'policy_saved' === $result ) {
@@ -222,19 +242,46 @@ final class AdminWorkspace {
 		} elseif ( 'review' === $result ) {
 			$message = __( 'The source or destination rules changed. Review the destination again before confirming.', 'filewarden' );
 		}
-		echo '<div role="status" class="notice ' . ( $success ? 'notice-success' : 'notice-error' ) . '"><p>' . esc_html( $message ) . '</p></div>';
+		$title = $success ? $this->success_title() : __( 'Operation unavailable', 'filewarden' );
+		if ( 'delete_folder' === $this->input( 'fw_operation' ) ) {
+			if ( $success ) {
+				$message = __( 'The folder was deleted. Its documents remain in Documents to classify with their existing access restrictions.', 'filewarden' );
+			} else {
+				$title = __( 'Folder not deleted', 'filewarden' );
+			}
+		}
 		$uuid = $this->input( 'created' );
 		if ( $success && wp_is_uuid( $uuid, 4 ) ) {
 			try {
 				$row    = $this->service->get( $uuid );
 				$labels = $this->service->folder_choices();
 				/* translators: 1: document name, 2: destination path. */
-				echo '<div class="notice notice-success"><p>' . esc_html( sprintf( __( 'File %1$s saved and verified in %2$s.', 'filewarden' ), $row['name'], $labels[ (int) $row['folder_id'] ] ?? '' ) ) . '</p></div>';
+				$message = sprintf( __( 'File %1$s saved and verified in %2$s.', 'filewarden' ), $row['name'], $labels[ (int) $row['folder_id'] ] ?? '' );
 			} catch ( \Throwable $error ) {
-				// Do not reveal a record whose authorization has changed.
-				return;
+				// Keep generic confirmed feedback without revealing a record whose authorization changed.
+				$message = __( 'Operation completed.', 'filewarden' );
 			}
 		}
+		Notice::show( $message, $success ? 'success' : ( in_array( $result, array( 'subfolders', 'duplicate', 'review', 'busy' ), true ) ? 'warning' : 'error' ), $title );
+	}
+
+	/** Short operation-specific headings for confirmed results.
+	 *
+	 * @return string Localized heading.
+	 */
+	private function success_title() {
+		return match ( $this->input( 'fw_operation' ) ) {
+			'folder' => __( 'Folder created', 'filewarden' ),
+			'upload', 'import' => __( 'Document added', 'filewarden' ),
+			'folder_policy', 'document_policy' => __( 'Access rules saved', 'filewarden' ),
+			'move' => __( 'Document moved', 'filewarden' ),
+			'copy' => __( 'Document copied', 'filewarden' ),
+			'trash' => __( 'Document moved to trash', 'filewarden' ),
+			'restore' => __( 'Document restored', 'filewarden' ),
+			'delete_folder' => __( 'Folder deleted', 'filewarden' ),
+			'purge_trash' => __( 'Trash deletion completed', 'filewarden' ),
+			default => __( 'Operation completed', 'filewarden' ),
+		};
 	}
 
 	/**
@@ -255,7 +302,9 @@ final class AdminWorkspace {
 				if ( ! $this->service->permissions->can_read( $row, wp_get_current_user() ) ) {
 					continue;
 				}
-				echo '<li><details open><summary><a href="' . esc_url( $this->url( array( 'folder_id' => (int) $row['id'] ) ) ) . '"' . ( $this->folder === (int) $row['id'] ? ' aria-current="location"' : '' ) . '><span class="fw-folder-icon" aria-hidden="true"></span> ' . esc_html( $row['name'] ) . '</a></summary>';
+				/* translators: %s: authorized folder name. */
+				$toggle_label = sprintf( __( 'Toggle subfolders: %s', 'filewarden' ), $row['name'] );
+				echo '<li class="fw-tree-node' . ( isset( $this->ancestors[ (int) $row['id'] ] ) ? ' fw-tree-ancestor' : '' ) . '"><a class="fw-tree-folder" href="' . esc_url( $this->url( array( 'folder_id' => (int) $row['id'] ) ) ) . '"' . ( $this->folder === (int) $row['id'] ? ' aria-current="location"' : '' ) . '><span class="fw-folder-icon" aria-hidden="true"></span><span>' . esc_html( $row['name'] ) . '</span></a><details open><summary aria-label="' . esc_attr( $toggle_label ) . '"></summary>';
 				$this->tree( (int) $row['id'], $seen );
 				echo '</details></li>';
 			}

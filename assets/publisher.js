@@ -17,7 +17,10 @@
     requestAnimationFrame(fitCode);
     let pending;
     let requested;
-    const failed = () => { clearTimeout(pending); status.textContent = status.dataset.failure; };
+    const failed = () => {
+        clearTimeout(pending); status.textContent = status.dataset.failure;
+        globalThis.FileWardenNotices?.show({ type: 'error', message: status.dataset.failure });
+    };
     const update = () => {
         const uuid = folder.selectedOptions[0].dataset.uuid;
         const view = form.querySelector('[name="view"]:checked').value;
@@ -67,13 +70,19 @@
         try {
             if (requested && frame.contentWindow.location.href !== requested) return;
             clearTimeout(pending);
-            status.textContent = frame.contentDocument?.querySelector('main') ? status.dataset.ready : status.dataset.failure;
+            if (frame.contentDocument?.querySelector('main')) status.textContent = status.dataset.ready;
+            else failed();
         }
         catch (_) { failed(); }
     });
     frame.addEventListener('error', failed);
     copy.addEventListener('click', async () => {
-        try { await navigator.clipboard.writeText(code.value); feedback.textContent = feedback.dataset.success; }
-        catch (_) { code.focus(); code.select(); feedback.textContent = feedback.dataset.failure; }
+        try {
+            await navigator.clipboard.writeText(code.value); feedback.textContent = feedback.dataset.success;
+            globalThis.FileWardenNotices?.show({ type: 'success', message: feedback.dataset.success });
+        } catch (_) {
+            code.focus(); code.select(); feedback.textContent = feedback.dataset.failure;
+            globalThis.FileWardenNotices?.show({ type: 'error', message: feedback.dataset.failure });
+        }
     });
 })();

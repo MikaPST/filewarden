@@ -972,3 +972,111 @@ msgstr "Afficher les détails techniques"
 
 msgid "Accepted formats: PDF, JPEG, PNG, TXT, CSV, ZIP, DOCX, XLSX, PPTX, ODT, ODS and ODP. ZIPs are kept without extraction; macros and active content are refused."
 msgstr "Formats acceptés : PDF, JPEG, PNG, TXT, CSV, ZIP, DOCX, XLSX, PPTX, ODT, ODS et ODP. Les ZIP sont conservés sans extraction ; les macros et contenus actifs sont refusés."
+
+msgid "Operation completed"
+msgstr "Opération terminée"
+
+msgid "Information"
+msgstr "Information"
+
+msgid "Attention required"
+msgstr "Attention requise"
+
+msgid "Operation unavailable"
+msgstr "Opération indisponible"
+
+msgid "FileWarden notifications"
+msgstr "Notifications FileWarden"
+
+msgid "Show other notifications"
+msgstr "Voir les autres notifications"
+
+msgid "Show three notifications"
+msgstr "Afficher trois notifications"
+
+msgid "Persistent notifications waiting"
+msgstr "Notifications persistantes en attente"
+
+msgid "Settings saved"
+msgstr "Réglages enregistrés"
+
+msgid "Settings not saved"
+msgstr "Réglages non enregistrés"
+
+msgid "Notifications"
+msgstr "Notifications"
+
+msgid "Automatic display duration"
+msgstr "Durée d’affichage automatique"
+
+msgid "%d seconds"
+msgstr "%d secondes"
+
+msgid "default"
+msgstr "par défaut"
+
+msgid "Set how long notifications remain visible before they disappear automatically."
+msgstr "Définissez la durée pendant laquelle les notifications restent visibles avant de disparaître automatiquement."
+
+msgid "Open a folder"
+msgstr "Ouvrez un dossier"
+
+msgid "Create your first folder"
+msgstr "Créez votre premier dossier"
+
+msgid "Select a folder in the sidebar to view its documents or create a new folder."
+msgstr "Sélectionnez un dossier dans le menu latéral pour consulter ses documents ou créer un nouveau dossier."
+
+msgid "Storage unavailable"
+msgstr "Stockage indisponible"
+
+msgid "Document not added"
+msgstr "Document non ajouté"
+
+msgid "Access rules saved"
+msgstr "Droits d’accès enregistrés"
+
+msgid "Folder deleted"
+msgstr "Dossier supprimé"
+
+msgid "Trash deletion completed"
+msgstr "Suppression définitive terminée"
+
+msgid "Toggle subfolders: %s"
+msgstr "Déplier ou replier les sous-dossiers : %s"
+
+msgid "Audit log purged"
+msgstr "Journal d’audit purgé"
+
+msgid "Audit unavailable"
+msgstr "Journal indisponible"
+
+msgid "FileWarden unavailable"
+msgstr "FileWarden indisponible"
+
+msgid "Audit export"
+msgstr "Export du journal d’audit"
+
+msgid "Preferences"
+msgstr "Préférences"
+
+msgid "Personalize how FileWarden behaves."
+msgstr "Personnalisez le comportement de FileWarden."
+
+msgid "Keep your documents separate from the plugin code."
+msgstr "Gardez vos documents séparés du code de l’extension."
+
+msgid "Set document upload limits."
+msgstr "Définissez les limites de téléversement des documents."
+
+msgid "Choose how long deleted documents remain in the trash."
+msgstr "Définissez la durée de conservation des documents supprimés dans la corbeille."
+
+msgid "Choose how long recorded events are retained."
+msgstr "Définissez la durée de conservation des événements enregistrés."
+
+msgid "The folder was deleted. Its documents remain in Documents to classify with their existing access restrictions."
+msgstr "Le dossier a été supprimé. Ses documents restent disponibles dans Documents à classer avec leurs restrictions d’accès existantes."
+
+msgid "Folder not deleted"
+msgstr "Dossier non supprimé"

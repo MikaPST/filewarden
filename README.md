@@ -21,13 +21,17 @@
 
 [Suivi court du projet et organisation des prochains lots](SUIVI.md)
 
-> **Status: 0.1.13-dev development preview. Not production-ready. Do not use confidential documents before deployment security validation.**
+> **Status: 0.1.14-dev development preview. Not production-ready. Do not use confidential documents before deployment security validation.**
 
 FileWarden is a free, open-source WordPress document-management plugin focused on private storage, inherited access control and modern publishing interfaces. Single-site only for the first version, confirmed by the owner.
 
+## Nouveautés 0.1.14-dev
+
+Ce lot ajoute l’accueil Documents épuré, la Hiérarchie guidée compacte et les notifications globales configurables en superposition (10 secondes par défaut). Il contient aussi le Rail compact des réglages, le retour à la ligne des noms longs et des retours de suppression explicites. Voir [le lot initial](docs/lot-v0.1.14-dev.md) et [les corrections et leur réception](docs/corrections-v0.1.14-dev.md).
+
 ## Télécharger et installer
 
-La version **0.1.13-dev** reprend le correctif validé 0.1.12-dev.1 des [dix évolutions originales](docs/specifications/evolutions-v0.1.12-dev.md). Téléchargez **filewarden-0.1.13-dev.zip** depuis [la release GitHub](https://github.com/MikaPST/filewarden/releases/tag/v0.1.13-dev). Le [compte rendu de publication](docs/lot-v0.1.13-dev.md) complète les preuves du candidat.
+La version **0.1.14-dev** conserve le correctif validé des [dix évolutions originales](docs/specifications/evolutions-v0.1.12-dev.md). Les ZIP des versions publiées sont joints aux [releases GitHub](https://github.com/MikaPST/filewarden/releases) ; pour cette version, choisir **filewarden-0.1.14-dev.zip**. La disponibilité publique dépend de la publication de la release.
 
 L’archive de développement s’installe dans WordPress : **Extensions → Ajouter → Téléverser une extension**, puis remplacement de l’extension existante. Sauvegarder au préalable la base et le stockage séparé. Consulte le [journal des changements](CHANGELOG.md).
 

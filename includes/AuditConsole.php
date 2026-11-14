@@ -31,8 +31,8 @@ final class AuditConsole {
             // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only display preference.
 			$view = isset( $_GET['view'] ) && is_string( $_GET['view'] ) && 'technical' === sanitize_key( wp_unslash( $_GET['view'] ) ) ? 'technical' : 'simple';
             // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Feedback only, never used as proof of a mutation.
-			if ( isset( $_GET['purged'] ) && '1' === $_GET['purged'] ) {
-				echo '<div class="notice notice-success"><p>' . esc_html__( 'Selected events purged. A purge trace has been retained.', 'filewarden' ) . '</p></div>'; }
+			if ( isset( $_GET['purged'] ) && '1' === $_GET['purged'] && Notice::verified( 'purged' ) ) {
+				Notice::show( __( 'Selected events purged. A purge trace has been retained.', 'filewarden' ), 'success', __( 'Audit log purged', 'filewarden' ) ); }
 			$filters = AuditHistory::filters( $input );
 			$upper   = AuditHistory::upper();
             // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Read-only cursor strictly validated.
@@ -134,7 +134,7 @@ final class AuditConsole {
 				$progress_message = sprintf( __( 'Preparing your %s download…', 'filewarden' ), strtoupper( $format ) );
 				/* translators: %s: export format (CSV, TXT, or JSONL). */
 				$download_label = sprintf( __( 'Download %s audit file', 'filewarden' ), strtoupper( $format ) );
-				echo '<a class="button fw-export-button fw-export-' . esc_attr( $format ) . '" data-export-message="' . esc_attr( $progress_message ) . '" data-export-success="' . esc_attr__( 'File received. Your browser has been asked to download it.', 'filewarden' ) . '" data-export-error="' . esc_attr__( 'Download failed. Check your connection and permissions, then retry.', 'filewarden' ) . '" href="' . esc_url( $url ) . '"><span class="dashicons ' . esc_attr( $icons[ $format ] ) . '" aria-hidden="true"></span><span>' . esc_html( strtoupper( $format ) ) . '</span><span class="screen-reader-text">' . esc_html( $download_label ) . '</span></a> ';
+				echo '<a class="button fw-export-button fw-export-' . esc_attr( $format ) . '" data-export-title="' . esc_attr__( 'Audit export', 'filewarden' ) . '" data-export-message="' . esc_attr( $progress_message ) . '" data-export-success="' . esc_attr__( 'File received. Your browser has been asked to download it.', 'filewarden' ) . '" data-export-error="' . esc_attr__( 'Download failed. Check your connection and permissions, then retry.', 'filewarden' ) . '" href="' . esc_url( $url ) . '"><span class="dashicons ' . esc_attr( $icons[ $format ] ) . '" aria-hidden="true"></span><span>' . esc_html( strtoupper( $format ) ) . '</span><span class="screen-reader-text">' . esc_html( $download_label ) . '</span></a> ';
 			}
 			echo '</div><p class="fw-export-status" aria-live="polite" role="status"></p><hr><h3>' . esc_html__( 'Audit maintenance', 'filewarden' ) . '</h3><p>' . esc_html__( 'Export the selected events before purging if you need a copy.', 'filewarden' ) . '</p>';
 			if ( current_user_can( 'filewarden_manage_audit' ) ) {
@@ -167,7 +167,7 @@ final class AuditConsole {
 			}
 			echo '</aside></div></div>';
 		} catch ( \Throwable $error ) {
-			echo '<div class="notice notice-error"><p>' . esc_html__( 'Audit unavailable. Check your permissions and date filters.', 'filewarden' ) . '</p></div>'; }
+			Notice::show( __( 'Audit unavailable. Check your permissions and date filters.', 'filewarden' ), 'error', __( 'Audit unavailable', 'filewarden' ) ); }
 	}
 	/**
 	 * Resolve the stored WordPress login, including pre-migration audit events.
@@ -318,8 +318,10 @@ final class AuditConsole {
 				wp_safe_redirect(
 					add_query_arg(
 						$input + array(
-							'page'   => 'filewarden-audit',
-							'purged' => '1',
+							'page'         => 'filewarden-audit',
+							'purged'       => '1',
+							'fw_operation' => 'purge',
+							'fw_feedback'  => Notice::receipt( 'purged', 'purge' ),
 						),
 						admin_url( 'admin.php' )
 					)

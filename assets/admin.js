@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			if (busy) return;
 			if (source() === 'import' && !(Number(form.querySelector('#fw-media-id')?.value) > 0)) {
 				status.textContent = filewardenUpload.media;
+				globalThis.FileWardenNotices?.show({ type: 'warning', message: filewardenUpload.media });
 				return;
 			}
 			const data = new FormData(form);
@@ -44,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				form.removeAttribute('aria-busy');
 				progress.hidden = true;
 				status.textContent = message;
+				globalThis.FileWardenNotices?.show({ type: 'error', message });
 			};
 			xhr.open('POST', endpoint);
 			xhr.upload.addEventListener('progress', (e) => {

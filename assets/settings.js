@@ -12,8 +12,10 @@
         for (const panel of panels) panel.hidden = '#' + panel.id !== link.getAttribute('href');
         if (focus) document.querySelector(link.getAttribute('href')).querySelector('h2').focus();
     };
-    nav.setAttribute('role', 'tablist');
-    nav.setAttribute('aria-orientation', 'vertical');
+    const tablist = nav.querySelector('.fw-settings-links') || nav;
+    tablist.setAttribute('role', 'tablist');
+    tablist.setAttribute('aria-orientation', 'vertical');
+    tablist.setAttribute('aria-label', nav.getAttribute('aria-label'));
     links.forEach((link, i) => {
         link.id = 'fw-settings-tab-' + link.dataset.settingsSection;
         link.setAttribute('role', 'tab');
@@ -38,4 +40,5 @@
         const link = links.find(link => link.hash === '#' + panel?.id);
         if (link) select(link);
     }, true);
+    nav.dataset.fwSettingsReady = 'true';
 })();

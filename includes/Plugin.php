@@ -32,7 +32,7 @@ final class Plugin {
 			add_action(
 				'admin_notices',
 				static function () {
-					echo '<div class="notice notice-error"><p>' . esc_html__( 'FileWarden requires reactivation to install its database schema.', 'filewarden' ) . '</p></div>';
+					Notice::show( __( 'FileWarden requires reactivation to install its database schema.', 'filewarden' ), 'error', __( 'FileWarden unavailable', 'filewarden' ) );
 				}
 			);
 			return;

@@ -141,7 +141,9 @@ function pdfFixture() {
             assert.equal(await page.locator('.document').count(), 0);
             await require('./workspace-browser.cjs')({ page, context, base, fixture, name });
             await require('./ten-evolutions-browser.cjs')({ page, context, base, fixture, name });
-            await require('./notifications-browser.cjs')({ context, base });
+            await require('./uiux-browser.cjs')({ page, base, fixture, name });
+            await require('./notifications-browser.cjs')({ context, base, name });
+            await require('./corrections-browser.cjs')({ context, base, name });
             console.log(name + ': workspace, ACL, lifecycle, upload, previews and publication passed');
         } catch (error) {
             // Preserve synthetic fixture evidence instead of concealing a browser failure with retries.
@@ -157,7 +159,7 @@ function pdfFixture() {
                         requestedDesign: source?.searchParams.get('denied'),
                         requestedDemo: source?.searchParams.get('demo'),
                         renderedMain: frame?.contentDocument?.querySelector('main')?.className,
-                        errorNotice: document.querySelector('.notice-error')?.textContent,
+                        errorNotice: document.querySelector('.fw-notice-error')?.textContent,
                         copyStatus: document.querySelector('#fw-copy-status')?.textContent,
                         focused: document.hasFocus(),
                         secure: isSecureContext

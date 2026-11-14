@@ -24,7 +24,7 @@ module.exports = async ({ page, context, base, fixture, name }) => {
     await inspector.locator('[name="policy_type"]').selectOption('authenticated');
     await inspector.getByRole('button', { name: 'Save access rules' }).click();
     await page.waitForURL(/result=policy_saved/);
-    assert.ok((await page.locator('.notice-success').textContent()).includes('Access rules saved'));
+    assert.ok((await page.locator('.fw-notice-success').textContent()).includes('Access rules saved'));
     const publicRow = page.locator('tbody tr').filter({ hasText: 'policy-public.pdf' });
     assert.ok((await publicRow.textContent()).includes('Not public: restricted by its folder.'));
     await openAction('policy-inherit.pdf', 'Edit access rules');

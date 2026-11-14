@@ -49,6 +49,17 @@ final class AdminController {
 	}
 
 	/**
+	 * Identify asset contents even when replacing a development ZIP of the same version.
+	 *
+	 * @param string $relative Plugin-owned relative asset path.
+	 * @return string Version and content digest.
+	 */
+	private static function asset_version( $relative ) {
+		$hash = hash_file( 'sha256', FILEWARDEN_PATH . $relative );
+		return FILEWARDEN_VERSION . '-' . substr( $hash ? $hash : 'unavailable', 0, 12 );
+	}
+
+	/**
 	 * Load the native Media Library picker on the documents screen.
 	 *
 	 * @param string $hook Administration screen hook.
@@ -57,19 +68,31 @@ final class AdminController {
 		if ( false === strpos( $hook, 'filewarden' ) ) {
 			return;
 		}
-		wp_enqueue_style( 'filewarden-admin', plugins_url( 'assets/admin.css', FILEWARDEN_PATH . 'filewarden.php' ), array(), FILEWARDEN_VERSION );
-		wp_enqueue_script( 'filewarden-notices', plugins_url( 'assets/notices.js', FILEWARDEN_PATH . 'filewarden.php' ), array(), FILEWARDEN_VERSION, true );
-		wp_localize_script( 'filewarden-notices', 'filewardenNotices', array( 'dismiss' => __( 'Dismiss notification', 'filewarden' ) ) );
+		wp_enqueue_style( 'filewarden-admin', plugins_url( 'assets/admin.css', FILEWARDEN_PATH . 'filewarden.php' ), array(), self::asset_version( 'assets/admin.css' ) );
+		wp_enqueue_script( 'filewarden-notices', plugins_url( 'assets/notices.js', FILEWARDEN_PATH . 'filewarden.php' ), array(), self::asset_version( 'assets/notices.js' ), true );
+		wp_localize_script(
+			'filewarden-notices',
+			'filewardenNotices',
+			array(
+				'dismiss'  => __( 'Dismiss notification', 'filewarden' ),
+				'label'    => __( 'FileWarden notifications', 'filewarden' ),
+				'duration' => Notice::duration(),
+				'titles'   => Notice::titles(),
+				'more'     => __( 'Show other notifications', 'filewarden' ),
+				'less'     => __( 'Show three notifications', 'filewarden' ),
+				'critical' => __( 'Persistent notifications waiting', 'filewarden' ),
+			)
+		);
 		if ( 'filewarden_page_filewarden-settings' === $hook ) {
-			wp_enqueue_script( 'filewarden-settings', plugins_url( 'assets/settings.js', FILEWARDEN_PATH . 'filewarden.php' ), array(), FILEWARDEN_VERSION, true ); }
+			wp_enqueue_script( 'filewarden-settings', plugins_url( 'assets/settings.js', FILEWARDEN_PATH . 'filewarden.php' ), array( 'filewarden-notices' ), self::asset_version( 'assets/settings.js' ), true ); }
 		if ( 'toplevel_page_filewarden' !== $hook ) {
 			if ( 'filewarden_page_filewarden-publication' === $hook ) {
-				wp_enqueue_script( 'filewarden-publisher', plugins_url( 'assets/publisher.js', FILEWARDEN_PATH . 'filewarden.php' ), array(), FILEWARDEN_VERSION, true ); }
+				wp_enqueue_script( 'filewarden-publisher', plugins_url( 'assets/publisher.js', FILEWARDEN_PATH . 'filewarden.php' ), array( 'filewarden-notices' ), self::asset_version( 'assets/publisher.js' ), true ); }
 			if ( 'filewarden_page_filewarden-audit' === $hook ) {
-				wp_enqueue_script( 'filewarden-workspace', plugins_url( 'assets/workspace.js', FILEWARDEN_PATH . 'filewarden.php' ), array(), FILEWARDEN_VERSION, true ); }
+				wp_enqueue_script( 'filewarden-workspace', plugins_url( 'assets/workspace.js', FILEWARDEN_PATH . 'filewarden.php' ), array( 'filewarden-notices' ), self::asset_version( 'assets/workspace.js' ), true ); }
 			return;
 		}
-		wp_enqueue_script( 'filewarden-preview', plugins_url( 'assets/preview.js', FILEWARDEN_PATH . 'filewarden.php' ), array(), FILEWARDEN_VERSION, true );
+		wp_enqueue_script( 'filewarden-preview', plugins_url( 'assets/preview.js', FILEWARDEN_PATH . 'filewarden.php' ), array(), self::asset_version( 'assets/preview.js' ), true );
 		wp_localize_script(
 			'filewarden-preview',
 			'filewardenPreview',
@@ -78,19 +101,21 @@ final class AdminController {
 				'close' => __( 'Close preview', 'filewarden' ),
 			)
 		);
-		wp_enqueue_script( 'filewarden-workspace', plugins_url( 'assets/workspace.js', FILEWARDEN_PATH . 'filewarden.php' ), array(), FILEWARDEN_VERSION, true );
-		wp_enqueue_script( 'filewarden-upload', plugins_url( 'assets/admin.js', FILEWARDEN_PATH . 'filewarden.php' ), array(), FILEWARDEN_VERSION, true );
-		wp_enqueue_script( 'filewarden-upload-queue', plugins_url( 'assets/upload-queue.js', FILEWARDEN_PATH . 'filewarden.php' ), array( 'filewarden-upload' ), FILEWARDEN_VERSION, true );
+		wp_enqueue_script( 'filewarden-workspace', plugins_url( 'assets/workspace.js', FILEWARDEN_PATH . 'filewarden.php' ), array( 'filewarden-notices' ), self::asset_version( 'assets/workspace.js' ), true );
+		wp_enqueue_script( 'filewarden-upload', plugins_url( 'assets/admin.js', FILEWARDEN_PATH . 'filewarden.php' ), array( 'filewarden-notices' ), self::asset_version( 'assets/admin.js' ), true );
+		wp_enqueue_script( 'filewarden-upload-queue', plugins_url( 'assets/upload-queue.js', FILEWARDEN_PATH . 'filewarden.php' ), array( 'filewarden-upload' ), self::asset_version( 'assets/upload-queue.js' ), true );
 		wp_localize_script(
 			'filewarden-upload-queue',
 			'filewardenQueue',
 			array(
-				'maxBytes' => min( (int) get_option( 'filewarden_upload_mb', 50 ) * MB_IN_BYTES, wp_max_upload_size() ),
-				'invalid'  => __( 'Invalid extension, empty file or size limit exceeded.', 'filewarden' ),
-				'ready'    => __( 'Ready for server validation', 'filewarden' ),
-				'sending'  => __( 'Uploading and validating…', 'filewarden' ),
-				'saved'    => __( 'Saved and verified', 'filewarden' ),
-				'failed'   => __( 'Upload failed. Check the file, permissions and connection, then retry.', 'filewarden' ),
+				'maxBytes'    => min( (int) get_option( 'filewarden_upload_mb', 50 ) * MB_IN_BYTES, wp_max_upload_size() ),
+				'invalid'     => __( 'Invalid extension, empty file or size limit exceeded.', 'filewarden' ),
+				'ready'       => __( 'Ready for server validation', 'filewarden' ),
+				'sending'     => __( 'Uploading and validating…', 'filewarden' ),
+				'saved'       => __( 'Saved and verified', 'filewarden' ),
+				'failed'      => __( 'Upload failed. Check the file, permissions and connection, then retry.', 'filewarden' ),
+				'savedTitle'  => __( 'Document added', 'filewarden' ),
+				'failedTitle' => __( 'Document not added', 'filewarden' ),
 			)
 		);
 		wp_localize_script(
@@ -108,7 +133,7 @@ final class AdminController {
 			return;
 		}
 		wp_enqueue_media();
-		wp_enqueue_script( 'filewarden-media', plugins_url( 'assets/media.js', FILEWARDEN_PATH . 'filewarden.php' ), array( 'media-views' ), FILEWARDEN_VERSION, true );
+		wp_enqueue_script( 'filewarden-media', plugins_url( 'assets/media.js', FILEWARDEN_PATH . 'filewarden.php' ), array( 'media-views' ), self::asset_version( 'assets/media.js' ), true );
 		wp_localize_script( 'filewarden-media', 'filewardenMedia', array( 'types' => array_values( array_unique( DocumentService::TYPES ) ) ) );
 	}
 
@@ -250,12 +275,14 @@ final class AdminController {
 		wp_safe_redirect(
 			add_query_arg(
 				array(
-					'page'       => $page,
-					'folder_id'  => $folder,
-					'result'     => $result,
-					'created'    => $created['id'] ?? false,
-					'collection' => 0 === $folder ? 'unfiled' : false,
-					'tab'        => in_array( $operation, array( 'restore', 'purge_trash' ), true ) ? 'trash' : ( ! in_array( $result, array( 'success', 'policy_saved' ), true ) && in_array( $operation, array( 'upload', 'import' ), true ) ? 'add' : 'documents' ),
+					'page'         => $page,
+					'folder_id'    => $folder,
+					'result'       => $result,
+					'created'      => $created['id'] ?? false,
+					'fw_operation' => $operation,
+					'fw_feedback'  => Notice::receipt( $result, $operation, $folder, $created['id'] ?? '' ),
+					'collection'   => 0 === $folder ? 'unfiled' : false,
+					'tab'          => in_array( $operation, array( 'restore', 'purge_trash' ), true ) ? 'trash' : ( ! in_array( $result, array( 'success', 'policy_saved' ), true ) && in_array( $operation, array( 'upload', 'import' ), true ) ? 'add' : 'documents' ),
 				),
 				admin_url( 'admin.php' )
 			)

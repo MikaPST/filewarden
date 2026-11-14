@@ -315,6 +315,14 @@ Semantic tokens must support accessible light and dark variants.
 
 The approved action tokens are defined in **Section 2 — Semantic Action Tokens**.
 
+### Notification tokens (approved UI/UX batch 0.1.14-dev)
+
+Four functional notification types use separate tokens scoped to the FileWarden notification area: success `--fw-notice-success` (`#167348`), information `--fw-notice-info` (`#235CB4`), warning `--fw-notice-warning` (`#925400`), and error `--fw-notice-error` (`#B42318`). These semantic colors implement the owner's approved green/blue/orange/red notification request; they do not change the official brand palette. Pair each with a distinct icon, a readable title and description. Use the same tone for its regressive progress bar, with a subtle unbordered track. Persistent notifications have no visible time bar.
+
+The approved corrective batch uses a nonmodal fixed notification layer at the upper right, below the WordPress admin bar, without resizing the workspace. Keep owned classes independent of generic WordPress notices and preserve visibility in the native preview dialog's top layer. Showing a notification must not steal keyboard focus.
+
+The Documents welcome uses an 80-pixel filled folder illustration in Navy/Slate with a turquoise tab; it is an interface icon, not a replacement logo. The guided tree keeps its existing hierarchy with slightly denser rows. Settings use the approved compact vertical rail: icon and label, Navy/white selection, and the category description immediately below the heading in the right-hand panel.
+
 ### Naming conventions
 
 - Prefix FileWarden CSS variables with `--fw-`.

@@ -10,13 +10,16 @@ Pre-alpha document-management foundation. Not ready for production.
 
 == Description ==
 
-FileWarden 0.1.13-dev is a development preview with a live recovery count, reviewed unpublishing, multiple document uploads, bounded ZIP and macro-free Office inspection, global trash, explicit restoration, permanent disposal, accessible notifications, publication preview modes, categorized settings and versioned audit exports. Existing protected PDF/image previews, Media Library import, inherited permissions, permanent document URLs and shortcode publishing are preserved. ZIPs are never extracted automatically. Hosting acceptance is still required. Versions and native editor widgets remain future work.
+FileWarden 0.1.14-dev is a development preview with a live recovery count, reviewed unpublishing, multiple document uploads, bounded ZIP and macro-free Office inspection, global trash, explicit restoration, permanent disposal, accessible notifications, publication preview modes, categorized settings and versioned audit exports. Existing protected PDF/image previews, Media Library import, inherited permissions, permanent document URLs and shortcode publishing are preserved. ZIPs are never extracted automatically. Hosting acceptance is still required. Versions and native editor widgets remain future work.
 
 == Installation ==
 
 Use single-site preproduction WordPress. Managed storage requires Sodium and verified HTTPS access restrictions. See docs/setup.md for verification, backups and the optional outside-webroot configuration. Do not use confidential documents before deployment validation.
 
 == Changelog ==
+
+= 0.1.14-dev =
+Essential Documents welcome with an 80-pixel filled folder, compact guided hierarchy, contained long names and reusable floating notifications above the interface. Configurable duration, synchronized countdown, combined pauses, persistent critical messages and accessible overflow. Compact vertical settings rail with local category switching; explicit folder deletion feedback and verified transactional metadata fallback. Existing documents and permissions preserved. Development preview; deployment acceptance remains required.
 
 = 0.1.13-dev =
 0.1.13-dev corrective candidate for the ten original evolutions: recovery count, reviewed classification, updated document uploads, global trash, accessible notifications, publication modes, categorized settings and versioned audit exports. Not a stable release.

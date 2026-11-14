@@ -14,6 +14,50 @@ final class SettingsConsole {
 		'audit_days' => array( 365, 1, 3650 ),
 	);
 
+	/** One registry for navigation and panel headings; extensions may add read-only categories.
+	 *
+	 * @return array Validated category metadata.
+	 */
+	public static function sections() {
+		$sections = array(
+			'general'   => array(
+				'label'       => __( 'General', 'filewarden' ),
+				'description' => __( 'Personalize how FileWarden behaves.', 'filewarden' ),
+				'icon'        => 'sliders-horizontal',
+			),
+			'storage'   => array(
+				'label'       => __( 'Storage and security', 'filewarden' ),
+				'description' => __( 'Keep your documents separate from the plugin code.', 'filewarden' ),
+				'icon'        => 'shield-check',
+			),
+			'documents' => array(
+				'label'       => __( 'Documents and limits', 'filewarden' ),
+				'description' => __( 'Set document upload limits.', 'filewarden' ),
+				'icon'        => 'files',
+			),
+			'retention' => array(
+				'label'       => __( 'Retention', 'filewarden' ),
+				'description' => __( 'Choose how long deleted documents remain in the trash.', 'filewarden' ),
+				'icon'        => 'archive-box',
+			),
+			'audit'     => array(
+				'label'       => __( 'Audit log', 'filewarden' ),
+				'description' => __( 'Choose how long recorded events are retained.', 'filewarden' ),
+				'icon'        => 'scroll-text',
+			),
+		);
+		$filtered = apply_filters( 'filewarden_settings_sections', $sections );
+		foreach ( is_array( $filtered ) ? $filtered : array() as $id => $section ) {
+			if ( ! is_string( $id ) || '' === $id || sanitize_key( $id ) !== $id || ! is_array( $section )
+				|| ! isset( $section['label'], $section['description'], $section['icon'] )
+				|| ! is_string( $section['label'] ) || ! is_string( $section['description'] ) || ! is_string( $section['icon'] ) ) {
+				continue; }
+			$section['icon'] = sanitize_key( $section['icon'] );
+			$sections[ $id ] = $section;
+		}
+		return $sections;
+	}
+
 	/** Validate every submitted value before persisting any setting.
 	 *
 	 * @param array        $source Posted settings.
@@ -32,6 +76,12 @@ final class SettingsConsole {
 			if ( $value < $bounds[1] || $value > $bounds[2] ) {
 				throw new \InvalidArgumentException( 'Invalid settings.' ); }
 			$values[ 'filewarden_' . $name ] = $value;
+		}
+		if ( array_key_exists( 'notification_seconds', $source ) ) {
+			$value = RestController::integer( wp_unslash( $source['notification_seconds'] ) );
+			if ( ! in_array( $value, Notice::DURATIONS, true ) ) {
+				throw new \InvalidArgumentException( 'Invalid notification duration.' ); }
+			$values['filewarden_notification_seconds'] = $value;
 		}
 		if ( ! $values ) {
 			throw new \InvalidArgumentException( 'No settings submitted.' ); }
@@ -74,23 +124,28 @@ final class SettingsConsole {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only post/redirect feedback, never authorization.
 		$result = isset( $_GET['result'] ) && is_string( $_GET['result'] ) ? sanitize_key( wp_unslash( $_GET['result'] ) ) : '';
 		if ( $result ) {
-			Notice::show( 'success' === $result ? __( 'Settings saved.', 'filewarden' ) : __( 'Settings could not be saved.', 'filewarden' ), 'success' === $result ? 'success' : 'error' ); }
-		$sections = array(
-			'general'   => __( 'General', 'filewarden' ),
-			'storage'   => __( 'Storage and security', 'filewarden' ),
-			'documents' => __( 'Documents and limits', 'filewarden' ),
-			'retention' => __( 'Retention', 'filewarden' ),
-			'audit'     => __( 'Audit log', 'filewarden' ),
-		);
-		echo '<div class="fw-settings-layout"><nav class="fw-settings-nav" aria-label="' . esc_attr__( 'Settings categories', 'filewarden' ) . '">';
-		foreach ( $sections as $id => $label ) {
-			echo '<a href="#fw-settings-' . esc_attr( $id ) . '" data-settings-section="' . esc_attr( $id ) . '">' . esc_html( $label ) . '</a>'; }
-		echo '</nav><section class="fw-content">';
+			if ( 'success' !== $result || Notice::verified( $result ) ) {
+				Notice::show( 'success' === $result ? __( 'Settings saved.', 'filewarden' ) : __( 'Settings could not be saved.', 'filewarden' ), 'success' === $result ? 'success' : 'error', 'success' === $result ? __( 'Settings saved', 'filewarden' ) : __( 'Settings not saved', 'filewarden' ) ); }
+		}
+		$sections = self::sections();
+		echo '<div class="fw-settings-layout"><nav class="fw-settings-nav" aria-label="' . esc_attr__( 'Settings categories', 'filewarden' ) . '"><p class="fw-settings-kicker">' . esc_html__( 'Preferences', 'filewarden' ) . '</p><div class="fw-settings-links">';
+		foreach ( $sections as $id => $section ) {
+			$icon = plugins_url( 'assets/icons/' . $section['icon'] . '.svg', FILEWARDEN_PATH . 'filewarden.php' );
+			echo '<a href="#fw-settings-' . esc_attr( $id ) . '" data-settings-section="' . esc_attr( $id ) . '"><span class="fw-settings-icon" aria-hidden="true" style="' . esc_attr( '--fw-settings-icon:url(' . $icon . ')' ) . '"></span><span class="fw-settings-label">' . esc_html( $section['label'] ) . '</span></a>'; }
+		echo '</div></nav><section class="fw-content">';
 		$ui->form_start( 'settings' );
-		foreach ( $sections as $id => $label ) {
-			echo '<section id="fw-settings-' . esc_attr( $id ) . '" class="fw-settings-panel"><h2 tabindex="-1">' . esc_html( $label ) . '</h2>';
+		foreach ( $sections as $id => $section ) {
+			echo '<section id="fw-settings-' . esc_attr( $id ) . '" class="fw-settings-panel"><h2 tabindex="-1">' . esc_html( $section['label'] ) . '</h2><p class="fw-settings-description">' . esc_html( $section['description'] ) . '</p>';
 			if ( 'general' === $id ) {
-				echo '<p>FileWarden ' . esc_html( FILEWARDEN_VERSION ) . '</p><p>' . esc_html__( 'Single-site document management. Publishing and document permissions remain independent of these limits.', 'filewarden' ) . '</p>'; }
+				echo '<p class="fw-settings-version">FileWarden ' . esc_html( FILEWARDEN_VERSION ) . '</p><p>' . esc_html__( 'Single-site document management. Publishing and document permissions remain independent of these limits.', 'filewarden' ) . '</p><h3>' . esc_html__( 'Notifications', 'filewarden' ) . '</h3><p><label for="fw-notification-seconds">' . esc_html__( 'Automatic display duration', 'filewarden' ) . '</label><select id="fw-notification-seconds" name="notification_seconds" aria-describedby="fw-notification-help">';
+				foreach ( Notice::DURATIONS as $seconds ) {
+					/* translators: %d: notification duration in seconds. */
+					$duration_label = sprintf( __( '%d seconds', 'filewarden' ), $seconds );
+					if ( 10 === $seconds ) {
+						$duration_label .= ' — ' . __( 'default', 'filewarden' ); }
+					echo '<option value="' . esc_attr( $seconds ) . '"' . selected( Notice::duration(), $seconds, false ) . '>' . esc_html( $duration_label ) . '</option>';
+				}
+				echo '</select></p><p id="fw-notification-help" class="description">' . esc_html__( 'Set how long notifications remain visible before they disappear automatically.', 'filewarden' ) . '</p>'; }
 			if ( 'storage' === $id ) {
 				echo '<p>' . esc_html__( 'Documents are stored separately from the plugin. Storage operations remain blocked until protection is verified.', 'filewarden' ) . '</p><p>' . esc_html( $message ) . '</p>'; }
 			$field = match ( $id ) {

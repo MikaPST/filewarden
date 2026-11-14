@@ -16,7 +16,13 @@ module.exports = async ({ page, base, name }) => {
     assert.deepEqual(await page.locator('.fw-log-line').evaluateAll(rows=>rows.map(row=>row.dataset.eventId)), simpleIds);
     await page.locator('.fw-log-line summary').first().click();
     assert.ok((await page.locator('.fw-log-line pre').first().textContent()).includes('actor_login'));
-    await page.getByRole('button', { name: 'Apply filters', exact: true }).click();
+    // Wait for the submitted document, not just its server-rendered export links.
+    // Firefox can activate an attachment before footer enhancements finish loading.
+    await Promise.all([
+        page.waitForURL(url => url.searchParams.get('view') === 'technical' && !url.searchParams.has('before')),
+        page.getByRole('button', { name: 'Apply filters', exact: true }).click()
+    ]);
+    await page.waitForLoadState('load');
     assert.ok(page.url().includes('view=technical'));
     for (const format of ['csv', 'txt', 'jsonl']) {
         const downloadEvent = page.waitForEvent('download');

@@ -1,0 +1,127 @@
+FileWarden 0.1.14-dev — corrective acceptance, 2026-11-14
+Base Git: 0ca87e3; local changes, no push/tag/release or user-site deployment.
+PHP 8.2.35; MariaDB 10.11.11; Playwright 1.65.0; Chromium and Firefox.
+ZIP SHA-256: a89e68643c064308413464198285a4c71937d36c95b0c4ccf6efd1c94993961e
+279 runtime files compared byte-for-byte with source and both corrected installations.
+Initial candidate b5ebe433bd93b5f0cc0bfacbee18a3b4e446eb09db8ea5d5f9f9075334ec79d5 preserved separately.
+
+Executed checks: PHPUnit 75 tests / 130 assertions; node --test tests/admin.test.cjs 8 tests; PHP syntax 51 files; JS syntax 20 files; PHPCS; Composer validate --strict; Composer audit --locked (no known advisories); WordPress Sodium fallback; git diff --check.
+Targeted correction paths and stable French visual captures also passed in both browsers.
+
+Limitations: no GitHub CI for this batch, no local PHP 8.3/8.4 or MySQL 8.0 run, no human screen-reader acceptance, no user-hosting test. User confirms deletion fails after final confirmation; exact hosting cause/result remains unconfirmed. Simulated generic WordPress notice hiding and restricted table metadata were exercised locally, not attributed to the user's site.
+
+=== Disposable WordPress 6.8, same frozen corrected ZIP ===
+Success: Generated 'wp-config.php' file.
+Success: Added the constant 'FILEWARDEN_STORAGE_DIR' to the 'wp-config.php' file with the value '<WORKSPACE>\.tools\v14-corrections\corr68b\private'.
+Success: Added the constant 'FILEWARDEN_STORAGE_VERIFIED' to the 'wp-config.php' file with the raw value 'true'.
+Success: WordPress installed successfully.
+Using cached file '<USER_HOME>/.wp-cli/cache/translation/core-default-6.8-fr_FR-1745614866.zip'...
+Unpacking the update...
+Installing the latest version...
+Removing the old version of the translation...
+Translation updated successfully.
+Language 'fr_FR' installed.
+Success: Installed 1 of 1 languages.
+Unpacking the package...
+Installing the plugin...
+Plugin installed successfully.
+Activating 'filewarden'...
+Plugin 'filewarden' activated.
+Success: Installed 1 of 1 plugins.
+Success: Previous release ZIP activated and persistent upgrade fixture saved.
+Unpacking the package...
+Installing the plugin...
+Removing the old version of the plugin...
+Plugin updated successfully.
+Activating 'filewarden'...
+Success: Installed 1 of 1 plugins.
+Warning: Plugin 'filewarden' is already active.
+Success: Actual ZIP upgrade preserved document bytes, UUID, policies, folders and storage keys.
+Unpacking the package...
+Installing the plugin...
+Removing the old version of the plugin...
+Plugin updated successfully.
+Activating 'filewarden'...
+Warning: Plugin 'filewarden' is already active.
+Success: Installed 1 of 1 plugins.
+Success: Actual ZIP upgrade preserved document bytes, UUID, policies, folders and storage keys.
+Success: Ten-evolution acceptance: recovery counter, classification, global trash, origin, explicit restoration, permanent purge, audit snapshots and partial settings passed.
+Success: Notification settings, allowed values, partial saves, capabilities, feedback integrity and escaped fallback passed.
+Success: Corrective acceptance: verified table metadata fallback, fail-closed engine checks, real leaf deletion, extensible settings and content-addressed assets passed.
+Success: Integration assertions passed.
+All nine additional formats passed real HTTP upload, attachment MIME, byte identity and anonymous denial.
+HTTP assertions passed: ACL, publication, protected preview, media import, ranges, CSRF and uploads.
+Policy editing HTTP checks passed: inheritance, file restriction, folder ceiling, immediate revocation and CSRF.
+Navigation denial styles, root quarantine and authorized CSV/TXT/JSONL actor export checks passed.
+chromium: original evolutions 01–09 passed; audit exports covered by audit-browser
+chromium: essential Documents welcome and guided folder hierarchy passed
+chromium: notification durations, real settings saves, CSRF refusal, timing, combined pauses, persistent errors, overflow, reduced motion and safe text passed
+chromium: six corrective paths, floating/native-dialog feedback, notice-hiding compatibility, vertical settings, long names, successful deletion and transactional refusal/recovery passed
+chromium: workspace, ACL, lifecycle, upload, previews and publication passed
+firefox: original evolutions 01–09 passed; audit exports covered by audit-browser
+firefox: essential Documents welcome and guided folder hierarchy passed
+firefox: notification durations, real settings saves, CSRF refusal, timing, combined pauses, persistent errors, overflow, reduced motion and safe text passed
+firefox: six corrective paths, floating/native-dialog feedback, notice-hiding compatibility, vertical settings, long names, successful deletion and transactional refusal/recovery passed
+firefox: workspace, ACL, lifecycle, upload, previews and publication passed
+Success: Updated custom field 'locale'.
+chromium: French installed UI, counter, queue, trash, settings and audit passed
+firefox: French installed UI, counter, queue, trash, settings and audit passed
+PASS: WordPress 6.8, actual ZIP upgrades 0.1.13-dev -> initial 0.1.14-dev -> corrected 0.1.14-dev, integration, HTTP, Chromium/Firefox EN/FR.
+
+=== Disposable WordPress 7.1.4, same frozen corrected ZIP ===
+Success: Generated 'wp-config.php' file.
+Success: Added the constant 'FILEWARDEN_STORAGE_DIR' to the 'wp-config.php' file with the value '<WORKSPACE>\.tools\v14-corrections\corr714b\private'.
+Success: Added the constant 'FILEWARDEN_STORAGE_VERIFIED' to the 'wp-config.php' file with the raw value 'true'.
+Success: WordPress installed successfully.
+Using cached file '<USER_HOME>/.wp-cli/cache/translation/core-default-7.1.4-fr_FR-1793691554.zip'...
+Unpacking the update...
+Installing the latest version...
+Removing the old version of the translation...
+Translation updated successfully.
+Language 'fr_FR' installed.
+Success: Installed 1 of 1 languages.
+Unpacking the package...
+Installing the plugin...
+Plugin installed successfully.
+Activating 'filewarden'...
+Plugin 'filewarden' activated.
+Success: Installed 1 of 1 plugins.
+Success: Previous release ZIP activated and persistent upgrade fixture saved.
+Unpacking the package...
+Installing the plugin...
+Removing the old version of the plugin...
+Plugin updated successfully.
+Activating 'filewarden'...
+Success: Installed 1 of 1 plugins.
+Warning: Plugin 'filewarden' is already active.
+Success: Actual ZIP upgrade preserved document bytes, UUID, policies, folders and storage keys.
+Unpacking the package...
+Installing the plugin...
+Removing the old version of the plugin...
+Plugin updated successfully.
+Activating 'filewarden'...
+Warning: Plugin 'filewarden' is already active.
+Success: Installed 1 of 1 plugins.
+Success: Actual ZIP upgrade preserved document bytes, UUID, policies, folders and storage keys.
+Success: Ten-evolution acceptance: recovery counter, classification, global trash, origin, explicit restoration, permanent purge, audit snapshots and partial settings passed.
+Success: Notification settings, allowed values, partial saves, capabilities, feedback integrity and escaped fallback passed.
+Success: Corrective acceptance: verified table metadata fallback, fail-closed engine checks, real leaf deletion, extensible settings and content-addressed assets passed.
+Success: Integration assertions passed.
+All nine additional formats passed real HTTP upload, attachment MIME, byte identity and anonymous denial.
+HTTP assertions passed: ACL, publication, protected preview, media import, ranges, CSRF and uploads.
+Policy editing HTTP checks passed: inheritance, file restriction, folder ceiling, immediate revocation and CSRF.
+Navigation denial styles, root quarantine and authorized CSV/TXT/JSONL actor export checks passed.
+chromium: original evolutions 01–09 passed; audit exports covered by audit-browser
+chromium: essential Documents welcome and guided folder hierarchy passed
+chromium: notification durations, real settings saves, CSRF refusal, timing, combined pauses, persistent errors, overflow, reduced motion and safe text passed
+chromium: six corrective paths, floating/native-dialog feedback, notice-hiding compatibility, vertical settings, long names, successful deletion and transactional refusal/recovery passed
+chromium: workspace, ACL, lifecycle, upload, previews and publication passed
+firefox: original evolutions 01–09 passed; audit exports covered by audit-browser
+firefox: essential Documents welcome and guided folder hierarchy passed
+firefox: notification durations, real settings saves, CSRF refusal, timing, combined pauses, persistent errors, overflow, reduced motion and safe text passed
+firefox: six corrective paths, floating/native-dialog feedback, notice-hiding compatibility, vertical settings, long names, successful deletion and transactional refusal/recovery passed
+firefox: workspace, ACL, lifecycle, upload, previews and publication passed
+Success: Updated custom field 'locale'.
+chromium: French installed UI, counter, queue, trash, settings and audit passed
+firefox: French installed UI, counter, queue, trash, settings and audit passed
+PASS: WordPress 7.1.4, actual ZIP upgrades 0.1.13-dev -> initial 0.1.14-dev -> corrected 0.1.14-dev, integration, HTTP, Chromium/Firefox EN/FR.

@@ -10,7 +10,7 @@ $storage = new FileWarden\StorageService( FILEWARDEN_STORAGE_DIR, array( ABSPATH
 $service = new FileWarden\DocumentService( $repo, $permissions, $storage, new FileWarden\AuditService() );
 if ( 'before' === getenv( 'FILEWARDEN_UPGRADE_STAGE' ) ) {
     if ( getenv('FILEWARDEN_PREVIOUS_SCHEMA') !== get_option( 'filewarden_schema' ) || getenv('FILEWARDEN_PREVIOUS_VERSION') !== FILEWARDEN_VERSION ) { throw new RuntimeException( 'Previous ZIP did not activate the expected version and schema.' ); }
-    $settings = array('filewarden_upload_mb'=>41,'filewarden_trash_days'=>17,'filewarden_audit_days'=>256);
+    $settings = array('filewarden_upload_mb'=>41,'filewarden_trash_days'=>17,'filewarden_audit_days'=>256,'filewarden_notification_seconds'=>20);
     foreach($settings as $key=>$value) update_option($key,$value);
     $folder = $service->create_folder( 'Upgrade fixture', 0, array( 'type' => 'authenticated' ) );
     $bytes = "%PDF-1.4\n1 0 obj<</Type/Catalog>>endobj\n%%EOF\n";
@@ -25,7 +25,8 @@ if ( 'before' === getenv( 'FILEWARDEN_UPGRADE_STAGE' ) ) {
     WP_CLI::success( 'Previous release ZIP activated and persistent upgrade fixture saved.' );
 } else {
     $before = json_decode( file_get_contents( $upgrade_file ), true );
-    if ( '6' !== get_option( 'filewarden_schema' ) || '0.1.13-dev' !== FILEWARDEN_VERSION ) { throw new RuntimeException( 'ZIP update did not install the corrective version and schema 6.' ); }
+    if ( '6' !== get_option( 'filewarden_schema' ) || '0.1.14-dev' !== FILEWARDEN_VERSION ) { throw new RuntimeException( 'ZIP update did not install the corrective version and schema 6.' ); }
+    if (20 !== FileWarden\Notice::duration()) { throw new RuntimeException('ZIP update did not preserve the notification preference.'); }
     // Numeric options become strings when read back in a fresh WordPress process.
     foreach($before['settings'] as $key=>$value) { if((string)get_option($key)!==(string)$value) throw new RuntimeException('ZIP upgrade reset an existing setting: '.$key); }
     global $wpdb;

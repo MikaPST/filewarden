@@ -23,7 +23,7 @@ final class TrashConsole {
 		$uuid   = isset( $_GET['document'] ) && is_string( $_GET['document'] ) ? sanitize_text_field( wp_unslash( $_GET['document'] ) ) : '';
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 		$rows = DocumentCollection::rows( $service, true, $search, $filter );
-		Notice::show( __( 'Only authorized deleted documents are shown. Restoring requires an authorized destination.', 'filewarden' ), 'info' );
+		Notice::show( __( 'Only authorized deleted documents are shown. Restoring requires an authorized destination.', 'filewarden' ), 'info', __( 'Trash', 'filewarden' ) );
 		echo '<section class="fw-content fw-global-trash"><h2>' . esc_html__( 'Global trash', 'filewarden' ) . '</h2><p>' . esc_html__( 'All deleted documents you are allowed to manage. Automatic retention still applies.', 'filewarden' ) . '</p><form method="get" class="fw-search"><input type="hidden" name="page" value="filewarden"><input type="hidden" name="tab" value="trash"><label class="screen-reader-text" for="fw-trash-search">' . esc_html__( 'Search documents', 'filewarden' ) . '</label><input id="fw-trash-search" type="search" name="search" value="' . esc_attr( $search ) . '"><label class="screen-reader-text" for="fw-trash-folder">' . esc_html__( 'Folder', 'filewarden' ) . '</label><select id="fw-trash-folder" name="trash_folder"><option value="">' . esc_html__( 'All folders', 'filewarden' ) . '</option>';
 		foreach ( $service->folder_choices() as $id => $label ) {
 			echo '<option value="' . esc_attr( $id ) . '"' . selected( $filter, (string) $id, false ) . '>' . esc_html( $label ) . '</option>'; }
