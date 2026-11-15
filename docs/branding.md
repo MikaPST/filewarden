@@ -410,3 +410,12 @@ Use the original official 512px logo in the shared administration header (56px d
 Sources use local Lucide laptop-minimal/library-big icons at 20px with 10px spacing. Task navigation uses compact underlined tabs and no visible “Navigation FileWarden” heading. The health summary keeps existing storage-state colors, keyboard-operable details and essential warnings visible when collapsed.
 
 Only simplified audit records use scoped semantic tones: information #8CB9FF, configuration/access #5FC2BA, confirmed additions/restorations #80D5A3, trash/destructive requests #FFC078, permanent deletion and failure/refusal #FFAAA3, unknown #B0C2DC, on Midnight Navy. Pair tones with explicit category labels and distinct icons; a deletion is not an error and a request is not completion. These are functional UI colors, not new official brand colors. Purge controls use the existing Danger Red and white trash-2 icon. New Lucide source assets are pinned to upstream 0.468.0 and retain the bundled Lucide license.
+
+
+### Approved administration refinements — 0.1.16-dev
+
+This owner-approved revision supersedes the 0.1.15 header sizing: unchanged official logo in a 14px square beside the 14px FILEWARDEN wordmark, centered on the same line; keep the existing page-title size on a separate line below. No official asset is redrawn.
+
+Search, Media Library selection and Open audit log use Turquoise (#5FC2BA) with Navy (#1C2942) text/icons and a Slate border; exports use a quiet tinted surface with Navy and the common download icon. Permission and destructive roles retain Slate and Danger Red. Preview/download controls use refined local outline icons, quiet backgrounds, turquoise hover, tooltips and coarse-pointer targets. Active task underline remains Navy. Selected settings categories use Navy background/border and white text/icons. Remove profile-derived mouse rings only inside FileWarden; preserve a visible Navy keyboard-focus outline.
+
+Recovery uses a dark amber (#805400)/white solid numeric badge, absent at zero. The integrated formats notice starts collapsed at every viewport; ZIP/macros guidance remains outside its disclosure. Hide it in explicitly enabled all-format mode. The opt-in warning uses the approved orange warning tone, with an accessible confirmation dialog and a persistent reminder after save. Locale selection uses the local languages icon. Preserve frontend site customization.

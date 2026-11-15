@@ -47,3 +47,8 @@ Le déplacement volontaire vers Documents à classer conserve UUID, stockage, r�
 La corbeille globale filtre les documents selon les mêmes règles de contenu et exige la capacité de suppression. La suppression définitive exige en plus un périmètre revu correspondant à l’utilisateur, une confirmation explicite et, sur l’interface, le nonce d’administration. Si le dossier d’origine est supprimé, la restauration exige une destination existante lisible et la gestion des permissions ; les restrictions retenues ne sont pas retirées. La lecture globale ne confère aucune de ces capacités d’écriture.
 
 Les noms historiques du journal restent des métadonnées protégées : contrôle de la ressource actuelle lorsqu’elle existe, ou des politiques sauvegardées lorsqu’elle a été supprimée. Une règle sauvegardée invalide ou une origine de récupération non autorisée masque le nom. Les règles internes ne sont pas exportées. Un ancien acteur nul ne devient jamais arbitrairement un visiteur ou une action système.
+
+
+## Advanced formats and plugin language (0.1.16-dev)
+
+Both settings require the existing FileWarden settings capability and the existing administrative CSRF nonce; upload or global-read privileges do not grant settings privileges. Enabling all formats additionally requires an explicit risk confirmation and is audited with the WordPress actor. The server reads the stored setting; request flags cannot enable it. The mode never widens document/folder ACLs, changes publication state, grants WordPress upload permissions or enables executable/HTML/SVG previews. Import/download authorization remains mandatory. Language affects labels only, never permissions, resource identities or machine export keys.

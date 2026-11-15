@@ -308,12 +308,15 @@ final class DocumentService {
 			throw new \InvalidArgumentException( 'Invalid filename or file size.' );
 		}
 		$extension = strtolower( pathinfo( $name, PATHINFO_EXTENSION ) );
-		$mime      = FileIO::attempt( fn() => FileValidator::validate( $file['tmp_name'], $extension ) );
+		$mime      = FileIO::attempt( fn() => ImportPolicy::mime( $file['tmp_name'], $extension ) );
 		$lock      = $this->repository->lock( $folder );
 		$key       = null;
 		$stage     = null;
 		try {
 			$this->require_folder( $folder );
+			if ( 'application/octet-stream' === $mime && ! ImportPolicy::unrestricted( true ) ) {
+				throw new \InvalidArgumentException( 'Unsupported file type.' );
+			}
 			if ( $this->repository->duplicate( $folder, $name ) ) {
 				throw new \UnexpectedValueException( 'Rename this file before uploading. Version creation is not available yet.' );
 			}

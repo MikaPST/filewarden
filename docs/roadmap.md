@@ -30,3 +30,8 @@ Task tabs, authorized folder tree, contextual inspector, explicit/effective poli
 ## Lot en développement : navigation et interfaces
 
 Voir docs/lot-navigation-interfaces.md et SUIVI.md pour le périmètre validé, les vérifications et l’état réel. La publication est distincte de la validation du code.
+
+
+## Approved 0.1.16-dev scope
+
+The ten administration/language/import-policy refinements are consolidated in lot-v0.1.16-dev.md. This extends the existing supported strict formats (PDF/JPEG/PNG, TXT/CSV, macro-free Office and bounded ZIP) and does not imply that the earlier PDF-only milestone remains the current allowlist. The optional confirmed all-format mode serves normally refused content as opaque attachments only. Plugin-only FR/EN/site-language selection is implemented; additional languages require reviewed catalogs and acceptance. Schema 6 and prior public interfaces are retained. See SUIVI.md for current release/test evidence.

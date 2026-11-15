@@ -16,11 +16,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const row = document.createElement('li');
                 row.className = 'fw-upload-item';
                 const label = document.createElement('span');
-                label.textContent = item.file.name + ' (' + (item.file.size / 1024).toFixed(1) + ' KB)';
+                label.textContent = item.file.name + ' (' + (item.file.size / 1024).toFixed(1) + ' ' + messages.kilobytes + ')';
                 const state = document.createElement('span');
                 state.setAttribute('role', 'status');
                 item.output = state;
-                if (!/\.(pdf|jpe?g|png|txt|csv|zip|docx|xlsx|pptx|odt|ods|odp)$/i.test(item.file.name) || !item.file.size || item.file.size > messages.maxBytes) item.state = 'invalid';
+                if ((!messages.allowAllTypes && !/\.(pdf|jpe?g|png|txt|csv|zip|docx|xlsx|pptx|odt|ods|odp)$/i.test(item.file.name)) || !item.file.size || item.file.size > messages.maxBytes) item.state = 'invalid';
                 state.textContent = item.state === 'invalid' ? messages.invalid : messages.ready;
                 row.append(label, state); list.append(row);
             });
@@ -69,7 +69,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         const html = new DOMParser().parseFromString(await response.text().catch(() => ''), 'text/html');
                         const count = html.querySelector('.fw-recovery-count');
                         const current = document.querySelector('.fw-recovery-count');
-                        if (count && current) current.textContent = count.textContent;
+                        if (count && current) {
+                            current.textContent = count.textContent;
+                            current.setAttribute('aria-label', count.getAttribute('aria-label') || count.textContent);
+                        } else if (count) {
+                            const label = document.querySelector('.fw-unfiled > span:not(.dashicons)');
+                            if (label) label.append(count.cloneNode(true));
+                        } else if (current) current.remove();
                     } catch {
                         item.state = 'failed'; item.output.textContent = messages.failed;
                         globalThis.FileWardenNotices?.show({ type: 'error', title: messages.failedTitle, message: messages.failed });

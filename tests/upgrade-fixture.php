@@ -28,7 +28,7 @@ if ( 'before' === getenv( 'FILEWARDEN_UPGRADE_STAGE' ) ) {
     WP_CLI::success( 'Previous release ZIP activated and persistent upgrade fixture saved.' );
 } else {
     $before = json_decode( file_get_contents( $upgrade_file ), true );
-    if ( '6' !== get_option( 'filewarden_schema' ) || '0.1.15-dev' !== FILEWARDEN_VERSION ) { throw new RuntimeException( 'ZIP update did not install 0.1.15-dev and schema 6.' ); }
+    if ( '6' !== get_option( 'filewarden_schema' ) || '0.1.16-dev' !== FILEWARDEN_VERSION ) { throw new RuntimeException( 'ZIP update did not install 0.1.16-dev and schema 6.' ); }
     if (20 !== FileWarden\Notice::duration()) { throw new RuntimeException('ZIP update did not preserve the notification preference.'); }
     // Numeric options become strings when read back in a fresh WordPress process.
     foreach($before['settings'] as $key=>$value) { if((string)get_option($key)!==(string)$value) throw new RuntimeException('ZIP upgrade reset an existing setting: '.$key); }
@@ -56,6 +56,6 @@ if ( 'before' === getenv( 'FILEWARDEN_UPGRADE_STAGE' ) ) {
     ob_start();
     (new FileWarden\AdminWorkspace($service,new FileWarden\AdminController($service)))->render();
     $empty_workspace = ob_get_clean();
-    if (!str_contains($empty_workspace, 'fw-recovery-count">(0)</span>')) { throw new RuntimeException('Empty installed recovery counter did not explicitly show zero.'); }
+    if (str_contains($empty_workspace, 'fw-recovery-count')) { throw new RuntimeException('Empty installed recovery collection must not show a zero badge.'); }
     WP_CLI::success( 'Actual ZIP upgrade preserved document bytes, UUID, policies, folders and storage keys.' );
 }

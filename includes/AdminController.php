@@ -70,6 +70,7 @@ final class AdminController {
 			return;
 		}
 		wp_enqueue_style( 'filewarden-admin', plugins_url( 'assets/admin.css', FILEWARDEN_PATH . 'filewarden.php' ), array(), self::asset_version( 'assets/admin.css' ) );
+		wp_enqueue_style( 'filewarden-controls', plugins_url( 'assets/admin-controls.css', FILEWARDEN_PATH . 'filewarden.php' ), array( 'filewarden-admin' ), self::asset_version( 'assets/admin-controls.css' ) );
 		wp_enqueue_script( 'filewarden-notices', plugins_url( 'assets/notices.js', FILEWARDEN_PATH . 'filewarden.php' ), array(), self::asset_version( 'assets/notices.js' ), true );
 		wp_localize_script(
 			'filewarden-notices',
@@ -109,14 +110,16 @@ final class AdminController {
 			'filewarden-upload-queue',
 			'filewardenQueue',
 			array(
-				'maxBytes'    => min( (int) get_option( 'filewarden_upload_mb', 50 ) * MB_IN_BYTES, wp_max_upload_size() ),
-				'invalid'     => __( 'Invalid extension, empty file or size limit exceeded.', 'filewarden' ),
-				'ready'       => __( 'Ready for server validation', 'filewarden' ),
-				'sending'     => __( 'Uploading and validating…', 'filewarden' ),
-				'saved'       => __( 'Saved and verified', 'filewarden' ),
-				'failed'      => __( 'Upload failed. Check the file, permissions and connection, then retry.', 'filewarden' ),
-				'savedTitle'  => __( 'Document added', 'filewarden' ),
-				'failedTitle' => __( 'Document not added', 'filewarden' ),
+				'maxBytes'      => min( (int) get_option( 'filewarden_upload_mb', 50 ) * MB_IN_BYTES, wp_max_upload_size() ),
+				'allowAllTypes' => ImportPolicy::unrestricted(),
+				'kilobytes'     => __( 'KB', 'filewarden' ),
+				'invalid'       => __( 'Invalid extension, empty file or size limit exceeded.', 'filewarden' ),
+				'ready'         => __( 'Ready for server validation', 'filewarden' ),
+				'sending'       => __( 'Uploading and validating…', 'filewarden' ),
+				'saved'         => __( 'Saved and verified', 'filewarden' ),
+				'failed'        => __( 'Upload failed. Check the file, permissions and connection, then retry.', 'filewarden' ),
+				'savedTitle'    => __( 'Document added', 'filewarden' ),
+				'failedTitle'   => __( 'Document not added', 'filewarden' ),
 			)
 		);
 		wp_localize_script(
@@ -135,7 +138,14 @@ final class AdminController {
 		}
 		wp_enqueue_media();
 		wp_enqueue_script( 'filewarden-media', plugins_url( 'assets/media.js', FILEWARDEN_PATH . 'filewarden.php' ), array( 'media-views' ), self::asset_version( 'assets/media.js' ), true );
-		wp_localize_script( 'filewarden-media', 'filewardenMedia', array( 'types' => array_values( array_unique( DocumentService::TYPES ) ) ) );
+		wp_localize_script(
+			'filewarden-media',
+			'filewardenMedia',
+			array(
+				'types'         => array_values( array_unique( DocumentService::TYPES ) ),
+				'allowAllTypes' => ImportPolicy::unrestricted(),
+			)
+		);
 	}
 
 	/**
@@ -148,7 +158,7 @@ final class AdminController {
 	public function media_action( $actions, $post ) {
 		if ( current_user_can( 'filewarden_manage_settings' ) && current_user_can( 'filewarden_manage_permissions' )
 			&& current_user_can( 'filewarden_upload_files' ) && current_user_can( 'upload_files' )
-			&& current_user_can( 'edit_post', $post->ID ) && in_array( $post->post_mime_type, DocumentService::TYPES, true ) ) {
+			&& current_user_can( 'edit_post', $post->ID ) && ( ImportPolicy::unrestricted() || in_array( $post->post_mime_type, DocumentService::TYPES, true ) ) ) {
 			$url                   = add_query_arg(
 				array(
 					'page'     => 'filewarden',
@@ -406,16 +416,23 @@ final class AdminController {
 		if ( current_user_can( 'upload_files' ) ) {
 			echo '<label><input type="radio" name="source" value="import"' . checked( (bool) $title, true, false ) . '><span class="fw-action-icon fw-icon-library-big" aria-hidden="true"></span>' . esc_html__( 'From the Media Library', 'filewarden' ) . '</label>';
 		}
-		echo '</fieldset><fieldset data-filewarden-source="upload" class="fw-dropzone"><legend>' . esc_html__( 'Drop your documents here or select files', 'filewarden' ) . '</legend>';
-		echo '<p class="description">' . esc_html__( 'Accepted formats: PDF, JPEG, PNG, TXT, CSV, ZIP, DOCX, XLSX, PPTX, ODT, ODS and ODP. ZIPs are kept without extraction; macros and active content are refused.', 'filewarden' ) . '</p>';
+		echo '</fieldset>';
+		if ( ! ImportPolicy::unrestricted() ) {
+			echo '<aside class="fw-format-notice"><details><summary><span class="fw-action-icon fw-icon-info" aria-hidden="true"></span>' . esc_html__( 'Accepted formats', 'filewarden' ) . '</summary><div class="fw-format-tags">';
+			foreach ( array( 'PDF', 'JPEG', 'PNG', 'TXT', 'CSV', 'ZIP', 'DOCX', 'XLSX', 'PPTX', 'ODT', 'ODS', 'ODP' ) as $format ) {
+				echo '<span>' . esc_html( $format ) . '</span>';
+			}
+			echo '</div></details><p><span class="fw-action-icon fw-icon-shield-check" aria-hidden="true"></span>' . esc_html__( 'ZIPs are kept without extraction; macros and active content are refused.', 'filewarden' ) . '</p></aside>';
+		}
+		echo '<fieldset data-filewarden-source="upload" class="fw-dropzone"><legend>' . esc_html__( 'Drop your documents here or select files', 'filewarden' ) . '</legend>';
 		/* translators: %s: effective maximum file size. */
 		echo '<p>' . esc_html( sprintf( __( 'Maximum file size: %s. Saving is confirmed only after storage and destination verification.', 'filewarden' ), size_format( min( max( 1, (int) get_option( 'filewarden_upload_mb', 50 ) ) * MB_IN_BYTES, wp_max_upload_size() ) ) ) ) . '</p>';
-		echo '<p><label for="fw-file">' . esc_html__( 'File', 'filewarden' ) . '</label> <input type="file" id="fw-file" name="file" accept=".pdf,.jpg,.jpeg,.png,.txt,.csv,.zip,.docx,.xlsx,.pptx,.odt,.ods,.odp"></p><ul class="fw-upload-selection" aria-live="polite"></ul></fieldset>';
+		echo '<p><label for="fw-file">' . esc_html__( 'File', 'filewarden' ) . '</label> <input type="file" id="fw-file" name="file" ' . ( ImportPolicy::unrestricted() ? '' : 'accept=".pdf,.jpg,.jpeg,.png,.txt,.csv,.zip,.docx,.xlsx,.pptx,.odt,.ods,.odp"' ) . '></p><ul class="fw-upload-selection" aria-live="polite"></ul></fieldset>';
 		if ( current_user_can( 'upload_files' ) ) {
 			echo '<fieldset data-filewarden-source="import"><legend>' . esc_html__( 'Choose an existing document', 'filewarden' ) . '</legend>';
 			echo '<p>' . esc_html__( 'FileWarden creates a protected copy. The original stays in WordPress Media and may remain publicly accessible.', 'filewarden' ) . '</p>';
 			echo '<input type="hidden" id="fw-media-id" name="media_id" value="' . esc_attr( $title ? $id : 0 ) . '">';
-			echo '<p><button type="button" class="button" id="fw-media-picker">' . esc_html__( 'Choose a media file', 'filewarden' ) . '</button> <span id="fw-media-title" role="status">' . esc_html( $title ) . '</span></p></fieldset>';
+			echo '<p><button type="button" class="button fw-button-accent" id="fw-media-picker"><span class="fw-action-icon fw-icon-library-big" aria-hidden="true"></span>' . esc_html__( 'Choose a media file', 'filewarden' ) . '</button> <span id="fw-media-title" role="status">' . esc_html( $title ) . '</span></p></fieldset>';
 		}
 		$this->policy_fields( 'document', $folder );
 		echo '<p class="submit"><button class="button button-primary" type="submit" name="filewarden_save"><span class="fw-action-icon fw-icon-file-plus-2" aria-hidden="true"></span>' . esc_html__( 'Add to this folder', 'filewarden' ) . '</button></p>';

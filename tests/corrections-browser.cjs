@@ -32,7 +32,7 @@ module.exports=async({context,base,name})=>{
    const element=page.locator(selector);const url=await element.getAttribute(selector.endsWith('-css')?'href':'src');
    const response=await context.request.get(url);assert.equal(response.status(),200);
    const digest=crypto.createHash('sha256').update(await response.body()).digest('hex').slice(0,12);
-   assert.equal(new URL(url).searchParams.get('ver'),'0.1.15-dev-'+digest,'The loaded asset URL has no content digest');
+   assert.equal(new URL(url).searchParams.get('ver'),'0.1.16-dev-'+digest,'The loaded asset URL has no content digest');
   }
   const panel=page.locator('.fw-settings-layout>.fw-content');const before=await panel.boundingBox();
   await page.locator('[name=notification_seconds]').focus();

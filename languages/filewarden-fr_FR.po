@@ -1,1163 +1,1689 @@
 msgid ""
-msgstr "Content-Type: text/plain; charset=UTF-8\nLanguage: fr_FR\nPlural-Forms: nplurals=2; plural=(n > 1);\n"
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-11-15T10:29:20+00:00\n"
+"PO-Revision-Date: 2026-11-15T10:29:20+00:00\n"
+"Language: fr_FR\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
+#: includes/AdminWorkspace.php:415
 msgid "A file can restrict access, never broaden the access allowed by its folder. Global-read administrators remain an explicit exception."
 msgstr "Un fichier peut restreindre l’accès, jamais élargir celui autorisé par son dossier. Les administrateurs disposant du droit de lecture globale restent une exception explicite."
 
+#: includes/AdminWorkspace.php:254
 msgid "A file with this name already exists. Choose another name or destination."
 msgstr "Un fichier porte déjà ce nom. Choisissez un autre nom ou un autre dossier."
 
+#: includes/AdminWorkspace.php:232
 msgid "A file with this name exists. Rename it or cancel. Versions arrive in a later milestone."
 msgstr "Un fichier porte déjà ce nom. Renommez-le ou annulez. La gestion des versions sera ajoutée ultérieurement."
 
+#: includes/AdminWorkspace.php:566
 msgid "Access at destination"
 msgstr "Accès dans le dossier de destination"
 
+#: includes/AdminController.php:361
 msgid "Access policy"
 msgstr "Règle d’accès"
 
-msgid "Access rules"
-msgstr "Droits d’accès"
-
+#: includes/AdminWorkspace.php:230
+#: includes/AdminWorkspace.php:252
 msgid "Access rules saved. The most restrictive rules apply immediately."
 msgstr "Droits enregistrés. Les règles les plus restrictives s’appliquent immédiatement."
 
+#: includes/AccessSummary.php:29
+#: includes/AccessSummary.php:34
+#: includes/AccessSummary.php:40
+#: includes/AccessSummary.php:88
 msgid "Access unavailable"
 msgstr "Accès indisponible"
 
+#: includes/AdminWorkspace.php:345
+#: includes/TrashConsole.php:30
 msgid "Actions"
 msgstr "Actions"
 
+#: includes/AdminWorkspace.php:116
+#: includes/AdminWorkspace.php:184
 msgid "Add documents"
 msgstr "Ajouter des documents"
 
+#: includes/AdminController.php:438
 msgid "Add to this folder"
 msgstr "Ajouter dans ce dossier"
 
-msgid "All inherited rules apply together. Users with the global read capability can read all documents; this does not grant editing rights."
-msgstr "Toutes les règles héritées s’appliquent conjointement. Les utilisateurs disposant du droit de lecture globale peuvent consulter tous les documents ; cela ne donne pas de droits de modification."
-
+#: includes/AdminWorkspace.php:237
 msgid "Another operation is using this folder. Try again in a moment."
 msgstr "Une autre opération utilise ce dossier. Réessayez dans un instant."
 
+#: includes/AdminController.php:49
+#: includes/AuditConsole.php:42
+#: includes/AuditConsole.php:58
+#: includes/SettingsConsole.php:44
 msgid "Audit log"
 msgstr "Journal d’audit"
 
+#: includes/SettingsConsole.php:212
 msgid "Audit retention (days)"
 msgstr "Conservation du journal d’audit (jours)"
 
+#: includes/AccessSummary.php:26
+#: includes/AdminController.php:358
 msgid "Authenticated users"
 msgstr "Utilisateurs connectés"
 
+#: includes/AdminWorkspace.php:508
+#: includes/SettingsConsole.php:255
 msgid "Cancel"
 msgstr "Annuler"
 
+#: includes/AdminWorkspace.php:490
 msgid "Changing this folder immediately changes access to its documents. File-specific restrictions are preserved."
 msgstr "Modifier les droits du dossier modifie immédiatement l’accès à ses documents. Les restrictions propres à chaque fichier sont conservées."
 
+#: includes/AdminWorkspace.php:243
 msgid "Check the folder, access policy and form fields."
 msgstr "Vérifiez le dossier, la règle d’accès et les champs du formulaire."
 
-msgid "Choose a PDF, JPEG or PNG"
-msgstr "Choisir un PDF, JPEG ou PNG"
-
+#: includes/AdminController.php:133
 msgid "Choose a file from the Media Library first."
 msgstr "Choisissez d’abord un fichier dans la médiathèque."
 
+#: includes/AdminWorkspace.php:242
 msgid "Choose a local Media Library file that you are allowed to edit."
 msgstr "Choisissez un fichier local de la médiathèque que vous avez le droit de modifier."
 
+#: includes/AdminController.php:435
 msgid "Choose a media file"
 msgstr "Choisir dans la médiathèque"
 
+#: includes/AdminController.php:414
 msgid "Choose a source"
 msgstr "Source du document"
 
+#: includes/AdminWorkspace.php:184
 msgid "Choose a source, then check the destination and access rules."
 msgstr "Choisissez une source, puis vérifiez le dossier de destination et les droits d’accès."
 
-msgid "Choose a valid PDF, JPEG or PNG file."
-msgstr "Choisissez un fichier PDF, JPEG ou PNG valide."
-
+#: includes/AdminController.php:432
 msgid "Choose an existing document"
 msgstr "Choisir un document existant"
 
+#: includes/AdminWorkspace.php:454
 msgid "Close panel"
 msgstr "Fermer le panneau"
 
+#: includes/AdminController.php:103
 msgid "Close preview"
 msgstr "Fermer l’aperçu"
 
+#: includes/AdminWorkspace.php:577
 msgid "Confirm copy"
 msgstr "Confirmer la copie"
 
+#: includes/AdminWorkspace.php:577
 msgid "Confirm move"
 msgstr "Confirmer le déplacement"
 
+#: includes/AdminController.php:132
 msgid "Connection interrupted. Check the folder before retrying; the server may still be processing the file."
 msgstr "Connexion interrompue. Vérifiez le dossier avant de réessayer ; le serveur traite peut-être encore le fichier."
 
+#: includes/AdminWorkspace.php:377
+#: includes/Publisher.php:60
 msgid "Copy"
 msgstr "Copier"
 
+#: includes/Publisher.php:60
 msgid "Copy into the Elementor Shortcode widget"
 msgstr "À copier dans le widget Code court d’Elementor"
 
+#: includes/AdminController.php:169
 msgid "Copy to FileWarden"
 msgstr "Copier vers FileWarden"
 
+#: includes/AdminWorkspace.php:119
+#: includes/AdminWorkspace.php:163
+#: includes/AdminWorkspace.php:179
+#: includes/AdminWorkspace.php:193
+#: includes/AdminWorkspace.php:198
+#: includes/Publisher.php:25
 msgid "Create folder"
 msgstr "Créer un dossier"
 
+#: includes/AdminWorkspace.php:167
 msgid "Current folder"
 msgstr "Dossier actuel"
 
-msgid "Current folder access"
-msgstr "Droits du dossier actuel"
-
+#: includes/AdminController.php:334
+#: includes/AdminWorkspace.php:542
+#: includes/TrashConsole.php:72
 msgid "Destination folder"
 msgstr "Dossier de destination"
 
+#: includes/Publication.php:123
+#: includes/Publisher.php:44
 msgid "Detailed list"
 msgstr "Liste détaillée"
 
+#: includes/AdminWorkspace.php:205
 msgid "Development version. Validate deployment security before sharing confidential documents."
 msgstr "Version de développement. Validez la sécurité du déploiement avant de partager des documents confidentiels."
 
+#: includes/Publisher.php:42
 msgid "Display"
 msgstr "Affichage"
 
+#: includes/AdminWorkspace.php:345
+#: includes/AuditConsole.php:77
+#: includes/TrashConsole.php:30
 msgid "Document"
 msgstr "Document"
 
+#: includes/AdminWorkspace.php:454
 msgid "Document action"
 msgstr "Action sur le document"
 
+#: includes/AdminWorkspace.php:112
 msgid "Document library"
 msgstr "Bibliothèque de documents"
 
+#: includes/AdminController.php:102
 msgid "Document preview"
 msgstr "Aperçu du document"
 
+#: includes/AdminWorkspace.php:124
 msgid "Document tasks"
 msgstr "Gestion des documents"
 
+#: includes/AdminController.php:46
+#: includes/AdminWorkspace.php:114
+#: includes/AdminWorkspace.php:209
+#: includes/Publication.php:98
 msgid "Documents"
 msgstr "Documents"
 
+#: includes/Publication.php:98
 msgid "Documents at the root"
 msgstr "Documents à la racine"
 
+#: includes/AdminWorkspace.php:372
+#: includes/Publication.php:136
+#: includes/Viewer.php:32
 msgid "Download"
 msgstr "Télécharger"
 
+#: includes/AdminWorkspace.php:169
+#: includes/AdminWorkspace.php:375
 msgid "Edit access rules"
 msgstr "Modifier les droits"
 
+#: includes/AdminWorkspace.php:345
+#: includes/AdminWorkspace.php:467
 msgid "Effective access"
 msgstr "Accès effectif"
 
-msgid "Expired trashed files are permanently removed by scheduled cleanup. Active documents are never removed by this setting."
-msgstr "Les fichiers expirés dans la corbeille sont supprimés définitivement par le nettoyage planifié. Ce réglage ne supprime jamais les documents actifs."
-
+#: includes/AdminController.php:430
 msgid "File"
 msgstr "Fichier"
 
+#. translators: 1: document name, 2: destination path.
+#: includes/AdminWorkspace.php:272
+#, php-format
 msgid "File %1$s saved and verified in %2$s."
 msgstr "Fichier %1$s enregistré et vérifié dans %2$s."
 
+#: includes/AdminWorkspace.php:345
 msgid "File rule"
 msgstr "Règle du fichier"
 
+#: includes/AdminWorkspace.php:235
 msgid "FileWarden could not confirm that the document was recorded in the selected folder. Check the list before retrying."
 msgstr "FileWarden n’a pas pu confirmer l’enregistrement dans le dossier sélectionné. Vérifiez la liste avant de réessayer."
 
+#: includes/AdminController.php:433
 msgid "FileWarden creates a protected copy. The original stays in WordPress Media and may remain publicly accessible."
 msgstr "FileWarden crée une copie protégée. L’original reste dans la médiathèque WordPress et peut rester accessible publiquement."
 
+#: includes/Publication.php:59
 msgid "FileWarden documents"
 msgstr "Documents FileWarden"
 
-msgid "FileWarden folders are virtual. In managed mode, all encrypted files are stored in wp-content/filewarden-storage under opaque names."
-msgstr "Les dossiers FileWarden sont virtuels. En mode géré, tous les fichiers chiffrés sont stockés dans wp-content/filewarden-storage sous des noms opaques."
-
-msgid "FileWarden publication"
-msgstr "Publication FileWarden"
-
+#: includes/SettingsConsole.php:158
 msgid "FileWarden settings"
 msgstr "Réglages FileWarden"
 
+#: includes/AdminWorkspace.php:576
 msgid "Filename"
 msgstr "Nom du fichier"
 
+#: includes/AdminWorkspace.php:195
 msgid "Folder name"
 msgstr "Nom du dossier"
 
+#: includes/AdminWorkspace.php:482
 msgid "Folder restrictions:"
 msgstr "Restrictions du dossier :"
 
+#: includes/Publisher.php:36
 msgid "Folder to publish"
 msgstr "Dossier à publier"
 
-msgid "Folder unavailable."
-msgstr "Dossier indisponible."
-
+#: includes/AdminWorkspace.php:153
 msgid "Folders"
 msgstr "Dossiers"
 
+#: includes/AdminController.php:415
 msgid "From my computer"
 msgstr "Depuis mon ordinateur"
 
+#: includes/AdminController.php:417
 msgid "From the Media Library"
 msgstr "Depuis la médiathèque"
 
+#: includes/Publication.php:124
+#: includes/Publisher.php:45
 msgid "Grid"
 msgstr "Grille"
 
-msgid "Inherit follows the folder automatically. At the root, without a folder restriction, inherited documents are public."
-msgstr "« Hériter » suit automatiquement les droits du dossier. À la racine, sans restriction de dossier, les documents hérités sont publics."
-
+#: includes/AccessSummary.php:22
+#: includes/AdminController.php:355
 msgid "Inherit from folder"
 msgstr "Hériter du dossier"
 
-msgid "Inherited restrictions"
-msgstr "Restrictions héritées"
-
+#. translators: %s: effective maximum file size.
+#: includes/AdminController.php:429
+#, php-format
 msgid "Maximum file size: %s. Saving is confirmed only after storage and destination verification."
 msgstr "Taille maximale : %s. L’enregistrement est confirmé après vérification du stockage et de la destination."
 
+#: includes/AdminWorkspace.php:380
 msgid "More actions"
 msgstr "Autres actions"
 
+#: includes/AdminWorkspace.php:376
 msgid "Move"
 msgstr "Déplacer"
 
+#: includes/AdminWorkspace.php:378
+#: includes/AdminWorkspace.php:502
 msgid "Move to trash"
 msgstr "Mettre à la corbeille"
 
+#: includes/AdminWorkspace.php:402
+#: includes/Publication.php:148
 msgid "Next"
 msgstr "Suivant"
 
+#: includes/AdminWorkspace.php:241
 msgid "No complete upload was received. Select the file again and check the server upload limit."
 msgstr "Aucun envoi complet n’a été reçu. Sélectionnez à nouveau le fichier et vérifiez la limite d’envoi du serveur."
 
+#: includes/Publication.php:139
 msgid "No documents are visible in this folder."
 msgstr "Aucun document accessible ne correspond à votre recherche dans ce dossier."
 
+#: includes/AdminWorkspace.php:397
+#: includes/TrashConsole.php:53
 msgid "No documents match this view."
 msgstr "Aucun document dans cette vue."
 
+#: includes/AdminWorkspace.php:368
 msgid "Not public: restricted by its folder."
 msgstr "Non public : accès limité par le dossier."
 
+#: includes/AdminWorkspace.php:231
+#: includes/AdminWorkspace.php:249
+#: includes/AdminWorkspace.php:275
 msgid "Operation completed."
 msgstr "Opération terminée."
 
+#: includes/AdminWorkspace.php:233
 msgid "Operation refused or unavailable. Check permissions, inputs and storage configuration."
 msgstr "Opération refusée ou indisponible. Vérifiez les droits, les champs et la configuration du stockage."
 
+#: includes/AdminWorkspace.php:249
 msgid "Operation refused. Check your permissions, the destination, filename and storage settings."
 msgstr "Opération refusée. Vérifiez vos droits, la destination, le nom du fichier et les réglages de stockage."
 
+#: includes/AdminWorkspace.php:372
+#: includes/Publication.php:136
+#: includes/Publisher.php:60
 msgid "Preview"
 msgstr "Aperçu"
 
+#: includes/AdminWorkspace.php:401
+#: includes/Publication.php:145
 msgid "Previous"
 msgstr "Précédent"
 
+#: includes/AccessSummary.php:24
+#: includes/AccessSummary.php:103
+#: includes/AdminController.php:357
+#: includes/AdminWorkspace.php:481
 msgid "Public"
 msgstr "Public"
 
+#: includes/AdminController.php:47
+#: includes/Publisher.php:23
 msgid "Publication"
 msgstr "Publication"
 
+#: includes/AdminWorkspace.php:425
 msgid "Publish this folder"
 msgstr "Publier ce dossier"
 
-msgid "Recent audit events"
-msgstr "Événements récents du journal d’audit"
-
+#: includes/AdminWorkspace.php:374
+#: includes/AdminWorkspace.php:502
+#: includes/TrashConsole.php:35
+#: includes/TrashConsole.php:79
 msgid "Restore"
 msgstr "Restaurer"
 
+#: includes/AdminWorkspace.php:501
 msgid "Restore this file in its original folder with its existing rules."
 msgstr "Restaurez ce fichier dans son dossier d’origine, avec ses règles existantes."
 
+#: includes/AdminWorkspace.php:554
 msgid "Review destination"
 msgstr "Vérifier la destination"
 
+#: includes/AdminController.php:365
 msgid "Roles (only for selected-role policies)"
 msgstr "Rôles autorisés (uniquement pour la règle « Rôles sélectionnés »)"
 
-msgid "Root folder"
-msgstr "Racine"
-
+#: includes/AdminWorkspace.php:493
 msgid "Save access rules"
 msgstr "Enregistrer les droits"
 
+#: includes/SettingsConsole.php:222
 msgid "Save settings"
 msgstr "Enregistrer les réglages"
 
+#: includes/AdminWorkspace.php:343
+#: includes/Publication.php:121
 msgid "Search"
 msgstr "Rechercher"
 
+#: includes/AdminWorkspace.php:343
+#: includes/TrashConsole.php:27
 msgid "Search documents"
 msgstr "Rechercher des documents"
 
+#: includes/Publication.php:121
 msgid "Search documents…"
 msgstr "Rechercher des documents…"
 
+#: includes/AdminWorkspace.php:343
+#: includes/Publication.php:121
 msgid "Search this folder"
 msgstr "Rechercher dans ce dossier…"
 
+#: includes/AdminController.php:359
 msgid "Selected roles"
 msgstr "Rôles sélectionnés"
 
+#: includes/AccessSummary.php:38
 msgid "Selected roles:"
 msgstr "Rôles autorisés :"
 
+#: includes/AdminController.php:129
 msgid "Sending file…"
 msgstr "Envoi du fichier…"
 
+#: includes/AdminController.php:48
 msgid "Settings"
 msgstr "Réglages"
 
+#: includes/SettingsConsole.php:178
 msgid "Settings could not be saved."
 msgstr "Les réglages n’ont pas pu être enregistrés."
 
+#: includes/SettingsConsole.php:178
 msgid "Settings saved."
 msgstr "Réglages enregistrés."
 
-msgid "Show shortcode"
-msgstr "Afficher le code court"
-
+#: includes/AdminWorkspace.php:345
 msgid "Size"
 msgstr "Taille"
 
-msgid "Storage blocked."
-msgstr "Stockage bloqué."
-
+#: includes/AdminWorkspace.php:189
 msgid "Storage blocked. Check FileWarden settings before uploading."
 msgstr "Stockage indisponible. Consultez les réglages FileWarden avant d’ajouter un document."
 
-msgid "Storage diagnostics"
-msgstr "Diagnostic du stockage"
-
+#: includes/SettingsConsole.php:139
 msgid "Storage directory checks passed."
 msgstr "Vérifications du dossier de stockage réussies."
 
+#: includes/AdminWorkspace.php:234
 msgid "The file could not be written or read back from protected storage. No document was added."
 msgstr "Le fichier n’a pas pu être écrit ou relu depuis le stockage protégé. Aucun document n’a été ajouté."
 
+#: includes/AdminWorkspace.php:239
 msgid "The file is empty or exceeds the allowed upload size. Check FileWarden settings and your PHP upload limit."
 msgstr "Le fichier est vide ou dépasse la taille autorisée. Vérifiez les réglages FileWarden et la limite d’envoi PHP."
 
+#: includes/AdminWorkspace.php:566
 msgid "The file rule is preserved; inherited rules change with the destination. Moving or copying into a public folder can broaden access. Check this result before confirming."
 msgstr "La règle du fichier est conservée ; les restrictions héritées changent avec la destination. Un déplacement ou une copie vers un dossier public peut élargir l’accès. Vérifiez le résultat avant de confirmer."
 
+#: includes/AdminWorkspace.php:236
 msgid "The file was saved, but the audit entry could not be confirmed. Check the folder before retrying."
 msgstr "Le fichier a été enregistré, mais la trace d’audit n’a pas pu être confirmée. Vérifiez le dossier avant de réessayer."
 
+#: includes/AdminWorkspace.php:501
 msgid "The file will disappear from listings and its preview/download links will stop working. You can restore it from Trash before retention expires."
 msgstr "Le fichier disparaîtra des listes et ses liens d’aperçu et de téléchargement seront désactivés. Vous pourrez le restaurer depuis la corbeille avant la fin du délai de conservation."
 
-msgid "The most restrictive rules apply. A public file stays private inside a restricted folder. Users with global read access remain an explicit exception; this does not grant editing rights."
-msgstr "Les règles les plus restrictives s’appliquent. Un fichier « Public » reste restreint dans un dossier restreint. Les utilisateurs disposant de la lecture globale restent une exception explicite ; cela ne donne aucun droit de modification."
-
-msgid "The most restrictive rules apply: access must satisfy the file AND its folder. Public never overrides a restricted folder. Existing ancestor restrictions also remain in force."
-msgstr "Les règles les plus restrictives s’appliquent : il faut respecter les droits du fichier ET de son dossier. « Public » ne contourne jamais un dossier restreint. Les restrictions des dossiers ancêtres restent également applicables."
-
+#: includes/AdminController.php:131
 msgid "The server did not confirm saving the file. Check the folder before retrying. HTTP status:"
 msgstr "Le serveur n’a pas confirmé l’enregistrement. Vérifiez le dossier avant de réessayer. Statut HTTP :"
 
+#: includes/AdminWorkspace.php:256
 msgid "The source or destination rules changed. Review the destination again before confirming."
 msgstr "Les droits de la source ou de la destination ont changé. Vérifiez de nouveau la destination avant de confirmer."
 
+#: includes/AdminWorkspace.php:506
 msgid "This action is unavailable. Check permissions and select an available document or destination."
 msgstr "Cette action est indisponible. Vérifiez vos droits et choisissez un document ou une destination accessible."
 
+#: includes/AdminWorkspace.php:492
 msgid "This file cannot be made public here. Its folder is restricted. Selecting Public does not remove the folder restrictions: unauthorized visitors will still not see or download this file."
 msgstr "Ce fichier ne peut pas être rendu public ici : son dossier est restreint. Choisir « Public » ne supprime pas les restrictions du dossier. Les visiteurs non autorisés ne pourront ni voir ni télécharger ce fichier."
 
+#: includes/AdminWorkspace.php:492
 msgid "This folder cannot be made public while an ancestor is restricted. All ancestor restrictions remain in force."
 msgstr "Ce dossier ne peut pas devenir public tant qu’un dossier parent est restreint. Toutes les restrictions des dossiers parents restent applicables."
 
+#: includes/AdminWorkspace.php:210
 msgid "This folder or action is unavailable. Return to Documents and check your permissions."
 msgstr "Ce dossier ou cette action est indisponible. Revenez dans Documents et vérifiez vos droits."
 
+#: includes/AdminController.php:130
 msgid "Transfer complete. Encrypting and verifying the document in its destination folder…"
 msgstr "Transfert terminé. Chiffrement et vérification du document dans son dossier de destination…"
 
+#: includes/AdminWorkspace.php:122
+#: includes/TrashConsole.php:26
 msgid "Trash"
 msgstr "Corbeille"
 
+#. translators: %d: trash retention days.
+#: includes/AdminWorkspace.php:340
+#, php-format
 msgid "Trash for this folder. Restore files before %d days; expired files are permanently removed by scheduled cleanup."
 msgstr "Corbeille de ce dossier. Restaurez les fichiers avant %d jours ; les fichiers expirés sont supprimés définitivement par le nettoyage planifié."
 
+#: includes/SettingsConsole.php:212
 msgid "Trash retention (days)"
 msgstr "Conservation dans la corbeille (jours)"
 
-msgid "Type"
-msgstr "Type"
-
+#: includes/AdminWorkspace.php:366
+#: includes/AdminWorkspace.php:467
 msgid "Unavailable in trash"
 msgstr "Indisponible — dans la corbeille"
 
-msgid "Unexpected storage error."
-msgstr "Erreur de stockage inattendue."
-
+#: includes/SettingsConsole.php:212
 msgid "Upload limit (MB, also bounded by server limits)"
 msgstr "Limite d’envoi (Mo, également limitée par le serveur)"
 
+#: includes/AdminWorkspace.php:238
 msgid "You do not have permission to perform this operation."
 msgstr "Vous n’avez pas les droits nécessaires pour effectuer cette opération."
 
+#: includes/AdminController.php:369
 msgid "The most restrictive rules apply: those of the file and its folder. A Public file stays private when its folder is restricted."
 msgstr "Les règles les plus restrictives s’appliquent : celles du fichier et de son dossier. Un fichier « Public » reste privé si son dossier est restreint."
 
+#: includes/AdminController.php:371
 msgid "Inherit: automatically follow the folder rules."
 msgstr "Hériter : suivre automatiquement les droits du dossier."
 
-msgid "Limits and retention"
-msgstr "Limites et conservation"
-
+#: includes/AdminWorkspace.php:107
+#: includes/AdminWorkspace.php:160
+#: includes/DocumentCollection.php:52
 msgid "Documents to classify"
 msgstr "Documents à classer"
 
+#: includes/AdminWorkspace.php:107
 msgid "Your folders"
 msgstr "Vos dossiers"
 
+#: includes/AccessSummary.php:80
+#: includes/AdminWorkspace.php:160
+#: includes/AdminWorkspace.php:167
 msgid "Not published"
 msgstr "Non publié"
 
+#: includes/AdminWorkspace.php:172
 msgid "Delete folder"
 msgstr "Supprimer le dossier"
 
-msgid "Choose a folder or create your first folder to add documents."
-msgstr "Choisissez un dossier ou créez votre premier dossier pour ajouter des documents."
-
+#: includes/AdminWorkspace.php:356
 msgid "Recovered file: restrictions from its former folder remain in force after reclassification."
 msgstr "Fichier récupéré : les restrictions de son ancien dossier restent applicables après son reclassement."
 
+#: includes/AdminWorkspace.php:470
 msgid "Remove subfolders first. No files have been changed."
 msgstr "Supprimez d’abord les sous-dossiers. Aucun fichier n’a été modifié."
 
+#: includes/AdminWorkspace.php:473
 msgid "Delete this folder? Its files will be recovered in Documents to classify, unpublished and without automatic deletion. Existing file restrictions will be retained."
 msgstr "Supprimer ce dossier ? Ses fichiers seront récupérés dans Documents à classer, sans publication ni suppression automatique des fichiers actifs. Leurs restrictions seront conservées."
 
+#: includes/AdminWorkspace.php:474
 msgid "Confirm folder deletion"
 msgstr "Confirmer la suppression du dossier"
 
+#: includes/AuditConsole.php:43
 msgid "Recorded events"
 msgstr "Événements enregistrés"
 
+#: includes/AuditConsole.php:43
 msgid "Times shown in the site timezone:"
 msgstr "Horaires affichés dans le fuseau du site :"
 
+#: includes/AuditConsole.php:84
 msgid "No matching events."
 msgstr "Aucun événement correspondant."
 
+#: includes/AuditConsole.php:96
 msgid "Older events"
 msgstr "Événements précédents"
 
+#: includes/AuditConsole.php:97
 msgid "Filters and exports"
 msgstr "Filtres et exports"
 
+#: includes/AuditConsole.php:97
 msgid "Event type"
 msgstr "Type d’événement"
 
+#: includes/AuditConsole.php:97
 msgid "All events"
 msgstr "Tous les événements"
 
+#: includes/AuditConsole.php:105
 msgid "From"
 msgstr "Du"
 
+#: includes/AuditConsole.php:106
 msgid "Until"
 msgstr "Au"
 
+#: includes/AuditConsole.php:109
+#: includes/TrashConsole.php:30
 msgid "Apply filters"
 msgstr "Appliquer les filtres"
 
-msgid "Review purge"
-msgstr "Préparer la purge"
-
-msgid "Exports use the current filters. Export before purging if you need a copy."
-msgstr "Les exports utilisent les filtres actuels. Exportez avant la purge si vous souhaitez conserver une copie."
-
+#: includes/AuditConsole.php:156
 msgid "Irreversible purge"
 msgstr "Purge irréversible"
 
+#: includes/AuditConsole.php:156
 msgid "events selected. New events and purge traces are excluded."
 msgstr "événements sélectionnés. Les nouveaux événements et les traces de purge sont exclus."
 
+#: includes/AuditConsole.php:167
 msgid "I understand these events cannot be restored."
 msgstr "Je comprends que ces événements ne pourront pas être restaurés."
 
+#: includes/AuditConsole.php:167
 msgid "Permanently purge selected events"
 msgstr "Supprimer définitivement les événements sélectionnés"
 
+#: includes/AuditConsole.php:169
 msgid "Select between 1 and 10000 events by narrowing the filters."
 msgstr "Affinez les filtres pour sélectionner entre 1 et 10 000 événements."
 
+#: includes/AuditConsole.php:174
 msgid "Audit unavailable. Check your permissions and date filters."
 msgstr "Journal indisponible. Vérifiez vos droits et les dates sélectionnées."
 
+#: includes/AuditConsole.php:370
 msgid "Audit action refused. Review your filters, permissions and confirmation."
 msgstr "Action refusée. Vérifiez les filtres, vos droits et la confirmation."
 
+#: includes/AdminController.php:387
+#: includes/DocumentService.php:227
 msgid "No parent folder"
 msgstr "Aucun dossier parent"
 
+#: includes/Publication.php:114
 msgid "Folder navigation"
 msgstr "Navigation dans les dossiers"
 
+#: includes/Publication.php:201
 msgid "Temporarily unavailable"
 msgstr "Temporairement indisponible"
 
+#: includes/Publication.php:201
 msgid "Access not authorized"
 msgstr "Accès non autorisé"
 
+#: includes/Publication.php:201
 msgid "A reserved space"
 msgstr "Un espace réservé"
 
+#: includes/Publication.php:202
 msgid "Please try again later."
 msgstr "Veuillez réessayer plus tard."
 
+#: includes/Publication.php:202
 msgid "Your account cannot access this space, or it is no longer available."
 msgstr "Votre compte n’a pas accès à cet espace, ou celui-ci n’est plus disponible."
 
+#: includes/Publication.php:202
 msgid "Sign in to view the documents you are allowed to access."
 msgstr "Connectez-vous pour consulter les documents auxquels vous avez accès."
 
+#: includes/Publication.php:206
 msgid "Sign in"
 msgstr "Se connecter"
 
+#: includes/Publisher.php:25
 msgid "Create a folder before publishing documents."
 msgstr "Créez un dossier avant de publier des documents."
 
+#: includes/Publisher.php:52
 msgid "Unavailable space design"
 msgstr "Présentation d’un espace inaccessible"
 
+#: includes/Publisher.php:54
 msgid "Compact"
 msgstr "Compact"
 
+#: includes/Publisher.php:55
 msgid "Centered card"
 msgstr "Carte centrée"
 
+#: includes/Publisher.php:56
 msgid "Editorial banner"
 msgstr "Bandeau éditorial"
 
+#: includes/Publisher.php:60
 msgid "Update preview"
 msgstr "Actualiser l’aperçu"
 
+#: includes/Publisher.php:60
 msgid "Shortcode copied."
 msgstr "Code court copié."
 
+#: includes/Publisher.php:60
 msgid "Copy failed. Select the shortcode and copy it manually."
 msgstr "Échec de la copie. Sélectionnez le code court et copiez-le manuellement."
 
+#: includes/Publisher.php:60
 msgid "Preview anonymous unavailable state"
 msgstr "Simuler l’accès refusé à un visiteur"
 
+#: includes/Publisher.php:60
 msgid "The live preview uses your account permissions. Visitors may see fewer documents."
 msgstr "L’aperçu utilise les droits de votre compte. Les visiteurs peuvent voir moins de documents."
 
+#: includes/Publisher.php:60
 msgid "Loading preview…"
 msgstr "Chargement de l’aperçu…"
 
+#: includes/Publisher.php:60
 msgid "Preview updated."
 msgstr "Aperçu actualisé."
 
+#: includes/AuditConsole.php:35
 msgid "Selected events purged. A purge trace has been retained."
 msgstr "Événements sélectionnés supprimés. Une trace de la purge a été conservée."
 
+#: includes/Publisher.php:60
 msgid "Preview unavailable. Change a setting to retry."
 msgstr "Aperçu indisponible. Modifiez un paramètre pour réessayer."
 
+#: includes/AuditConsole.php:45
 msgid "Simplified"
 msgstr "Simplifiée"
 
+#: includes/AuditConsole.php:46
 msgid "Technical"
 msgstr "Technique"
 
+#: includes/AuditConsole.php:43
 msgid "Event display mode"
 msgstr "Mode d’affichage des événements"
 
+#: includes/AuditConsole.php:103
 msgid "Advanced filters"
 msgstr "Filtres avancés"
 
+#: includes/AuditConsole.php:103
 msgid "WordPress username"
 msgstr "Identifiant WordPress"
 
+#: includes/AuditConsole.php:117
 msgid "Reset"
 msgstr "Réinitialiser"
 
+#. translators: %s: export format (CSV, TXT, or JSONL).
+#: includes/AuditConsole.php:138
+#, php-format
 msgid "Preparing your %s download…"
 msgstr "Préparation du téléchargement %s…"
 
+#. translators: %s: export format (CSV, TXT, or JSONL).
+#: includes/AuditConsole.php:140
+#, php-format
 msgid "Download %s audit file"
 msgstr "Télécharger le fichier d’audit %s"
 
+#: includes/AuditConsole.php:63
 msgid "Unavailable"
 msgstr "Indisponible"
 
+#. translators: 1: WordPress account login; 2: numeric WordPress user ID.
+#: includes/AuditConsole.php:71
+#, php-format
 msgid "%1$s · WordPress user #%2$d"
 msgstr "%1$s · compte WordPress n°%2$d"
 
+#. translators: %d: numeric WordPress user ID.
+#: includes/AuditConsole.php:74
+#, php-format
 msgid "WordPress user #%d"
 msgstr "Compte WordPress n°%d"
 
-msgid "Record #%1$d · related ID or count #%2$d"
-msgstr "Événement n°%1$d · identifiant lié ou nombre n°%2$d"
-
+#: includes/AuditConsole.php:272
+#: includes/Publisher.php:60
 msgid "Access denied"
 msgstr "Accès refusé"
 
+#: includes/AdminController.php:121
+#: includes/AdminWorkspace.php:288
+#: includes/AuditConsole.php:273
 msgid "Document added"
 msgstr "Document ajouté"
 
+#: includes/AdminWorkspace.php:287
+#: includes/AuditConsole.php:286
 msgid "Folder created"
 msgstr "Dossier créé"
 
+#: includes/AuditConsole.php:289
 msgid "Settings changed"
 msgstr "Réglages modifiés"
 
+#: includes/AuditConsole.php:290
 msgid "Audit export requested"
 msgstr "Export du journal demandé"
 
+#: includes/AuditConsole.php:291
 msgid "Audit events purged"
 msgstr "Événements du journal purgés"
 
+#: includes/AuditConsole.php:296
 msgid "Folder deleted; documents recovered"
 msgstr "Dossier supprimé ; documents récupérés"
 
+#: includes/AuditConsole.php:274
 msgid "Document permission change requested"
 msgstr "Modification des droits du document demandée"
 
+#: includes/AuditConsole.php:275
 msgid "Document permissions changed"
 msgstr "Droits du document modifiés"
 
+#: includes/AuditConsole.php:276
 msgid "Document move requested"
 msgstr "Déplacement du document demandé"
 
+#: includes/AdminWorkspace.php:290
+#: includes/AuditConsole.php:277
 msgid "Document moved"
 msgstr "Document déplacé"
 
+#: includes/AuditConsole.php:278
 msgid "Document copy requested"
 msgstr "Copie du document demandée"
 
+#: includes/AdminWorkspace.php:291
+#: includes/AuditConsole.php:279
 msgid "Document copied"
 msgstr "Document copié"
 
+#: includes/AuditConsole.php:280
 msgid "Document removal requested"
 msgstr "Mise à la corbeille du document demandée"
 
+#: includes/AdminWorkspace.php:292
+#: includes/AuditConsole.php:281
 msgid "Document moved to trash"
 msgstr "Document placé dans la corbeille"
 
+#: includes/AuditConsole.php:282
 msgid "Document restoration requested"
 msgstr "Restauration du document demandée"
 
+#: includes/AdminWorkspace.php:293
+#: includes/AuditConsole.php:283
 msgid "Document restored"
 msgstr "Document restauré"
 
+#: includes/AuditConsole.php:284
 msgid "Document purge requested"
 msgstr "Purge définitive du document demandée"
 
+#: includes/AuditConsole.php:285
 msgid "Document permanently deleted"
 msgstr "Document définitivement supprimé"
 
+#: includes/AuditConsole.php:287
 msgid "Folder creation requested"
 msgstr "Création du dossier demandée"
 
+#: includes/AuditConsole.php:288
 msgid "Folder deletion requested"
 msgstr "Suppression du dossier demandée"
 
+#: includes/AuditConsole.php:292
 msgid "Document preview requested"
 msgstr "Aperçu du document demandé"
 
+#: includes/AuditConsole.php:293
 msgid "Document download started"
 msgstr "Téléchargement du document commencé"
 
+#: includes/AuditConsole.php:294
 msgid "Document metadata requested"
 msgstr "Métadonnées du document demandées"
 
+#: includes/AuditConsole.php:295
 msgid "Document upload requested"
 msgstr "Ajout du document demandé"
 
+#: includes/AuditConsole.php:301
 msgid "Document upload failed"
 msgstr "Échec de l’ajout du document"
 
-msgid "No authenticated WordPress account (ID 0)"
-msgstr "Aucun compte WordPress authentifié (ID 0)"
-
+#: includes/AuditConsole.php:119
 msgid "Export events"
 msgstr "Exporter les événements"
 
+#: includes/AuditConsole.php:119
 msgid "Exports use all events matching the applied filters, regardless of the current page or display mode."
 msgstr "Les exports incluent tous les événements correspondant aux filtres appliqués, quelle que soit la page ou le mode d’affichage."
 
+#: includes/AuditConsole.php:143
 msgid "Audit maintenance"
 msgstr "Maintenance du journal"
 
+#: includes/AuditConsole.php:143
 msgid "Export the selected events before purging if you need a copy."
 msgstr "Exportez les événements sélectionnés avant la purge si vous souhaitez en conserver une copie."
 
+#: includes/AuditConsole.php:152
 msgid "Prepare purge"
 msgstr "Préparer la purge"
 
+#: includes/AuditConsole.php:141
 msgid "File received. Your browser has been asked to download it."
 msgstr "Fichier reçu. Le téléchargement a été demandé à votre navigateur."
 
+#: includes/AuditConsole.php:141
 msgid "Download failed. Check your connection and permissions, then retry."
 msgstr "Échec du téléchargement. Vérifiez votre connexion et vos droits, puis réessayez."
 
+#: includes/AdminController.php:79
 msgid "Dismiss notification"
 msgstr "Fermer la notification"
 
+#: includes/AdminController.php:116
 msgid "Invalid extension, empty file or size limit exceeded."
 msgstr "Extension invalide, fichier vide ou taille maximale dépassée."
 
+#: includes/AdminController.php:117
 msgid "Ready for server validation"
 msgstr "Prêt pour la validation du serveur"
 
+#: includes/AdminController.php:118
 msgid "Uploading and validating…"
 msgstr "Téléversement et validation…"
 
+#: includes/AdminController.php:119
 msgid "Saved and verified"
 msgstr "Enregistré et vérifié"
 
+#: includes/AdminController.php:120
 msgid "Upload failed. Check the file, permissions and connection, then retry."
 msgstr "Échec de l’ajout. Vérifiez le fichier, les droits et la connexion, puis réessayez."
 
+#: includes/AdminController.php:334
 msgid "Parent folder"
 msgstr "Dossier parent"
 
+#: includes/AdminController.php:387
+#: includes/AdminWorkspace.php:547
 msgid "Documents to classify — Not published"
 msgstr "Documents à classer — Non publié"
 
+#: includes/AdminController.php:427
 msgid "Drop your documents here or select files"
 msgstr "Glissez vos documents ici ou sélectionnez des fichiers"
 
+#: includes/AdminWorkspace.php:197
 msgid "The parent folder rules will be inherited according to FileWarden permissions."
 msgstr "Les droits du dossier parent seront hérités selon les règles FileWarden."
 
+#: includes/AdminWorkspace.php:225
 msgid "File refused: unsafe content or archive limits exceeded. Scripts, macros, encrypted and nested archives are not accepted."
 msgstr "Fichier refusé : contenu dangereux ou limites des archives dépassées. Les scripts, macros et archives chiffrées ou imbriquées sont refusés."
 
+#: includes/AdminWorkspace.php:226
 msgid "Secure file inspection is unavailable. Ask your host to check PHP ZIP, XML support and the private temporary directory."
 msgstr "Le contrôle sécurisé des fichiers est indisponible. Demandez à votre hébergeur de vérifier PHP ZIP, XML et le dossier temporaire privé."
 
+#: includes/AdminWorkspace.php:227
 msgid "Remove the subfolders first. The folder and its documents were preserved."
 msgstr "Supprimez d’abord les sous-dossiers. Le dossier et ses documents ont été conservés."
 
+#: includes/AdminWorkspace.php:228
 msgid "Folder deletion requires transactional database tables (InnoDB). Ask your host to check the three FileWarden tables. No folder was deleted."
 msgstr "La suppression exige des tables de base de données transactionnelles (InnoDB). Demandez à votre hébergeur de vérifier les trois tables FileWarden. Aucun dossier n’a été supprimé."
 
+#: includes/AdminWorkspace.php:229
 msgid "Folder recovery could not be completed. The transaction was rolled back; check the database and retry."
 msgstr "La récupération du dossier n’a pas pu aboutir. La transaction a été annulée ; vérifiez la base de données et réessayez."
 
+#: includes/AdminWorkspace.php:556
 msgid "Classify later"
 msgstr "Classer plus tard"
 
+#: includes/AdminWorkspace.php:564
 msgid "Remove this document from publication?"
 msgstr "Retirer ce document de la publication ?"
 
+#: includes/AdminWorkspace.php:564
 msgid "The document will no longer be accessible from FileWarden publications. It will remain available in Documents to classify for authorized users."
 msgstr "Le document ne sera plus accessible depuis les publications FileWarden. Il restera disponible dans Documents à classer pour les utilisateurs autorisés."
 
+#: includes/AdminWorkspace.php:577
 msgid "Confirm classification"
 msgstr "Confirmer le déplacement"
 
+#: includes/AuditConsole.php:68
 msgid "Visitor not logged in"
 msgstr "Visiteur non connecté"
 
+#: includes/AuditConsole.php:68
 msgid "System action"
 msgstr "Action système"
 
+#: includes/AuditConsole.php:68
 msgid "Unknown legacy actor"
 msgstr "Acteur historique non renseigné"
 
+#: includes/AuditConsole.php:270
 msgid "Folder permission change requested"
 msgstr "Modification des droits du dossier demandée"
 
+#: includes/AuditConsole.php:271
 msgid "Folder permissions changed"
 msgstr "Droits du dossier modifiés"
 
+#: includes/Installer.php:25
 msgid "FileWarden currently supports single-site WordPress only."
 msgstr "FileWarden prend actuellement en charge uniquement WordPress en site unique."
 
+#: includes/ManagedStorage.php:33
 msgid "Enable the PHP Sodium extension for this site, then reload this page."
 msgstr "Activez l’extension PHP Sodium pour ce site, puis rechargez cette page."
 
+#: includes/ManagedStorage.php:36
 msgid "The FileWarden storage directory is a symbolic link. Use a regular directory."
 msgstr "Le dossier de stockage FileWarden est un lien symbolique. Utilisez un dossier ordinaire."
 
+#: includes/ManagedStorage.php:40
 msgid "PHP cannot create or write the FileWarden storage directory. Check the owner and permissions of wp-content and filewarden-storage with your host."
 msgstr "PHP ne peut pas créer le dossier de stockage FileWarden ou y écrire. Vérifiez avec votre hébergeur le propriétaire et les permissions de wp-content et filewarden-storage."
 
+#: includes/Plugin.php:35
 msgid "FileWarden requires reactivation to install its database schema."
 msgstr "FileWarden doit être réactivé pour installer son schéma de base de données."
 
+#: includes/Publisher.php:60
 msgid "Preview state"
 msgstr "État de l’aperçu"
 
+#: includes/Publisher.php:60
 msgid "Authorized display"
 msgstr "Affichage autorisé"
 
+#: includes/RestController.php:144
 msgid "Resource unavailable."
 msgstr "Ressource indisponible."
 
+#: includes/RestController.php:150
 msgid "Invalid input, file type or size."
 msgstr "Champ, type de fichier ou taille invalide."
 
+#: includes/RestController.php:156
 msgid "Rename the file or cancel. Version creation is not available yet."
 msgstr "Renommez le fichier ou annulez. La création de versions n’est pas encore disponible."
 
+#: includes/RestController.php:162
 msgid "Operation unavailable. Check FileWarden diagnostics."
 msgstr "Opération indisponible. Consultez le diagnostic FileWarden."
 
+#: includes/SettingsConsole.php:135
+#: includes/SettingsConsole.php:153
 msgid "Not verified"
 msgstr "Non vérifié"
 
+#: includes/SettingsConsole.php:154
 msgid "Verified"
 msgstr "Vérifié"
 
+#: includes/SettingsConsole.php:155
 msgid "Critical"
 msgstr "Critique"
 
+#: includes/SettingsConsole.php:159
 msgid "FileWarden health"
 msgstr "État de FileWarden"
 
+#: includes/SettingsConsole.php:159
+#: includes/SettingsConsole.php:164
 msgid "Storage"
 msgstr "Stockage"
 
+#: includes/SettingsConsole.php:164
 msgid "Configuration"
 msgstr "Configuration"
 
+#: includes/SettingsConsole.php:163
+#: includes/SettingsConsole.php:164
 msgid "Warning: server upload limits or ZIP support restrict available imports."
 msgstr "Avertissement : les limites du serveur ou la prise en charge ZIP restreignent les imports disponibles."
 
+#: includes/SettingsConsole.php:164
 msgid "Required upload capabilities are available."
 msgstr "Les capacités nécessaires à l’ajout de documents sont disponibles."
 
+#: includes/SettingsConsole.php:159
+#: includes/SettingsConsole.php:164
 msgid "Last check"
 msgstr "Dernière vérification"
 
+#: includes/SettingsConsole.php:24
 msgid "General"
 msgstr "Général"
 
+#: includes/SettingsConsole.php:29
 msgid "Storage and security"
 msgstr "Stockage et sécurité"
 
+#: includes/SettingsConsole.php:34
 msgid "Documents and limits"
 msgstr "Documents et limites"
 
+#: includes/SettingsConsole.php:39
 msgid "Retention"
 msgstr "Conservation"
 
+#: includes/SettingsConsole.php:181
 msgid "Settings categories"
 msgstr "Catégories de réglages"
 
+#: includes/SettingsConsole.php:191
 msgid "Single-site document management. Publishing and document permissions remain independent of these limits."
 msgstr "Gestion documentaire pour un site unique. La publication et les droits des documents restent indépendants de ces limites."
 
+#: includes/SettingsConsole.php:201
 msgid "Documents are stored separately from the plugin. Storage operations remain blocked until protection is verified."
 msgstr "Les documents sont stockés séparément de l’extension. Les opérations de stockage restent bloquées jusqu’à la vérification de leur protection."
 
+#: includes/SettingsConsole.php:217
 msgid "ZIP files remain downloadable archives; they are inspected but never extracted automatically."
 msgstr "Les fichiers ZIP restent des archives téléchargeables ; ils sont inspectés mais jamais extraits automatiquement."
 
+#: includes/SettingsConsole.php:217
 msgid "Executable files, active content, macros and unsafe archives are refused."
 msgstr "Les exécutables, contenus actifs, macros et archives dangereuses sont refusés."
 
+#: includes/SettingsConsole.php:219
 msgid "Open audit log"
 msgstr "Ouvrir le journal d’audit"
 
+#: includes/TrashConsole.php:27
 msgid "Global trash"
 msgstr "Corbeille globale"
 
+#: includes/TrashConsole.php:27
 msgid "All deleted documents you are allowed to manage. Automatic retention still applies."
 msgstr "Tous les documents supprimés que vous êtes autorisé à gérer. La conservation automatique reste applicable."
 
+#: includes/AuditConsole.php:77
+#: includes/TrashConsole.php:27
 msgid "Folder"
 msgstr "Dossier"
 
+#: includes/TrashConsole.php:27
 msgid "All folders"
 msgstr "Tous les dossiers"
 
+#: includes/TrashConsole.php:30
 msgid "Original location"
 msgstr "Emplacement d’origine"
 
+#: includes/TrashConsole.php:30
 msgid "Deleted on"
 msgstr "Date de suppression"
 
+#: includes/TrashConsole.php:33
 msgid "Unknown original location"
 msgstr "Emplacement d’origine inconnu"
 
+#: includes/TrashConsole.php:36
 msgid "Delete permanently"
 msgstr "Supprimer définitivement"
 
+#: includes/TrashConsole.php:63
 msgid "Empty trash"
 msgstr "Vider la corbeille"
 
+#: includes/TrashConsole.php:72
 msgid "The original folder is unavailable. Choose an authorized destination before restoring."
 msgstr "Le dossier d’origine n’est plus disponible. Choisissez une destination autorisée avant de restaurer."
 
+#: includes/TrashConsole.php:72
 msgid "Select a destination"
 msgstr "Sélectionner une destination"
 
+#: includes/TrashConsole.php:83
 msgid "Permanently delete these documents?"
 msgstr "Supprimer définitivement ces documents ?"
 
+#: includes/TrashConsole.php:83
 msgid "documents selected. This action cannot be undone."
 msgstr "documents sélectionnés. Cette action est irréversible."
 
+#: includes/TrashConsole.php:91
 msgid "I understand these documents cannot be restored."
 msgstr "Je comprends que ces documents ne pourront pas être restaurés."
 
+#: includes/TrashConsole.php:91
 msgid "Confirm permanent deletion"
 msgstr "Confirmer la suppression définitive"
 
+#: includes/Viewer.php:31
 msgid "Preview unavailable, access expired or document protected by a password. You can try downloading the document."
 msgstr "Aperçu indisponible, accès expiré ou document protégé par un mot de passe. Vous pouvez essayer de télécharger le document."
 
+#: includes/Viewer.php:31
+#: includes/Viewer.php:35
 msgid "Loading document…"
 msgstr "Chargement du document…"
 
+#: includes/Viewer.php:31
+#: includes/Viewer.php:33
 msgid "Page"
 msgstr "Page"
 
+#: includes/Viewer.php:32
 msgid "Document actions"
 msgstr "Actions du document"
 
+#: includes/Viewer.php:32
 msgid "Open in new tab"
 msgstr "Ouvrir dans un nouvel onglet"
 
+#: includes/Viewer.php:33
 msgid "Viewer controls"
 msgstr "Commandes de l’aperçu"
 
+#: includes/Viewer.php:33
 msgid "Previous page"
 msgstr "Page précédente"
 
+#: includes/Viewer.php:33
 msgid "Next page"
 msgstr "Page suivante"
 
+#: includes/Viewer.php:33
 msgid "Zoom"
 msgstr "Zoom"
 
+#: includes/Viewer.php:33
 msgid "Fit width"
 msgstr "Adapter à la largeur"
 
+#: includes/Viewer.php:35
 msgid "Enable JavaScript to use the viewer, or download the document."
 msgstr "Activez JavaScript pour utiliser l’aperçu, ou téléchargez le document."
 
+#: includes/SettingsConsole.php:169
 msgid "Server limits or missing PHP extensions restrict imports. Review Storage and security before uploading."
 msgstr "Les limites du serveur ou des extensions PHP manquantes restreignent les imports. Consultez Stockage et sécurité avant d’ajouter des fichiers."
 
+#: includes/TrashConsole.php:26
 msgid "Only authorized deleted documents are shown. Restoring requires an authorized destination."
 msgstr "Seuls les documents supprimés autorisés sont affichés. La restauration exige une destination autorisée."
 
+#: includes/AdminWorkspace.php:240
 msgid "Choose a valid PDF, JPEG, PNG, TXT, CSV, ZIP or supported macro-free Office document."
 msgstr "Choisissez un PDF, JPEG, PNG, TXT, CSV, ZIP ou document bureautique pris en charge sans macros et valide."
 
+#: includes/SettingsConsole.php:142
 msgid "Storage protection could not be verified. File operations remain blocked. Check your hosting configuration."
 msgstr "La protection du stockage n’a pas pu être vérifiée. Les opérations sur les fichiers restent bloquées. Vérifiez la configuration de votre hébergement."
 
+#: includes/AuditConsole.php:77
 msgid "Resource name unavailable"
 msgstr "Nom de la ressource indisponible"
 
+#: includes/AuditConsole.php:80
 msgid "Show technical details"
 msgstr "Afficher les détails techniques"
 
-msgid "Accepted formats: PDF, JPEG, PNG, TXT, CSV, ZIP, DOCX, XLSX, PPTX, ODT, ODS and ODP. ZIPs are kept without extraction; macros and active content are refused."
-msgstr "Formats acceptés : PDF, JPEG, PNG, TXT, CSV, ZIP, DOCX, XLSX, PPTX, ODT, ODS et ODP. Les ZIP sont conservés sans extraction ; les macros et contenus actifs sont refusés."
-
+#: includes/AdminWorkspace.php:296
+#: includes/Notice.php:28
 msgid "Operation completed"
 msgstr "Opération terminée"
 
+#: includes/AuditAppearance.php:26
+#: includes/Notice.php:29
 msgid "Information"
 msgstr "Information"
 
+#: includes/Notice.php:30
 msgid "Attention required"
 msgstr "Attention requise"
 
+#: includes/AdminWorkspace.php:258
+#: includes/Notice.php:31
 msgid "Operation unavailable"
 msgstr "Opération indisponible"
 
+#: includes/AdminController.php:80
 msgid "FileWarden notifications"
 msgstr "Notifications FileWarden"
 
+#: includes/AdminController.php:83
 msgid "Show other notifications"
 msgstr "Voir les autres notifications"
 
+#: includes/AdminController.php:84
 msgid "Show three notifications"
 msgstr "Afficher trois notifications"
 
+#: includes/AdminController.php:85
 msgid "Persistent notifications waiting"
 msgstr "Notifications persistantes en attente"
 
+#: includes/SettingsConsole.php:178
 msgid "Settings saved"
 msgstr "Réglages enregistrés"
 
+#: includes/SettingsConsole.php:178
 msgid "Settings not saved"
 msgstr "Réglages non enregistrés"
 
+#: includes/SettingsConsole.php:191
 msgid "Notifications"
 msgstr "Notifications"
 
+#: includes/SettingsConsole.php:191
 msgid "Automatic display duration"
 msgstr "Durée d’affichage automatique"
 
+#. translators: %d: notification duration in seconds.
+#: includes/SettingsConsole.php:194
+#, php-format
 msgid "%d seconds"
 msgstr "%d secondes"
 
+#: includes/SettingsConsole.php:196
 msgid "default"
 msgstr "par défaut"
 
+#: includes/SettingsConsole.php:199
 msgid "Set how long notifications remain visible before they disappear automatically."
 msgstr "Définissez la durée pendant laquelle les notifications restent visibles avant de disparaître automatiquement."
 
+#: includes/AdminWorkspace.php:177
 msgid "Open a folder"
 msgstr "Ouvrez un dossier"
 
+#: includes/AdminWorkspace.php:177
 msgid "Create your first folder"
 msgstr "Créez votre premier dossier"
 
+#: includes/AdminWorkspace.php:177
 msgid "Select a folder in the sidebar to view its documents or create a new folder."
 msgstr "Sélectionnez un dossier dans le menu latéral pour consulter ses documents ou créer un nouveau dossier."
 
+#: includes/AdminWorkspace.php:189
 msgid "Storage unavailable"
 msgstr "Stockage indisponible"
 
+#: includes/AdminController.php:122
 msgid "Document not added"
 msgstr "Document non ajouté"
 
+#: includes/AdminWorkspace.php:289
 msgid "Access rules saved"
 msgstr "Droits d’accès enregistrés"
 
+#: includes/AdminWorkspace.php:294
 msgid "Folder deleted"
 msgstr "Dossier supprimé"
 
+#: includes/AdminWorkspace.php:295
 msgid "Trash deletion completed"
 msgstr "Suppression définitive terminée"
 
+#. translators: %s: authorized folder name.
+#: includes/AdminWorkspace.php:319
+#, php-format
 msgid "Toggle subfolders: %s"
 msgstr "Déplier ou replier les sous-dossiers : %s"
 
+#: includes/AuditConsole.php:35
 msgid "Audit log purged"
 msgstr "Journal d’audit purgé"
 
+#: includes/AuditConsole.php:174
 msgid "Audit unavailable"
 msgstr "Journal indisponible"
 
+#: includes/Plugin.php:35
 msgid "FileWarden unavailable"
 msgstr "FileWarden indisponible"
 
+#: includes/AuditConsole.php:141
 msgid "Audit export"
 msgstr "Export du journal d’audit"
 
+#: includes/SettingsConsole.php:181
 msgid "Preferences"
 msgstr "Préférences"
 
+#: includes/SettingsConsole.php:25
 msgid "Personalize how FileWarden behaves."
 msgstr "Personnalisez le comportement de FileWarden."
 
+#: includes/SettingsConsole.php:30
 msgid "Keep your documents separate from the plugin code."
 msgstr "Gardez vos documents séparés du code de l’extension."
 
+#: includes/SettingsConsole.php:35
 msgid "Set document upload limits."
 msgstr "Définissez les limites de téléversement des documents."
 
+#: includes/SettingsConsole.php:40
 msgid "Choose how long deleted documents remain in the trash."
 msgstr "Définissez la durée de conservation des documents supprimés dans la corbeille."
 
+#: includes/SettingsConsole.php:45
 msgid "Choose how long recorded events are retained."
 msgstr "Définissez la durée de conservation des événements enregistrés."
 
+#: includes/AdminWorkspace.php:261
 msgid "The folder was deleted. Its documents remain in Documents to classify with their existing access restrictions."
 msgstr "Le dossier a été supprimé. Ses documents restent disponibles dans Documents à classer avec leurs restrictions d’accès existantes."
 
+#: includes/AdminWorkspace.php:263
 msgid "Folder not deleted"
 msgstr "Dossier non supprimé"
 
+#: includes/SettingsConsole.php:164
 msgid "Details"
 msgstr "Détails"
 
+#: includes/AuditAppearance.php:27
 msgid "Configuration and access"
 msgstr "Configuration et accès"
 
+#: includes/AuditAppearance.php:28
 msgid "Completed"
 msgstr "Effectué"
 
+#: includes/AuditAppearance.php:29
 msgid "Trash and deletion requests"
 msgstr "Corbeille et demandes de suppression"
 
+#: includes/AuditAppearance.php:30
 msgid "Deleted"
 msgstr "Supprimé"
 
+#: includes/AuditAppearance.php:31
 msgid "Error or refusal"
 msgstr "Erreur ou refus"
 
+#: includes/AuditAppearance.php:32
 msgid "Other event"
 msgstr "Autre événement"
 
+#: includes/SettingsConsole.php:166
 msgid "Database attention required. Review Storage and security; folder deletion remains blocked until transactional tables are verified."
 msgstr "La base de données nécessite une intervention. Consultez Stockage et sécurité ; la suppression de dossier reste bloquée tant que les tables transactionnelles ne sont pas vérifiées."
 
+#: includes/SettingsConsole.php:174
 msgid "The three FileWarden tables use InnoDB. Their records and indexes were verified. Folder deletion can now be retried."
 msgstr "Les trois tables FileWarden utilisent InnoDB. Leurs données et index ont été vérifiés. Vous pouvez réessayer la suppression du dossier."
 
+#: includes/SettingsConsole.php:174
 msgid "Database verified"
 msgstr "Base de données vérifiée"
 
+#: includes/SettingsConsole.php:176
 msgid "Database repair could not be confirmed. No table was reset. A partial conversion may have occurred; review the database and retry the repair after checking your backup."
 msgstr "La réparation de la base n’a pas pu être confirmée. Aucune table n’a été réinitialisée. Une conversion partielle peut avoir eu lieu ; contrôlez la base et réessayez la réparation après vérification de votre sauvegarde."
 
+#: includes/SettingsConsole.php:176
 msgid "Database repair incomplete"
 msgstr "Réparation de la base incomplète"
 
+#: includes/SettingsConsole.php:264
 msgid "Transactional database tables"
 msgstr "Tables de base de données transactionnelles"
 
+#: includes/SettingsConsole.php:266
 msgid "The three FileWarden tables use InnoDB."
 msgstr "Les trois tables FileWarden utilisent InnoDB."
 
+#: includes/SettingsConsole.php:267
 msgid "Existing MyISAM tables prevent safe folder deletion. Convert the three FileWarden tables to InnoDB after backing up."
 msgstr "Les tables MyISAM existantes empêchent la suppression sécurisée des dossiers. Convertissez les trois tables FileWarden en InnoDB après sauvegarde."
 
+#: includes/SettingsConsole.php:268
 msgid "A FileWarden table is missing or its engine is unreadable. Ask your host to verify the installation before repairing."
 msgstr "Une table FileWarden est absente ou son moteur est illisible. Demandez à votre hébergeur de vérifier l’installation avant réparation."
 
+#: includes/SettingsConsole.php:269
 msgid "Table metadata could not be read. Ask your host to check database permissions. No engine change can be offered safely."
 msgstr "Les métadonnées des tables sont illisibles. Demandez à votre hébergeur de vérifier les permissions de la base. Aucun changement de moteur ne peut être proposé en sécurité."
 
+#: includes/SettingsConsole.php:270
 msgid "An unsupported database engine was found. Ask your host to review it; automatic conversion is unavailable."
 msgstr "Un moteur de base de données non pris en charge a été détecté. Demandez à votre hébergeur de le vérifier ; la conversion automatique est indisponible."
 
+#: includes/SettingsConsole.php:277
 msgid "A repair checkpoint remains. FileWarden writes are paused until the integrity check and repair succeed. Do not delete this checkpoint or reset the tables."
 msgstr "Un point de reprise de réparation subsiste. Les écritures FileWarden sont suspendues jusqu’à la réussite du contrôle d’intégrité et de la réparation. Ne supprimez pas ce point de reprise et ne réinitialisez pas les tables."
 
+#: includes/SettingsConsole.php:279
 msgid "Back up the complete database, encryption key and document storage first. Pause external writers and allow time and free disk space for the conversion. ALTER TABLE commits each table separately; a failed repair may need to be resumed. Document files are not moved."
 msgstr "Sauvegardez d’abord la base complète, la clé de chiffrement et le stockage documentaire. Suspendez les écritures externes et prévoyez du temps et de l’espace disque pour la conversion. ALTER TABLE valide chaque table séparément ; une réparation échouée peut devoir être reprise. Les fichiers des documents ne sont pas déplacés."
 
+#: includes/SettingsConsole.php:279
 msgid "I have a complete backup and have paused external writes for this maintenance operation."
 msgstr "Je dispose d’une sauvegarde complète et j’ai suspendu les écritures externes pour cette maintenance."
 
+#: includes/SettingsConsole.php:279
 msgid "Verify and repair database tables"
 msgstr "Vérifier et réparer les tables de la base"
 
+#: includes/AdminWorkspace.php:222
 msgid "FileWarden table metadata is unavailable. Review Storage and security. No folder was deleted."
 msgstr "Les métadonnées des tables FileWarden sont indisponibles. Consultez Stockage et sécurité. Aucun dossier n’a été supprimé."
 
+#: includes/AdminWorkspace.php:223
 msgid "A FileWarden database table is missing. Review Storage and security. No folder was deleted."
 msgstr "Une table de base de données FileWarden est absente. Consultez Stockage et sécurité. Aucun dossier n’a été supprimé."
 
+#: includes/AdminWorkspace.php:224
 msgid "Database repair is pending. FileWarden writes remain paused. Review Storage and security to resume verification."
 msgstr "Une réparation de la base est en attente. Les écritures FileWarden restent suspendues. Consultez Stockage et sécurité pour reprendre la vérification."
 
+#: includes/AuditConsole.php:266
 msgid "Database repair requested"
 msgstr "Réparation de la base demandée"
 
+#: includes/AuditConsole.php:267
 msgid "Database tables repaired and verified"
 msgstr "Tables de la base réparées et vérifiées"
+
+#. Plugin Name of the plugin
+#: filewarden.php
+msgid "FileWarden"
+msgstr "FileWarden"
+
+#. Description of the plugin
+#: filewarden.php
+msgid "Private document management for WordPress (pre-alpha foundation)."
+msgstr "Gestion documentaire privée pour WordPress (socle de développement)."
+
+#. Author of the plugin
+#: filewarden.php
+msgid "MikaPST"
+msgstr "MikaPST"
+
+#: includes/AdminController.php:421
+msgid "Accepted formats"
+msgstr "Formats acceptés"
+
+#: includes/AdminController.php:425
+msgid "ZIPs are kept without extraction; macros and active content are refused."
+msgstr "Les ZIP sont conservés sans extraction ; les macros et contenus actifs sont refusés."
+
+#: includes/AdminWorkspace.php:552
+msgid "No other destination folder is available. Create a folder or check your permissions."
+msgstr "Aucun autre dossier de destination n’est disponible. Créez un dossier ou vérifiez vos autorisations."
+
+#: includes/AuditConsole.php:268
+msgid "All file types enabled"
+msgstr "Tous les types de fichiers autorisés"
+
+#: includes/AuditConsole.php:269
+msgid "File type restrictions restored"
+msgstr "Restrictions sur les types de fichiers rétablies"
+
+#: includes/SettingsConsole.php:164
+msgid "Database"
+msgstr "Base de données"
+
+#: includes/SettingsConsole.php:164
+msgid "Operational — The three tables use InnoDB."
+msgstr "Opérationnelle — Les trois tables utilisent InnoDB."
+
+#: includes/SettingsConsole.php:164
+msgid "Attention required — Review Storage and security."
+msgstr "Intervention nécessaire — Consultez Stockage et sécurité."
+
+#: includes/SettingsConsole.php:166
+msgid "Review Storage and security"
+msgstr "Consulter Stockage et sécurité"
+
+#: includes/SettingsConsole.php:232
+msgid "Language"
+msgstr "Langue"
+
+#: includes/SettingsConsole.php:232
+msgid "FileWarden language"
+msgstr "Langue de FileWarden"
+
+#: includes/SettingsConsole.php:233
+msgid "Automatic — WordPress site language"
+msgstr "Automatique — langue du site WordPress"
+
+#: includes/SettingsConsole.php:236
+msgid "Choose the language of FileWarden interfaces and messages. Automatic mode uses English when the site language is unavailable."
+msgstr "Choisissez la langue des interfaces et des messages de FileWarden. En mode automatique, l’anglais est utilisé si la langue du site n’est pas disponible."
+
+#. translators: %s: native language name.
+#: includes/SettingsConsole.php:238
+#, php-format
+msgid "Language in use: %s"
+msgstr "Langue utilisée : %s"
+
+#: includes/SettingsConsole.php:244
+msgid "File types"
+msgstr "Types de fichiers"
+
+#: includes/SettingsConsole.php:244
+msgid "Allow all file types"
+msgstr "Autoriser tous les types de fichiers"
+
+#: includes/SettingsConsole.php:244
+msgid "Allow formats normally refused, including files containing macros or active content."
+msgstr "Permet l’ajout de formats normalement refusés, y compris les fichiers contenant des macros ou du contenu actif."
+
+#: includes/SettingsConsole.php:244
+msgid "Advanced option — disabled by default"
+msgstr "Option avancée — désactivée par défaut"
+
+#: includes/SettingsConsole.php:246
+msgid "All file types are allowed."
+msgstr "Tous les types de fichiers sont autorisés."
+
+#: includes/SettingsConsole.php:246
+msgid "Format and active-content restrictions are lifted. Check the origin of shared files."
+msgstr "La restriction sur les formats et contenus actifs est levée. Vérifiez la provenance des fichiers partagés."
+
+#: includes/SettingsConsole.php:248
+#: includes/SettingsConsole.php:255
+msgid "Some files may contain malicious programs, macros or scripts. Sharing and opening them can put users at risk."
+msgstr "Certains fichiers peuvent contenir des programmes malveillants, des macros ou des scripts. Leur partage et leur ouverture peuvent présenter un risque pour les utilisateurs."
+
+#: includes/SettingsConsole.php:248
+msgid "I understand the risks and confirm that I want to allow all file types."
+msgstr "Je comprends les risques et confirme vouloir autoriser tous les types de fichiers."
+
+#: includes/SettingsConsole.php:250
+msgid "Access rules, file-size limits and storage protection remain enforced."
+msgstr "Les droits d’accès, les limites de taille et la protection du stockage restent appliqués."
+
+#: includes/SettingsConsole.php:255
+msgid "Security confirmation"
+msgstr "Confirmation de sécurité"
+
+#: includes/SettingsConsole.php:255
+msgid "Allow all file types?"
+msgstr "Autoriser tous les types de fichiers ?"
+
+#: includes/SettingsConsole.php:255
+msgid "Enable this option only if you trust the origin of the files and understand the risks."
+msgstr "Activez cette option uniquement si vous maîtrisez la provenance des fichiers et les risques associés."
+
+#: includes/SettingsConsole.php:255
+msgid "After confirming, save the settings to apply your choice."
+msgstr "Après confirmation, enregistrez les réglages pour appliquer votre choix."
+
+#: includes/SettingsConsole.php:255
+msgid "Confirm activation"
+msgstr "Confirmer l’activation"
+
+#: includes/AdminController.php:115
+msgid "KB"
+msgstr "Ko"
+
+#. translators: %s: authorized document count in the recovery collection.
+#: includes/AdminWorkspace.php:152
+#, php-format
+msgid "%s document to classify"
+msgid_plural "%s documents to classify"
+msgstr[0] "%s document à classer"
+msgstr[1] "%s documents à classer"

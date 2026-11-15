@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.16-dev — 2026-11-15
+
+- Add global FileWarden language selection: site language by default, French/English catalogs and English fallback, without changing WordPress or other translation domains. Translate PHP, localized JavaScript, public library and viewer; preserve resource names and technical export keys.
+- Add an explicit confirmed and audited all-format import opt-in, disabled by default. Refused content becomes an opaque protected attachment without inline preview; retain provenance, path, size, authorization, encryption and integrity checks. Re-read the persisted setting under the write gate.
+- Align the official logo and wordmark above the unchanged page title; add a collapsed integrated formats notice, refined preview/download icons, turquoise navigation/search/media controls and quiet direct export controls.
+- Replace the recovery count parentheses with a nonzero solid badge; exclude the current move destination and hide redundant classify-later controls in recovery. Show a useful empty-destination state.
+- Keep active task underlines and settings selections Navy, isolate mouse states from WordPress profile colors and preserve visible keyboard focus. Move healthy database information into health details, retaining visible anomaly warnings and explicit repair.
+- Extend installed-ZIP security, locale, mobile, color-profile, HTTP and real multi-upload tests; check complete bundled translation catalogs and upgrade from five published versions. Preserve schema 6 and existing data.
+
+
 ## 0.1.15-dev — 2026-11-15
 
 - Require explicit InnoDB for newly created tables; provide a capability/nonce/backup-confirmed repair for existing MyISAM tables, with exact content/schema/index/collation/next-ID verification and resumable checkpoints. Never silently convert live tables on update.

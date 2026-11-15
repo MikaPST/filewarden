@@ -33,6 +33,7 @@ jobs:
       - run: composer lint
       - run: composer test
       - run: composer audit
+      - run: python3 tools/translation-catalogs.py --check
       - name: Build installable ZIP
         run: |
           if [[ "$GITHUB_REF_TYPE" == tag ]]; then
@@ -46,6 +47,38 @@ jobs:
           name: filewarden-development
           path: build/filewarden-*.zip
           if-no-files-found: error
+  fresh-install:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: disposable-db-password
+          MYSQL_DATABASE: filewarden_fresh
+        ports: ['3306:3306']
+        options: --health-cmd="mysqladmin ping -pdisposable-db-password" --health-interval=10s --health-timeout=5s --health-retries=10
+    env:
+      FILEWARDEN_TESTING: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mysqli, mbstring, fileinfo, zip, sodium
+          tools: wp-cli
+          coverage: none
+      - name: Verify empty installation defaults and destinations
+        run: |
+          mkdir -p /tmp/fw-fresh /tmp/fw-fresh-private
+          chmod 700 /tmp/fw-fresh-private
+          wp core download --path=/tmp/fw-fresh --version=6.8
+          wp config create --path=/tmp/fw-fresh --dbname=filewarden_fresh --dbuser=root --dbpass=disposable-db-password --dbhost=127.0.0.1:3306 --dbprefix=fwfresh_
+          wp config set FILEWARDEN_STORAGE_DIR /tmp/fw-fresh-private --path=/tmp/fw-fresh
+          wp config set FILEWARDEN_STORAGE_VERIFIED true --raw --path=/tmp/fw-fresh
+          wp core install --path=/tmp/fw-fresh --url=http://127.0.0.1:8080 --title=FileWarden --admin_user=fw_admin --admin_password=disposable-test-password --admin_email=admin@example.test --skip-email
+          php tools/build.php
+          wp plugin install "$GITHUB_WORKSPACE/build/$(basename build/filewarden-*.zip)" --activate --path=/tmp/fw-fresh
+          wp eval-file "$GITHUB_WORKSPACE/tests/fresh-install.php" --path=/tmp/fw-fresh
   integration:
     name: integration (WP ${{ matrix.wordpress }}, from ${{ matrix.previous.version }})
     runs-on: ubuntu-latest
@@ -58,6 +91,7 @@ jobs:
           - {version: '0.1.12-dev', schema: '5'}
           - {version: '0.1.13-dev', schema: '6'}
           - {version: '0.1.14-dev', schema: '6'}
+          - {version: '0.1.15-dev', schema: '6'}
     services:
       mysql:
         image: mysql:8.0
@@ -91,7 +125,9 @@ jobs:
           wp config set FILEWARDEN_STORAGE_DIR /tmp/fw-private --path=/tmp/fw-wordpress
           wp config set FILEWARDEN_STORAGE_VERIFIED true --raw --path=/tmp/fw-wordpress
           wp core install --path=/tmp/fw-wordpress --url=http://127.0.0.1:8080 --title=FileWarden --admin_user=fw_admin --admin_password=disposable-test-password --admin_email=admin@example.test --skip-email
-          wp language core install fr_FR --path=/tmp/fw-wordpress
+          wp language core install fr_FR de_DE fr_CA --path=/tmp/fw-wordpress
+          wp i18n make-pot "$GITHUB_WORKSPACE" /tmp/filewarden-current.pot --exclude=.tools,build,vendor,assets/pdfjs --skip-js --skip-audit
+          python3 tools/translation-catalogs.py --check --pot /tmp/filewarden-current.pot
           curl --fail --location --retry 3 https://github.com/MikaPST/filewarden/releases/download/v${{ matrix.previous.version }}/filewarden-${{ matrix.previous.version }}.zip -o /tmp/filewarden-${{ matrix.previous.version }}.zip
           curl --fail --location --retry 3 https://github.com/MikaPST/filewarden/releases/download/v${{ matrix.previous.version }}/filewarden-${{ matrix.previous.version }}.zip.sha256 -o /tmp/filewarden-${{ matrix.previous.version }}.zip.sha256
           (cd /tmp && sha256sum --check filewarden-${{ matrix.previous.version }}.zip.sha256)
@@ -115,6 +151,7 @@ jobs:
         run: |
           mkdir -p /tmp/fw-wordpress/wp-content/mu-plugins
           cp tests/corrections-http-fixture.php /tmp/fw-wordpress/wp-content/mu-plugins/filewarden-test-corrections.php
+          cp tests/v16-http-fixture.php /tmp/fw-wordpress/wp-content/mu-plugins/filewarden-test-v16.php
           php -S 127.0.0.1:8080 -t /tmp/fw-wordpress > /tmp/fw-http.log 2>&1 &
           server_pid=$!
           trap 'kill "$server_pid"' EXIT
@@ -125,10 +162,11 @@ jobs:
           python3 tests/http-smoke.py
           NODE_PATH=/tmp/fw-browser/node_modules node tests/viewer-browser.cjs
           wp user meta update fw_admin locale fr_FR --path=/tmp/fw-wordpress
+          wp option update WPLANG fr_FR --path=/tmp/fw-wordpress
           NODE_PATH=/tmp/fw-browser/node_modules node tests/french-browser.cjs
       - name: Preserve the exact ZIP installed and tested
         uses: actions/upload-artifact@v4
-        if: success() && matrix.wordpress == '6.8' && matrix.previous.version == '0.1.14-dev'
+        if: success() && matrix.wordpress == '6.8' && matrix.previous.version == '0.1.15-dev'
         with:
           name: filewarden-tested-candidate
           path: build/filewarden-*.zip

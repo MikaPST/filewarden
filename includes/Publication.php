@@ -103,7 +103,7 @@ final class Publication {
 		}
 		$assets = plugins_url( 'assets/', FILEWARDEN_PATH . 'filewarden.php' );
 		// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- Standalone private frame independent of theme hooks.
-		echo '<!doctype html><html lang="' . esc_attr( get_bloginfo( 'language' ) ) . '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>' . esc_html( $title ) . '</title><link rel="stylesheet" href="' . esc_url( $assets . 'publication.css?ver=' . FILEWARDEN_VERSION ) . '"></head><body><main><header><span class="eyebrow">FILEWARDEN</span><h1>' . esc_html( $title ) . '</h1></header>';
+		echo '<!doctype html><html lang="' . esc_attr( Language::html() ) . '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>' . esc_html( $title ) . '</title><link rel="stylesheet" href="' . esc_url( $assets . 'publication.css?ver=' . FILEWARDEN_VERSION ) . '"></head><body><main><header><span class="eyebrow">FILEWARDEN</span><h1>' . esc_html( $title ) . '</h1></header>';
 		$context = array(
 			'action' => 'filewarden_folder',
 			'root'   => $root_reference,
@@ -201,7 +201,7 @@ final class Publication {
 		$title     = $technical ? __( 'Temporarily unavailable', 'filewarden' ) : ( $logged_in ? __( 'Access not authorized', 'filewarden' ) : __( 'A reserved space', 'filewarden' ) );
 		$message   = $technical ? __( 'Please try again later.', 'filewarden' ) : ( $logged_in ? __( 'Your account cannot access this space, or it is no longer available.', 'filewarden' ) : __( 'Sign in to view the documents you are allowed to access.', 'filewarden' ) );
         // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- Standalone protected frame.
-		echo '<!doctype html><html lang="' . esc_attr( get_bloginfo( 'language' ) ) . '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>' . esc_html( $title ) . '</title><link rel="stylesheet" href="' . esc_url( plugins_url( 'assets/publication.css?ver=' . FILEWARDEN_VERSION, FILEWARDEN_PATH . 'filewarden.php' ) ) . '"></head><body><main class="fw-denied-wrap"><section class="fw-denied fw-denied-' . esc_attr( self::denied_style( $style ) ) . '"><div class="fw-denied-symbol" aria-hidden="true">&#128274;</div><div class="fw-denied-copy"><h1>' . esc_html( $title ) . '</h1><p>' . esc_html( $message ) . '</p>';
+		echo '<!doctype html><html lang="' . esc_attr( Language::html() ) . '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>' . esc_html( $title ) . '</title><link rel="stylesheet" href="' . esc_url( plugins_url( 'assets/publication.css?ver=' . FILEWARDEN_VERSION, FILEWARDEN_PATH . 'filewarden.php' ) ) . '"></head><body><main class="fw-denied-wrap"><section class="fw-denied fw-denied-' . esc_attr( self::denied_style( $style ) ) . '"><div class="fw-denied-symbol" aria-hidden="true">&#128274;</div><div class="fw-denied-copy"><h1>' . esc_html( $title ) . '</h1><p>' . esc_html( $message ) . '</p>';
 		if ( ! $technical && ! $logged_in ) {
 			echo '<a class="fw-login" target="_top" href="' . esc_url( wp_login_url( $return_url ) ) . '">' . esc_html__( 'Sign in', 'filewarden' ) . '</a>'; }
 		echo '</div></section></main></body></html>';

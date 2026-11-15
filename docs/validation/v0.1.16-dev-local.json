@@ -1,0 +1,62 @@
+{
+  "version": "0.1.16-dev",
+  "date": "2026-11-15",
+  "result": "pass",
+  "environment": {
+    "php": "8.2.35",
+    "database": "MariaDB 10.11.11",
+    "wordpress": [
+      "6.8",
+      "7.1.4"
+    ],
+    "playwright": "1.65.0",
+    "browsers": {
+      "Chromium": "158.0.8127.18",
+      "Firefox": "159.0"
+    },
+    "languages": [
+      "English",
+      "French"
+    ]
+  },
+  "archive": {
+    "files": 301,
+    "bytes": 4262265,
+    "sha256": "f35d8045bcb67c977c25bf94fb5fc662df1ada8e5d5e9eaf901562f4e2294d5c",
+    "verified_against": "Working sources and five isolated installed ZIPs, byte-for-byte"
+  },
+  "checks": {
+    "phpunit": {
+      "tests": 76,
+      "assertions": 140,
+      "result": "pass"
+    },
+    "javascript": {
+      "tests": 8,
+      "result": "pass"
+    },
+    "syntax": "pass (61 PHP files)",
+    "phpcs": "pass",
+    "composer_manifest": "valid",
+    "composer_audit": "no known advisories",
+    "sodium_fallback": "WordPress fallback boundaries/roundtrip/tampering passed",
+    "catalogs": "393 current source entries, FR/EN MO bytes, placeholders, plurals; verified against fresh official WP-CLI extraction",
+    "upgrades": "Actual published 0.1.15-dev ZIP -> final 0.1.16-dev ZIP on both WordPress versions; document bytes, UUIDs, policies, storage keys and settings retained",
+    "fresh_install": "InnoDB/default-off/automatic language, absent zero badge, first nonzero badge and empty move/copy destinations passed on isolated WordPress 6.8",
+    "integration_http": "All original suites plus confirmed opt-in, invalid inputs, capabilities/nonces, same opaque bytes, private ACL, attachment/nosniff/sandbox/no-store headers, preview refusal, size limits and strict restoration passed",
+    "browsers": "Complete installed-ZIP Chromium/Firefox EN/FR on both WordPress versions; real multi-upload, confirmation/cancel/Escape/save, profile colors, keyboard/tooltips, exports, health and 320/375px layouts passed",
+    "languages": "Explicit FR/EN, site/profile disagreement in auto, unsupported site fallback, French regional site, core isolation, public frame and localized JS passed"
+  },
+  "preliminary_failures": [
+    "Updated historical version and zero-counter assertions to the approved behavior.",
+    "Replaced broad option-cache invalidation with a prepared exact persisted opt-in read under the common gate.",
+    "Fixed export CSS specificity and kept the recovery badge beside its label; verified on replaced ZIPs and final complete runs.",
+    "Reproduced Firefox NS_BINDING_ABORTED for native WP users/me during rapid test navigation. Synchronized navigation/native requests; retained zero page-error assertion. Final fresh complete runs passed."
+  ],
+  "limits": [
+    "No target-host deployment or database migration",
+    "No complete human screen-reader review",
+    "PHP 8.3/8.4 and MySQL 8.0 pending GitHub CI at this local record",
+    "Development preview, no absolute security claim"
+  ]
+}

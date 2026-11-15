@@ -19,7 +19,7 @@ module.exports = async ({ page, context, base, fixture, name }) => {
         await row.locator('.fw-context summary').click();
         await go(row.getByRole('link', { name: label, exact: true }));
     };
-    const count = async () => Number((await page.locator('.fw-recovery-count').textContent()).match(/\d+/)[0]);
+    const count = async () => await page.locator('.fw-recovery-count').count() ? Number((await page.locator('.fw-recovery-count').textContent()).match(/\d+/)[0]) : 0;
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto(publicFolder);
     const originalCount = await count();

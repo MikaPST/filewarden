@@ -35,10 +35,54 @@
         });
     });
     select(links.find(link => link.hash === location.hash) || links[0]);
+    window.addEventListener('hashchange', () => {
+        const target = links.find(link => link.hash === location.hash);
+        if (target) select(target);
+    });
+    document.querySelectorAll('[data-fw-open-storage]').forEach(link => link.addEventListener('click', event => {
+        const target = links.find(item => item.dataset.settingsSection === 'storage');
+        if (target) { event.preventDefault(); target.click(); select(target, true); }
+    }));
     nav.closest('.fw-settings-layout').querySelector('form').addEventListener('invalid', event => {
         const panel = event.target.closest('.fw-settings-panel');
         const link = links.find(link => link.hash === '#' + panel?.id);
         if (link) select(link);
     }, true);
     nav.dataset.fwSettingsReady = 'true';
+})();
+
+/* A confirmation prepares the opt-in; only the nonce-protected save persists it. */
+(() => {
+    const checkbox = document.getElementById('fw-allow-all-types');
+    const dialog = document.querySelector('.fw-import-dialog');
+    if (!checkbox || !dialog) return;
+    const form = checkbox.form;
+    const confirmation = document.createElement('input');
+    confirmation.type = 'hidden'; confirmation.name = 'all_types_confirmed'; confirmation.value = '0';
+    form.append(confirmation);
+    const ask = () => {
+        checkbox.checked = false;
+        if (typeof dialog.showModal === 'function') {
+            dialog.returnValue = '';
+            dialog.showModal();
+        } else {
+            checkbox.checked = window.confirm(dialog.querySelector('#fw-import-dialog-description').textContent);
+            confirmation.value = checkbox.checked ? '1' : '0';
+        }
+    };
+    checkbox.addEventListener('change', () => {
+        if (checkbox.checked && checkbox.dataset.fwEnabled !== 'true' && confirmation.value !== '1') ask();
+        else if (!checkbox.checked) confirmation.value = '0';
+    });
+    dialog.querySelector('[data-fw-import-cancel]').addEventListener('click', () => dialog.close('cancel'));
+    dialog.querySelector('[data-fw-import-confirm]').addEventListener('click', () => dialog.close('confirm'));
+    dialog.addEventListener('close', () => {
+        checkbox.checked = dialog.returnValue === 'confirm';
+        confirmation.value = checkbox.checked ? '1' : '0';
+    });
+    form.addEventListener('submit', event => {
+        if (checkbox.checked && checkbox.dataset.fwEnabled !== 'true' && confirmation.value !== '1') {
+            event.preventDefault(); ask();
+        }
+    });
 })();

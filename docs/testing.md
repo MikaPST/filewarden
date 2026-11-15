@@ -1,5 +1,12 @@
 # Validation
 
+## Local acceptance — 0.1.16-dev, 2026-11-15
+
+The final 301-file ZIP passed fresh complete upgrade/integration/HTTP/Chromium/Firefox EN/FR acceptance on WordPress 6.8 and 7.1.4, PHP 8.2.35/MariaDB 10.11.11. Both runs upgraded the actual public 0.1.15-dev ZIP and preserved documents, policies, identities and settings. Fresh-install defaults/InnoDB and absent destinations were separately exercised. PHPUnit: 76 tests/140 assertions; JavaScript: eight tests; syntax, PHPCS, Composer validation/audit, WordPress Sodium fallback and 393 current FR/EN catalog entries passed. [Structured evidence](validation/v0.1.16-dev-local.json), [ten-point matrix](lot-v0.1.16-dev.md).
+
+Initial Firefox failures were reproduced as native WordPress users/me requests aborted by rapid test navigation. Tests now await native request completion and keep the zero-error assertion. Export surface specificity and narrow-column badge alignment were corrected and tested on the final ZIP. Catalog extraction uses official WP-CLI; check `python3 tools/translation-catalogs.py --check` for coverage/placeholder/plural/MO integrity. `tests/fresh-install.php` requires empty disposable plugin tables; never run it against a shared site. CI additionally covers PHP 8.3/8.4, MySQL 8.0 and ten upgrade combinations; its results remain separate from this local record. No target-host deployment or full human screen-reader acceptance is claimed.
+
+
 ## Published 0.1.15-dev — 2026-11-15
 
 The final annotated tag points to **cd9efd77db506e9067dff4296ed1f082238e078b**. [Main CI, 12 successful jobs](https://github.com/MikaPST/filewarden/actions/runs/43641557456) and [release workflow, 13 successful jobs](https://github.com/MikaPST/filewarden/actions/runs/43687379324) both passed on attempt 1. This supersedes pending statuses in the historical candidate records below.

@@ -45,7 +45,7 @@ module.exports=async({context,base,name})=>{
   assert.equal(await health.getAttribute('data-storage-status'),'verified');
   assert.equal(await health.locator('.fw-health-summary time').count(),1);
   await details.locator('summary').focus();await details.locator('summary').press('Enter');
-  assert.notEqual(await details.getAttribute('open'),null);assert.equal(await details.locator('dt').count(),3);
+  assert.notEqual(await details.getAttribute('open'),null);assert.equal(await details.locator('dt').count(),4);
   await details.locator('summary').press('Enter');
   await page.screenshot({path:`build/screenshots/v15-health-${name}.png`,fullPage:true});
   await page.goto(settings+'&result=database_repaired');assert.equal(await page.locator('.fw-notice-success').count(),0,'Forged repair URL claimed success');
@@ -65,7 +65,9 @@ module.exports=async({context,base,name})=>{
   assert.ok(await page.locator('.fw-notice-success').isVisible());await dismiss();
   await page.locator('[data-settings-section=storage]').click();
   assert.equal(await page.getByRole('button',{name:'Verify and repair database tables',exact:true}).count(),0);
-  assert.match(await page.locator('.fw-database-panel').textContent(),/InnoDB/);
+  assert.equal(await page.locator('.fw-database-panel').count(),0);
+  await page.locator('.fw-health-details summary').click();
+  assert.match(await page.locator('.fw-database-summary').textContent(),/InnoDB/);
   await page.goto(admin+'filewarden-audit');
   assert.ok(await page.locator('.fw-log-simple .fw-log-category').count()>0);
   const first=page.locator('.fw-log-simple').first();assert.equal(await first.locator('details summary').count(),1);

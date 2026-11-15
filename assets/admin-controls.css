@@ -1,0 +1,80 @@
+/* FileWarden controls own their states; never restyle WordPress outside the plugin. */
+.fw-workspace{--fw-control-soft:#f1f5f9;--fw-control-hover:#e2f2ef;--fw-control-border:var(--fw-brand-slate);--fw-recovery-tone:#805400}
+.fw-workspace .fw-heading-identity{display:block}
+.fw-workspace .fw-brand-row{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.fw-workspace .fw-brand-row .fw-brand{font-size:14px;line-height:1;font-weight:700;letter-spacing:2px}
+.fw-workspace .fw-brand-row .fw-brand-logo{width:14px;height:14px;object-fit:contain;flex:none}
+.fw-workspace .fw-heading h1{padding-top:0;margin-top:0}
+.fw-icon-search{--fw-action-icon:url('icons/search.svg')}
+.fw-icon-download{--fw-action-icon:url('icons/download.svg')}
+.fw-icon-eye{--fw-action-icon:url('icons/eye.svg')}
+.fw-icon-folder-check{--fw-action-icon:url('icons/folder-check.svg')}
+.fw-icon-languages{--fw-action-icon:url('icons/languages.svg')}
+.fw-icon-warning{--fw-action-icon:url('icons/triangle-alert.svg')}
+.fw-icon-scroll-text{--fw-action-icon:url('icons/scroll-text.svg')}
+.wp-core-ui .fw-workspace .button{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:38px;height:auto;max-width:100%;padding:8px 14px;border-radius:8px;line-height:1.5;font-weight:600;white-space:normal;text-shadow:none;box-shadow:none}
+.wp-core-ui .fw-workspace .button:not(.button-primary){color:var(--fw-brand-navy);background:var(--fw-brand-white);border-color:var(--fw-control-border)}
+.wp-core-ui .fw-workspace .button:not(.button-primary):hover{background:var(--fw-button-hover-bg,var(--fw-control-hover));color:var(--fw-button-hover-text,var(--fw-brand-navy));border-color:var(--fw-button-hover-border,var(--fw-control-border))}
+.wp-core-ui .fw-workspace .button-primary{background:var(--fw-action-primary);color:var(--fw-brand-white);border-color:var(--fw-action-primary)}
+.wp-core-ui .fw-workspace .button-primary:hover{background:var(--fw-brand-midnight);color:var(--fw-brand-white);border-color:var(--fw-brand-midnight)}
+.wp-core-ui .fw-workspace .button .fw-action-icon{margin:0;width:18px;height:18px}
+.wp-core-ui .fw-workspace .button.fw-button-accent{background:var(--fw-brand-turquoise);color:var(--fw-brand-navy);border-color:var(--fw-brand-slate)}
+.wp-core-ui .fw-workspace .button.fw-button-accent:hover{background:var(--fw-control-hover);color:var(--fw-brand-navy);border-color:var(--fw-brand-navy)}
+.wp-core-ui .fw-workspace .button.fw-export-button{background:var(--fw-control-soft);color:var(--fw-brand-navy);border-color:var(--fw-line)}
+.wp-core-ui .fw-workspace .button.fw-export-button:hover{background:var(--fw-control-hover);border-color:var(--fw-brand-slate)}
+.wp-core-ui .fw-workspace .button:is([href*="panel=folder_rights"],.fw-button-permissions),.wp-core-ui .fw-workspace form:has(input[value=folder_policy]) .button-primary,.wp-core-ui .fw-workspace form:has(input[value=document_policy]) .button-primary{background:var(--fw-action-permissions);border-color:var(--fw-action-permissions);color:var(--fw-brand-white)}
+.wp-core-ui .fw-workspace .button:is([href*="panel=delete_folder"],.fw-button-danger),.wp-core-ui .fw-workspace form:has(input[value=delete_folder]) .button-primary{background:var(--fw-action-danger);border-color:var(--fw-action-danger);color:var(--fw-brand-white)}
+.wp-core-ui .fw-workspace .button:is([href*="panel=delete_folder"],.fw-button-danger){--fw-button-hover-bg:var(--fw-action-danger);--fw-button-hover-border:var(--fw-action-danger);--fw-button-hover-text:var(--fw-brand-white)}
+.wp-core-ui .fw-workspace .button:is([href*="panel=folder_rights"],.fw-button-permissions){--fw-button-hover-bg:var(--fw-brand-navy);--fw-button-hover-border:var(--fw-brand-navy);--fw-button-hover-text:var(--fw-brand-white)}
+.wp-core-ui .fw-workspace .button:disabled,.wp-core-ui .fw-workspace .button[aria-disabled=true]{background:var(--fw-control-soft);color:var(--fw-action-permissions);border-color:var(--fw-line);opacity:.65;cursor:not-allowed}
+.wp-core-ui .fw-workspace :is(a,button,summary):focus:not(:focus-visible){outline:none;box-shadow:none}
+.wp-core-ui .fw-workspace :is(a,button,input,select,textarea,summary):focus-visible{outline:2px solid var(--fw-brand-navy);outline-offset:3px;box-shadow:none}
+.wp-core-ui .fw-workspace :is(input,select,textarea):focus{border-color:var(--fw-brand-navy);box-shadow:none}
+.wp-core-ui .fw-workspace input[type=radio]:checked::before{background-color:var(--fw-brand-navy)}
+.wp-core-ui .fw-workspace .filewarden-sources input[type=radio]:checked::before{background-color:var(--fw-brand-turquoise)}
+.wp-core-ui .fw-workspace .fw-settings-nav a[aria-selected=true]{background:var(--fw-brand-navy);color:var(--fw-brand-white);border:1px solid var(--fw-brand-navy);box-shadow:none}
+.wp-core-ui .fw-workspace .fw-settings-nav a{border:1px solid transparent;transition:background-color .12s ease,color .12s ease}
+.fw-workspace .fw-tabs a[aria-current]{border-bottom-color:var(--fw-brand-navy);color:var(--fw-brand-navy)}
+.fw-workspace .fw-tabs a:hover:not([aria-current]){background:var(--fw-control-hover);color:var(--fw-brand-navy)}
+.fw-workspace .fw-transfer-actions{display:grid;gap:10px}
+.wp-core-ui .fw-workspace .fw-transfer-actions .button{width:100%;margin:0}
+.fw-workspace .fw-classify-later .dashicons{font-size:18px;width:18px;height:18px;line-height:18px}
+.fw-workspace .fw-empty-destination{color:var(--fw-action-permissions)}
+.fw-workspace .fw-unfiled>span:not(.dashicons){display:flex;align-items:center;gap:6px;min-width:0}
+.fw-workspace .fw-recovery-count{display:inline-flex;align-items:center;justify-content:center;flex:none;min-width:22px;min-height:22px;padding:1px 6px;border-radius:999px;background:var(--fw-recovery-tone);color:var(--fw-brand-white);font-size:11px;font-weight:700;line-height:20px;vertical-align:middle}
+.fw-workspace .fw-format-notice{margin:0 0 20px;padding:14px 16px;background:var(--fw-control-soft);border-left:3px solid var(--fw-brand-turquoise);border-radius:0 9px 9px 0}
+.fw-workspace .fw-format-notice summary{font-weight:600;color:var(--fw-brand-navy);width:fit-content;cursor:pointer}
+.fw-workspace .fw-format-notice summary .fw-action-icon{margin-inline:5px 6px}
+.fw-workspace .fw-format-tags{display:flex;flex-wrap:wrap;gap:7px;padding-top:14px}
+.fw-workspace .fw-format-tags>span{padding:4px 9px;background:var(--fw-brand-white);color:var(--fw-brand-navy);border-radius:5px;font-size:12px;font-weight:600}
+.fw-workspace .fw-format-notice>p{display:flex;align-items:flex-start;gap:8px;color:var(--fw-action-permissions);font-size:12px;line-height:1.6;margin:12px 0 0}
+.fw-workspace .fw-format-notice>p .fw-action-icon{margin:1px 0 0;width:17px;height:17px}
+.wp-core-ui .fw-workspace .fw-row-actions .button{position:relative;overflow:visible;width:38px;min-width:38px;min-height:38px;padding:0;background:var(--fw-control-soft);color:var(--fw-brand-navy);border-color:transparent;flex:none}
+.wp-core-ui .fw-workspace .fw-row-actions .button:hover{background:var(--fw-control-hover)}
+.fw-workspace .fw-row-actions{gap:6px}
+.fw-workspace thead th:last-child{width:148px}
+.fw-workspace .fw-action-tooltip{display:none;position:absolute;z-index:10005;bottom:calc(100% + 7px);right:0;padding:5px 8px;max-width:200px;white-space:nowrap;pointer-events:none;background:var(--fw-brand-midnight);color:var(--fw-brand-white);border-radius:5px;font-size:11px;font-weight:400;line-height:1.5}
+.fw-workspace .fw-row-actions .button:hover .fw-action-tooltip,.fw-workspace .fw-row-actions .button:focus-visible .fw-action-tooltip{display:block}
+.fw-workspace .fw-language-settings h3{display:flex;gap:8px;align-items:center}
+.fw-workspace .fw-language-settings h3 .fw-action-icon{margin:0}
+.fw-workspace .fw-language-settings{padding-bottom:18px;margin-bottom:22px;border-bottom:1px solid var(--fw-line)}
+.fw-settings #fw-language{width:100%;max-width:470px;min-height:44px;padding:9px 12px;border:1px solid var(--fw-brand-slate);border-radius:8px}
+.fw-workspace .fw-language-current{font-size:12px;color:var(--fw-action-permissions)}
+.fw-workspace .fw-import-settings{margin-top:24px;padding-top:18px;border-top:1px solid var(--fw-line)}
+.fw-workspace .fw-import-option{border:1px solid var(--fw-line);padding:16px;border-radius:10px}
+.fw-workspace .fw-import-option label{display:flex;align-items:flex-start;gap:9px;line-height:1.6}
+.fw-workspace .fw-import-option input{margin:3px 0 0;flex:none}
+.fw-workspace .fw-import-option p{font-size:12px;line-height:1.65;color:var(--fw-action-permissions);margin:10px 0 0}
+.fw-workspace .fw-import-option .fw-import-caution,.fw-workspace .fw-import-caution{color:var(--fw-notice-warning,#925400)}
+.fw-workspace .fw-import-active{padding:13px 15px;background:#fff6e8;border-left:3px solid var(--fw-notice-warning,#925400);border-radius:0 8px 8px 0;color:var(--fw-notice-warning,#925400);line-height:1.65}
+.fw-workspace .fw-import-dialog{width:calc(100vw - 32px);max-width:510px;max-height:calc(100vh - 40px);padding:26px;background:var(--fw-brand-white);color:var(--fw-brand-navy);border:1px solid var(--fw-line);border-radius:15px;box-sizing:border-box;overflow:auto}
+.fw-workspace .fw-import-dialog::backdrop{background:#0b162c80}
+.fw-workspace .fw-import-dialog-heading{display:flex;align-items:center;gap:10px;color:var(--fw-notice-warning,#925400);text-transform:uppercase;font-size:11px;letter-spacing:.8px}
+.fw-workspace .fw-import-dialog-heading .fw-action-icon{width:22px;height:22px;margin:0}
+.fw-workspace .fw-import-dialog h2{font-size:23px;line-height:1.35;margin:18px 0 14px;color:var(--fw-brand-navy)}
+.fw-workspace .fw-import-dialog p{font-size:13px;line-height:1.7}
+.fw-workspace .fw-import-dialog .fw-import-caution{background:#fff6e8;padding:13px 15px;border-radius:8px}
+.fw-workspace .fw-import-dialog-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;margin-top:22px}
+@media(max-width:600px){.fw-workspace .fw-search{flex-wrap:wrap}.fw-workspace .fw-search .button{width:100%}.fw-workspace .fw-import-dialog{padding:20px}.fw-workspace .fw-import-dialog-actions{flex-direction:column-reverse}.fw-workspace .fw-import-dialog-actions .button{width:100%}}
+@media(pointer:coarse){.wp-core-ui .fw-workspace .button{min-height:44px}.wp-core-ui .fw-workspace .fw-row-actions .button{width:44px;min-width:44px;min-height:44px}.fw-workspace .fw-context>summary{width:44px;min-height:44px}.fw-workspace thead th:last-child{width:174px}.fw-workspace .fw-format-notice summary{min-height:44px}}
+@media(prefers-reduced-motion:reduce){.wp-core-ui .fw-workspace .fw-settings-nav a{transition:none}}

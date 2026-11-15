@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 	const picker = wp.media({
 		title: button.textContent,
-		library: { type: window.filewardenMedia?.types || ['application/pdf', 'image/jpeg', 'image/png'] },
+		library: window.filewardenMedia?.allowAllTypes ? {} : { type: window.filewardenMedia?.types || ['application/pdf', 'image/jpeg', 'image/png'] },
 		multiple: false
 	});
 	picker.on('select', () => {

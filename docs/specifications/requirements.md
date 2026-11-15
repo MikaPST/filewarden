@@ -62,3 +62,10 @@ Folder and document access rules can be changed after creation by an authorized 
 - Publication dynamique : liste/grille, choix compact/carte centrée/bandeau éditorial pour accès refusé, copie du code et aperçu. Carte centrée par défaut ; aucun nom privé dans l’erreur.
 - Réglages harmonisés et diagnostic visible ; audit en deux colonnes, filtres événement/date, exports CSV/TXT, purge irréversible confirmée, sans import.
 - Aucun tag ni release sans validation distincte du lot testé.
+
+
+## Approved additions — 0.1.16-dev
+
+The consolidated ten-point scope is docs/lot-v0.1.16-dev.md. Strict accepted formats remain the default. The owner-approved advanced exception requires a settings-capable user's confirmation and save, is disabled by default, and records enable/disable actors. Normally refused content can only be an opaque protected attachment without active preview; storage, provenance, path, size, integrity and access rules remain mandatory. WordPress Media upload restrictions remain unchanged.
+
+A global persistent FileWarden-only language preference supports automatic site language, French and English with English fallback. All plugin labels/messages/JavaScript/public interfaces use the selected catalog, with plural/placeholder support. WordPress and other plugins retain their own languages; user content and technical audit/export identifiers are unchanged. Future languages extend the central registry and bundled catalogs.

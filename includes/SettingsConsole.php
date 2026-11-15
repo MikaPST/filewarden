@@ -64,6 +64,7 @@ final class SettingsConsole {
 	 * @param AuditService $audit Audit persistence.
 	 * @throws \DomainException Without settings capability.
 	 * @throws \InvalidArgumentException For invalid values.
+	 * @throws \RuntimeException When settings persistence cannot be verified.
 	 */
 	public static function save( array $source, AuditService $audit ) {
 		if ( ! current_user_can( 'filewarden_manage_settings' ) ) {
@@ -83,11 +84,43 @@ final class SettingsConsole {
 				throw new \InvalidArgumentException( 'Invalid notification duration.' ); }
 			$values['filewarden_notification_seconds'] = $value;
 		}
+		if ( array_key_exists( 'language', $source ) ) {
+			$value = wp_unslash( $source['language'] );
+			if ( ! is_string( $value ) || ! in_array( $value, Language::choices(), true ) ) {
+				throw new \InvalidArgumentException( 'Invalid language.' );
+			}
+			$values['filewarden_language'] = $value;
+		}
+		if ( array_key_exists( 'allow_all_types', $source ) ) {
+			$value = wp_unslash( $source['allow_all_types'] );
+			if ( ! is_string( $value ) || ! in_array( $value, array( '0', '1' ), true ) ) {
+				throw new \InvalidArgumentException( 'Invalid import policy.' );
+			}
+			$values['filewarden_allow_all_types'] = $value;
+		}
 		if ( ! $values ) {
 			throw new \InvalidArgumentException( 'No settings submitted.' ); }
-		$audit->record( 'settings_changed' );
-		foreach ( $values as $name => $value ) {
-			update_option( $name, $value ); }
+		$repo = new Repository();
+		$lock = $repo->lock( 'settings' );
+		try {
+			$before = ImportPolicy::unrestricted( true );
+			$after  = isset( $values['filewarden_allow_all_types'] ) ? '1' === $values['filewarden_allow_all_types'] : $before;
+			if ( $after && ! $before && '1' !== ( $source['all_types_confirmed'] ?? null ) ) {
+				throw new \InvalidArgumentException( 'Import confirmation required.' );
+			}
+			$audit->record( 'settings_changed' );
+			foreach ( $values as $name => $value ) {
+				update_option( $name, $value );
+				if ( (string) get_option( $name ) !== (string) $value ) {
+					throw new \RuntimeException( 'Settings could not be saved.' );
+				}
+			}
+			if ( $before !== $after ) {
+				$audit->record( $after ? 'all_file_types_enabled' : 'all_file_types_disabled' );
+			}
+		} finally {
+			$repo->unlock( $lock );
+		}
 	}
 
 	/** Render real categories and health, without a security claim beyond the measured checks.
@@ -108,7 +141,10 @@ final class SettingsConsole {
 			$status  = str_contains( $error->getMessage(), 'verified' ) ? 'unverified' : 'critical';
 			$message = __( 'Storage protection could not be verified. File operations remain blocked. Check your hosting configuration.', 'filewarden' );
 		}
-		$checked = time();
+		$database       = DatabaseUpgrade::status();
+		$pending        = (bool) get_option( DatabaseUpgrade::CHECKPOINT );
+		$database_ready = 'ready' === $database['state'] && ! $pending;
+		$checked        = time();
 		update_option( 'filewarden_storage_checked_at', $checked, false );
 		$warning = ! class_exists( '\ZipArchive' ) || wp_max_upload_size() < (int) get_option( 'filewarden_upload_mb', 50 ) * MB_IN_BYTES;
 		if ( ! class_exists( '\DOMDocument' ) ) {
@@ -118,18 +154,17 @@ final class SettingsConsole {
 			'verified'   => __( 'Verified', 'filewarden' ),
 			'critical'   => __( 'Critical', 'filewarden' ),
 		);
-		echo '<div class="wrap fw-workspace fw-settings">';
+		echo '<div class="wrap fw-workspace fw-settings" lang="' . esc_attr( Language::html() ) . '">';
 		AdminBrand::heading( __( 'FileWarden settings', 'filewarden' ) );
 		echo '<section class="fw-content fw-health" data-storage-status="' . esc_attr( $status ) . '"><div class="fw-health-summary"><span class="fw-action-icon fw-icon-shield-check" aria-hidden="true"></span><h2>' . esc_html__( 'FileWarden health', 'filewarden' ) . '</h2><strong class="fw-health-status">' . esc_html__( 'Storage', 'filewarden' ) . ' : ' . esc_html( $labels[ $status ] ) . '</strong><span class="fw-health-check">' . esc_html__( 'Last check', 'filewarden' ) . ' <time datetime="' . esc_attr( gmdate( 'c', $checked ) ) . '">' . esc_html( wp_date( 'Y-m-d H:i:s T', $checked ) ) . '</time></span></div>';
 		if ( 'verified' !== $status ) {
 			echo '<p class="fw-health-alert">' . esc_html( $message ) . '</p>'; }
 		if ( $warning ) {
 			echo '<p class="fw-health-warning">' . esc_html__( 'Warning: server upload limits or ZIP support restrict available imports.', 'filewarden' ) . '</p>'; }
-		echo '<details class="fw-health-details"><summary>' . esc_html__( 'Details', 'filewarden' ) . '</summary><dl><dt>' . esc_html__( 'Storage', 'filewarden' ) . '</dt><dd><strong>' . esc_html( $labels[ $status ] ) . '</strong> — ' . esc_html( $message ) . '</dd><dt>' . esc_html__( 'Configuration', 'filewarden' ) . '</dt><dd>' . esc_html( $warning ? __( 'Warning: server upload limits or ZIP support restrict available imports.', 'filewarden' ) : __( 'Required upload capabilities are available.', 'filewarden' ) ) . '</dd><dt>' . esc_html__( 'Last check', 'filewarden' ) . '</dt><dd><time>' . esc_html( wp_date( 'Y-m-d H:i:s T', $checked ) ) . '</time></dd></dl></details></section>';
-		$database = DatabaseUpgrade::status();
-		$pending  = (bool) get_option( DatabaseUpgrade::CHECKPOINT );
-		if ( 'ready' !== $database['state'] || $pending ) {
-			echo '<p class="fw-database-alert">' . esc_html__( 'Database attention required. Review Storage and security; folder deletion remains blocked until transactional tables are verified.', 'filewarden' ) . '</p>'; }
+		echo '<details class="fw-health-details"><summary>' . esc_html__( 'Details', 'filewarden' ) . '</summary><dl><dt>' . esc_html__( 'Storage', 'filewarden' ) . '</dt><dd><strong>' . esc_html( $labels[ $status ] ) . '</strong> — ' . esc_html( $message ) . '</dd><dt>' . esc_html__( 'Database', 'filewarden' ) . '</dt><dd class="fw-database-summary">' . esc_html( $database_ready ? __( 'Operational — The three tables use InnoDB.', 'filewarden' ) : __( 'Attention required — Review Storage and security.', 'filewarden' ) ) . '</dd><dt>' . esc_html__( 'Configuration', 'filewarden' ) . '</dt><dd>' . esc_html( $warning ? __( 'Warning: server upload limits or ZIP support restrict available imports.', 'filewarden' ) : __( 'Required upload capabilities are available.', 'filewarden' ) ) . '</dd><dt>' . esc_html__( 'Last check', 'filewarden' ) . '</dt><dd><time>' . esc_html( wp_date( 'Y-m-d H:i:s T', $checked ) ) . '</time></dd></dl></details>';
+		if ( ! $database_ready ) {
+			echo '<p class="fw-database-alert">' . esc_html__( 'Database attention required. Review Storage and security; folder deletion remains blocked until transactional tables are verified.', 'filewarden' ) . ' <a href="#fw-settings-storage" data-fw-open-storage>' . esc_html__( 'Review Storage and security', 'filewarden' ) . '</a></p>'; }
+		echo '</section>';
 		if ( $warning ) {
 			Notice::show( __( 'Server limits or missing PHP extensions restrict imports. Review Storage and security before uploading.', 'filewarden' ), 'warning' ); }
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only post/redirect feedback, never authorization.
@@ -152,6 +187,7 @@ final class SettingsConsole {
 		foreach ( $sections as $id => $section ) {
 			echo '<section id="fw-settings-' . esc_attr( $id ) . '" class="fw-settings-panel"><h2 tabindex="-1">' . esc_html( $section['label'] ) . '</h2><p class="fw-settings-description">' . esc_html( $section['description'] ) . '</p>';
 			if ( 'general' === $id ) {
+				self::language_panel();
 				echo '<p class="fw-settings-version">FileWarden ' . esc_html( FILEWARDEN_VERSION ) . '</p><p>' . esc_html__( 'Single-site document management. Publishing and document permissions remain independent of these limits.', 'filewarden' ) . '</p><h3>' . esc_html__( 'Notifications', 'filewarden' ) . '</h3><p><label for="fw-notification-seconds">' . esc_html__( 'Automatic display duration', 'filewarden' ) . '</label><select id="fw-notification-seconds" name="notification_seconds" aria-describedby="fw-notification-help">';
 				foreach ( Notice::DURATIONS as $seconds ) {
 					/* translators: %d: notification duration in seconds. */
@@ -164,7 +200,11 @@ final class SettingsConsole {
 			if ( 'storage' === $id ) {
 				echo '<p>' . esc_html__( 'Documents are stored separately from the plugin. Storage operations remain blocked until protection is verified.', 'filewarden' ) . '</p><p>' . esc_html( $message ) . '</p>'; }
 			if ( 'storage' === $id ) {
-				self::database_panel( $database, $pending ); }
+				self::import_panel();
+				if ( ! $database_ready ) {
+					self::database_panel( $database, $pending );
+				}
+			}
 			$field = match ( $id ) {
 				'documents' => 'upload_mb', 'retention' => 'trash_days', 'audit' => 'audit_days', default => null };
 			if ( $field ) {
@@ -173,16 +213,46 @@ final class SettingsConsole {
 				$bounds = self::FIELDS[ $field ];
 				echo '<p><label for="fw-setting-' . esc_attr( $field ) . '">' . esc_html( $label ) . '</label><input type="number" id="fw-setting-' . esc_attr( $field ) . '" name="' . esc_attr( $field ) . '" min="' . esc_attr( $bounds[1] ) . '" max="' . esc_attr( $bounds[2] ) . '" value="' . esc_attr( get_option( 'filewarden_' . $field, $bounds[0] ) ) . '" required></p>';
 			}
-			if ( 'documents' === $id ) {
+			if ( 'documents' === $id && ! ImportPolicy::unrestricted() ) {
 				echo '<p>' . esc_html__( 'ZIP files remain downloadable archives; they are inspected but never extracted automatically.', 'filewarden' ) . '</p><p>' . esc_html__( 'Executable files, active content, macros and unsafe archives are refused.', 'filewarden' ) . '</p>'; }
 			if ( 'audit' === $id ) {
-				echo '<a class="button" href="' . esc_url( admin_url( 'admin.php?page=filewarden-audit' ) ) . '">' . esc_html__( 'Open audit log', 'filewarden' ) . '</a>'; }
+				echo '<a class="button fw-button-accent" href="' . esc_url( admin_url( 'admin.php?page=filewarden-audit' ) ) . '"><span class="fw-action-icon fw-icon-scroll-text" aria-hidden="true"></span>' . esc_html__( 'Open audit log', 'filewarden' ) . '</a>'; }
 			echo '</section>';
 		}
 		submit_button( __( 'Save settings', 'filewarden' ) );
 		echo '</form>';
 		$ui->form_start( 'database_repair' );
-		echo '</form></section></div></div>';
+		echo '</form>';
+		self::import_confirmation();
+		echo '</section></div></div>';
+	}
+
+	/** Render the plugin-wide language preference before notification settings. */
+	private static function language_panel() {
+		echo '<section class="fw-language-settings"><h3><span class="fw-action-icon fw-icon-languages" aria-hidden="true"></span>' . esc_html__( 'Language', 'filewarden' ) . '</h3><p><label for="fw-language">' . esc_html__( 'FileWarden language', 'filewarden' ) . '</label><select id="fw-language" name="language" aria-describedby="fw-language-help">';
+		foreach ( array( 'auto' => __( 'Automatic — WordPress site language', 'filewarden' ) ) + Language::LANGUAGES as $value => $label ) {
+			echo '<option value="' . esc_attr( $value ) . '"' . selected( Language::choice(), $value, false ) . '>' . esc_html( $label ) . '</option>';
+		}
+		echo '</select></p><p class="description" id="fw-language-help">' . esc_html__( 'Choose the language of FileWarden interfaces and messages. Automatic mode uses English when the site language is unavailable.', 'filewarden' ) . '</p>';
+		/* translators: %s: native language name. */
+		echo '<p class="fw-language-current">' . esc_html( sprintf( __( 'Language in use: %s', 'filewarden' ), Language::LANGUAGES[ Language::locale() ] ) ) . '</p></section>';
+	}
+
+	/** Render a default-off opt-in without weakening the independent storage controls. */
+	private static function import_panel() {
+		$enabled = ImportPolicy::unrestricted();
+		echo '<section class="fw-import-settings"><h3>' . esc_html__( 'File types', 'filewarden' ) . '</h3><input type="hidden" name="allow_all_types" value="0"><div class="fw-import-option"><label for="fw-allow-all-types"><input id="fw-allow-all-types" type="checkbox" name="allow_all_types" value="1" data-fw-enabled="' . ( $enabled ? 'true' : 'false' ) . '"' . checked( $enabled, true, false ) . '> ' . esc_html__( 'Allow all file types', 'filewarden' ) . '</label><p>' . esc_html__( 'Allow formats normally refused, including files containing macros or active content.', 'filewarden' ) . '</p><p class="fw-import-caution">' . esc_html__( 'Advanced option — disabled by default', 'filewarden' ) . '</p></div>';
+		if ( $enabled ) {
+			echo '<p class="fw-import-active"><strong>' . esc_html__( 'All file types are allowed.', 'filewarden' ) . '</strong> ' . esc_html__( 'Format and active-content restrictions are lifted. Check the origin of shared files.', 'filewarden' ) . '</p>';
+		} else {
+			echo '<noscript><p class="fw-import-caution">' . esc_html__( 'Some files may contain malicious programs, macros or scripts. Sharing and opening them can put users at risk.', 'filewarden' ) . '</p><label><input type="checkbox" name="all_types_confirmed" value="1"> ' . esc_html__( 'I understand the risks and confirm that I want to allow all file types.', 'filewarden' ) . '</label></noscript>';
+		}
+		echo '<p class="description">' . esc_html__( 'Access rules, file-size limits and storage protection remain enforced.', 'filewarden' ) . '</p></section>';
+	}
+
+	/** Native dialog: cancellation never activates or saves the opt-in. */
+	private static function import_confirmation() {
+		echo '<dialog class="fw-import-dialog" aria-labelledby="fw-import-dialog-title" aria-describedby="fw-import-dialog-description"><div class="fw-import-dialog-heading"><span class="fw-action-icon fw-icon-warning" aria-hidden="true"></span><span>' . esc_html__( 'Security confirmation', 'filewarden' ) . '</span></div><h2 id="fw-import-dialog-title">' . esc_html__( 'Allow all file types?', 'filewarden' ) . '</h2><p id="fw-import-dialog-description">' . esc_html__( 'Some files may contain malicious programs, macros or scripts. Sharing and opening them can put users at risk.', 'filewarden' ) . '</p><p class="fw-import-caution">' . esc_html__( 'Enable this option only if you trust the origin of the files and understand the risks.', 'filewarden' ) . '</p><p>' . esc_html__( 'After confirming, save the settings to apply your choice.', 'filewarden' ) . '</p><div class="fw-import-dialog-actions"><button class="button" type="button" data-fw-import-cancel autofocus>' . esc_html__( 'Cancel', 'filewarden' ) . '</button><button class="button button-primary" type="button" data-fw-import-confirm>' . esc_html__( 'Confirm activation', 'filewarden' ) . '</button></div></dialog>';
 	}
 
 	/** Render an explicit repair offer; controls belong to a separate non-nested form.

@@ -1,0 +1,1183 @@
+msgid ""
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: \nLast-Translator: \nLanguage-Team: \nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPOT-Creation-Date: 2026-11-15T10:29:20+00:00\nPO-Revision-Date: 2026-11-15T10:29:20+00:00\nLanguage: en_US\nPlural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "A file can restrict access, never broaden the access allowed by its folder. Global-read administrators remain an explicit exception."
+msgstr "A file can restrict access, never broaden the access allowed by its folder. Global-read administrators remain an explicit exception."
+
+msgid "A file with this name already exists. Choose another name or destination."
+msgstr "A file with this name already exists. Choose another name or destination."
+
+msgid "A file with this name exists. Rename it or cancel. Versions arrive in a later milestone."
+msgstr "A file with this name exists. Rename it or cancel. Versions arrive in a later milestone."
+
+msgid "Access at destination"
+msgstr "Access at destination"
+
+msgid "Access policy"
+msgstr "Access policy"
+
+msgid "Access rules saved. The most restrictive rules apply immediately."
+msgstr "Access rules saved. The most restrictive rules apply immediately."
+
+msgid "Access unavailable"
+msgstr "Access unavailable"
+
+msgid "Actions"
+msgstr "Actions"
+
+msgid "Add documents"
+msgstr "Add documents"
+
+msgid "Add to this folder"
+msgstr "Add to this folder"
+
+msgid "Another operation is using this folder. Try again in a moment."
+msgstr "Another operation is using this folder. Try again in a moment."
+
+msgid "Audit log"
+msgstr "Audit log"
+
+msgid "Audit retention (days)"
+msgstr "Audit retention (days)"
+
+msgid "Authenticated users"
+msgstr "Authenticated users"
+
+msgid "Cancel"
+msgstr "Cancel"
+
+msgid "Changing this folder immediately changes access to its documents. File-specific restrictions are preserved."
+msgstr "Changing this folder immediately changes access to its documents. File-specific restrictions are preserved."
+
+msgid "Check the folder, access policy and form fields."
+msgstr "Check the folder, access policy and form fields."
+
+msgid "Choose a file from the Media Library first."
+msgstr "Choose a file from the Media Library first."
+
+msgid "Choose a local Media Library file that you are allowed to edit."
+msgstr "Choose a local Media Library file that you are allowed to edit."
+
+msgid "Choose a media file"
+msgstr "Choose a media file"
+
+msgid "Choose a source"
+msgstr "Choose a source"
+
+msgid "Choose a source, then check the destination and access rules."
+msgstr "Choose a source, then check the destination and access rules."
+
+msgid "Choose an existing document"
+msgstr "Choose an existing document"
+
+msgid "Close panel"
+msgstr "Close panel"
+
+msgid "Close preview"
+msgstr "Close preview"
+
+msgid "Confirm copy"
+msgstr "Confirm copy"
+
+msgid "Confirm move"
+msgstr "Confirm move"
+
+msgid "Connection interrupted. Check the folder before retrying; the server may still be processing the file."
+msgstr "Connection interrupted. Check the folder before retrying; the server may still be processing the file."
+
+msgid "Copy"
+msgstr "Copy"
+
+msgid "Copy into the Elementor Shortcode widget"
+msgstr "Copy into the Elementor Shortcode widget"
+
+msgid "Copy to FileWarden"
+msgstr "Copy to FileWarden"
+
+msgid "Create folder"
+msgstr "Create folder"
+
+msgid "Current folder"
+msgstr "Current folder"
+
+msgid "Destination folder"
+msgstr "Destination folder"
+
+msgid "Detailed list"
+msgstr "Detailed list"
+
+msgid "Development version. Validate deployment security before sharing confidential documents."
+msgstr "Development version. Validate deployment security before sharing confidential documents."
+
+msgid "Display"
+msgstr "Display"
+
+msgid "Document"
+msgstr "Document"
+
+msgid "Document action"
+msgstr "Document action"
+
+msgid "Document library"
+msgstr "Document library"
+
+msgid "Document preview"
+msgstr "Document preview"
+
+msgid "Document tasks"
+msgstr "Document tasks"
+
+msgid "Documents"
+msgstr "Documents"
+
+msgid "Documents at the root"
+msgstr "Documents at the root"
+
+msgid "Download"
+msgstr "Download"
+
+msgid "Edit access rules"
+msgstr "Edit access rules"
+
+msgid "Effective access"
+msgstr "Effective access"
+
+msgid "File"
+msgstr "File"
+
+msgid "File %1$s saved and verified in %2$s."
+msgstr "File %1$s saved and verified in %2$s."
+
+msgid "File rule"
+msgstr "File rule"
+
+msgid "FileWarden could not confirm that the document was recorded in the selected folder. Check the list before retrying."
+msgstr "FileWarden could not confirm that the document was recorded in the selected folder. Check the list before retrying."
+
+msgid "FileWarden creates a protected copy. The original stays in WordPress Media and may remain publicly accessible."
+msgstr "FileWarden creates a protected copy. The original stays in WordPress Media and may remain publicly accessible."
+
+msgid "FileWarden documents"
+msgstr "FileWarden documents"
+
+msgid "FileWarden settings"
+msgstr "FileWarden settings"
+
+msgid "Filename"
+msgstr "Filename"
+
+msgid "Folder name"
+msgstr "Folder name"
+
+msgid "Folder restrictions:"
+msgstr "Folder restrictions:"
+
+msgid "Folder to publish"
+msgstr "Folder to publish"
+
+msgid "Folders"
+msgstr "Folders"
+
+msgid "From my computer"
+msgstr "From my computer"
+
+msgid "From the Media Library"
+msgstr "From the Media Library"
+
+msgid "Grid"
+msgstr "Grid"
+
+msgid "Inherit from folder"
+msgstr "Inherit from folder"
+
+msgid "Maximum file size: %s. Saving is confirmed only after storage and destination verification."
+msgstr "Maximum file size: %s. Saving is confirmed only after storage and destination verification."
+
+msgid "More actions"
+msgstr "More actions"
+
+msgid "Move"
+msgstr "Move"
+
+msgid "Move to trash"
+msgstr "Move to trash"
+
+msgid "Next"
+msgstr "Next"
+
+msgid "No complete upload was received. Select the file again and check the server upload limit."
+msgstr "No complete upload was received. Select the file again and check the server upload limit."
+
+msgid "No documents are visible in this folder."
+msgstr "No documents are visible in this folder."
+
+msgid "No documents match this view."
+msgstr "No documents match this view."
+
+msgid "Not public: restricted by its folder."
+msgstr "Not public: restricted by its folder."
+
+msgid "Operation completed."
+msgstr "Operation completed."
+
+msgid "Operation refused or unavailable. Check permissions, inputs and storage configuration."
+msgstr "Operation refused or unavailable. Check permissions, inputs and storage configuration."
+
+msgid "Operation refused. Check your permissions, the destination, filename and storage settings."
+msgstr "Operation refused. Check your permissions, the destination, filename and storage settings."
+
+msgid "Preview"
+msgstr "Preview"
+
+msgid "Previous"
+msgstr "Previous"
+
+msgid "Public"
+msgstr "Public"
+
+msgid "Publication"
+msgstr "Publication"
+
+msgid "Publish this folder"
+msgstr "Publish this folder"
+
+msgid "Restore"
+msgstr "Restore"
+
+msgid "Restore this file in its original folder with its existing rules."
+msgstr "Restore this file in its original folder with its existing rules."
+
+msgid "Review destination"
+msgstr "Review destination"
+
+msgid "Roles (only for selected-role policies)"
+msgstr "Roles (only for selected-role policies)"
+
+msgid "Save access rules"
+msgstr "Save access rules"
+
+msgid "Save settings"
+msgstr "Save settings"
+
+msgid "Search"
+msgstr "Search"
+
+msgid "Search documents"
+msgstr "Search documents"
+
+msgid "Search documents…"
+msgstr "Search documents…"
+
+msgid "Search this folder"
+msgstr "Search this folder"
+
+msgid "Selected roles"
+msgstr "Selected roles"
+
+msgid "Selected roles:"
+msgstr "Selected roles:"
+
+msgid "Sending file…"
+msgstr "Sending file…"
+
+msgid "Settings"
+msgstr "Settings"
+
+msgid "Settings could not be saved."
+msgstr "Settings could not be saved."
+
+msgid "Settings saved."
+msgstr "Settings saved."
+
+msgid "Size"
+msgstr "Size"
+
+msgid "Storage blocked. Check FileWarden settings before uploading."
+msgstr "Storage blocked. Check FileWarden settings before uploading."
+
+msgid "Storage directory checks passed."
+msgstr "Storage directory checks passed."
+
+msgid "The file could not be written or read back from protected storage. No document was added."
+msgstr "The file could not be written or read back from protected storage. No document was added."
+
+msgid "The file is empty or exceeds the allowed upload size. Check FileWarden settings and your PHP upload limit."
+msgstr "The file is empty or exceeds the allowed upload size. Check FileWarden settings and your PHP upload limit."
+
+msgid "The file rule is preserved; inherited rules change with the destination. Moving or copying into a public folder can broaden access. Check this result before confirming."
+msgstr "The file rule is preserved; inherited rules change with the destination. Moving or copying into a public folder can broaden access. Check this result before confirming."
+
+msgid "The file was saved, but the audit entry could not be confirmed. Check the folder before retrying."
+msgstr "The file was saved, but the audit entry could not be confirmed. Check the folder before retrying."
+
+msgid "The file will disappear from listings and its preview/download links will stop working. You can restore it from Trash before retention expires."
+msgstr "The file will disappear from listings and its preview/download links will stop working. You can restore it from Trash before retention expires."
+
+msgid "The server did not confirm saving the file. Check the folder before retrying. HTTP status:"
+msgstr "The server did not confirm saving the file. Check the folder before retrying. HTTP status:"
+
+msgid "The source or destination rules changed. Review the destination again before confirming."
+msgstr "The source or destination rules changed. Review the destination again before confirming."
+
+msgid "This action is unavailable. Check permissions and select an available document or destination."
+msgstr "This action is unavailable. Check permissions and select an available document or destination."
+
+msgid "This file cannot be made public here. Its folder is restricted. Selecting Public does not remove the folder restrictions: unauthorized visitors will still not see or download this file."
+msgstr "This file cannot be made public here. Its folder is restricted. Selecting Public does not remove the folder restrictions: unauthorized visitors will still not see or download this file."
+
+msgid "This folder cannot be made public while an ancestor is restricted. All ancestor restrictions remain in force."
+msgstr "This folder cannot be made public while an ancestor is restricted. All ancestor restrictions remain in force."
+
+msgid "This folder or action is unavailable. Return to Documents and check your permissions."
+msgstr "This folder or action is unavailable. Return to Documents and check your permissions."
+
+msgid "Transfer complete. Encrypting and verifying the document in its destination folder…"
+msgstr "Transfer complete. Encrypting and verifying the document in its destination folder…"
+
+msgid "Trash"
+msgstr "Trash"
+
+msgid "Trash for this folder. Restore files before %d days; expired files are permanently removed by scheduled cleanup."
+msgstr "Trash for this folder. Restore files before %d days; expired files are permanently removed by scheduled cleanup."
+
+msgid "Trash retention (days)"
+msgstr "Trash retention (days)"
+
+msgid "Unavailable in trash"
+msgstr "Unavailable in trash"
+
+msgid "Upload limit (MB, also bounded by server limits)"
+msgstr "Upload limit (MB, also bounded by server limits)"
+
+msgid "You do not have permission to perform this operation."
+msgstr "You do not have permission to perform this operation."
+
+msgid "The most restrictive rules apply: those of the file and its folder. A Public file stays private when its folder is restricted."
+msgstr "The most restrictive rules apply: those of the file and its folder. A Public file stays private when its folder is restricted."
+
+msgid "Inherit: automatically follow the folder rules."
+msgstr "Inherit: automatically follow the folder rules."
+
+msgid "Documents to classify"
+msgstr "Documents to classify"
+
+msgid "Your folders"
+msgstr "Your folders"
+
+msgid "Not published"
+msgstr "Not published"
+
+msgid "Delete folder"
+msgstr "Delete folder"
+
+msgid "Recovered file: restrictions from its former folder remain in force after reclassification."
+msgstr "Recovered file: restrictions from its former folder remain in force after reclassification."
+
+msgid "Remove subfolders first. No files have been changed."
+msgstr "Remove subfolders first. No files have been changed."
+
+msgid "Delete this folder? Its files will be recovered in Documents to classify, unpublished and without automatic deletion. Existing file restrictions will be retained."
+msgstr "Delete this folder? Its files will be recovered in Documents to classify, unpublished and without automatic deletion. Existing file restrictions will be retained."
+
+msgid "Confirm folder deletion"
+msgstr "Confirm folder deletion"
+
+msgid "Recorded events"
+msgstr "Recorded events"
+
+msgid "Times shown in the site timezone:"
+msgstr "Times shown in the site timezone:"
+
+msgid "No matching events."
+msgstr "No matching events."
+
+msgid "Older events"
+msgstr "Older events"
+
+msgid "Filters and exports"
+msgstr "Filters and exports"
+
+msgid "Event type"
+msgstr "Event type"
+
+msgid "All events"
+msgstr "All events"
+
+msgid "From"
+msgstr "From"
+
+msgid "Until"
+msgstr "Until"
+
+msgid "Apply filters"
+msgstr "Apply filters"
+
+msgid "Irreversible purge"
+msgstr "Irreversible purge"
+
+msgid "events selected. New events and purge traces are excluded."
+msgstr "events selected. New events and purge traces are excluded."
+
+msgid "I understand these events cannot be restored."
+msgstr "I understand these events cannot be restored."
+
+msgid "Permanently purge selected events"
+msgstr "Permanently purge selected events"
+
+msgid "Select between 1 and 10000 events by narrowing the filters."
+msgstr "Select between 1 and 10000 events by narrowing the filters."
+
+msgid "Audit unavailable. Check your permissions and date filters."
+msgstr "Audit unavailable. Check your permissions and date filters."
+
+msgid "Audit action refused. Review your filters, permissions and confirmation."
+msgstr "Audit action refused. Review your filters, permissions and confirmation."
+
+msgid "No parent folder"
+msgstr "No parent folder"
+
+msgid "Folder navigation"
+msgstr "Folder navigation"
+
+msgid "Temporarily unavailable"
+msgstr "Temporarily unavailable"
+
+msgid "Access not authorized"
+msgstr "Access not authorized"
+
+msgid "A reserved space"
+msgstr "A reserved space"
+
+msgid "Please try again later."
+msgstr "Please try again later."
+
+msgid "Your account cannot access this space, or it is no longer available."
+msgstr "Your account cannot access this space, or it is no longer available."
+
+msgid "Sign in to view the documents you are allowed to access."
+msgstr "Sign in to view the documents you are allowed to access."
+
+msgid "Sign in"
+msgstr "Sign in"
+
+msgid "Create a folder before publishing documents."
+msgstr "Create a folder before publishing documents."
+
+msgid "Unavailable space design"
+msgstr "Unavailable space design"
+
+msgid "Compact"
+msgstr "Compact"
+
+msgid "Centered card"
+msgstr "Centered card"
+
+msgid "Editorial banner"
+msgstr "Editorial banner"
+
+msgid "Update preview"
+msgstr "Update preview"
+
+msgid "Shortcode copied."
+msgstr "Shortcode copied."
+
+msgid "Copy failed. Select the shortcode and copy it manually."
+msgstr "Copy failed. Select the shortcode and copy it manually."
+
+msgid "Preview anonymous unavailable state"
+msgstr "Preview anonymous unavailable state"
+
+msgid "The live preview uses your account permissions. Visitors may see fewer documents."
+msgstr "The live preview uses your account permissions. Visitors may see fewer documents."
+
+msgid "Loading preview…"
+msgstr "Loading preview…"
+
+msgid "Preview updated."
+msgstr "Preview updated."
+
+msgid "Selected events purged. A purge trace has been retained."
+msgstr "Selected events purged. A purge trace has been retained."
+
+msgid "Preview unavailable. Change a setting to retry."
+msgstr "Preview unavailable. Change a setting to retry."
+
+msgid "Simplified"
+msgstr "Simplified"
+
+msgid "Technical"
+msgstr "Technical"
+
+msgid "Event display mode"
+msgstr "Event display mode"
+
+msgid "Advanced filters"
+msgstr "Advanced filters"
+
+msgid "WordPress username"
+msgstr "WordPress username"
+
+msgid "Reset"
+msgstr "Reset"
+
+msgid "Preparing your %s download…"
+msgstr "Preparing your %s download…"
+
+msgid "Download %s audit file"
+msgstr "Download %s audit file"
+
+msgid "Unavailable"
+msgstr "Unavailable"
+
+msgid "%1$s · WordPress user #%2$d"
+msgstr "%1$s · WordPress user #%2$d"
+
+msgid "WordPress user #%d"
+msgstr "WordPress user #%d"
+
+msgid "Access denied"
+msgstr "Access denied"
+
+msgid "Document added"
+msgstr "Document added"
+
+msgid "Folder created"
+msgstr "Folder created"
+
+msgid "Settings changed"
+msgstr "Settings changed"
+
+msgid "Audit export requested"
+msgstr "Audit export requested"
+
+msgid "Audit events purged"
+msgstr "Audit events purged"
+
+msgid "Folder deleted; documents recovered"
+msgstr "Folder deleted; documents recovered"
+
+msgid "Document permission change requested"
+msgstr "Document permission change requested"
+
+msgid "Document permissions changed"
+msgstr "Document permissions changed"
+
+msgid "Document move requested"
+msgstr "Document move requested"
+
+msgid "Document moved"
+msgstr "Document moved"
+
+msgid "Document copy requested"
+msgstr "Document copy requested"
+
+msgid "Document copied"
+msgstr "Document copied"
+
+msgid "Document removal requested"
+msgstr "Document removal requested"
+
+msgid "Document moved to trash"
+msgstr "Document moved to trash"
+
+msgid "Document restoration requested"
+msgstr "Document restoration requested"
+
+msgid "Document restored"
+msgstr "Document restored"
+
+msgid "Document purge requested"
+msgstr "Document purge requested"
+
+msgid "Document permanently deleted"
+msgstr "Document permanently deleted"
+
+msgid "Folder creation requested"
+msgstr "Folder creation requested"
+
+msgid "Folder deletion requested"
+msgstr "Folder deletion requested"
+
+msgid "Document preview requested"
+msgstr "Document preview requested"
+
+msgid "Document download started"
+msgstr "Document download started"
+
+msgid "Document metadata requested"
+msgstr "Document metadata requested"
+
+msgid "Document upload requested"
+msgstr "Document upload requested"
+
+msgid "Document upload failed"
+msgstr "Document upload failed"
+
+msgid "Export events"
+msgstr "Export events"
+
+msgid "Exports use all events matching the applied filters, regardless of the current page or display mode."
+msgstr "Exports use all events matching the applied filters, regardless of the current page or display mode."
+
+msgid "Audit maintenance"
+msgstr "Audit maintenance"
+
+msgid "Export the selected events before purging if you need a copy."
+msgstr "Export the selected events before purging if you need a copy."
+
+msgid "Prepare purge"
+msgstr "Prepare purge"
+
+msgid "File received. Your browser has been asked to download it."
+msgstr "File received. Your browser has been asked to download it."
+
+msgid "Download failed. Check your connection and permissions, then retry."
+msgstr "Download failed. Check your connection and permissions, then retry."
+
+msgid "Dismiss notification"
+msgstr "Dismiss notification"
+
+msgid "Invalid extension, empty file or size limit exceeded."
+msgstr "Invalid extension, empty file or size limit exceeded."
+
+msgid "Ready for server validation"
+msgstr "Ready for server validation"
+
+msgid "Uploading and validating…"
+msgstr "Uploading and validating…"
+
+msgid "Saved and verified"
+msgstr "Saved and verified"
+
+msgid "Upload failed. Check the file, permissions and connection, then retry."
+msgstr "Upload failed. Check the file, permissions and connection, then retry."
+
+msgid "Parent folder"
+msgstr "Parent folder"
+
+msgid "Documents to classify — Not published"
+msgstr "Documents to classify — Not published"
+
+msgid "Drop your documents here or select files"
+msgstr "Drop your documents here or select files"
+
+msgid "The parent folder rules will be inherited according to FileWarden permissions."
+msgstr "The parent folder rules will be inherited according to FileWarden permissions."
+
+msgid "File refused: unsafe content or archive limits exceeded. Scripts, macros, encrypted and nested archives are not accepted."
+msgstr "File refused: unsafe content or archive limits exceeded. Scripts, macros, encrypted and nested archives are not accepted."
+
+msgid "Secure file inspection is unavailable. Ask your host to check PHP ZIP, XML support and the private temporary directory."
+msgstr "Secure file inspection is unavailable. Ask your host to check PHP ZIP, XML support and the private temporary directory."
+
+msgid "Remove the subfolders first. The folder and its documents were preserved."
+msgstr "Remove the subfolders first. The folder and its documents were preserved."
+
+msgid "Folder deletion requires transactional database tables (InnoDB). Ask your host to check the three FileWarden tables. No folder was deleted."
+msgstr "Folder deletion requires transactional database tables (InnoDB). Ask your host to check the three FileWarden tables. No folder was deleted."
+
+msgid "Folder recovery could not be completed. The transaction was rolled back; check the database and retry."
+msgstr "Folder recovery could not be completed. The transaction was rolled back; check the database and retry."
+
+msgid "Classify later"
+msgstr "Classify later"
+
+msgid "Remove this document from publication?"
+msgstr "Remove this document from publication?"
+
+msgid "The document will no longer be accessible from FileWarden publications. It will remain available in Documents to classify for authorized users."
+msgstr "The document will no longer be accessible from FileWarden publications. It will remain available in Documents to classify for authorized users."
+
+msgid "Confirm classification"
+msgstr "Confirm classification"
+
+msgid "Visitor not logged in"
+msgstr "Visitor not logged in"
+
+msgid "System action"
+msgstr "System action"
+
+msgid "Unknown legacy actor"
+msgstr "Unknown legacy actor"
+
+msgid "Folder permission change requested"
+msgstr "Folder permission change requested"
+
+msgid "Folder permissions changed"
+msgstr "Folder permissions changed"
+
+msgid "FileWarden currently supports single-site WordPress only."
+msgstr "FileWarden currently supports single-site WordPress only."
+
+msgid "Enable the PHP Sodium extension for this site, then reload this page."
+msgstr "Enable the PHP Sodium extension for this site, then reload this page."
+
+msgid "The FileWarden storage directory is a symbolic link. Use a regular directory."
+msgstr "The FileWarden storage directory is a symbolic link. Use a regular directory."
+
+msgid "PHP cannot create or write the FileWarden storage directory. Check the owner and permissions of wp-content and filewarden-storage with your host."
+msgstr "PHP cannot create or write the FileWarden storage directory. Check the owner and permissions of wp-content and filewarden-storage with your host."
+
+msgid "FileWarden requires reactivation to install its database schema."
+msgstr "FileWarden requires reactivation to install its database schema."
+
+msgid "Preview state"
+msgstr "Preview state"
+
+msgid "Authorized display"
+msgstr "Authorized display"
+
+msgid "Resource unavailable."
+msgstr "Resource unavailable."
+
+msgid "Invalid input, file type or size."
+msgstr "Invalid input, file type or size."
+
+msgid "Rename the file or cancel. Version creation is not available yet."
+msgstr "Rename the file or cancel. Version creation is not available yet."
+
+msgid "Operation unavailable. Check FileWarden diagnostics."
+msgstr "Operation unavailable. Check FileWarden diagnostics."
+
+msgid "Not verified"
+msgstr "Not verified"
+
+msgid "Verified"
+msgstr "Verified"
+
+msgid "Critical"
+msgstr "Critical"
+
+msgid "FileWarden health"
+msgstr "FileWarden health"
+
+msgid "Storage"
+msgstr "Storage"
+
+msgid "Configuration"
+msgstr "Configuration"
+
+msgid "Warning: server upload limits or ZIP support restrict available imports."
+msgstr "Warning: server upload limits or ZIP support restrict available imports."
+
+msgid "Required upload capabilities are available."
+msgstr "Required upload capabilities are available."
+
+msgid "Last check"
+msgstr "Last check"
+
+msgid "General"
+msgstr "General"
+
+msgid "Storage and security"
+msgstr "Storage and security"
+
+msgid "Documents and limits"
+msgstr "Documents and limits"
+
+msgid "Retention"
+msgstr "Retention"
+
+msgid "Settings categories"
+msgstr "Settings categories"
+
+msgid "Single-site document management. Publishing and document permissions remain independent of these limits."
+msgstr "Single-site document management. Publishing and document permissions remain independent of these limits."
+
+msgid "Documents are stored separately from the plugin. Storage operations remain blocked until protection is verified."
+msgstr "Documents are stored separately from the plugin. Storage operations remain blocked until protection is verified."
+
+msgid "ZIP files remain downloadable archives; they are inspected but never extracted automatically."
+msgstr "ZIP files remain downloadable archives; they are inspected but never extracted automatically."
+
+msgid "Executable files, active content, macros and unsafe archives are refused."
+msgstr "Executable files, active content, macros and unsafe archives are refused."
+
+msgid "Open audit log"
+msgstr "Open audit log"
+
+msgid "Global trash"
+msgstr "Global trash"
+
+msgid "All deleted documents you are allowed to manage. Automatic retention still applies."
+msgstr "All deleted documents you are allowed to manage. Automatic retention still applies."
+
+msgid "Folder"
+msgstr "Folder"
+
+msgid "All folders"
+msgstr "All folders"
+
+msgid "Original location"
+msgstr "Original location"
+
+msgid "Deleted on"
+msgstr "Deleted on"
+
+msgid "Unknown original location"
+msgstr "Unknown original location"
+
+msgid "Delete permanently"
+msgstr "Delete permanently"
+
+msgid "Empty trash"
+msgstr "Empty trash"
+
+msgid "The original folder is unavailable. Choose an authorized destination before restoring."
+msgstr "The original folder is unavailable. Choose an authorized destination before restoring."
+
+msgid "Select a destination"
+msgstr "Select a destination"
+
+msgid "Permanently delete these documents?"
+msgstr "Permanently delete these documents?"
+
+msgid "documents selected. This action cannot be undone."
+msgstr "documents selected. This action cannot be undone."
+
+msgid "I understand these documents cannot be restored."
+msgstr "I understand these documents cannot be restored."
+
+msgid "Confirm permanent deletion"
+msgstr "Confirm permanent deletion"
+
+msgid "Preview unavailable, access expired or document protected by a password. You can try downloading the document."
+msgstr "Preview unavailable, access expired or document protected by a password. You can try downloading the document."
+
+msgid "Loading document…"
+msgstr "Loading document…"
+
+msgid "Page"
+msgstr "Page"
+
+msgid "Document actions"
+msgstr "Document actions"
+
+msgid "Open in new tab"
+msgstr "Open in new tab"
+
+msgid "Viewer controls"
+msgstr "Viewer controls"
+
+msgid "Previous page"
+msgstr "Previous page"
+
+msgid "Next page"
+msgstr "Next page"
+
+msgid "Zoom"
+msgstr "Zoom"
+
+msgid "Fit width"
+msgstr "Fit width"
+
+msgid "Enable JavaScript to use the viewer, or download the document."
+msgstr "Enable JavaScript to use the viewer, or download the document."
+
+msgid "Server limits or missing PHP extensions restrict imports. Review Storage and security before uploading."
+msgstr "Server limits or missing PHP extensions restrict imports. Review Storage and security before uploading."
+
+msgid "Only authorized deleted documents are shown. Restoring requires an authorized destination."
+msgstr "Only authorized deleted documents are shown. Restoring requires an authorized destination."
+
+msgid "Choose a valid PDF, JPEG, PNG, TXT, CSV, ZIP or supported macro-free Office document."
+msgstr "Choose a valid PDF, JPEG, PNG, TXT, CSV, ZIP or supported macro-free Office document."
+
+msgid "Storage protection could not be verified. File operations remain blocked. Check your hosting configuration."
+msgstr "Storage protection could not be verified. File operations remain blocked. Check your hosting configuration."
+
+msgid "Resource name unavailable"
+msgstr "Resource name unavailable"
+
+msgid "Show technical details"
+msgstr "Show technical details"
+
+msgid "Operation completed"
+msgstr "Operation completed"
+
+msgid "Information"
+msgstr "Information"
+
+msgid "Attention required"
+msgstr "Attention required"
+
+msgid "Operation unavailable"
+msgstr "Operation unavailable"
+
+msgid "FileWarden notifications"
+msgstr "FileWarden notifications"
+
+msgid "Show other notifications"
+msgstr "Show other notifications"
+
+msgid "Show three notifications"
+msgstr "Show three notifications"
+
+msgid "Persistent notifications waiting"
+msgstr "Persistent notifications waiting"
+
+msgid "Settings saved"
+msgstr "Settings saved"
+
+msgid "Settings not saved"
+msgstr "Settings not saved"
+
+msgid "Notifications"
+msgstr "Notifications"
+
+msgid "Automatic display duration"
+msgstr "Automatic display duration"
+
+msgid "%d seconds"
+msgstr "%d seconds"
+
+msgid "default"
+msgstr "default"
+
+msgid "Set how long notifications remain visible before they disappear automatically."
+msgstr "Set how long notifications remain visible before they disappear automatically."
+
+msgid "Open a folder"
+msgstr "Open a folder"
+
+msgid "Create your first folder"
+msgstr "Create your first folder"
+
+msgid "Select a folder in the sidebar to view its documents or create a new folder."
+msgstr "Select a folder in the sidebar to view its documents or create a new folder."
+
+msgid "Storage unavailable"
+msgstr "Storage unavailable"
+
+msgid "Document not added"
+msgstr "Document not added"
+
+msgid "Access rules saved"
+msgstr "Access rules saved"
+
+msgid "Folder deleted"
+msgstr "Folder deleted"
+
+msgid "Trash deletion completed"
+msgstr "Trash deletion completed"
+
+msgid "Toggle subfolders: %s"
+msgstr "Toggle subfolders: %s"
+
+msgid "Audit log purged"
+msgstr "Audit log purged"
+
+msgid "Audit unavailable"
+msgstr "Audit unavailable"
+
+msgid "FileWarden unavailable"
+msgstr "FileWarden unavailable"
+
+msgid "Audit export"
+msgstr "Audit export"
+
+msgid "Preferences"
+msgstr "Preferences"
+
+msgid "Personalize how FileWarden behaves."
+msgstr "Personalize how FileWarden behaves."
+
+msgid "Keep your documents separate from the plugin code."
+msgstr "Keep your documents separate from the plugin code."
+
+msgid "Set document upload limits."
+msgstr "Set document upload limits."
+
+msgid "Choose how long deleted documents remain in the trash."
+msgstr "Choose how long deleted documents remain in the trash."
+
+msgid "Choose how long recorded events are retained."
+msgstr "Choose how long recorded events are retained."
+
+msgid "The folder was deleted. Its documents remain in Documents to classify with their existing access restrictions."
+msgstr "The folder was deleted. Its documents remain in Documents to classify with their existing access restrictions."
+
+msgid "Folder not deleted"
+msgstr "Folder not deleted"
+
+msgid "Details"
+msgstr "Details"
+
+msgid "Configuration and access"
+msgstr "Configuration and access"
+
+msgid "Completed"
+msgstr "Completed"
+
+msgid "Trash and deletion requests"
+msgstr "Trash and deletion requests"
+
+msgid "Deleted"
+msgstr "Deleted"
+
+msgid "Error or refusal"
+msgstr "Error or refusal"
+
+msgid "Other event"
+msgstr "Other event"
+
+msgid "Database attention required. Review Storage and security; folder deletion remains blocked until transactional tables are verified."
+msgstr "Database attention required. Review Storage and security; folder deletion remains blocked until transactional tables are verified."
+
+msgid "The three FileWarden tables use InnoDB. Their records and indexes were verified. Folder deletion can now be retried."
+msgstr "The three FileWarden tables use InnoDB. Their records and indexes were verified. Folder deletion can now be retried."
+
+msgid "Database verified"
+msgstr "Database verified"
+
+msgid "Database repair could not be confirmed. No table was reset. A partial conversion may have occurred; review the database and retry the repair after checking your backup."
+msgstr "Database repair could not be confirmed. No table was reset. A partial conversion may have occurred; review the database and retry the repair after checking your backup."
+
+msgid "Database repair incomplete"
+msgstr "Database repair incomplete"
+
+msgid "Transactional database tables"
+msgstr "Transactional database tables"
+
+msgid "The three FileWarden tables use InnoDB."
+msgstr "The three FileWarden tables use InnoDB."
+
+msgid "Existing MyISAM tables prevent safe folder deletion. Convert the three FileWarden tables to InnoDB after backing up."
+msgstr "Existing MyISAM tables prevent safe folder deletion. Convert the three FileWarden tables to InnoDB after backing up."
+
+msgid "A FileWarden table is missing or its engine is unreadable. Ask your host to verify the installation before repairing."
+msgstr "A FileWarden table is missing or its engine is unreadable. Ask your host to verify the installation before repairing."
+
+msgid "Table metadata could not be read. Ask your host to check database permissions. No engine change can be offered safely."
+msgstr "Table metadata could not be read. Ask your host to check database permissions. No engine change can be offered safely."
+
+msgid "An unsupported database engine was found. Ask your host to review it; automatic conversion is unavailable."
+msgstr "An unsupported database engine was found. Ask your host to review it; automatic conversion is unavailable."
+
+msgid "A repair checkpoint remains. FileWarden writes are paused until the integrity check and repair succeed. Do not delete this checkpoint or reset the tables."
+msgstr "A repair checkpoint remains. FileWarden writes are paused until the integrity check and repair succeed. Do not delete this checkpoint or reset the tables."
+
+msgid "Back up the complete database, encryption key and document storage first. Pause external writers and allow time and free disk space for the conversion. ALTER TABLE commits each table separately; a failed repair may need to be resumed. Document files are not moved."
+msgstr "Back up the complete database, encryption key and document storage first. Pause external writers and allow time and free disk space for the conversion. ALTER TABLE commits each table separately; a failed repair may need to be resumed. Document files are not moved."
+
+msgid "I have a complete backup and have paused external writes for this maintenance operation."
+msgstr "I have a complete backup and have paused external writes for this maintenance operation."
+
+msgid "Verify and repair database tables"
+msgstr "Verify and repair database tables"
+
+msgid "FileWarden table metadata is unavailable. Review Storage and security. No folder was deleted."
+msgstr "FileWarden table metadata is unavailable. Review Storage and security. No folder was deleted."
+
+msgid "A FileWarden database table is missing. Review Storage and security. No folder was deleted."
+msgstr "A FileWarden database table is missing. Review Storage and security. No folder was deleted."
+
+msgid "Database repair is pending. FileWarden writes remain paused. Review Storage and security to resume verification."
+msgstr "Database repair is pending. FileWarden writes remain paused. Review Storage and security to resume verification."
+
+msgid "Database repair requested"
+msgstr "Database repair requested"
+
+msgid "Database tables repaired and verified"
+msgstr "Database tables repaired and verified"
+
+msgid "FileWarden"
+msgstr "FileWarden"
+
+msgid "Private document management for WordPress (pre-alpha foundation)."
+msgstr "Private document management for WordPress (pre-alpha foundation)."
+
+msgid "MikaPST"
+msgstr "MikaPST"
+
+msgid "Accepted formats"
+msgstr "Accepted formats"
+
+msgid "ZIPs are kept without extraction; macros and active content are refused."
+msgstr "ZIPs are kept without extraction; macros and active content are refused."
+
+msgid "No other destination folder is available. Create a folder or check your permissions."
+msgstr "No other destination folder is available. Create a folder or check your permissions."
+
+msgid "All file types enabled"
+msgstr "All file types enabled"
+
+msgid "File type restrictions restored"
+msgstr "File type restrictions restored"
+
+msgid "Database"
+msgstr "Database"
+
+msgid "Operational — The three tables use InnoDB."
+msgstr "Operational — The three tables use InnoDB."
+
+msgid "Attention required — Review Storage and security."
+msgstr "Attention required — Review Storage and security."
+
+msgid "Review Storage and security"
+msgstr "Review Storage and security"
+
+msgid "Language"
+msgstr "Language"
+
+msgid "FileWarden language"
+msgstr "FileWarden language"
+
+msgid "Automatic — WordPress site language"
+msgstr "Automatic — WordPress site language"
+
+msgid "Choose the language of FileWarden interfaces and messages. Automatic mode uses English when the site language is unavailable."
+msgstr "Choose the language of FileWarden interfaces and messages. Automatic mode uses English when the site language is unavailable."
+
+msgid "Language in use: %s"
+msgstr "Language in use: %s"
+
+msgid "File types"
+msgstr "File types"
+
+msgid "Allow all file types"
+msgstr "Allow all file types"
+
+msgid "Allow formats normally refused, including files containing macros or active content."
+msgstr "Allow formats normally refused, including files containing macros or active content."
+
+msgid "Advanced option — disabled by default"
+msgstr "Advanced option — disabled by default"
+
+msgid "All file types are allowed."
+msgstr "All file types are allowed."
+
+msgid "Format and active-content restrictions are lifted. Check the origin of shared files."
+msgstr "Format and active-content restrictions are lifted. Check the origin of shared files."
+
+msgid "Some files may contain malicious programs, macros or scripts. Sharing and opening them can put users at risk."
+msgstr "Some files may contain malicious programs, macros or scripts. Sharing and opening them can put users at risk."
+
+msgid "I understand the risks and confirm that I want to allow all file types."
+msgstr "I understand the risks and confirm that I want to allow all file types."
+
+msgid "Access rules, file-size limits and storage protection remain enforced."
+msgstr "Access rules, file-size limits and storage protection remain enforced."
+
+msgid "Security confirmation"
+msgstr "Security confirmation"
+
+msgid "Allow all file types?"
+msgstr "Allow all file types?"
+
+msgid "Enable this option only if you trust the origin of the files and understand the risks."
+msgstr "Enable this option only if you trust the origin of the files and understand the risks."
+
+msgid "After confirming, save the settings to apply your choice."
+msgstr "After confirming, save the settings to apply your choice."
+
+msgid "Confirm activation"
+msgstr "Confirm activation"
+
+msgid "KB"
+msgstr "KB"
+
+msgid "%s document to classify"
+msgid_plural "%s documents to classify"
+msgstr[0] "%s document to classify"
+msgstr[1] "%s documents to classify"

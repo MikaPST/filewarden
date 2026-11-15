@@ -13,7 +13,7 @@ const base = process.env.FILEWARDEN_URL || 'http://127.0.0.1:8080';
             const page = await context.newPage();
             await page.goto(base + '/wp-admin/admin.php?page=filewarden');
             assert.match(await page.locator('.fw-tree').textContent(), /Documents à classer/);
-            assert.match(await page.locator('.fw-recovery-count').textContent(), /\(\d+\)/);
+            assert.match(await page.locator('.fw-recovery-count').textContent(), /^\d+$/);
             assert.equal(await page.locator('.fw-folder-welcome h2').textContent(),'Ouvrez un dossier');
             assert.equal(await page.locator('.fw-folder-welcome p').textContent(),'Sélectionnez un dossier dans le menu latéral pour consulter ses documents ou créer un nouveau dossier.');
             await page.goto(base + '/wp-admin/admin.php?page=filewarden&tab=add');

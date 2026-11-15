@@ -39,9 +39,8 @@ final class Plugin {
 		}
 		add_action(
 			'init',
-			static function () {
-				load_plugin_textdomain( 'filewarden', false, dirname( plugin_basename( FILEWARDEN_PATH . 'filewarden.php' ) ) . '/languages' );
-			}
+			array( Language::class, 'register' ),
+			0
 		);
 		$repository  = new Repository();
 		$permissions = new PermissionService( array( $repository, 'folder' ) );

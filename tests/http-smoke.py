@@ -238,3 +238,7 @@ for fmt in ('csv', 'txt', 'jsonl'):
         assert len(empty_body.decode().splitlines()) == 1 and b'actor_login' in empty_body
 print('Navigation denial styles, root quarantine and authorized CSV/TXT/JSONL actor export checks passed.')
 
+import pathlib
+import runpy
+runpy.run_path(str(pathlib.Path(__file__).with_name('v16-http.py')))['run'](request, admin, reader, anon, nonce, fixtures, upload)
+

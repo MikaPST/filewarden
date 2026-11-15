@@ -10,13 +10,16 @@ Pre-alpha document-management foundation. Not ready for production.
 
 == Description ==
 
-FileWarden 0.1.15-dev is a development preview with a live recovery count, reviewed unpublishing, multiple document uploads, bounded ZIP and macro-free Office inspection, global trash, explicit restoration, permanent disposal, accessible notifications, publication preview modes, categorized settings and versioned audit exports. Existing protected PDF/image previews, Media Library import, inherited permissions, permanent document URLs and shortcode publishing are preserved. ZIPs are never extracted automatically. Hosting acceptance is still required. Versions and native editor widgets remain future work.
+FileWarden 0.1.16-dev is a development preview with a live recovery count, reviewed unpublishing, multiple document uploads, bounded ZIP and macro-free Office inspection, global trash, explicit restoration, permanent disposal, accessible notifications, publication preview modes, categorized settings and versioned audit exports. Existing protected PDF/image previews, Media Library import, inherited permissions, permanent document URLs and shortcode publishing are preserved. ZIPs are never extracted automatically. This version adds plugin-only French/English/site-language selection, refined branded controls, a collapsed formats notice, a nonzero recovery badge, filtered move destinations and compact database health. An optional confirmed and audited all-format setting accepts refused content only as protected opaque attachments without active preview; it is disabled by default. Hosting acceptance is still required. Versions and native editor widgets remain future work.
 
 == Installation ==
 
 Use single-site preproduction WordPress. Managed storage requires Sodium and verified HTTPS access restrictions. See docs/setup.md for verification, backups and the optional outside-webroot configuration. Do not use confidential documents before deployment validation.
 
 == Changelog ==
+
+= 0.1.16-dev =
+Plugin-only French/English language selection with site-language default and English fallback. Refined shared header, collapsed format notice, transfer controls and current-destination exclusion, preview/download icons, branded buttons and keyboard states, nonzero recovery badge and compact database health. Confirmed and audited all-format attachment opt-in, disabled by default, preserving access, size and storage protections. Schema 6 and existing documents preserved. Development preview; deployment acceptance remains required.
 
 = 0.1.15-dev =
 Explicit InnoDB creation and a backup-confirmed, resumable repair for legacy MyISAM tables. Supplied PNG welcome artwork, official header logo, source pictograms, colored simplified audit categories, consistent purge controls, compact underlined navigation, concise health summary and native-color outline folder-lock menu icon. Schema 6, documents and inherited permissions preserved. Development preview; deployment acceptance remains required.

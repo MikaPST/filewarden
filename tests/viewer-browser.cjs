@@ -160,6 +160,7 @@ function pdfFixture() {
             await require('./notifications-browser.cjs')({ context, base, name });
             await require('./corrections-browser.cjs')({ context, base, name });
             await require('./v15-browser.cjs')({ context, base, name });
+            await require('./v16-browser.cjs')({ context, base, name, fixture });
             console.log(name + ': workspace, ACL, lifecycle, upload, previews and publication passed');
         } catch (error) {
             // Preserve synthetic fixture evidence instead of concealing a browser failure with retries.

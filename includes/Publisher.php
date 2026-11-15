@@ -19,7 +19,7 @@ final class Publisher {
 			return; }
 		$choices = $service->folder_choices();
 		unset( $choices[0] );
-		echo '<div class="wrap fw-workspace fw-publisher">';
+		echo '<div class="wrap fw-workspace fw-publisher" lang="' . esc_attr( Language::html() ) . '">';
 		AdminBrand::heading( __( 'Publication', 'filewarden' ) );
 		if ( ! $choices ) {
 			echo '<section class="fw-content"><p>' . esc_html__( 'Create a folder before publishing documents.', 'filewarden' ) . '</p><a class="button" href="' . esc_url( admin_url( 'admin.php?page=filewarden&tab=folder' ) ) . '">' . esc_html__( 'Create folder', 'filewarden' ) . '</a></section></div>';

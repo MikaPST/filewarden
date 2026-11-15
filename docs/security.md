@@ -21,6 +21,16 @@ ALTER TABLE commits implicitly, so a multi-table conversion has no global rollba
 - Use capability checks and nonces for administrative mutations; a nonce is not authorization.
 - Audit sensitive operations and minimize personal data retained.
 
+## Explicit all-format opt-in (0.1.16-dev)
+
+The default remains the strict extension/content allowlist. Only a settings manager, through the existing nonce-protected transport, may opt in to all formats after explicit risk confirmation and saving. Enabling/disabling is recorded with the WordPress actor. This is a reduction of content restrictions, not malware detection or a claim that the accepted bytes are safe to open.
+
+Both local uploads and readable local Media Library imports use the same service. Files that pass the original validator preserve their existing MIME/preview behavior. Other content is stored byte-identically with `application/octet-stream`: attachment disposition, nosniff, sandbox CSP and no inline preview remain enforced independently of the current setting. Arbitrary source MIME/extension never grants a preview type. Files are never executed or extracted to document paths. The media picker can select additional existing formats but does not change WordPress's own upload rules or protect the original media copy.
+
+Size limits, names/provenance/path checks, inherited ACL, recovery nonces, opaque storage keys, encryption and storage verification stay mandatory. A persisted opt-in is rechecked after acquiring the common writer gate; changing the setting uses that gate too. No client-provided flag authorizes an unrestricted import. Disabling restores validation for subsequent imports without deleting or rewriting existing attachments, whose access rules remain enforced. Existing documents are not automatically published by changing this option.
+
+Plugin language and translated confirmation text never affect authorization, stored policies, audit event codes, resource snapshots or export schema 2. Language identifiers are a fixed catalog registry, not file paths from a request; the translation-file override is restricted to the `filewarden` domain.
+
 Report vulnerabilities privately to the repository maintainers once a contact channel is published. Do not post exploitable reports as public issues.
 
 ## Corrective candidate: additional document formats

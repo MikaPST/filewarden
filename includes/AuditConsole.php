@@ -38,7 +38,7 @@ final class AuditConsole {
             // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Read-only cursor strictly validated.
 			$cursor = isset( $_GET['before'] ) ? min( $upper, RestController::integer( wp_unslash( $_GET['before'] ) ) ) : $upper;
 			$rows   = AuditHistory::rows( $filters, $cursor );
-			echo '<div class="wrap fw-workspace">';
+			echo '<div class="wrap fw-workspace" lang="' . esc_attr( Language::html() ) . '">';
 			AdminBrand::heading( __( 'Audit log', 'filewarden' ) );
 			echo '<div class="fw-audit-layout"><section class="fw-content"><h2>' . esc_html__( 'Recorded events', 'filewarden' ) . '</h2><p>' . esc_html__( 'Times shown in the site timezone:', 'filewarden' ) . ' ' . esc_html( wp_timezone_string() ) . '</p><nav class="fw-audit-views" aria-label="' . esc_attr__( 'Event display mode', 'filewarden' ) . '">';
 			foreach ( array(
@@ -138,7 +138,7 @@ final class AuditConsole {
 				$progress_message = sprintf( __( 'Preparing your %s download…', 'filewarden' ), strtoupper( $format ) );
 				/* translators: %s: export format (CSV, TXT, or JSONL). */
 				$download_label = sprintf( __( 'Download %s audit file', 'filewarden' ), strtoupper( $format ) );
-				echo '<a class="button fw-export-button fw-export-' . esc_attr( $format ) . '" data-export-title="' . esc_attr__( 'Audit export', 'filewarden' ) . '" data-export-message="' . esc_attr( $progress_message ) . '" data-export-success="' . esc_attr__( 'File received. Your browser has been asked to download it.', 'filewarden' ) . '" data-export-error="' . esc_attr__( 'Download failed. Check your connection and permissions, then retry.', 'filewarden' ) . '" href="' . esc_url( $url ) . '"><span class="dashicons ' . esc_attr( $icons[ $format ] ) . '" aria-hidden="true"></span><span>' . esc_html( strtoupper( $format ) ) . '</span><span class="screen-reader-text">' . esc_html( $download_label ) . '</span></a> ';
+				echo '<a class="button fw-export-button fw-export-' . esc_attr( $format ) . '" data-export-title="' . esc_attr__( 'Audit export', 'filewarden' ) . '" data-export-message="' . esc_attr( $progress_message ) . '" data-export-success="' . esc_attr__( 'File received. Your browser has been asked to download it.', 'filewarden' ) . '" data-export-error="' . esc_attr__( 'Download failed. Check your connection and permissions, then retry.', 'filewarden' ) . '" href="' . esc_url( $url ) . '"><span class="fw-action-icon fw-icon-download" aria-hidden="true"></span><span>' . esc_html( strtoupper( $format ) ) . '</span><span class="screen-reader-text">' . esc_html( $download_label ) . '</span></a> ';
 			}
 			echo '</div><p class="fw-export-status" aria-live="polite" role="status"></p><hr><h3>' . esc_html__( 'Audit maintenance', 'filewarden' ) . '</h3><p>' . esc_html__( 'Export the selected events before purging if you need a copy.', 'filewarden' ) . '</p>';
 			if ( current_user_can( 'filewarden_manage_audit' ) ) {
@@ -238,7 +238,7 @@ final class AuditConsole {
 			$type = ''; }
 		$login      = self::actor_login( $row );
 		$name       = self::resource_name( $row );
-		$successful = in_array( $event, array( 'document_uploaded', 'document_policy_changed', 'folder_policy_changed', 'document_move_completed', 'document_copy_completed', 'document_trashed', 'document_restored', 'document_purged', 'folder_created', 'folder_deleted_files_recovered', 'settings_changed', 'audit_purged', 'download_started', 'download_head', 'database_repaired' ), true );
+		$successful = in_array( $event, array( 'document_uploaded', 'document_policy_changed', 'folder_policy_changed', 'document_move_completed', 'document_copy_completed', 'document_trashed', 'document_restored', 'document_purged', 'folder_created', 'folder_deleted_files_recovered', 'settings_changed', 'all_file_types_enabled', 'all_file_types_disabled', 'audit_purged', 'download_started', 'download_head', 'database_repaired' ), true );
 		return array(
 			'schema_version'     => 2,
 			'id'                 => (int) $row['id'],
@@ -265,6 +265,8 @@ final class AuditConsole {
 		$labels = array(
 			'database_repair_requested'        => __( 'Database repair requested', 'filewarden' ),
 			'database_repaired'                => __( 'Database tables repaired and verified', 'filewarden' ),
+			'all_file_types_enabled'           => __( 'All file types enabled', 'filewarden' ),
+			'all_file_types_disabled'          => __( 'File type restrictions restored', 'filewarden' ),
 			'folder_policy_change_requested'   => __( 'Folder permission change requested', 'filewarden' ),
 			'folder_policy_changed'            => __( 'Folder permissions changed', 'filewarden' ),
 			'access_denied'                    => __( 'Access denied', 'filewarden' ),
