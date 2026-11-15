@@ -1,0 +1,216 @@
+{
+  "version": "0.1.15-dev",
+  "checked_on": "2026-11-15",
+  "commit": "cd9efd77db506e9067dff4296ed1f082238e078b",
+  "run_id": 43641557456,
+  "url": "https://github.com/MikaPST/filewarden/actions/runs/43641557456",
+  "status": "success",
+  "attempt": 1,
+  "jobs": [
+    {
+      "id": 132590029595,
+      "name": "unit (8.2)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 132590029700,
+      "name": "integration (WP latest, from 0.1.11-dev)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 132590029702,
+      "name": "integration (WP latest, from 0.1.13-dev)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 132590029728,
+      "name": "integration (WP 6.8, from 0.1.11-dev)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 132590029742,
+      "name": "integration (WP 6.8, from 0.1.14-dev)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 132590029760,
+      "name": "integration (WP 6.8, from 0.1.13-dev)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 132590029777,
+      "name": "javascript",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 132590029833,
+      "name": "unit (8.4)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 132590029840,
+      "name": "integration (WP 6.8, from 0.1.12-dev)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 132590029843,
+      "name": "integration (WP latest, from 0.1.14-dev)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 132590029896,
+      "name": "integration (WP latest, from 0.1.12-dev)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 132590030043,
+      "name": "unit (8.3)",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "unit_results": [
+    {
+      "id": 132590029595,
+      "php": "Runtime:       PHP 8.2.35",
+      "unit": "OK (75 tests, 130 assertions)",
+      "audit": true
+    },
+    {
+      "id": 132590030043,
+      "php": "Runtime:       PHP 8.3.36",
+      "unit": "OK (75 tests, 130 assertions)",
+      "audit": true
+    },
+    {
+      "id": 132590029833,
+      "php": "Runtime:       PHP 8.4.27",
+      "unit": "OK (75 tests, 130 assertions)",
+      "audit": true
+    }
+  ],
+  "integration_results": [
+    {
+      "id": 132590029700,
+      "name": "integration (WP latest, from 0.1.11-dev)",
+      "conclusion": "success",
+      "wordpress": "7.1.4",
+      "mysql": "8.0.46",
+      "integration": true,
+      "myisam_zip_upgrade": false,
+      "v15_chromium": true,
+      "v15_firefox": true,
+      "french_chromium": true,
+      "french_firefox": true
+    },
+    {
+      "id": 132590029702,
+      "name": "integration (WP latest, from 0.1.13-dev)",
+      "conclusion": "success",
+      "wordpress": "7.1.4",
+      "mysql": "8.0.46",
+      "integration": true,
+      "myisam_zip_upgrade": false,
+      "v15_chromium": true,
+      "v15_firefox": true,
+      "french_chromium": true,
+      "french_firefox": true
+    },
+    {
+      "id": 132590029728,
+      "name": "integration (WP 6.8, from 0.1.11-dev)",
+      "conclusion": "success",
+      "wordpress": "6.8",
+      "mysql": "8.0.46",
+      "integration": true,
+      "myisam_zip_upgrade": false,
+      "v15_chromium": true,
+      "v15_firefox": true,
+      "french_chromium": true,
+      "french_firefox": true
+    },
+    {
+      "id": 132590029742,
+      "name": "integration (WP 6.8, from 0.1.14-dev)",
+      "conclusion": "success",
+      "wordpress": "6.8",
+      "mysql": "8.0.46",
+      "integration": true,
+      "myisam_zip_upgrade": true,
+      "v15_chromium": true,
+      "v15_firefox": true,
+      "french_chromium": true,
+      "french_firefox": true
+    },
+    {
+      "id": 132590029760,
+      "name": "integration (WP 6.8, from 0.1.13-dev)",
+      "conclusion": "success",
+      "wordpress": "6.8",
+      "mysql": "8.0.46",
+      "integration": true,
+      "myisam_zip_upgrade": false,
+      "v15_chromium": true,
+      "v15_firefox": true,
+      "french_chromium": true,
+      "french_firefox": true
+    },
+    {
+      "id": 132590029840,
+      "name": "integration (WP 6.8, from 0.1.12-dev)",
+      "conclusion": "success",
+      "wordpress": "6.8",
+      "mysql": "8.0.46",
+      "integration": true,
+      "myisam_zip_upgrade": false,
+      "v15_chromium": true,
+      "v15_firefox": true,
+      "french_chromium": true,
+      "french_firefox": true
+    },
+    {
+      "id": 132590029843,
+      "name": "integration (WP latest, from 0.1.14-dev)",
+      "conclusion": "success",
+      "wordpress": "7.1.4",
+      "mysql": "8.0.46",
+      "integration": true,
+      "myisam_zip_upgrade": true,
+      "v15_chromium": true,
+      "v15_firefox": true,
+      "french_chromium": true,
+      "french_firefox": true
+    },
+    {
+      "id": 132590029896,
+      "name": "integration (WP latest, from 0.1.12-dev)",
+      "conclusion": "success",
+      "wordpress": "7.1.4",
+      "mysql": "8.0.46",
+      "integration": true,
+      "myisam_zip_upgrade": false,
+      "v15_chromium": true,
+      "v15_firefox": true,
+      "french_chromium": true,
+      "french_firefox": true
+    }
+  ],
+  "tested_candidate_artifact": {
+    "id": 14132521260,
+    "url": "https://github.com/MikaPST/filewarden/actions/runs/43641557456/artifacts/14132521260"
+  },
+  "previous_initial_failure": "v0.1.15-dev-ci-initial.json",
+  "publication": "Published v0.1.15-dev after all 12 main CI jobs and all 13 release workflow jobs succeeded; downloaded public ZIP verified against the exact tag. See v0.1.15-dev-published.json.",
+  "hosting": "No target-host deployment or migration performed."
+}

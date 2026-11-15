@@ -4,7 +4,7 @@ Le propriétaire a donné le GO global le 14 novembre 2026 et autorisé par avan
 
 ## Conformité du lot
 
-| Point | Changement | Code et couverture vérifiée localement |
+| Point | Changement | Code et couverture locale puis CI validée |
 |---|---|---|
 | 01 | Création explicite InnoDB ; diagnostic des anciennes tables ; réparation MyISAM volontaire après sauvegarde, contrôle d’intégrité et reprise après interruption | `Installer`, `DatabaseUpgrade`, `Repository`, `SettingsConsole` ; intégration réelle MyISAM et parcours POST navigateur |
 | 02 | PNG fourni au-dessus d’« Ouvrez un dossier », 80 × 80 px, proportions et transparence originales ; PNG seul importé | `assets/illustrations/folder-welcome.png`, `admin.css`, allowlist du ZIP ; hash de l’original et ressource HTTP |
@@ -34,11 +34,16 @@ La suppression de dossier conserve son contrôle transactionnel, ses capacités,
 
 ## Validation
 
-La première CI sur f7db9f4 a détecté des écarts non reproduits dans la recette Windows : débordement Firefox/Linux à 320 px et attentes d’aperçu/restauration. **Aucun tag ni release publié à ce stade.** [Trace et correctif](validation/v0.1.15-dev-ci-initial.json). Le candidat correctif borne le bouton et la date, regroupe les changements rapides d’aperçu et attend les véritables navigations/POST ; la nouvelle recette complète 6.8 et le stress d’aperçu passent localement. Les contrôles GitHub doivent être entièrement réussis avant publication.
+**Lot publié le 15 novembre 2026** : [release et ZIP](https://github.com/MikaPST/filewarden/releases/tag/v0.1.15-dev), tag annoté au commit cd9efd77db506e9067dff4296ed1f082238e078b. [CI main : 12/12 jobs réussis](https://github.com/MikaPST/filewarden/actions/runs/43641557456), [workflow du tag : 13/13 réussis, publication comprise](https://github.com/MikaPST/filewarden/actions/runs/43687379324), tous deux à la première tentative. PHP 8.2–8.4, WordPress 6.8/7.1.4 et MySQL 8.0.46 vérifiés. [Preuve CI](validation/v0.1.15-dev-ci.json), [preuve du workflow de publication](validation/v0.1.15-dev-release-ci.json).
+
+Le ZIP public téléchargé contient 290 fichiers identiques au tag. Version, schéma 6, PNG original, notes de release, fichier SHA-256 et empreinte GitHub vérifiés. SHA-256 : **db4a3d80811ef6b8bed1fee58a6bd4178f37f1899c38b18531a0810b0a842fa0**. [Preuve de l’archive publiée](validation/v0.1.15-dev-published.json). Les paragraphes suivants conservent l’historique des candidats et des corrections.
+
+
+La première CI sur f7db9f4 a détecté des écarts non reproduits dans la recette Windows : débordement Firefox/Linux à 320 px et attentes d’aperçu/restauration. **Aucun tag ni release publié à ce stade.** [Trace et correctif](validation/v0.1.15-dev-ci-initial.json). Le candidat correctif borne le bouton et la date, regroupe les changements rapides d’aperçu et attend les véritables navigations/POST ; la nouvelle recette complète 6.8 et le stress d’aperçu passent localement. Les contrôles GitHub finaux ont ensuite tous réussi avant publication le 15 novembre 2026.
 
 **Recette locale réussie** sur WordPress 6.8 et 7.1.4, PHP 8.2.35/MariaDB 10.11.11, Chromium/Firefox EN/FR : mises à jour réelles depuis 0.1.14-dev en MyISAM, intégration/HTTP, non-régression des dix évolutions originales, 75 tests PHP/130 assertions, huit tests JavaScript, syntaxe, PHPCS, audit Composer et secours Sodium. Les tests couvrent aussi la reprise après conversion partielle, le refus d’une divergence de données, la réactivation avec point de reprise et le verrou depuis une connexion indépendante. Le formulaire de réparation français est testé à 375 et 320 px. [Preuve locale et empreinte du ZIP](validation/v0.1.15-dev-local.json).
 
-Les fichiers `tests/v15-integration.php`, `tests/v15-browser.cjs` et `tests/v15-french-browser.cjs` complètent les suites historiques ; ils ne sont jamais inclus dans le ZIP. Les erreurs préliminaires du banc navigateur et leur correction sont consignées dans la preuve, distinctes des parcours finaux réussis. La CI et la publication sont encore en attente à cette étape ; leurs résultats seront ajoutés dans `docs/testing.md`, `SUIVI.md` et `docs/validation/`.
+Les fichiers `tests/v15-integration.php`, `tests/v15-browser.cjs` et `tests/v15-french-browser.cjs` complètent les suites historiques ; ils ne sont jamais inclus dans le ZIP. Les erreurs préliminaires du banc navigateur et leur correction sont consignées dans la preuve, distinctes des parcours finaux réussis. Ce constat local est historique ; la CI et la publication finales sont désormais réussies, avec les preuves référencées dans cette section.
 
 La matrice GitHub ajoute la mise à jour depuis 0.1.14-dev aux parcours depuis 0.1.11/12/13-dev, sur WordPress 6.8 et la version courante, MySQL 8.0, Chromium/Firefox FR/EN, PHP 8.2–8.4. La release consomme l’archive exacte installée par le job WordPress 6.8 depuis 0.1.14-dev, après réussite de tous les jobs.
 

@@ -1,5 +1,16 @@
 # Validation
 
+## Published 0.1.15-dev — 2026-11-15
+
+The final annotated tag points to **cd9efd77db506e9067dff4296ed1f082238e078b**. [Main CI, 12 successful jobs](https://github.com/MikaPST/filewarden/actions/runs/43641557456) and [release workflow, 13 successful jobs](https://github.com/MikaPST/filewarden/actions/runs/43687379324) both passed on attempt 1. This supersedes pending statuses in the historical candidate records below.
+
+Actual CI coverage: PHP 8.2.35/8.3.36/8.4.27 (75 tests/130 assertions each), eight JavaScript tests, syntax/PHPCS/Composer audit; eight actual ZIP upgrade paths from 0.1.11/12/13/14-dev across WordPress 6.8 and 7.1.4, MySQL 8.0.46, HTTP/security integration and Chromium/Firefox EN/FR including French repair at 375/320px. Initial failed candidates and subsequent corrections remain recorded separately. [Main evidence](validation/v0.1.15-dev-ci.json), [release jobs and tested artifact](validation/v0.1.15-dev-release-ci.json).
+
+The [public release](https://github.com/MikaPST/filewarden/releases/tag/v0.1.15-dev) ZIP was downloaded and verified: all 290 files match the tagged Git blobs byte-for-byte; exact runtime allowlist, version, schema 6, original PNG and release notes match. SHA-256 **db4a3d80811ef6b8bed1fee58a6bd4178f37f1899c38b18531a0810b0a842fa0** agrees with the attached checksum and GitHub asset digest. The release job consumed the same workflow’s installed-and-tested WordPress 6.8 upgrade artifact, without rebuilding. [Public archive evidence](validation/v0.1.15-dev-published.json).
+
+No installation or database conversion was performed on the owner's site. Existing MyISAM tables require backup and explicit repair through Settings/Storage and security; no silent conversion is claimed. Target-host acceptance and full human screen-reader review remain separate.
+
+
 ## 0.1.15-dev — final corrective local candidate
 
 [Corrective local evidence](validation/v0.1.15-dev-corrections-local.json): fresh complete 6.8 acceptance passed; fresh 7.1.4 upgrade/integration and targeted rapid-preview/French/320px checks passed in both browsers. The final cleanup follow-up defers known maintenance/busy lock refusals, preserving audit records and allowing later WordPress cron callbacks; both installed ZIPs passed this targeted check. PHPUnit remains 75 tests/130 assertions, JS eight tests, PHPCS/syntax pass. The final local archive has 290 verified files, SHA-256 57bafc38e30ca435bd0c226096b0d7da9476c28c20cef5c31657d1da442e0e17. Final GitHub matrix and publication remain pending at this record; earlier evidence below refers to its own candidate.

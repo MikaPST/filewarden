@@ -1,0 +1,94 @@
+{
+  "version": "0.1.15-dev",
+  "checked_on": "2026-11-15",
+  "commit": "cd9efd77db506e9067dff4296ed1f082238e078b",
+  "run_id": 43687379324,
+  "url": "https://github.com/MikaPST/filewarden/actions/runs/43687379324",
+  "status": "success",
+  "jobs": [
+    {
+      "id": 132730571225,
+      "name": "checks / unit (8.2)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 132730571369,
+      "name": "checks / unit (8.4)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 132730571390,
+      "name": "checks / integration (WP 6.8, from 0.1.13-dev)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 132730571405,
+      "name": "checks / integration (WP latest, from 0.1.11-dev)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 132730571411,
+      "name": "checks / integration (WP latest, from 0.1.12-dev)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 132730571449,
+      "name": "checks / javascript",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 132730571455,
+      "name": "checks / unit (8.3)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 132730571514,
+      "name": "checks / integration (WP 6.8, from 0.1.14-dev)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 132730571573,
+      "name": "checks / integration (WP 6.8, from 0.1.11-dev)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 132730571576,
+      "name": "checks / integration (WP latest, from 0.1.14-dev)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 132730571584,
+      "name": "checks / integration (WP 6.8, from 0.1.12-dev)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 132730571656,
+      "name": "checks / integration (WP latest, from 0.1.13-dev)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 132731725934,
+      "name": "release",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "tested_candidate_artifact": {
+    "id": 14150398366,
+    "url": "https://github.com/MikaPST/filewarden/actions/runs/43687379324/artifacts/14150398366",
+    "digest": "sha256:52901b63ecd59aeb4c10fe5577ff4f9890cd26258c9b9f71726500dd48f785e3"
+  },
+  "release_job_log_verified": "Release consumed filewarden-tested-candidate from this run and published the ZIP after successful integrity checking."
+}

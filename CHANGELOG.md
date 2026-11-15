@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.15-dev — 2026-11-14
+## 0.1.15-dev — 2026-11-15
 
 - Require explicit InnoDB for newly created tables; provide a capability/nonce/backup-confirmed repair for existing MyISAM tables, with exact content/schema/index/collation/next-ID verification and resumable checkpoints. Never silently convert live tables on update.
 - Drain plugin writers through a reentrant connection gate during repair; keep partial repairs fail-closed and preserve transactional folder recovery and inherited restrictions. Record repair requests and verified completions separately.

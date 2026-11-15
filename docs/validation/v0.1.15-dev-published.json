@@ -1,0 +1,38 @@
+{
+  "version": "0.1.15-dev",
+  "tag": "v0.1.15-dev",
+  "commit": "cd9efd77db506e9067dff4296ed1f082238e078b",
+  "published_at": "2026-11-15T06:57:49Z",
+  "release_url": "https://github.com/MikaPST/filewarden/releases/tag/v0.1.15-dev",
+  "prerelease": true,
+  "archive": {
+    "name": "filewarden-0.1.15-dev.zip",
+    "files": 290,
+    "bytes": 4231849,
+    "sha256": "db4a3d80811ef6b8bed1fee58a6bd4178f37f1899c38b18531a0810b0a842fa0",
+    "asset_id": 750135385,
+    "download_url": "https://github.com/MikaPST/filewarden/releases/download/v0.1.15-dev/filewarden-0.1.15-dev.zip"
+  },
+  "verification": [
+    "All 290 runtime blobs match the annotated tag byte-for-byte",
+    "Expected file set, version, schema 6 and original PNG verified",
+    "Attached SHA-256 and available GitHub asset digest verified",
+    "Release body matches tagged release notes"
+  ],
+  "main_ci": {
+    "run_id": 43641557456,
+    "url": "https://github.com/MikaPST/filewarden/actions/runs/43641557456"
+  },
+  "hosting": "No target-host installation or migration performed; operator backup and explicit repair remain necessary for existing MyISAM tables",
+  "checked_on": "2026-11-15",
+  "release_ci": {
+    "run_id": 43687379324,
+    "url": "https://github.com/MikaPST/filewarden/actions/runs/43687379324",
+    "status": "success"
+  },
+  "tested_candidate_artifact": {
+    "id": 14150398366,
+    "url": "https://github.com/MikaPST/filewarden/actions/runs/43687379324/artifacts/14150398366",
+    "digest": "sha256:52901b63ecd59aeb4c10fe5577ff4f9890cd26258c9b9f71726500dd48f785e3"
+  }
+}
