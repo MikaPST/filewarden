@@ -2,7 +2,8 @@
 const assert=require('node:assert/strict');
 module.exports=async({context,base,name,fixture})=>{
  const page=await context.newPage();page.setDefaultTimeout(15000);
- const navigate=async(url)=>{await page.goto(url);await page.waitForLoadState('networkidle');};
+ const ready=require('./native-admin-ready.cjs')(page,base);
+ const navigate=async(url)=>{await page.goto(url);await ready();};
  try{
   await navigate(base+'/wp-admin/admin.php?page=filewarden&collection=unfiled');
   const badge=page.locator('.fw-recovery-count');assert.equal(await badge.count(),1);
@@ -15,7 +16,7 @@ module.exports=async({context,base,name,fixture})=>{
   assert.equal(await page.locator('.fw-search button').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(95, 194, 186)');
   const active=page.locator('.fw-tabs a[aria-current]');
   assert.equal(await active.evaluate(el=>getComputedStyle(el).borderBottomColor),'rgb(28, 41, 66)');
-  await Promise.all([page.waitForNavigation(),active.click()]);await page.waitForLoadState('networkidle');assert.equal(await active.evaluate(el=>getComputedStyle(el).boxShadow),'none');
+  await Promise.all([page.waitForNavigation(),active.click({noWaitAfter:true})]);await ready();assert.equal(await active.evaluate(el=>getComputedStyle(el).boxShadow),'none');
   await page.keyboard.press('Tab');await active.focus();
   assert.equal(await active.evaluate(el=>el.matches(':focus-visible')),true);
   assert.equal(await active.evaluate(el=>getComputedStyle(el).outlineColor),'rgb(28, 41, 66)');

@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.16-dev — 2026-11-15
+## 0.1.16-dev — 2026-11-20
 
 - Add global FileWarden language selection: site language by default, French/English catalogs and English fallback, without changing WordPress or other translation domains. Translate PHP, localized JavaScript, public library and viewer; preserve resource names and technical export keys.
 - Add an explicit confirmed and audited all-format import opt-in, disabled by default. Refused content becomes an opaque protected attachment without inline preview; retain provenance, path, size, authorization, encryption and integrity checks. Re-read the persisted setting under the write gate.

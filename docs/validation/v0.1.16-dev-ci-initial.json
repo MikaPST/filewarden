@@ -1,0 +1,21 @@
+{
+  "version": "0.1.16-dev",
+  "commit": "fcf6e8ab600730669547635c08dd51d3bae7a02d",
+  "run_id": 43719040600,
+  "url": "https://github.com/MikaPST/filewarden/actions/runs/43719040600",
+  "date": "2026-11-15",
+  "conclusion": "failure",
+  "passed_jobs": 14,
+  "total_jobs": 15,
+  "failed_job": {
+    "id": 132826793919,
+    "name": "integration (WP latest, from 0.1.12-dev)",
+    "step": "Exercise browser HTTP routes",
+    "browser": "Firefox",
+    "error": "page.waitForLoadState: Timeout 30000ms exceeded",
+    "location": "tests/v16-browser.cjs:117, navigate helper waiting for networkidle",
+    "completed_before_failure": "Actual ZIP upgrade, business/security integration, HTTP, all Chromium suites and historical Firefox suites passed. The timeout occurred during the plugin language suite."
+  },
+  "diagnosis": "The blanket networkidle wait includes unrelated WordPress background traffic. Replace it with a bounded wait for native users/me requests and page loading; preserve every functional assertion and the zero page-error assertion.",
+  "release": "No tag or release created from this failed run."
+}

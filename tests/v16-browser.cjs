@@ -9,13 +9,14 @@ module.exports=async({context,base,name,fixture})=>{
  const admin=base+'/wp-admin/admin.php?page=';
  const settings=admin+'filewarden-settings';
  let nonce;
- const navigate=async(url)=>{await page.goto(url);await page.waitForLoadState('networkidle');};
+ const ready=require('./native-admin-ready.cjs')(page,base);
+ const navigate=async(url)=>{await page.goto(url);await ready();};
  const save=async()=>{
-  await page.waitForLoadState('networkidle');
-  await Promise.all([page.waitForNavigation({waitUntil:'domcontentloaded'}),page.locator('.fw-settings form:has([name=language]) [type=submit]').click()]);
+  await ready();
+  await Promise.all([page.waitForNavigation({waitUntil:'domcontentloaded'}),page.locator('.fw-settings form:has([name=language]) [type=submit]').click({noWaitAfter:true})]);
   assert.equal(new URL(page.url()).searchParams.get('result'),'success');
   await page.locator('.fw-notice-success').waitFor();
-  await page.waitForLoadState('networkidle');
+  await ready();
  };
  const settledSelection=async()=>{
   await page.waitForFunction(()=>{
@@ -58,7 +59,7 @@ module.exports=async({context,base,name,fixture})=>{
   await optin.click();await page.locator('[data-fw-import-confirm]').click();
   await page.waitForFunction(()=>document.querySelector('#fw-allow-all-types').checked);
   assert.equal(await page.locator('.fw-import-active').count(),0,'Confirmation alone claimed the setting was saved');
-  await page.reload();await page.waitForLoadState('networkidle');assert.equal(await optin.isChecked(),false);
+  await page.reload();await ready();assert.equal(await optin.isChecked(),false);
   await page.locator('[data-settings-section=storage]').click();
   await optin.click();await page.locator('[data-fw-import-confirm]').click();
   await page.waitForFunction(()=>document.querySelector('#fw-allow-all-types').checked);

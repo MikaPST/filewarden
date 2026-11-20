@@ -1,0 +1,19 @@
+{
+  "version": "0.1.16-dev",
+  "date": "2026-11-20",
+  "result": "pass",
+  "runtime_source_commit": "fcf6e8ab600730669547635c08dd51d3bae7a02d",
+  "runtime_changed": false,
+  "archive_sha256": "f35d8045bcb67c977c25bf94fb5fc662df1ada8e5d5e9eaf901562f4e2294d5c",
+  "wordpress": ["6.8", "7.1.4"],
+  "browsers": ["Chromium 158.0.8127.18", "Firefox 159.0"],
+  "checks": [
+    "Complete focused v16-browser and v16-controls-browser suites passed in both browsers on both WordPress versions.",
+    "All language, confirmation/import, strict restoration, health, narrow-layout, button, badge, tooltip and focus assertions retained.",
+    "Zero JavaScript page-error assertion retained and passed.",
+    "Eight JavaScript transport regression tests and Node syntax checks passed."
+  ],
+  "correction": "Wait for page loading and completion of native users/me requests, not global network silence. Submit actions use the existing explicit navigation wait without a redundant implicit click wait.",
+  "fixture_scope": "Only two existing disposable local sites were restarted. Their deferred WordPress cron was disabled for this focused diagnostic after the five-day interruption; the fresh full CI still exercises the original cleanup and integration suites.",
+  "remaining": "A new full GitHub CI run must pass before tag/release publication."
+}
