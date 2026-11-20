@@ -1,0 +1,158 @@
+{
+  "version": "0.1.16-dev",
+  "run_id": 44777904156,
+  "url": "https://github.com/MikaPST/filewarden/actions/runs/44777904156",
+  "commit": "ed43ab88a2317a9c8dde19496ac02e58efb08d28",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "attempt": 1,
+  "jobs_count": 15,
+  "runtime": {
+    "PHP": [
+      "8.2.36",
+      "8.3.37",
+      "8.4.28"
+    ],
+    "MySQL": "8.0.46",
+    "WordPress": [
+      "6.8",
+      "7.1.5"
+    ]
+  },
+  "validation": {
+    "phpunit": "76 tests / 140 assertions on each PHP version",
+    "javascript": "8 tests",
+    "catalogs": "393 source entries, FR/EN, placeholders/plurals and fresh official POT check",
+    "upgrades": "Ten actual ZIP upgrades: 0.1.11/12/13/14/15-dev to 0.1.16-dev, on WordPress 6.8/current",
+    "fresh_install": "Empty InnoDB/default-off/auto language and absent move/copy destinations",
+    "integration": "Original and 0.1.16 security/functional suites, HTTP and Chromium/Firefox EN/FR, strict/permissive/strict imports, language isolation, native MyISAM repair and protected viewers"
+  },
+  "jobs": [
+    {
+      "id": 136432532825,
+      "name": "unit (8.2)",
+      "conclusion": "success",
+      "url": "https://github.com/MikaPST/filewarden/actions/runs/44777904156/job/136432532825",
+      "started_at": "2026-11-20T16:53:46Z",
+      "completed_at": "2026-11-20T16:54:06Z"
+    },
+    {
+      "id": 136432533139,
+      "name": "integration (WP 6.8, from 0.1.12-dev)",
+      "conclusion": "success",
+      "url": "https://github.com/MikaPST/filewarden/actions/runs/44777904156/job/136432533139",
+      "started_at": "2026-11-20T16:53:46Z",
+      "completed_at": "2026-11-20T16:57:31Z"
+    },
+    {
+      "id": 136432533179,
+      "name": "unit (8.4)",
+      "conclusion": "success",
+      "url": "https://github.com/MikaPST/filewarden/actions/runs/44777904156/job/136432533179",
+      "started_at": "2026-11-20T16:53:46Z",
+      "completed_at": "2026-11-20T16:54:09Z"
+    },
+    {
+      "id": 136432533216,
+      "name": "javascript",
+      "conclusion": "success",
+      "url": "https://github.com/MikaPST/filewarden/actions/runs/44777904156/job/136432533216",
+      "started_at": "2026-11-20T16:53:45Z",
+      "completed_at": "2026-11-20T16:53:51Z"
+    },
+    {
+      "id": 136432533306,
+      "name": "integration (WP 6.8, from 0.1.14-dev)",
+      "conclusion": "success",
+      "url": "https://github.com/MikaPST/filewarden/actions/runs/44777904156/job/136432533306",
+      "started_at": "2026-11-20T16:53:46Z",
+      "completed_at": "2026-11-20T16:57:50Z"
+    },
+    {
+      "id": 136432533320,
+      "name": "unit (8.3)",
+      "conclusion": "success",
+      "url": "https://github.com/MikaPST/filewarden/actions/runs/44777904156/job/136432533320",
+      "started_at": "2026-11-20T16:53:46Z",
+      "completed_at": "2026-11-20T16:54:03Z"
+    },
+    {
+      "id": 136432533356,
+      "name": "integration (WP 6.8, from 0.1.15-dev)",
+      "conclusion": "success",
+      "url": "https://github.com/MikaPST/filewarden/actions/runs/44777904156/job/136432533356",
+      "started_at": "2026-11-20T16:53:46Z",
+      "completed_at": "2026-11-20T16:57:39Z"
+    },
+    {
+      "id": 136432533373,
+      "name": "fresh-install",
+      "conclusion": "success",
+      "url": "https://github.com/MikaPST/filewarden/actions/runs/44777904156/job/136432533373",
+      "started_at": "2026-11-20T16:53:47Z",
+      "completed_at": "2026-11-20T16:54:32Z"
+    },
+    {
+      "id": 136432533407,
+      "name": "integration (WP 6.8, from 0.1.13-dev)",
+      "conclusion": "success",
+      "url": "https://github.com/MikaPST/filewarden/actions/runs/44777904156/job/136432533407",
+      "started_at": "2026-11-20T16:53:46Z",
+      "completed_at": "2026-11-20T16:58:24Z"
+    },
+    {
+      "id": 136432533502,
+      "name": "integration (WP latest, from 0.1.14-dev)",
+      "conclusion": "success",
+      "url": "https://github.com/MikaPST/filewarden/actions/runs/44777904156/job/136432533502",
+      "started_at": "2026-11-20T16:53:46Z",
+      "completed_at": "2026-11-20T16:59:20Z"
+    },
+    {
+      "id": 136432533549,
+      "name": "integration (WP latest, from 0.1.15-dev)",
+      "conclusion": "success",
+      "url": "https://github.com/MikaPST/filewarden/actions/runs/44777904156/job/136432533549",
+      "started_at": "2026-11-20T16:53:46Z",
+      "completed_at": "2026-11-20T17:01:46Z"
+    },
+    {
+      "id": 136432533637,
+      "name": "integration (WP latest, from 0.1.13-dev)",
+      "conclusion": "success",
+      "url": "https://github.com/MikaPST/filewarden/actions/runs/44777904156/job/136432533637",
+      "started_at": "2026-11-20T16:53:46Z",
+      "completed_at": "2026-11-20T17:00:13Z"
+    },
+    {
+      "id": 136432533675,
+      "name": "integration (WP 6.8, from 0.1.11-dev)",
+      "conclusion": "success",
+      "url": "https://github.com/MikaPST/filewarden/actions/runs/44777904156/job/136432533675",
+      "started_at": "2026-11-20T16:53:46Z",
+      "completed_at": "2026-11-20T16:57:32Z"
+    },
+    {
+      "id": 136432533676,
+      "name": "integration (WP latest, from 0.1.11-dev)",
+      "conclusion": "success",
+      "url": "https://github.com/MikaPST/filewarden/actions/runs/44777904156/job/136432533676",
+      "started_at": "2026-11-20T16:53:46Z",
+      "completed_at": "2026-11-20T17:01:07Z"
+    },
+    {
+      "id": 136432533840,
+      "name": "integration (WP latest, from 0.1.12-dev)",
+      "conclusion": "success",
+      "url": "https://github.com/MikaPST/filewarden/actions/runs/44777904156/job/136432533840",
+      "started_at": "2026-11-20T16:53:46Z",
+      "completed_at": "2026-11-20T16:59:22Z"
+    }
+  ],
+  "limits": [
+    "No user-host deployment or data conversion",
+    "No complete human screen-reader review",
+    "Development preview"
+  ]
+}

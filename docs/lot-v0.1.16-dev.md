@@ -26,7 +26,13 @@ GO de développement reçu le 15 novembre 2026. Le propriétaire autorise égale
 
 ## État
 
-Implémentation et recette locale complète réussies. Les deux WordPress 6.8/7.1.4 ont installé le ZIP final après mise à jour réelle depuis 0.1.15-dev, puis passé les suites métier, HTTP et Chromium/Firefox EN/FR. [Preuve locale](validation/v0.1.16-dev-local.json). CI et publication conditionnelles encore à réaliser à cette étape ; aucun résultat distant n’est présumé.
+**Implémentation et réception terminées ; préversion publiée le 20 novembre 2026.** Recettes locales complètes puis [CI complète 15/15](https://github.com/MikaPST/filewarden/actions/runs/44777904156) réussies sur le commit du tag. [Release et ZIP](https://github.com/MikaPST/filewarden/releases/tag/v0.1.16-dev). Les dix points ci-dessous sont implémentés et couverts par les tests et preuves associés ; les limites de réception restent indiquées en fin de document.
+
+Implémentation fonctionnelle : [fcf6e8a](https://github.com/MikaPST/filewarden/commit/fcf6e8ab600730669547635c08dd51d3bae7a02d). Stabilisation du banc sans changement runtime et code du tag : [ed43ab8](https://github.com/MikaPST/filewarden/commit/ed43ab88a2317a9c8dde19496ac02e58efb08d28). [Preuve locale](validation/v0.1.16-dev-local.json), [correctif du banc](validation/v0.1.16-dev-browser-sync-local.json), [preuve CI](validation/v0.1.16-dev-ci.json).
+
+Publication par promotion du **candidat exact installé/testé dans la CI réussie**, après relecture de tous les statuts et contrôle du tag. Le workflow de publication distinct a rencontré des erreurs d’installation des outils avant ses tests et a été annulé ; il n’est pas déclaré réussi. [Méthode et historique](validation/v0.1.16-dev-publication.json).
+
+ZIP public : **301 fichiers**, SHA-256 `8c0054772640788ea0328bbf6275de108cf8cf56a6f5818ace92860ee4d49e1b`. Identique au candidat testé et au runtime du tag ; checksum, digests, notes, versions, schéma 6, catalogues et illustration vérifiés. [Preuve publique](validation/v0.1.16-dev-published.json).
 
 ## Matrice de réception
 

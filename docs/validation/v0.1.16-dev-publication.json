@@ -1,0 +1,184 @@
+{
+  "version": "0.1.16-dev",
+  "tag": "v0.1.16-dev",
+  "commit": "ed43ab88a2317a9c8dde19496ac02e58efb08d28",
+  "source_run": 44777904156,
+  "source_ci": "success",
+  "source_checks": 15,
+  "artifact_id": 14648769994,
+  "artifact_digest": "sha256:86be11862f890ae112d83ab61c807e2043f0b77a6706f3b1383aee52f9823664",
+  "archive": {
+    "name": "filewarden-0.1.16-dev.zip",
+    "sha256": "8c0054772640788ea0328bbf6275de108cf8cf56a6f5818ace92860ee4d49e1b",
+    "bytes": 4261997,
+    "files": 301
+  },
+  "verification": [
+    "Exact installed/tested main-CI artifact",
+    "Every runtime file matches the immutable tag",
+    "Expected allowlist, version, schema, catalogs and notes verified"
+  ],
+  "result": "published_and_verified",
+  "date": "2026-11-20",
+  "method": "Promotion of the exact artifact installed and tested by the successful complete source CI",
+  "release_url": "https://github.com/MikaPST/filewarden/releases/tag/v0.1.16-dev",
+  "source_ci_url": "https://github.com/MikaPST/filewarden/actions/runs/44777904156",
+  "duplicate_release_workflow": {
+    "run_id": 44779442918,
+    "url": "https://github.com/MikaPST/filewarden/actions/runs/44779442918",
+    "attempts": 3,
+    "conclusion": "cancelled",
+    "reason": "Repeated WP-CLI installation failures before duplicate tests began; stalled browser installers were cancelled. No failed application assertion in these infrastructure failures."
+  },
+  "failed_job_history": [
+    {
+      "id": 136437899040,
+      "name": "checks / integration (WP latest, from 0.1.15-dev)",
+      "attempt": 1,
+      "failed_steps": [
+        "Prepare disposable WordPress"
+      ]
+    },
+    {
+      "id": 136437899225,
+      "name": "checks / fresh-install",
+      "attempt": 1,
+      "failed_steps": [
+        "Verify empty installation defaults and destinations"
+      ]
+    },
+    {
+      "id": 136437899487,
+      "name": "checks / integration (WP latest, from 0.1.14-dev)",
+      "attempt": 1,
+      "failed_steps": [
+        "Prepare disposable WordPress"
+      ]
+    },
+    {
+      "id": 136437899490,
+      "name": "checks / integration (WP 6.8, from 0.1.12-dev)",
+      "attempt": 1,
+      "failed_steps": [
+        "Prepare disposable WordPress"
+      ]
+    },
+    {
+      "id": 136437899538,
+      "name": "checks / integration (WP 6.8, from 0.1.15-dev)",
+      "attempt": 1,
+      "failed_steps": [
+        "Prepare disposable WordPress"
+      ]
+    },
+    {
+      "id": 136437899686,
+      "name": "checks / integration (WP latest, from 0.1.12-dev)",
+      "attempt": 1,
+      "failed_steps": [
+        "Prepare disposable WordPress"
+      ]
+    },
+    {
+      "id": 136437899705,
+      "name": "checks / integration (WP 6.8, from 0.1.14-dev)",
+      "attempt": 1,
+      "failed_steps": [
+        "Prepare disposable WordPress"
+      ]
+    },
+    {
+      "id": 136437899712,
+      "name": "checks / integration (WP 6.8, from 0.1.11-dev)",
+      "attempt": 1,
+      "failed_steps": [
+        "Prepare disposable WordPress"
+      ]
+    },
+    {
+      "id": 136437899757,
+      "name": "checks / integration (WP 6.8, from 0.1.13-dev)",
+      "attempt": 1,
+      "failed_steps": [
+        "Prepare disposable WordPress"
+      ]
+    },
+    {
+      "id": 136437899881,
+      "name": "checks / integration (WP latest, from 0.1.13-dev)",
+      "attempt": 1,
+      "failed_steps": [
+        "Prepare disposable WordPress"
+      ]
+    },
+    {
+      "id": 136442780674,
+      "name": "checks / integration (WP latest, from 0.1.12-dev)",
+      "attempt": 2,
+      "failed_steps": [
+        "Prepare disposable WordPress"
+      ]
+    },
+    {
+      "id": 136442780697,
+      "name": "checks / integration (WP 6.8, from 0.1.13-dev)",
+      "attempt": 2,
+      "failed_steps": [
+        "Prepare disposable WordPress"
+      ]
+    },
+    {
+      "id": 136442781028,
+      "name": "checks / integration (WP latest, from 0.1.14-dev)",
+      "attempt": 2,
+      "failed_steps": [
+        "Prepare disposable WordPress"
+      ]
+    },
+    {
+      "id": 136450413124,
+      "name": "checks / fresh-install",
+      "attempt": 3,
+      "failed_steps": [
+        "Verify empty installation defaults and destinations"
+      ]
+    },
+    {
+      "id": 136450413268,
+      "name": "checks / integration (WP 6.8, from 0.1.14-dev)",
+      "attempt": 3,
+      "failed_steps": [
+        "Prepare disposable WordPress"
+      ]
+    },
+    {
+      "id": 136450413275,
+      "name": "checks / integration (WP latest, from 0.1.12-dev)",
+      "attempt": 3,
+      "failed_steps": [
+        "Prepare disposable WordPress"
+      ]
+    },
+    {
+      "id": 136450413561,
+      "name": "checks / integration (WP 6.8, from 0.1.13-dev)",
+      "attempt": 3,
+      "failed_steps": [
+        "Prepare disposable WordPress"
+      ]
+    }
+  ],
+  "publication_guards": [
+    "Rechecked all 15 source CI jobs successful on the exact tag commit",
+    "Verified the annotated remote tag still points to the validated commit",
+    "Created a draft and uploaded only the exact tested ZIP and its SHA-256 file",
+    "Verified both uploaded asset digests and sizes before publishing",
+    "Downloaded public ZIP/checksum and verified exact artifact and tag bytes plus release notes"
+  ],
+  "limits": [
+    "No claim that the duplicate release workflow passed",
+    "No user-host deployment or database conversion",
+    "No complete human screen-reader review",
+    "Development preview"
+  ]
+}

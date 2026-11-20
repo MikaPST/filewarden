@@ -1,0 +1,16 @@
+{
+  "version": "0.1.16-dev",
+  "run_id": 44779442918,
+  "url": "https://github.com/MikaPST/filewarden/actions/runs/44779442918/attempts/1",
+  "attempt": 1,
+  "commit": "ed43ab88a2317a9c8dde19496ac02e58efb08d28",
+  "date": "2026-11-20",
+  "conclusion": "failure",
+  "successes": 5,
+  "failures": 10,
+  "skipped": 1,
+  "reason": "setup-php could not install wp-cli on ten runners. The subsequent preparation step stopped with wp: command not found (exit 127), before plugin upgrade/integration/browser tests began in those jobs.",
+  "successful_scope": "All three PHP jobs and JavaScript passed. The integration job from 0.1.11-dev on WordPress latest also passed.",
+  "action": "Retry failed jobs on the same immutable tag; retain their history. Do not publish until the aggregate workflow succeeds.",
+  "publication": "Release job skipped automatically; no release asset published from the failed attempt."
+}

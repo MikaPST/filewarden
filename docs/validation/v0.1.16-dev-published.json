@@ -1,0 +1,44 @@
+{
+  "version": "0.1.16-dev",
+  "tag": "v0.1.16-dev",
+  "commit": "ed43ab88a2317a9c8dde19496ac02e58efb08d28",
+  "published_at": "2026-11-20T17:32:28Z",
+  "release_url": "https://github.com/MikaPST/filewarden/releases/tag/v0.1.16-dev",
+  "prerelease": true,
+  "archive": {
+    "name": "filewarden-0.1.16-dev.zip",
+    "files": 301,
+    "bytes": 4261997,
+    "sha256": "8c0054772640788ea0328bbf6275de108cf8cf56a6f5818ace92860ee4d49e1b",
+    "asset_id": 772715532,
+    "download_url": "https://github.com/MikaPST/filewarden/releases/download/v0.1.16-dev/filewarden-0.1.16-dev.zip",
+    "github_digest": "sha256:8c0054772640788ea0328bbf6275de108cf8cf56a6f5818ace92860ee4d49e1b"
+  },
+  "verification": [
+    "Public ZIP is byte-identical to the installed/tested source CI artifact",
+    "All 301 runtime blobs match the annotated tag byte-for-byte",
+    "Expected runtime file set, version, schema 6, original PNG and both catalogs verified",
+    "Attached SHA-256, available GitHub asset digest and tested artifact digest verified",
+    "Release body matches tagged release notes"
+  ],
+  "publication_method": "tested-main-CI-artifact-promotion",
+  "tested_artifact": {
+    "id": 14648769994,
+    "run_id": 44777904156,
+    "digest": "sha256:86be11862f890ae112d83ab61c807e2043f0b77a6706f3b1383aee52f9823664"
+  },
+  "main_ci": {
+    "run_id": 44777904156,
+    "url": "https://github.com/MikaPST/filewarden/actions/runs/44777904156"
+  },
+  "release_ci": {
+    "run_id": 44779442918,
+    "url": "https://github.com/MikaPST/filewarden/actions/runs/44779442918",
+    "role": "Infrastructure-only failure before duplicate tests; source main CI passed all 15 required checks"
+  },
+  "limits": [
+    "No user-site installation or database migration performed",
+    "No complete human screen-reader review",
+    "Development preview; hosted security/deployment acceptance remains separate"
+  ]
+}
