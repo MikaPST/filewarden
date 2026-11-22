@@ -35,8 +35,10 @@ module.exports=async({context,base,name})=>{
    const digest=crypto.createHash('sha256').update(await response.body()).digest('hex').slice(0,12);
    assert.equal(new URL(url).searchParams.get('ver'),'0.1.17-dev-'+digest,'The loaded asset URL has no content digest');
   }
-  const panel=page.locator('.fw-settings-layout>.fw-content');const before=await panel.boundingBox();
+  const panel=page.locator('.fw-settings-layout>.fw-content');
+  // Native focus may scroll the page; measure the notification independently of that scroll.
   await page.locator('[name=notification_seconds]').focus();
+  const before=await panel.boundingBox();
   await page.evaluate(()=>window.FileWardenNotices.show({type:'info',message:'Overlay geometry fixture',persistent:true}));
   const after=await panel.boundingBox();assert.deepEqual(after,before,'Floating feedback moved or resized settings');
   const region=page.locator('.fw-notice-region');
