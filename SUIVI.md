@@ -73,6 +73,8 @@ Demande explicite : fond du modèle Nature #EDF3EE. Une seule modification runti
 Le propriétaire autorise explicitement le push, le tag et la prerelease avec ZIP, après validation des tests. Préparation du commit consolidé et de la CI distante : PHP 8.2/8.3/8.4, MySQL 8.0, installation neuve, mises à jour depuis 0.1.11-dev à 0.1.16-dev sur WordPress 6.8/latest, HTTP et navigateurs EN/FR. Les résultats distants et la publication restent à vérifier ; aucune réussite distante n’est présumée. Les preuves locales historiques ci-dessus restent conservées. Archive de release : candidat exact installé et testé par la CI, avec empreinte jointe.
 
 ## Prochaine version — 0.1.18-dev
+ 
+Publication .17 : premier commit distant `bd9dd0a`, CI 45005063475. Unités PHP 8.2/8.3/8.4, JavaScript et installation neuve validés ; intégrations arrêtées car la variable FILEWARDEN_URL n’était pas transmise au nouveau test HTTP (KeyError). Correction de la configuration CI uniquement, sans modification runtime, puis nouvelle exécution requise avant tag/release.
 
 Première évolution validée le 22 novembre 2026 : encart Lisibilité des textes, score des huit contrastes contrôlés, niveaux AA/AAA/À améliorer/À compléter et détails repliables avec rapports réels. Mise à jour dynamique, FR/EN, clavier/mobile, validation serveur et apparences enregistrées préservées. Le score concerne les contrastes de texte, sans certification globale d’accessibilité. Démonstration approuvée ; [spécification et critères de recette](docs/lot-v0.1.18-dev.md). Phase de collecte/préparation du lot : pas de développement, changement du numéro runtime ou nouvelle archive à ce stade. Publication GitHub distincte, soumise à autorisation explicite.
 

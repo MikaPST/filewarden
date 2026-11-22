@@ -130,6 +130,7 @@ jobs:
     env:
       FILEWARDEN_TESTING: '1'
       FILEWARDEN_FIXTURES: /tmp/filewarden-fixtures.json
+      FILEWARDEN_URL: http://127.0.0.1:8080
       FILEWARDEN_UPGRADE_FIXTURE: /tmp/filewarden-upgrade.json
       FILEWARDEN_PREVIOUS_VERSION: ${{ matrix.previous.version }}
       FILEWARDEN_PREVIOUS_SCHEMA: ${{ matrix.previous.schema }}
