@@ -15,6 +15,7 @@ jobs:
     uses: ./.github/workflows/ci.yml
 
   release:
+    timeout-minutes: 15
     needs: checks
     runs-on: ubuntu-latest
     permissions:

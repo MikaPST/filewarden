@@ -2,6 +2,7 @@
 const assert=require('node:assert/strict');
 module.exports=async({context,base,name,fixture})=>{
  const page=await context.newPage();page.setDefaultTimeout(15000);
+ page.on('dialog',dialog=>dialog.accept());
  const ready=require('./native-admin-ready.cjs')(page,base);
  const navigate=async(url)=>{await page.goto(url);await ready();};
  try{
@@ -13,7 +14,7 @@ module.exports=async({context,base,name,fixture})=>{
   });
   assert.ok(Math.abs(position.center-position.parentCenter)<1,'Badge dropped below its label');
   assert.ok(position.right<=position.parentRight+1);
-  assert.equal(await page.locator('.fw-search button').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(95, 194, 186)');
+  assert.equal(await page.locator('.fw-search button').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(241, 245, 249)');
   const active=page.locator('.fw-tabs a[aria-current]');
   assert.equal(await active.evaluate(el=>getComputedStyle(el).borderBottomColor),'rgb(28, 41, 66)');
   await Promise.all([page.waitForNavigation(),active.click({noWaitAfter:true})]);await ready();assert.equal(await active.evaluate(el=>getComputedStyle(el).boxShadow),'none');
@@ -39,6 +40,6 @@ module.exports=async({context,base,name,fixture})=>{
    assert.equal(await button.evaluate(el=>getComputedStyle(el).color),'rgb(28, 41, 66)');
    assert.equal(await button.evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(241, 245, 249)');
   }
-  console.log(name+': badge alignment, turquoise search, Navy active/keyboard states, refined actions/tooltips and export controls passed');
+  console.log(name+': badge alignment, export-style search, Navy active/keyboard states, refined actions/tooltips and export controls passed');
  }finally{await page.close();}
 };

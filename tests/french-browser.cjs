@@ -11,6 +11,7 @@ const base = process.env.FILEWARDEN_URL || 'http://127.0.0.1:8080';
             await context.request.get(base + '/wp-login.php');
             await context.request.post(base + '/wp-login.php', { form: { log: 'fw_admin', pwd: 'disposable-test-password', testcookie: '1' } });
             const page = await context.newPage();
+            page.on('dialog', dialog => dialog.accept());
             await page.goto(base + '/wp-admin/admin.php?page=filewarden');
             assert.match(await page.locator('.fw-tree').textContent(), /Documents à classer/);
             assert.match(await page.locator('.fw-recovery-count').textContent(), /^\d+$/);

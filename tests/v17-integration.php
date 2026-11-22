@@ -1,0 +1,84 @@
+<?php
+/** Site-wide appearance and integrated workspace on a disposable loopback site only. */
+if (!defined('WP_CLI') || !WP_CLI || '1' !== getenv('FILEWARDEN_TESTING') || !in_array(wp_parse_url(home_url(),PHP_URL_HOST),array('127.0.0.1','localhost','::1'),true)) {exit(1);}
+$v17_assert=static function($condition,$message){if(!$condition)throw new RuntimeException($message);};
+$v17_reject=static function($callback,$class,$message)use($v17_assert){try{$callback();}catch(Throwable $error){$v17_assert($error instanceof $class,$message.': wrong exception '.$error->getMessage());return;}throw new RuntimeException($message);};
+$v17_previous_user=get_current_user_id();wp_set_current_user(1);
+$v17_repo=new FileWarden\Repository();
+$v17_permissions=new FileWarden\PermissionService(array($v17_repo,'folder'));
+$v17_storage=new FileWarden\StorageService(FILEWARDEN_STORAGE_DIR,array(ABSPATH),true);
+$v17_audit=new FileWarden\AuditService();
+$v17_service=new FileWarden\DocumentService($v17_repo,$v17_permissions,$v17_storage,$v17_audit);
+$v17_defaults=FileWarden\FrontendAppearance::defaults();
+$v17_assert($v17_defaults===FileWarden\FrontendAppearance::current(),'Fresh/default public appearance differs.');
+$v17_snapshot=json_decode(file_get_contents(getenv('FILEWARDEN_FIXTURES')),true);
+$v17_original=$v17_repo->document($v17_snapshot['public']);
+foreach(FileWarden\FrontendAppearance::presets()as$v17_preset=>$v17_colors){
+ $v17_value=$v17_defaults;$v17_value['preset']=$v17_preset;$v17_value['colors']=$v17_colors;$v17_value['name']='Espace documentaire';
+ FileWarden\FrontendAppearance::save($v17_value,$v17_audit);
+ $v17_assert($v17_value===FileWarden\FrontendAppearance::current(),'Appearance failed persistence.');
+ $v17_assert($v17_original===$v17_repo->document($v17_snapshot['public']),'Appearance modified document metadata or ACL.');
+}
+$v17_saved=FileWarden\FrontendAppearance::current();
+$v17_bad=$v17_saved;$v17_bad['colors']['button']='#ffffff';
+$v17_reject(fn()=>FileWarden\FrontendAppearance::save($v17_bad,$v17_audit),InvalidArgumentException::class,'Low-contrast forged POST accepted');
+$v17_assert($v17_saved===FileWarden\FrontendAppearance::current(),'Rejected appearance partially saved.');
+$v17_bad=$v17_saved;$v17_bad['name']='<script>alert(1)</script>';
+$v17_reject(fn()=>FileWarden\FrontendAppearance::save($v17_bad,$v17_audit),InvalidArgumentException::class,'Markup name accepted');
+$v17_subscriber=get_user_by('login','fw_subscriber');wp_set_current_user($v17_subscriber->ID);
+$v17_reject(fn()=>FileWarden\FrontendAppearance::save($v17_defaults,$v17_audit),DomainException::class,'Subscriber saved appearance');
+wp_set_current_user(1);
+
+$v17_uploads=wp_upload_dir();$v17_logo_path=trailingslashit($v17_uploads['path']).'v17-brand-logo.png';
+copy(FILEWARDEN_PATH.'assets/branding/filewarden-logo-512.png',$v17_logo_path);
+$v17_logo_id=wp_insert_attachment(array('post_mime_type'=>'image/png','post_title'=>'V17 public logo','post_status'=>'inherit'),$v17_logo_path);
+$v17_assert(!is_wp_error($v17_logo_id)&&$v17_logo_id>0,'Logo fixture failed.');
+$v17_value=$v17_saved;$v17_value['logo_id']=$v17_logo_id;
+FileWarden\FrontendAppearance::save($v17_value,$v17_audit);
+$v17_assert(str_contains(FileWarden\FrontendAppearance::brand(),'v17-brand-logo.png'),'Validated logo not rendered.');
+$v17_svg_path=trailingslashit($v17_uploads['path']).'v17-unsafe-logo.svg';
+file_put_contents($v17_svg_path,'<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>');
+$v17_svg_id=wp_insert_attachment(array('post_mime_type'=>'image/svg+xml','post_title'=>'Rejected logo fixture','post_status'=>'inherit'),$v17_svg_path);
+FileWarden\SettingsConsole::save(array('allow_all_types'=>'1','all_types_confirmed'=>'1'),$v17_audit);
+$v17_bad=$v17_value;$v17_bad['logo_id']=$v17_svg_id;
+$v17_reject(fn()=>FileWarden\FrontendAppearance::save($v17_bad,$v17_audit),InvalidArgumentException::class,'All-format document mode permitted an active logo');
+FileWarden\SettingsConsole::save(array('allow_all_types'=>'0'),$v17_audit);
+$v17_assert($v17_value===FileWarden\FrontendAppearance::current(),'Rejected logo changed persisted appearance.');
+wp_delete_attachment($v17_svg_id,true);
+FileWarden\FrontendAppearance::save($v17_defaults,$v17_audit);
+
+$v17_root=$v17_service->create_folder('V17 root',0,array('type'=>'public'));
+$v17_child=$v17_service->create_folder('V17 nested folder',$v17_root,array('type'=>'inherit'));
+$v17_life=new FileWarden\Lifecycle($v17_service);
+$v17_plan=$v17_life->plan($v17_snapshot['public'],$v17_child);
+$v17_pdf=$v17_life->transfer('copy',$v17_snapshot['public'],$v17_child,'v17-trash.pdf',$v17_plan['proof']);
+$v17_life->trash($v17_pdf['id']);
+$v17_png=$v17_service->import_media($v17_logo_id,$v17_child,array('type'=>'inherit'));
+$v17_life->trash($v17_png['id']);
+$v17_leaf=$v17_service->create_folder('V17 recovery fixture',0,array('type'=>'authenticated'));
+$v17_plan=$v17_life->plan($v17_snapshot['public'],$v17_leaf);
+$v17_recovered=$v17_life->transfer('copy',$v17_snapshot['public'],$v17_leaf,'v17-recovered.pdf',$v17_plan['proof']);
+FileWarden\FolderLifecycle::remove($v17_service,$v17_leaf);
+$v17_direct=$v17_service->import_media($v17_logo_id,0,array('type'=>'inherit'));
+$v17_before_get=$_GET;
+$_GET=array('collection'=>'unfiled','search'=>'v17-');
+ob_start();(new FileWarden\AdminWorkspace($v17_service,new FileWarden\AdminController($v17_service)))->render();$v17_html=ob_get_clean();
+$v17_assert(1===substr_count($v17_html,'<details class="fw-rule-info">'),'Per-document retained note missing or duplicated.');
+$v17_assert(!str_contains($v17_html,'Recovered file: restrictions from its former folder'),'Repeated legacy recovery banner remains.');
+$_GET=array('folder_id'=>(string)$v17_child);
+ob_start();(new FileWarden\AdminWorkspace($v17_service,new FileWarden\AdminController($v17_service)))->render();$v17_html=ob_get_clean();
+$v17_assert(str_contains($v17_html,'class="fw-breadcrumbs"')&&str_contains($v17_html,'V17 root'),'Nested folder breadcrumb missing.');
+$v17_assert(strpos($v17_html,'class="fw-search"')<strpos($v17_html,'class="fw-creation-actions"'),'Creation actions moved search position.');
+$_GET=array('folder_id'=>(string)$v17_child,'tab'=>'add');
+ob_start();(new FileWarden\AdminWorkspace($v17_service,new FileWarden\AdminController($v17_service)))->render();$v17_html=ob_get_clean();
+$v17_assert(!str_contains($v17_html,'id="document-parent"')&&str_contains($v17_html,'name="folder_id" value="'.$v17_child.'"'),'Contextual destination is editable or missing.');
+$_GET=array('tab'=>'folder');
+ob_start();(new FileWarden\AdminWorkspace($v17_service,new FileWarden\AdminController($v17_service)))->render();$v17_html=ob_get_clean();
+$v17_assert(str_contains($v17_html,'Choose an access policy')&&!str_contains($v17_html,'id="folder-parent"'),'Root creation needs explicit rights and an unambiguous fixed root.');
+$_GET=$v17_before_get;
+$v17_snapshot['v17_root_id']=$v17_root;$v17_snapshot['v17_child_id']=$v17_child;$v17_snapshot['v17_logo_id']=$v17_logo_id;
+$v17_snapshot['v17_recovered']=$v17_recovered['id'];$v17_snapshot['v17_direct']=$v17_direct['id'];
+$v17_snapshot['v17_trash_pdf']=$v17_pdf['id'];$v17_snapshot['v17_trash_png']=$v17_png['id'];
+file_put_contents(getenv('FILEWARDEN_FIXTURES'),wp_json_encode($v17_snapshot));
+wp_set_current_user($v17_previous_user);
+WP_CLI::success('V17 appearance persistence, contrast/markup/role/logo refusals, unchanged ACL, integrated tasks, breadcrumb and per-file recovery notes passed.');

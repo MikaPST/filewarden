@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.1.17-dev — 2026-11-21 (local preproduction candidate)
+
+- Final owner-approved preproduction corrections, 2026-11-22: move Publication tabs above both cards; show integration options by preview context while retaining choices; rename Color palette and update FR/EN help; move Shortcode into a compact card above Preview with WordPress/Elementor guidance; use shared amber tokens for retained-access information and document the semantic colors. Preserve schema, existing settings/documents and authorization. Local ZIP only; see docs/corrections-finales-v0.1.17-dev.md.
+
+- Add contextual upload and subfolder forms below the unchanged search position; keep full source/access controls and bind contextual uploads to the open folder. Integrate root/first-folder creation with explicit access choices and open the created folder only after server confirmation. Keep legacy task URLs while simplifying navigation to Documents/Trash.
+- Add authorized ancestor breadcrumbs, wider compact guided folders, restored official header-logo proportions and secondary controls matching audit exports independently of WordPress profile colors.
+- Replace duplicated recovery banners with accessible per-file retained-rule information; preserve all access restrictions. Add trash type icons, explicit combined name/folder filtering, authorized result counts/reset and configured retention information without changing purge scope.
+- Add one saved public appearance for the site: FileWarden/Neutral/Nature palettes, strictly validated color tokens and text contrast, plain public name, local PNG/JPEG logo, visibility controls, live draft previews and explicit save/reset. Preserve administration identity, authorization, protected downloads and original file-type assets.
+- Apply public tokens to list/grid, unavailable states and the detail viewer using a CSP nonce. Corrective decision: natural-height grid cards with 16px padding, horizontally centered identity and aligned bottom actions, without the original upper spacer.
+- Correct the retained-rule note position; introduce two persistent publication tabs, four compact palettes with bordered color capsules and a live Custom card, the standard upload icon and inline visibility choices. Compact preview switches and add functional public button icons, bounded subfolder links and a more legible breadcrumb.
+- Add a site-wide visitor sign-in destination: native WordPress filters/return by default or a validated literal HTTP(S) URL, with separate settings capability, nonce, audit and isolated draft preview. Existing shortcodes and access policies are preserved.
+- Extend local installed-ZIP functional, security, FR/EN and browser acceptance; retain schema 6. This candidate is delivered locally for owner preproduction testing, without a GitHub push, tag or release.
+
 ## 0.1.16-dev — 2026-11-20
 
 - Add global FileWarden language selection: site language by default, French/English catalogs and English fallback, without changing WordPress or other translation domains. Translate PHP, localized JavaScript, public library and viewer; preserve resource names and technical export keys.

@@ -1687,3 +1687,343 @@ msgid "%s document to classify"
 msgid_plural "%s documents to classify"
 msgstr[0] "%s document à classer"
 msgstr[1] "%s documents à classer"
+
+
+msgid "Leave this form without saving your changes?"
+msgstr "Quitter ce formulaire sans enregistrer vos modifications ?"
+
+
+msgid "Choose an access policy"
+msgstr "Choisir une règle d’accès"
+
+
+msgid "Add documents to classify"
+msgstr "Ajouter des documents à classer"
+
+
+msgid "Location: library root"
+msgstr "Emplacement : racine de la bibliothèque"
+
+
+msgid "Create subfolder"
+msgstr "Créer un sous-dossier"
+
+
+msgid "Folder path"
+msgstr "Chemin du dossier"
+
+
+msgid "Previous access rules retained"
+msgstr "Droits antérieurs conservés"
+
+
+msgid "This file keeps the access rules of its previous location, even after reclassification."
+msgstr "Ce fichier conserve les règles d’accès de son ancien emplacement, même après son reclassement."
+
+
+msgid "Public appearance"
+msgstr "Apparence publique"
+
+
+msgid "One appearance for all FileWarden publications on this site. Changes apply only after saving."
+msgstr "Une apparence commune à toutes les publications FileWarden de ce site. Les changements s’appliquent uniquement après enregistrement."
+
+
+msgid "Starting template"
+msgstr "Modèle de départ"
+
+
+msgid "Neutral"
+msgstr "Neutre"
+
+
+msgid "Nature"
+msgstr "Nature"
+
+
+msgid "Default"
+msgstr "Par défaut"
+
+
+msgid "Templates change colors while preserving your custom name and logo."
+msgstr "Les modèles changent les couleurs en conservant votre nom et votre logo personnalisés."
+
+
+msgid "Interface colors"
+msgstr "Couleurs de l’interface"
+
+
+msgid "Interface background"
+msgstr "Fond de l’interface"
+
+
+msgid "Cards and fields"
+msgstr "Cartes et champs"
+
+
+msgid "Main text"
+msgstr "Texte principal"
+
+
+msgid "Button background"
+msgstr "Fond des boutons"
+
+
+msgid "Button text"
+msgstr "Texte des boutons"
+
+
+msgid "Links and action icons"
+msgstr "Liens et icônes d’action"
+
+
+msgid "Button hover"
+msgstr "Boutons au survol"
+
+
+msgid "Secondary text"
+msgstr "Texte secondaire"
+
+
+msgid "Borders"
+msgstr "Bordures"
+
+
+msgid "Decorative accent"
+msgstr "Accent décoratif"
+
+
+msgid "Additional colors"
+msgstr "Couleurs complémentaires"
+
+
+msgid "Public name and logo"
+msgstr "Nom et logo affichés"
+
+
+msgid "Name displayed to visitors"
+msgstr "Nom affiché au public"
+
+
+msgid "Selected public logo"
+msgstr "Logo public sélectionné"
+
+
+msgid "Official FileWarden logo"
+msgstr "Logo officiel FileWarden"
+
+
+msgid "Import a logo"
+msgstr "Importer un logo"
+
+
+msgid "FileWarden logo"
+msgstr "Logo FileWarden"
+
+
+msgid "Public PNG or JPEG image, up to 2 MB and 6000 pixels per side. File-type restrictions for logos always apply."
+msgstr "Image publique PNG ou JPEG, jusqu’à 2 Mo et 6 000 pixels par côté. Les restrictions de format des logos restent toujours applicables."
+
+
+msgid "Show the logo"
+msgstr "Afficher le logo"
+
+
+msgid "Show the name"
+msgstr "Afficher le nom"
+
+
+msgid "Save appearance"
+msgstr "Enregistrer l’apparence"
+
+
+msgid "Restore FileWarden appearance"
+msgstr "Rétablir l’apparence FileWarden"
+
+
+msgid "Restoring changes the preview first. Save to apply it to the site."
+msgstr "Le rétablissement modifie d’abord l’aperçu. Enregistrez pour l’appliquer au site."
+
+
+msgid "The public appearance was saved for the whole site."
+msgstr "L’apparence publique a été enregistrée pour l’ensemble du site."
+
+
+msgid "Appearance could not be saved. Check the color contrast, public name and logo permissions or format."
+msgstr "L’apparence n’a pas pu être enregistrée. Vérifiez le contraste des couleurs, le nom public et les autorisations ou le format du logo."
+
+
+msgid "Text contrast checked: at least 4.5:1."
+msgstr "Contrastes de texte vérifiés : au moins 4,5:1."
+
+
+msgid "Improve text contrast or enter valid six-digit color codes before saving."
+msgstr "Améliorez les contrastes de texte ou saisissez des codes couleur valides à six chiffres avant d’enregistrer."
+
+
+msgid "Unsaved appearance changes"
+msgstr "Modifications d’apparence non enregistrées"
+
+
+msgid "No appearance changes"
+msgstr "Aucune modification d’apparence"
+
+
+msgid "Restore FileWarden colors, name and logo? Save afterwards to apply the change."
+msgstr "Rétablir les couleurs, le nom et le logo FileWarden ? Enregistrez ensuite pour appliquer le changement."
+
+
+msgid "Choose a public PNG or JPEG logo"
+msgstr "Choisir un logo public PNG ou JPEG"
+
+
+msgid "Use this logo"
+msgstr "Utiliser ce logo"
+
+
+msgid "Choose a local PNG or JPEG image. The server will also verify its type and dimensions before saving."
+msgstr "Choisissez une image locale PNG ou JPEG. Le serveur vérifiera également son type et ses dimensions avant l’enregistrement."
+
+
+msgid "Desktop preview"
+msgstr "Aperçu ordinateur"
+
+
+msgid "Mobile preview"
+msgstr "Aperçu mobile"
+
+
+msgid "Folder integration"
+msgstr "Intégration du dossier"
+
+
+msgid "Search by filename"
+msgstr "Rechercher par nom de fichier"
+
+
+msgid "Search for a document in the trash..."
+msgstr "Rechercher un document dans la corbeille…"
+
+
+msgid "Reset filters"
+msgstr "Réinitialiser les filtres"
+
+
+msgid "%s document"
+msgid_plural "%s documents"
+msgstr[0] "%s document"
+msgstr[1] "%s documents"
+
+
+msgid "Automatic cleanup in %s day"
+msgid_plural "Automatic cleanup in %s days"
+msgstr[0] "Purge automatique dans %s jour"
+msgstr[1] "Purge automatique dans %s jours"
+
+
+msgid "Eligible for automatic cleanup; waiting for the scheduled task."
+msgstr "Éligible à la purge automatique ; en attente de la tâche planifiée."
+
+
+msgid "The trash is empty."
+msgstr "La corbeille est vide."
+
+
+msgid "This empties all trash documents you are authorized to delete, regardless of the current search or folder filter."
+msgstr "Cette action vide tous les documents de la corbeille que vous êtes autorisé à supprimer, indépendamment de la recherche ou du filtre de dossier actuel."
+
+
+msgid "Documents can inherit this folder’s access rules. Creating a folder does not publish its content."
+msgstr "Les documents peuvent hériter des droits de ce dossier. La création d’un dossier ne publie pas son contenu."
+
+
+msgid "Custom"
+msgstr "Personnalisé"
+
+
+msgid "Simple and light"
+msgstr "Sobre et clair"
+
+
+msgid "Soft green"
+msgstr "Vert doux"
+
+
+msgid "Your colors"
+msgstr "Vos couleurs"
+
+
+msgid "Subfolders"
+msgstr "Sous-dossiers"
+
+
+msgid "Authorized"
+msgstr "Autorisé"
+
+
+msgid "Preview device"
+msgstr "Format d’écran"
+
+
+msgid "Visitor sign-in"
+msgstr "Connexion des visiteurs"
+
+
+msgid "Shared by all publications on this site."
+msgstr "Paramètre commun à toutes les publications du site."
+
+
+msgid "Sign-in button destination"
+msgstr "Destination du bouton « Se connecter »"
+
+
+msgid "WordPress sign-in — default"
+msgstr "Connexion WordPress — par défaut"
+
+
+msgid "Custom sign-in page"
+msgstr "Page de connexion personnalisée"
+
+
+msgid "Sign-in page URL"
+msgstr "Adresse de la page de connexion"
+
+
+msgid "The custom page controls where visitors go after signing in."
+msgstr "Le retour après connexion dépend du fonctionnement de cette page personnalisée."
+
+
+msgid "Open page to check"
+msgstr "Ouvrir la page pour vérifier"
+
+
+msgid "Enter a complete HTTP or HTTPS URL without credentials."
+msgstr "Saisissez une adresse HTTP ou HTTPS complète, sans identifiants."
+
+
+msgid "Save sign-in settings"
+msgstr "Enregistrer la connexion"
+
+
+msgid "Sign-in settings saved for all site publications."
+msgstr "Les réglages de connexion ont été enregistrés pour toutes les publications du site."
+
+
+msgid "Sign-in settings could not be saved. Check the URL and your permissions."
+msgstr "Les réglages de connexion n’ont pas pu être enregistrés. Vérifiez l’adresse et vos autorisations."
+
+
+msgid "Color palette"
+msgstr "Palette de couleurs"
+
+
+msgid "Choose a preset palette or customize your colors while keeping your custom name and logo."
+msgstr "Choisissez une palette prédéfinie ou personnalisez vos couleurs, tout en conservant votre nom et votre logo personnalisés."
+
+
+msgid "Shortcode"
+msgstr "Code court"
+
+
+msgid "Copy this code into the WordPress Shortcode block or the Elementor Shortcode widget."
+msgstr "Copiez ce code dans le bloc « Code court » de WordPress ou dans le widget « Code court » d’Elementor."

@@ -80,7 +80,8 @@ assert status == 200
 assert page.count(b'data-filewarden-upload="true"') == 1, "Expected one unified document form"
 assert b'name="operation" value="add_document"' in page
 assert b'value="upload"' in page and b'value="import"' in page
-assert page.count(b'id="document-parent"') == 1, "Expected one shared document destination"
+assert b'id="document-parent"' not in page, "Contextual upload must not offer another destination"
+assert re.search(rb'data-filewarden-upload="true".*?name="folder_id" value="0"', page, re.S), "Recovery upload must carry its fixed server-checked destination"
 match = re.search(rb'name="_wpnonce" value="([^"]+)"', page)
 assert match, "Admin form nonce not found"
 nonce = match.group(1).decode()
@@ -241,4 +242,5 @@ print('Navigation denial styles, root quarantine and authorized CSV/TXT/JSONL ac
 import pathlib
 import runpy
 runpy.run_path(str(pathlib.Path(__file__).with_name('v16-http.py')))['run'](request, admin, reader, anon, nonce, fixtures, upload)
+runpy.run_path(str(pathlib.Path(__file__).with_name('v17-corrections-http.py')))['run'](request, admin, reader, anon, fixtures)
 

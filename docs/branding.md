@@ -79,6 +79,8 @@ In addition to the five official brand colors, FileWarden uses semantic interfac
 | Name | HEX | Primary usage |
 |---|---|---|
 | Danger Red | `#B42318` | Destructive actions, deletion confirmations and critical errors |
+| Classification Amber | `#805400` | Recovery/classification and retained-access information icons, counters and supporting text |
+| Amber Surface | `#FFF6E8` | Subtle background paired with Classification Amber for the recovery collection and information disclosure |
 | Deep Navy | `#1C2942` | Primary actions, document and folder creation, publication |
 | Slate Blue | `#3B556D` | Permission management and sensitive non-destructive actions |
 | Turquoise | `#5FC2BA` | Positive accents, highlights and progress indicators |
@@ -93,6 +95,8 @@ The use of semantic colors must remain consistent throughout the FileWarden admi
   --fw-action-permissions: var(--fw-brand-slate);
   --fw-action-danger: #B42318;
   --fw-action-accent: var(--fw-brand-turquoise);
+  --fw-recovery-tone: #805400;
+  --fw-recovery-surface: #FFF6E8;
 }
 ```
 
@@ -419,3 +423,15 @@ This owner-approved revision supersedes the 0.1.15 header sizing: unchanged offi
 Search, Media Library selection and Open audit log use Turquoise (#5FC2BA) with Navy (#1C2942) text/icons and a Slate border; exports use a quiet tinted surface with Navy and the common download icon. Permission and destructive roles retain Slate and Danger Red. Preview/download controls use refined local outline icons, quiet backgrounds, turquoise hover, tooltips and coarse-pointer targets. Active task underline remains Navy. Selected settings categories use Navy background/border and white text/icons. Remove profile-derived mouse rings only inside FileWarden; preserve a visible Navy keyboard-focus outline.
 
 Recovery uses a dark amber (#805400)/white solid numeric badge, absent at zero. The integrated formats notice starts collapsed at every viewport; ZIP/macros guidance remains outside its disclosure. Hide it in explicitly enabled all-format mode. The opt-in warning uses the approved orange warning tone, with an accessible confirmation dialog and a persistent reminder after save. Locale selection uses the local languages icon. Preserve frontend site customization.
+
+### Approved refinements — 0.1.17-dev
+
+Owner-approved Nature palette update (22 November 2026): interface background #EDF3EE. Other Nature colors and the official brand palette are unchanged. The preset applies through the existing explicit palette/save controls; keep saved custom site appearances intact.
+
+The final owner-approved adjustments (22 November 2026) place Publication's Navy-underlined tabs outside the settings cards, beneath the heading and spanning the configuration/output columns. A compact Shortcode card sits above the shared preview, with WordPress Shortcode block / Elementor Shortcode widget guidance and a copy icon/confirmation. Contextual integration controls follow the preview mode without resetting hidden values: list/grid for authorized, unavailable layout and visitor sign-in for denied; the folder and shared identity/colors remain available. Color palette replaces Starting template. Retained-access information disclosures use Classification Amber on Amber Surface, shared with recovery through the existing semantic tokens; keep their keyboard/touch behavior and Navy focus. Verify contrast; these are functional colors supporting the five official brand colors.
+
+This revision supersedes the preceding tiny header: restore the original 56px official logo (44px mobile), beside the 20px FILEWARDEN wordmark (18px mobile), vertically centered together. Keep the 27px page title (23px mobile) below this identity row. Search, Media Library selection and Open audit log now reuse the exports' quiet tinted background/Navy text and their subtle hovered background; do not use a solid turquoise fill for these controls.
+
+The guided folder rail is 290px on desktop, 270px with an inspector and 245px at intermediate widths, then stacked on mobile. Fine-pointer folder rows use a compact 34px minimum; coarse pointers retain 44px targets. Preserve wrapped names and hierarchy guides. Documents/Trash remain navigation; contextual creation actions appear below the existing search. Retained access notes are per-file accessible information disclosures.
+
+Public appearance is independent of administration branding: a single persistent configuration for all publication frames and viewers, default FileWarden, with approved Neutral and Nature presets and a Custom card reflecting all ten current colors. Allow strict color tokens, a plain public name and validated local PNG/JPEG logo; never recolor the official logo or the actual file-type assets. Color changes affect functional controls only. The approved corrective lot supersedes strict vertical centering: natural-height grid cards use 16px padding, horizontally centered icon/name/metadata and actions at the bottom of each row, without an upper spacer. Contrast validation of implemented text pairs is not a full accessibility certification. Publication uses two Navy-underlined local tabs, compact segmented preview controls, bounded subfolder links and a lightly surfaced breadcrumb with a non-link current folder.

@@ -1,0 +1,179 @@
+{
+  "version": "0.1.17-dev",
+  "schema": 6,
+  "date": "2026-11-21",
+  "status": "local-corrections-passed",
+  "authorization": "Owner GO 2026-11-21; local ZIP for manual preproduction testing; no GitHub publication",
+  "github": {
+    "pushed": false,
+    "tagged": false,
+    "release_published": false
+  },
+  "environment": {
+    "os": "Windows local PC",
+    "php": "8.2.35",
+    "database": "MariaDB 10.11.11",
+    "phpunit": "10.5.66",
+    "node": "24.22.3",
+    "playwright": "1.65.0",
+    "chromium": "158.0.8127.18",
+    "firefox": "159.0"
+  },
+  "checks": {
+    "phpunit": {
+      "tests": 88,
+      "assertions": 192,
+      "passed": true
+    },
+    "javascript": {
+      "tests": 8,
+      "passed": true
+    },
+    "php_syntax": {
+      "files": 69,
+      "passed": true
+    },
+    "javascript_syntax": {
+      "files": 29,
+      "passed": true
+    },
+    "phpcs": true,
+    "composer_validate": true,
+    "composer_audit": "No security vulnerability advisories found (locked dependencies, including development)",
+    "catalogs": {
+      "source_entries": 471,
+      "fr_FR": true,
+      "en_US": true,
+      "mo_placeholders_plurals": true
+    },
+    "whitespace": "passed with standard Windows CRLF handling"
+  },
+  "wordpress": {
+    "6.8": {
+      "initial_017_zip_upgrade": true,
+      "prior_identity_palette_language_preserved": true,
+      "full_php_integration": true,
+      "full_http_suite": true,
+      "targeted_chromium_firefox": [
+        "en_US",
+        "fr_FR"
+      ],
+      "final_zip_touch_44px": "FR in both engines",
+      "final_public_renderers_http": true,
+      "historical_french_chromium_firefox": true
+    },
+    "7.1.5": {
+      "initial_017_zip_upgrade": true,
+      "full_php_integration": true,
+      "full_http_suite": true,
+      "grouped_historical_chromium_firefox": true,
+      "final_corrective_php_http": true,
+      "final_zip_targeted_chromium_firefox": [
+        "en_US",
+        "fr_FR"
+      ],
+      "final_zip_touch_44px": [
+        "en_US",
+        "fr_FR"
+      ]
+    },
+    "fresh_7.1.5": {
+      "innodb_safe_defaults": true,
+      "first_root_explicit_policy": true,
+      "nested_inheritance": true,
+      "dirty_cancel_confirmation": true,
+      "first_contextual_upload": true,
+      "mobile": true,
+      "final_zip_reinstallation_preserves_first_document_bytes": true
+    }
+  },
+  "coverage": [
+    "Retained-rule note beside policy badge, correct file only, focus/hover/click/Escape and unchanged retained ACL",
+    "Two local publication tabs, keyboard navigation, same iframe and preserved drafts/choices; no-JS forms usable",
+    "Four compact templates, bordered swatches, all ten colors, Custom without reset, live capsule, contrast and persistence",
+    "Standard upload icon, inline visibility controls and strict public logo/media permissions",
+    "Native login filters/return, literal HTTP(S) custom link, persisted site-wide setting, isolated draft, URL/CSRF/capability refusal and unchanged documents",
+    "Compact preview switches, accessible icon-only device names/tooltips, real modes/device width and 44px coarse-pointer targets",
+    "Functional public search/list/grid/preview/download icons, original file-type assets preserved",
+    "Natural-height grid, measured 16px upper padding and horizontal alignment, bottom actions, responsive layouts",
+    "Bounded subfolder links with real navigation and unchanged authorized subtree",
+    "Readable breadcrumb with non-link current folder, parent links and publication boundary",
+    "Same-version cache URLs identify the actual publication/denied/viewer CSS bytes",
+    "Historical upload/media import, strict/permissive/strict, PDF/image viewer/ranges, ACL/lifecycle/trash, notifications, audit exports, real MyISAM repair and language/profile isolation"
+  ],
+  "final_adjustment_retests": "The grouped historical suite ran before the last public CSS URL helper and coarse-pointer selector refinements. Affected renderers were retested on the exact final ZIP by PHP/HTTP and the targeted FR/EN Chromium/Firefox suite; the final ZIP was reinstalled on all three final fixtures and compared byte-for-byte. No rebuild after these final checks.",
+  "harness_diagnostics": [
+    "Unit tests caught formatter capitalization of the internal wordpress mode; corrected identifier and added the narrow coding-standard annotation.",
+    "Retained the existing reader fixture capability when cleaning up the negative settings-authorization test.",
+    "Asserted the actual inner swatch border, WordPress numeric ampersand escaping and existing invalid result code; rejection assertions retained.",
+    "Selected a fixture that actually has a child folder and waited explicitly for its frame navigation.",
+    "Added a real coarse-pointer context and corrected CSS specificity to preserve 44px preview controls.",
+    "Windows line-ending whitespace checks use CRLF-aware handling; no runtime normalization or test assertion waiver."
+  ],
+  "package": {
+    "version": "0.1.17-dev",
+    "schema": 6,
+    "files": 317,
+    "bytes": 4294924,
+    "sha256": "b5ff1e7e4f50ce37837038555541be07a054905ff2d4371444d592594a21df49",
+    "source_installed_matches": [
+      "v17fix68",
+      "v17fix715",
+      "v17fixfinalfresh"
+    ],
+    "original_assets_preserved": [
+      "assets/icons/archive-box.svg",
+      "assets/icons/archive.svg",
+      "assets/icons/audio.svg",
+      "assets/icons/circle-check.svg",
+      "assets/icons/circle-x.svg",
+      "assets/icons/download.svg",
+      "assets/icons/excel.svg",
+      "assets/icons/eye.svg",
+      "assets/icons/file-plus-2.svg",
+      "assets/icons/file.svg",
+      "assets/icons/files.svg",
+      "assets/icons/folder-check.svg",
+      "assets/icons/folder-lock.svg",
+      "assets/icons/folder-plus.svg",
+      "assets/icons/folder-welcome.svg",
+      "assets/icons/folder.svg",
+      "assets/icons/image.svg",
+      "assets/icons/info.svg",
+      "assets/icons/languages.svg",
+      "assets/icons/laptop-minimal.svg",
+      "assets/icons/library-big.svg",
+      "assets/icons/pdf.svg",
+      "assets/icons/rotate-ccw.svg",
+      "assets/icons/scroll-text.svg",
+      "assets/icons/search.svg",
+      "assets/icons/shield-check.svg",
+      "assets/icons/sliders-horizontal.svg",
+      "assets/icons/slides.svg",
+      "assets/icons/text.svg",
+      "assets/icons/trash-2.svg",
+      "assets/icons/triangle-alert.svg",
+      "assets/icons/video.svg",
+      "assets/icons/word.svg",
+      "assets/illustrations/folder-welcome.png",
+      "assets/branding/filewarden-logo-512.png"
+    ]
+  },
+  "initial_archive_preserved": {
+    "path": "build/candidate-v0.1.17-dev-initial/filewarden-0.1.17-dev.zip",
+    "sha256": "7d5d0f3e676f21820da40172f1a2df1b441758841de3b99727f554fb75335c7a"
+  },
+  "server_logs_without_php_errors": [
+    "v17fix715",
+    "v17fix68",
+    "v17fixfresh",
+    "v17fixfinalfresh"
+  ],
+  "limits": [
+    "No user-site installation or real personal documents used.",
+    "PHP 8.3/8.4, MySQL 8.0, Linux and remote GitHub CI were not run for this corrective ZIP.",
+    "No full human screen-reader audit, accessibility certification or absolute security claim.",
+    "Local outside-webroot fixture storage does not replace target-host/storage and site-specific plugin acceptance."
+  ],
+  "owned_test_services_stopped": true
+}

@@ -89,7 +89,14 @@ final class AdminController {
 			wp_enqueue_script( 'filewarden-settings', plugins_url( 'assets/settings.js', FILEWARDEN_PATH . 'filewarden.php' ), array( 'filewarden-notices' ), self::asset_version( 'assets/settings.js' ), true ); }
 		if ( 'toplevel_page_filewarden' !== $hook ) {
 			if ( 'filewarden_page_filewarden-publication' === $hook ) {
-				wp_enqueue_script( 'filewarden-publisher', plugins_url( 'assets/publisher.js', FILEWARDEN_PATH . 'filewarden.php' ), array( 'filewarden-notices' ), self::asset_version( 'assets/publisher.js' ), true ); }
+				wp_enqueue_script( 'filewarden-publisher', plugins_url( 'assets/publisher.js', FILEWARDEN_PATH . 'filewarden.php' ), array( 'filewarden-notices' ), self::asset_version( 'assets/publisher.js' ), true );
+				wp_localize_script( 'filewarden-publisher', 'filewardenPublication', array( 'leave' => __( 'Leave this form without saving your changes?', 'filewarden' ) ) );
+				if ( current_user_can( 'upload_files' ) ) {
+					wp_enqueue_media();
+				}
+				wp_enqueue_script( 'filewarden-appearance', plugins_url( 'assets/appearance.js', FILEWARDEN_PATH . 'filewarden.php' ), array( 'filewarden-publisher' ), self::asset_version( 'assets/appearance.js' ), true );
+				wp_localize_script( 'filewarden-appearance', 'filewardenAppearance', AppearanceConsole::configuration() );
+			}
 			if ( 'filewarden_page_filewarden-audit' === $hook ) {
 				wp_enqueue_script( 'filewarden-workspace', plugins_url( 'assets/workspace.js', FILEWARDEN_PATH . 'filewarden.php' ), array( 'filewarden-notices' ), self::asset_version( 'assets/workspace.js' ), true ); }
 			return;
@@ -104,6 +111,7 @@ final class AdminController {
 			)
 		);
 		wp_enqueue_script( 'filewarden-workspace', plugins_url( 'assets/workspace.js', FILEWARDEN_PATH . 'filewarden.php' ), array( 'filewarden-notices' ), self::asset_version( 'assets/workspace.js' ), true );
+		wp_localize_script( 'filewarden-workspace', 'filewardenWorkspace', array( 'leave' => __( 'Leave this form without saving your changes?', 'filewarden' ) ) );
 		wp_enqueue_script( 'filewarden-upload', plugins_url( 'assets/admin.js', FILEWARDEN_PATH . 'filewarden.php' ), array( 'filewarden-notices' ), self::asset_version( 'assets/admin.js' ), true );
 		wp_enqueue_script( 'filewarden-upload-queue', plugins_url( 'assets/upload-queue.js', FILEWARDEN_PATH . 'filewarden.php' ), array( 'filewarden-upload' ), self::asset_version( 'assets/upload-queue.js' ), true );
 		wp_localize_script(
@@ -199,6 +207,20 @@ final class AdminController {
 			} elseif ( 'settings' === $operation ) {
 				$page = 'filewarden-settings';
 				SettingsConsole::save( $_POST, $this->service->audit );
+			} elseif ( 'publication_login' === $operation ) {
+				$page = 'filewarden-publication';
+				if ( ! isset( $_POST['publication_login'] ) || ! is_array( $_POST['publication_login'] ) ) {
+					throw new \InvalidArgumentException( 'Invalid login destination.' );
+				}
+				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- PublicationLogin validates the complete mode and URL before persistence.
+				PublicationLogin::save( wp_unslash( $_POST['publication_login'] ), $this->service->audit );
+			} elseif ( 'appearance' === $operation ) {
+				$page = 'filewarden-publication';
+				if ( ! isset( $_POST['appearance'] ) || ! is_array( $_POST['appearance'] ) ) {
+					throw new \InvalidArgumentException( 'Invalid appearance.' );
+				}
+				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Complete schema, colors, name and logo are validated by FrontendAppearance.
+				FrontendAppearance::save( wp_unslash( $_POST['appearance'] ), $this->service->audit );
 			} else {
 				$type   = isset( $_POST['policy_type'] ) && is_string( $_POST['policy_type'] ) ? sanitize_key( $_POST['policy_type'] ) : '';
 				$roles  = isset( $_POST['roles'] ) && is_array( $_POST['roles'] ) ? array_map( 'sanitize_key', wp_unslash( $_POST['roles'] ) ) : array();
@@ -242,8 +264,8 @@ final class AdminController {
 						throw new \InvalidArgumentException( 'Invalid document.' ); }
 					$folder = $this->service->change_policy( 'document', $uuid, $policy );
 				} elseif ( 'folder' === $operation ) {
-					$name = isset( $_POST['name'] ) && is_string( $_POST['name'] ) ? sanitize_text_field( wp_unslash( $_POST['name'] ) ) : '';
-					$this->service->create_folder( $name, $folder, $policy );
+					$name   = isset( $_POST['name'] ) && is_string( $_POST['name'] ) ? sanitize_text_field( wp_unslash( $_POST['name'] ) ) : '';
+					$folder = $this->service->create_folder( $name, $folder, $policy );
 				} elseif ( 'upload' === $operation ) {
 					// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Upload service validates the original PHP upload structure, provenance, MIME and size.
 					$created = $this->service->upload( $_FILES['file'] ?? array(), $folder, $policy );
@@ -358,7 +380,10 @@ final class AdminController {
 			'authenticated' => __( 'Authenticated users', 'filewarden' ),
 			'roles'         => __( 'Selected roles', 'filewarden' ),
 		);
-		echo '<p><label for="' . esc_attr( $prefix ) . '-policy">' . esc_html__( 'Access policy', 'filewarden' ) . '</label> <select name="policy_type" id="' . esc_attr( $prefix ) . '-policy">';
+		echo '<p><label for="' . esc_attr( $prefix ) . '-policy">' . esc_html__( 'Access policy', 'filewarden' ) . '</label> <select name="policy_type" id="' . esc_attr( $prefix ) . '-policy" required>';
+		if ( empty( $policy['type'] ) ) {
+			echo '<option value="" selected disabled>' . esc_html__( 'Choose an access policy', 'filewarden' ) . '</option>';
+		}
 		foreach ( $choices as $value => $label ) {
 			echo '<option value="' . esc_attr( $value ) . '"' . selected( $policy['type'] ?? '', $value, false ) . '>' . esc_html( $label ) . '</option>';
 		}
@@ -404,9 +429,10 @@ final class AdminController {
 	/**
 	 * Render one document form with a shared destination and two source options.
 	 *
-	 * @param int $folder Current folder.
+	 * @param int  $folder Current folder.
+	 * @param bool $contextual Whether the destination is fixed by the open folder.
 	 */
-	public function document_form( $folder ) {
+	public function document_form( $folder, $contextual = false ) {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only preselection; the POST has its own nonce.
 		$id    = isset( $_GET['media_id'] ) ? absint( $_GET['media_id'] ) : 0;
 		$title = current_user_can( 'upload_files' ) && $id && 'attachment' === get_post_type( $id ) && current_user_can( 'edit_post', $id ) ? get_the_title( $id ) : '';
@@ -434,7 +460,12 @@ final class AdminController {
 			echo '<input type="hidden" id="fw-media-id" name="media_id" value="' . esc_attr( $title ? $id : 0 ) . '">';
 			echo '<p><button type="button" class="button fw-button-accent" id="fw-media-picker"><span class="fw-action-icon fw-icon-library-big" aria-hidden="true"></span>' . esc_html__( 'Choose a media file', 'filewarden' ) . '</button> <span id="fw-media-title" role="status">' . esc_html( $title ) . '</span></p></fieldset>';
 		}
-		$this->policy_fields( 'document', $folder );
+		if ( $contextual ) {
+			echo '<input type="hidden" name="folder_id" value="' . esc_attr( $folder ) . '">';
+			$this->policy_controls( 'document', array( 'type' => 'inherit' ), true );
+		} else {
+			$this->policy_fields( 'document', $folder );
+		}
 		echo '<p class="submit"><button class="button button-primary" type="submit" name="filewarden_save"><span class="fw-action-icon fw-icon-file-plus-2" aria-hidden="true"></span>' . esc_html__( 'Add to this folder', 'filewarden' ) . '</button></p>';
 		echo '</form>';
 	}

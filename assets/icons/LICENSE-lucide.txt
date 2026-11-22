@@ -1,5 +1,5 @@
 Source: https://github.com/lucide-icons/lucide/tree/0.468.0
-Lucide pictograms include: folder-plus, file-plus-2, shield-check, trash-2, laptop-minimal, library-big, folder-lock, circle-check, circle-x, info, search, download, folder-check, languages, triangle-alert, eye.
+Lucide pictograms include: folder-plus, file-plus-2, shield-check, trash-2, laptop-minimal, library-big, folder-lock, circle-check, circle-x, info, search, download, folder-check, languages, triangle-alert, eye, rotate-ccw, list, layout-grid, monitor, smartphone, lock-keyhole, upload, folder-open, log-in, code, external-link, save.
 
 ISC License
 

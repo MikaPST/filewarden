@@ -1,6 +1,18 @@
 :root { color-scheme: dark; font: 15px/1.5 system-ui, sans-serif; background: #202126; color: #f1f3f7; }
 * { box-sizing: border-box; }
 body { margin: 0; }
+body.fw-public-theme{color-scheme:light;background:var(--fw-public-background,#f4f7fb);color:var(--fw-public-text,#1c2942)}
+.fw-public-theme #fw-viewer>header,.fw-public-theme .fw-toolbar{background:var(--fw-public-surface,#fff);color:var(--fw-public-text,#1c2942)}
+.fw-public-theme .fw-title span{color:var(--fw-public-muted,#53667f)}
+.fw-public-theme a{color:var(--fw-public-link,#3b556d)}
+.fw-public-theme button{background:var(--fw-public-button,#1c2942);color:var(--fw-public-button-text,#fff);border-color:var(--fw-public-button,#1c2942)}
+.fw-public-theme button:hover:not(:disabled){background:var(--fw-public-hover,#3b556d);border-color:var(--fw-public-hover,#3b556d)}
+.fw-public-theme select,.fw-public-theme input{background:var(--fw-public-surface,#fff);color:var(--fw-public-text,#1c2942);border-color:var(--fw-public-border,#dce4ee)}
+.fw-public-theme :focus-visible{outline-color:var(--fw-public-link,#3b556d)}
+.fw-public-theme .fw-toolbar{border-color:var(--fw-public-border,#dce4ee)}
+.fw-public-theme .fw-public-brand{display:flex;align-items:center;gap:8px;min-width:0}
+.fw-public-theme .fw-public-logo{width:32px;height:32px;object-fit:contain}
+.fw-public-theme .fw-public-name{font-size:11px;font-weight:700;letter-spacing:1px;overflow-wrap:anywhere}
 #fw-viewer { height: 100dvh; display: flex; flex-direction: column; }
 header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; padding: 14px 20px; background: #15161a; }
 h1 { font-size: 16px; margin: 0; overflow-wrap: anywhere; }

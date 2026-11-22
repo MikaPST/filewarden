@@ -11,6 +11,11 @@ $service = new FileWarden\DocumentService( $repo, $permissions, $storage, new Fi
 if ( 'before' === getenv( 'FILEWARDEN_UPGRADE_STAGE' ) ) {
     if ( getenv('FILEWARDEN_PREVIOUS_SCHEMA') !== get_option( 'filewarden_schema' ) || getenv('FILEWARDEN_PREVIOUS_VERSION') !== FILEWARDEN_VERSION ) { throw new RuntimeException( 'Previous ZIP did not activate the expected version and schema.' ); }
     $settings = array('filewarden_upload_mb'=>41,'filewarden_trash_days'=>17,'filewarden_audit_days'=>256,'filewarden_notification_seconds'=>20);
+    if (class_exists(FileWarden\FrontendAppearance::class)) {
+        $upgrade_appearance=FileWarden\FrontendAppearance::defaults();$upgrade_appearance['preset']='nature';$upgrade_appearance['colors']=FileWarden\FrontendAppearance::presets()['nature'];$upgrade_appearance['name']='Upgrade public identity';
+        $settings[FileWarden\FrontendAppearance::OPTION]=$upgrade_appearance;
+        $settings['filewarden_language']='fr_FR';
+    }
     foreach($settings as $key=>$value) update_option($key,$value);
     $folder = $service->create_folder( 'Upgrade fixture', 0, array( 'type' => 'authenticated' ) );
     $bytes = "%PDF-1.4\n1 0 obj<</Type/Catalog>>endobj\n%%EOF\n";
@@ -28,10 +33,10 @@ if ( 'before' === getenv( 'FILEWARDEN_UPGRADE_STAGE' ) ) {
     WP_CLI::success( 'Previous release ZIP activated and persistent upgrade fixture saved.' );
 } else {
     $before = json_decode( file_get_contents( $upgrade_file ), true );
-    if ( '6' !== get_option( 'filewarden_schema' ) || '0.1.16-dev' !== FILEWARDEN_VERSION ) { throw new RuntimeException( 'ZIP update did not install 0.1.16-dev and schema 6.' ); }
+    if ( '6' !== get_option( 'filewarden_schema' ) || '0.1.17-dev' !== FILEWARDEN_VERSION ) { throw new RuntimeException( 'ZIP update did not install 0.1.17-dev and schema 6.' ); }
     if (20 !== FileWarden\Notice::duration()) { throw new RuntimeException('ZIP update did not preserve the notification preference.'); }
     // Numeric options become strings when read back in a fresh WordPress process.
-    foreach($before['settings'] as $key=>$value) { if((string)get_option($key)!==(string)$value) throw new RuntimeException('ZIP upgrade reset an existing setting: '.$key); }
+    foreach($before['settings'] as $key=>$value) { $saved=get_option($key);if(is_array($value)?$saved!==$value:(string)$saved!==(string)$value) throw new RuntimeException('ZIP upgrade reset an existing setting: '.$key); }
     global $wpdb;
     foreach($before['audit'] as $row) {
         $saved = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->prefix}filewarden_audit_logs WHERE id = %d",$row['id']),ARRAY_A);
@@ -43,6 +48,11 @@ if ( 'before' === getenv( 'FILEWARDEN_UPGRADE_STAGE' ) ) {
     $stream = $storage->open( $after['storage_key'], (int) $after['size'] );
     $hash = hash( 'sha256', stream_get_contents( $stream ) ); fclose( $stream );
     if ( $hash !== $before['bytes_sha256'] ) { throw new RuntimeException( 'ZIP upgrade damaged document bytes.' ); }
+    if (isset($before['settings'][FileWarden\FrontendAppearance::OPTION])) {
+        if(FileWarden\FrontendAppearance::current()!==$before['settings'][FileWarden\FrontendAppearance::OPTION])throw new RuntimeException('Corrective ZIP lost the existing public identity or palette.');
+        update_option(FileWarden\FrontendAppearance::OPTION,FileWarden\FrontendAppearance::defaults());delete_option('filewarden_language');
+        WP_CLI::success('Corrective ZIP preserved the existing custom public name/palette and language preference.');
+    }
     FileWarden\Installer::migrate();
     if ( $repo->document( $after['uuid'] ) !== $after ) { throw new RuntimeException( 'Repeated upgrade changed data.' ); }
     if('MyISAM'===getenv('FILEWARDEN_PREVIOUS_ENGINE')){

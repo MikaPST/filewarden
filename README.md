@@ -21,17 +21,19 @@
 
 [Suivi court du projet et organisation des prochains lots](SUIVI.md)
 
-> **Status: 0.1.16-dev development preview. Not production-ready. Do not use confidential documents before deployment security validation.**
+> **Status: 0.1.17-dev development preview. Not production-ready. Do not use confidential documents before deployment security validation.**
 
 FileWarden is a free, open-source WordPress document-management plugin focused on private storage, inherited access control and modern publishing interfaces. Single-site only for the first version, confirmed by the owner.
 
-## Nouveautés 0.1.16-dev
+## Nouveautés 0.1.17-dev
 
-Ce lot affine l’en-tête, la notice des formats repliée, les transferts, les icônes, les boutons et le compteur de Documents à classer. Il ajoute le choix global de langue FileWarden (automatique selon le site, français ou anglais) et une option avancée tous formats, désactivée par défaut, confirmée et journalisée. Les formats normalement refusés restent des pièces jointes opaques protégées, sans aperçu actif. L’état des tables rejoint les détails du bandeau de santé ; les anomalies et réparations restent accessibles. Voir [les dix points du lot](docs/lot-v0.1.16-dev.md), [les langues](docs/languages.md) et [les notes](docs/releases/v0.1.16-dev.md).
+Ce lot ajoute la création de dossiers et l’import directement dans le dossier ouvert, un fil d’Ariane, une arborescence plus large et des boutons harmonisés. La corbeille retrouve les pictogrammes de fichiers, une recherche explicite, un compteur et le délai de conservation ; les notes de récupération deviennent des pastilles par fichier. Publication permet de personnaliser l’apparence publique commune au site : modèles FileWarden/Neutre/Nature/Personnalisé, dix couleurs, nom et logo PNG/JPEG, aperçu et enregistrement explicite. Ses deux onglets conservent les brouillons ; la connexion des visiteurs utilise WordPress par défaut ou une URL HTTP(S) personnalisée commune au site. Les vrais pictogrammes restent inchangés ; les cartes de grille ont une hauteur naturelle, des marges de 16 px, une identité centrée horizontalement et leurs actions en bas. Voir [les neuf axes initiaux](docs/lot-v0.1.17-dev.md), [les dix corrections validées](docs/corrections-v0.1.17-dev.md) et [les notes du candidat](docs/releases/v0.1.17-dev.md).
 
 ## Télécharger et installer
 
-La version **0.1.16-dev** conserve le correctif validé des [dix évolutions originales](docs/specifications/evolutions-v0.1.12-dev.md). Les ZIP des versions publiées sont joints aux [releases GitHub](https://github.com/MikaPST/filewarden/releases) ; pour cette version, choisir **filewarden-0.1.16-dev.zip**. La disponibilité publique dépend de la publication de la release.
+La dernière passe de recette place les onglets Publication au-dessus des cartes, adapte les options au mode Autorisé/Accès refusé, ajoute la carte Code court au-dessus de l’aperçu et harmonise la pastille d’information ambrée. « Palette de couleurs » et ses aides sont disponibles en FR/EN. Le code court s’utilise dans le bloc Code court de WordPress ou dans le widget Code court d’Elementor ; le bloc/widget spécifique à FileWarden reste une intégration future.
+
+La version **0.1.17-dev** conserve les [dix évolutions originales](docs/specifications/evolutions-v0.1.12-dev.md), les langues FR/EN et l’option tous formats désactivée par défaut. La palette Nature utilise désormais le fond **#EDF3EE** ; une apparence déjà enregistrée reste conservée jusqu’à la sélection et l’enregistrement explicites d’une palette. La publication autorisée est conditionnée aux contrôles GitHub Actions ; les archives publiées sont disponibles dans les [releases GitHub](https://github.com/MikaPST/filewarden/releases), accompagnées de leur empreinte SHA-256.
 
 L’archive de développement s’installe dans WordPress : **Extensions → Ajouter → Téléverser une extension**, puis remplacement de l’extension existante. Sauvegarder au préalable la base et le stockage séparé. Consulte le [journal des changements](CHANGELOG.md).
 

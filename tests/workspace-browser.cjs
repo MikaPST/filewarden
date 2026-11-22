@@ -59,13 +59,13 @@ module.exports = async ({ page, context, base, fixture, name }) => {
         inspector.getByRole('button', { name: 'Review destination' }).click()
     ]);
     await page.waitForLoadState('load');
-    await inspector.locator('#fw-transfer-name').fill('workspace-copy-' + name + '.pdf');
-    assert.equal(await inspector.locator('#fw-transfer-name').inputValue(), 'workspace-copy-' + name + '.pdf');
+    const copyName = 'workspace-copy-' + name + '-' + Date.now() + '.pdf';
+    await inspector.locator('#fw-transfer-name').fill(copyName);
+    assert.equal(await inspector.locator('#fw-transfer-name').inputValue(), copyName);
     const copyRequest = page.waitForRequest(request => request.method() === 'POST' && new URLSearchParams(request.postData() || '').get('operation') === 'copy');
     await inspector.getByRole('button', { name: 'Confirm copy' }).click();
-    assert.equal(new URLSearchParams((await copyRequest).postData()).get('name'), 'workspace-copy-' + name + '.pdf');
+    assert.equal(new URLSearchParams((await copyRequest).postData()).get('name'), copyName);
     await page.waitForURL(/result=success/);
-    const copyName = 'workspace-copy-' + name + '.pdf';
     const permanentURL = await page.getByRole('link', { name: copyName, exact: true }).getAttribute('href');
     await openAction(copyName, 'Move');
     await inspector.locator('#fw-destination').selectOption(String(fixture.public_folder_id));
@@ -90,12 +90,13 @@ module.exports = async ({ page, context, base, fixture, name }) => {
     await page.waitForURL(/result=success/);
     await page.waitForLoadState('load');
     assert.equal((await context.request.get(permanentURL)).status(), 200);
-    await page.locator('.fw-tabs').getByRole('link', { name: 'Add documents', exact: true }).click();
+    await page.goto(workspaceURL);
+    await page.locator('.fw-creation-actions').getByRole('link', { name: 'Add documents', exact: true }).click();
     await page.locator('form[data-filewarden-upload]').waitFor({ state: 'visible' });
     assert.equal(await page.locator('form[data-filewarden-upload]').count(), 1);
     assert.equal(await page.locator('.filewarden-documents').count(), 0);
     await page.screenshot({ path: 'build/screenshots/workspace-add-' + name + '.png', fullPage: true });
-    await page.locator('.fw-tabs').getByRole('link', { name: 'Create folder', exact: true }).click();
+    await page.locator('.fw-creation-actions').getByRole('link', { name: 'Create subfolder', exact: true }).click();
     await page.locator('#fw-name').waitFor({ state: 'visible' });
     assert.equal(await page.locator('#fw-name').count(), 1);
     assert.equal(await page.locator('form[data-filewarden-upload]').count(), 0);

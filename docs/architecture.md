@@ -1,5 +1,11 @@
 # Architecture proposal
 
+## Publication corrections (0.1.17-dev)
+
+The final 22 November layout places the two tabs outside both cards. The right output column contains a compact Shortcode card above the same preview iframe. `publisher.js` toggles authorized list/grid or denied layout/login sections without disabling/resetting their controls; the code retains both selections. Both forms remain available without JavaScript. A native WordPress Shortcode block uses the existing shortcode registration, not a new FileWarden editor block. Retained-rule disclosures reuse the central recovery amber tone/surface; no permission or database service changes.
+
+`Publisher` renders two progressively enhanced local tabs with an unchanged shared preview iframe. `AppearanceConsole`/`FrontendAppearance` keep the complete ten-color schema and four compact preset cards; client drafts remain local until a validated save. `PublicationLogin` owns the independent site-wide sign-in preference, native WordPress fallback, URL validation and settings capability. Its separate form uses `AdminController` nonce/feedback handling and the common writer gate/audit. No document schema or authorization service changes. `FrontendAppearance::stylesheet_url()` identifies the two allowlisted public CSS files by content for same-version ZIP replacement. Public functional icons are decorative current-color masks; document-type artwork remains unchanged.
+
 ## Legacy engine repair and administration identity (0.1.15-dev)
 
 `DatabaseUpgrade` measures the three exact prefixed tables and offers an explicit, backup-confirmed MyISAM-to-InnoDB repair through SettingsConsole/AdminController. Installation specifies InnoDB; engine repair does not change schema version 6. Ordered 200-row fingerprints include full column/index definitions, table collation and next ID. A durable options checkpoint survives partial conversion and rejects data drift before retrying.

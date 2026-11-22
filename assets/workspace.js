@@ -103,6 +103,51 @@
         }
     }
     const heading = workspace.querySelector('.fw-inspector h2');
+
+    // Rule notes are attached to each relevant row and never change its ACL.
+    const ruleNotes = [...workspace.querySelectorAll('.fw-rule-info')];
+    let pinnedNote = null;
+    const closeRuleNotes = except => ruleNotes.forEach(note => { if (note !== except) note.open = false; });
+    const showRuleNote = note => {
+        closeRuleNotes(note);
+        note.open = true;
+        const popup = note.querySelector('.fw-rule-popup');
+        const anchor = note.querySelector('summary').getBoundingClientRect();
+        popup.style.left = Math.max(12, Math.min(anchor.right - popup.offsetWidth, innerWidth - popup.offsetWidth - 12)) + 'px';
+        popup.style.top = Math.max(12, anchor.bottom + popup.offsetHeight + 8 <= innerHeight ? anchor.bottom + 6 : anchor.top - popup.offsetHeight - 6) + 'px';
+    };
+    ruleNotes.forEach(note => {
+        const trigger = note.querySelector('summary');
+        note.addEventListener('pointerenter', () => showRuleNote(note));
+        note.addEventListener('pointerleave', () => { if (pinnedNote !== note && !note.contains(document.activeElement)) note.open = false; });
+        trigger.addEventListener('focus', () => showRuleNote(note));
+        note.addEventListener('focusout', event => { if (!note.contains(event.relatedTarget) && pinnedNote !== note) note.open = false; });
+        trigger.addEventListener('click', event => {
+            event.preventDefault();
+            if (pinnedNote === note) { pinnedNote = null; note.open = false; }
+            else { pinnedNote = note; showRuleNote(note); }
+        });
+    });
+    document.addEventListener('click', event => { if (!event.target.closest('.fw-rule-info')) { pinnedNote = null; closeRuleNotes(); } });
+    document.addEventListener('keydown', event => { if (event.key === 'Escape') { pinnedNote = null; closeRuleNotes(); } });
+    window.addEventListener('resize', () => { pinnedNote = null; closeRuleNotes(); });
+    window.addEventListener('scroll', () => ruleNotes.filter(note => note.open).forEach(showRuleNote), true);
+
+    // Keep entered fields when a navigation is cancelled, without trapping POSTs.
+    let dirty = false;
+    workspace.querySelectorAll('.fw-task form').forEach(form => {
+        form.addEventListener('input', () => { dirty = true; });
+        form.addEventListener('change', () => { dirty = true; });
+        form.addEventListener('submit', () => { dirty = false; }, true);
+    });
+    workspace.addEventListener('click', event => {
+        const link = event.target.closest('a[href]');
+        if (!dirty || !link || link.target === '_blank' || event.ctrlKey || event.metaKey) return;
+        if (!window.confirm(globalThis.filewardenWorkspace?.leave || 'Leave this form without saving?')) event.preventDefault();
+        else dirty = false;
+    });
+    window.addEventListener('beforeunload', event => { if (dirty) { event.preventDefault(); event.returnValue = ''; } });
+
     if (heading) {
         const focus = () => heading.focus({ preventScroll: true });
         if (document.readyState === 'complete') focus();

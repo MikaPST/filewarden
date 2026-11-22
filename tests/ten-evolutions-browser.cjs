@@ -1,9 +1,8 @@
 /** End-to-end acceptance of the original ten evolutions on the installed ZIP. */
 const assert = require('node:assert/strict');
 
-module.exports = async ({ page, context, base, fixture, name }) => {
+module.exports = async ({ page, context, base, fixture, name, filename }) => {
     const documents = base + '/wp-admin/admin.php?page=filewarden';
-    const filename = 'browser-' + name + '.pdf';
     const folderURL = documents + '&folder_id=' + fixture.public_folder_id;
     const publicFolder = folderURL + '&search=' + encodeURIComponent(filename);
     const go = async link => {
@@ -143,6 +142,7 @@ module.exports = async ({ page, context, base, fixture, name }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     // 08: real clipboard success and deliberately refused clipboard access.
     await page.goto(base + '/wp-admin/admin.php?page=filewarden-publication&folder_id=' + fixture.public_folder_id);
+    await page.locator('[data-publication-tab=integration]').click();
     await page.locator('[data-preview-mode=denied]').click();
     assert.equal(await page.locator('[data-preview-mode=denied]').getAttribute('aria-selected'), 'true');
     await page.frameLocator('.filewarden-publication-frame').locator('.fw-denied-centered').waitFor();

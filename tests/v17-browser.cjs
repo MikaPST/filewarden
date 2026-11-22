@@ -1,0 +1,121 @@
+/** Installed ZIP: nine approved changes, persistent public appearance and authorization. */
+const assert=require('node:assert/strict');
+module.exports=async({context,base,name,fixture})=>{
+ assert.equal(process.env.FILEWARDEN_TESTING,'1');
+ assert.ok(['127.0.0.1','localhost','[::1]'].includes(new URL(base).hostname));
+ const page=await context.newPage();page.setDefaultTimeout(15000);page.setDefaultNavigationTimeout(30000);
+ const errors=[];page.on('pageerror',error=>errors.push(error.message));page.on('dialog',dialog=>dialog.accept());
+ const ready=require('./native-admin-ready.cjs')(page,base);
+ const admin=base+'/wp-admin/admin.php?page=';
+ const navigate=async url=>{await page.goto(url);await ready();};
+ const waitFrame=async()=>{
+  await page.waitForFunction(()=>{
+   const frame=document.querySelector('.fw-publisher .filewarden-publication-frame');
+   try{return frame?.contentDocument?.body?.classList.contains('fw-public-theme')&&frame.contentDocument.querySelector('#fw-public-appearance');}catch{return false;}
+  });
+ };
+ const saveAppearance=async()=>{
+  await ready();
+  await Promise.all([page.waitForNavigation({waitUntil:'load'}),page.locator('.fw-appearance button[type=submit]').click({noWaitAfter:true})]);
+  await ready();assert.equal(new URL(page.url()).searchParams.get('result'),'success');
+  await page.locator('.fw-notice-success').waitFor();await waitFrame();
+  await page.locator('[data-publication-tab=appearance]').click();
+ };
+ try{
+  await navigate(admin+'filewarden&folder_id='+fixture.v17_child_id);
+  assert.equal(await page.locator('.fw-tabs a').count(),2);
+  assert.equal(await page.locator('.fw-brand-logo').evaluate(el=>el.getBoundingClientRect().height),56);
+  assert.equal(await page.locator('.fw-breadcrumbs li').count(),2);
+  assert.equal(await page.locator('.fw-breadcrumbs [aria-current=page]').textContent(),'V17 nested folder');
+  const searchTop=await page.locator('.fw-search').evaluate(el=>el.getBoundingClientRect().top);
+  assert.ok(await page.locator('.fw-creation-actions').evaluate(el=>el.getBoundingClientRect().top>=el.previousElementSibling.getBoundingClientRect().bottom));
+  await Promise.all([page.waitForNavigation(),page.locator('.fw-creation-actions a[href*="tab=add"]').click({noWaitAfter:true})]);await ready();
+  assert.equal(await page.locator('form[data-filewarden-upload] input[name=folder_id]').inputValue(),String(fixture.v17_child_id));
+  assert.equal(await page.locator('#document-parent').count(),0);
+  assert.ok(Math.abs(await page.locator('.fw-search').evaluate(el=>el.getBoundingClientRect().top)-searchTop)<1);
+  assert.equal(await page.locator('.fw-format-notice details').getAttribute('open'),null);
+  await page.screenshot({path:`build/screenshots/v17-inline-add-${name}.png`,fullPage:true});
+  await Promise.all([page.waitForNavigation(),page.locator('.fw-task-cancel').click({noWaitAfter:true})]);await ready();
+  await Promise.all([page.waitForNavigation(),page.locator('.fw-tree-create').click({noWaitAfter:true})]);await ready();
+  assert.equal(await page.locator('form:has(#fw-name) input[name=folder_id]').inputValue(),'0');
+  assert.equal(await page.locator('#folder-parent').count(),0);
+  assert.equal(await page.locator('#folder-policy').inputValue(),'');
+  const folderName='V17 browser '+name+' '+Date.now();
+  await page.locator('#fw-name').fill(folderName);await page.locator('#folder-policy').selectOption('authenticated');
+  await Promise.all([page.waitForNavigation(),page.locator('form:has(#fw-name) button[type=submit]').click({noWaitAfter:true})]);await ready();
+  assert.equal(new URL(page.url()).searchParams.get('result'),'success');
+  assert.equal(await page.locator('.fw-folder-heading h2').textContent(),folderName);
+  await navigate(admin+'filewarden&collection=unfiled&search=v17-');
+  assert.equal(await page.locator('.fw-rule-info').count(),1);
+  await page.locator('.fw-rule-info summary').hover();await page.locator('.fw-rule-popup').waitFor({state:'visible'});
+  await page.locator('.fw-rule-info summary').click();await page.keyboard.press('Escape');
+  assert.equal(await page.locator('.fw-rule-info').getAttribute('open'),null);
+  assert.equal(await page.locator('.fw-table-wrap>p.fw-warning').count(),0);
+  await navigate(admin+'filewarden&tab=trash');
+  await page.locator('#fw-trash-search').fill('v17-');await page.locator('#fw-trash-folder').selectOption(String(fixture.v17_child_id));
+  await Promise.all([page.waitForNavigation(),page.locator('.fw-trash-filters button').click({noWaitAfter:true})]);await ready();
+  assert.equal(await page.locator('tbody .fw-document-name img').count(),2);
+  const icons=await page.locator('tbody .fw-document-name img').evaluateAll(images=>images.map(img=>({src:img.src,loaded:img.complete&&img.naturalWidth>0})));
+  assert.ok(icons.every(icon=>icon.loaded));assert.ok(icons.some(icon=>icon.src.endsWith('/pdf.svg')));assert.ok(icons.some(icon=>icon.src.endsWith('/image.svg')));
+  assert.match(await page.locator('.fw-trash-count').textContent(),/2/);
+  assert.equal(await page.locator('.fw-trash-retention').count(),2);
+  assert.ok(await page.locator('.fw-trash-filters a').isVisible());
+  assert.equal(await page.locator('tbody .fw-icon-rotate-ccw').count(),2);assert.equal(await page.locator('tbody .fw-icon-trash-2').count(),2);
+  await page.screenshot({path:`build/screenshots/v17-trash-${name}.png`,fullPage:true});
+
+  await navigate(admin+'filewarden-publication');await waitFrame();
+  await page.locator('[data-publication-tab=integration]').click();
+  await page.locator('#fw-publish-folder').selectOption(String(fixture.public_folder_id));
+  await page.waitForFunction(()=>document.querySelector('#fw-preview-status').textContent===document.querySelector('#fw-preview-status').dataset.ready);
+  await waitFrame();
+  const url=await page.locator('.filewarden-publication-frame').getAttribute('src');
+  const before=await context.request.get(url);const beforeHTML=await before.text();
+  assert.match(beforeHTML,/--fw-public-button:#1c2942/);
+  const csp=before.headers()['content-security-policy'];assert.match(csp,/style-src 'self' 'nonce-[a-f0-9]{48}'/);assert.ok(!csp.includes('unsafe-inline'));
+  await page.locator('[data-publication-tab=appearance]').click();
+  await page.locator('[data-preset=nature]').click();
+  await page.waitForFunction(()=>{
+   const frame=document.querySelector('.filewarden-publication-frame');const button=frame.contentDocument.querySelector('.download');
+   return button&&frame.contentWindow.getComputedStyle(button).backgroundColor==='rgb(40, 87, 73)';
+  });
+  assert.match(await(await context.request.get(url)).text(),/--fw-public-button:#1c2942/,'Draft palette reached the public site before save');
+  await page.locator('#fw-public-name').evaluate(el=>el.closest('details').open=true);
+  await page.locator('#fw-public-name').fill('V17 Espace documentaire');
+  await page.waitForFunction(()=>document.querySelector('.filewarden-publication-frame').contentDocument.querySelector('.fw-public-name').textContent==='V17 Espace documentaire');
+  await page.locator('[data-appearance-logo]').click();await page.locator('.media-modal').waitFor({state:'visible'});
+  await page.locator('.media-modal #menu-item-browse').click();
+  const attachment=page.locator('.media-modal .attachment[data-id="'+fixture.v17_logo_id+'"]');
+  await attachment.waitFor();await attachment.click();
+  await page.locator('.media-modal .media-button-select').click();await page.locator('.media-modal').waitFor({state:'hidden'});
+  assert.equal(await page.locator('[name="appearance[logo_id]"]').inputValue(),String(fixture.v17_logo_id));
+  await saveAppearance();
+  assert.equal(await page.locator('#fw-public-name').inputValue(),'V17 Espace documentaire');
+  assert.equal(await page.locator('[data-preset=nature]').getAttribute('aria-pressed'),'true');
+  const persisted=await(await context.request.get(url)).text();assert.match(persisted,/--fw-public-button:#285749/);assert.match(persisted,/V17 Espace documentaire/);assert.match(persisted,/v17-brand-logo.png/);
+  assert.equal(await page.locator('.fw-heading .fw-brand').textContent(),'FILEWARDEN');
+  const nonce=await page.locator('.fw-appearance [name=_wpnonce]').inputValue();
+  const refused=await context.request.post(base+'/wp-admin/admin-post.php',{form:{action:'filewarden_admin',operation:'appearance',_wpnonce:'invalid'}});
+  assert.equal(refused.status(),403);
+  assert.ok(nonce.length>0);
+  await page.locator('[data-publication-tab=integration]').click();
+  await page.locator('#fw-publish-folder').selectOption(String(fixture.public_folder_id));
+  await page.locator('#fw-publisher [name=view][value=grid]').check();
+  await page.waitForFunction(()=>document.querySelector('.filewarden-publication-frame').contentDocument?.querySelector('.documents.grid'));
+  const grid=await page.locator('.filewarden-publication-frame').evaluate(frame=>[...frame.contentDocument.querySelectorAll('.document')].slice(0,3).map(card=>{const a=card.getBoundingClientRect(),b=card.querySelector('.document-identity').getBoundingClientRect();return {top:b.top-a.top,center:Math.abs(a.left+a.width/2-b.left-b.width/2),height:a.height};}));
+  assert.ok(grid.length>0&&grid.every(card=>card.top<=18&&card.center<1&&card.height<300),'Grid has excess upper space or lost its horizontal alignment');
+  await page.screenshot({path:`build/screenshots/v17-appearance-grid-${name}.png`,fullPage:true});
+  await page.locator('.fw-appearance-devices button').nth(1).click();
+  assert.ok((await page.locator('.filewarden-publication-frame').boundingBox()).width<=375);
+  await page.setViewportSize({width:375,height:900});
+  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+  await page.screenshot({path:`build/screenshots/v17-appearance-mobile-${name}.png`,fullPage:true});
+  await page.setViewportSize({width:1280,height:900});
+  await page.locator('[data-publication-tab=appearance]').click();
+  await page.locator('[data-appearance-reset]').click();await saveAppearance();
+  assert.equal(await page.locator('[data-preset=filewarden]').getAttribute('aria-pressed'),'true');
+  assert.equal(await page.locator('#fw-public-name').inputValue(),'FILEWARDEN');
+  assert.deepEqual(errors,[]);
+  console.log(name+': V17 contextual creation, breadcrumbs, recovery notes, trash, palette/logo draft/save/reset, CSP, CSRF and natural compact grid passed');
+ }catch(error){await page.screenshot({path:`build/screenshots/v17-failure-${name}.png`,fullPage:true}).catch(()=>{});throw error;}
+ finally{await page.close();}
+};

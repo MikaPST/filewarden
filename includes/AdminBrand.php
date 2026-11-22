@@ -20,6 +20,6 @@ final class AdminBrand {
 	 */
 	public static function heading( $title ) {
 		$logo = plugins_url( 'assets/branding/filewarden-logo-512.png', FILEWARDEN_PATH . 'filewarden.php' );
-		echo '<header class="fw-heading"><div class="fw-heading-identity"><div class="fw-brand-row"><img class="fw-brand-logo" src="' . esc_url( $logo ) . '" width="14" height="14" alt=""><span class="fw-brand">FILEWARDEN</span></div><h1>' . esc_html( $title ) . '</h1></div><span class="fw-version">' . esc_html( FILEWARDEN_VERSION ) . '</span></header>';
+		echo '<header class="fw-heading"><div class="fw-heading-identity"><div class="fw-brand-row"><img class="fw-brand-logo" src="' . esc_url( $logo ) . '" width="56" height="56" alt=""><span class="fw-brand">FILEWARDEN</span></div><h1>' . esc_html( $title ) . '</h1></div><span class="fw-version">' . esc_html( FILEWARDEN_VERSION ) . '</span></header>';
 	}
 }

@@ -4,6 +4,7 @@ module.exports=async({context,base,name})=>{
  assert.equal(process.env.FILEWARDEN_TESTING,'1');
  assert.ok(['127.0.0.1','localhost','[::1]'].includes(new URL(base).hostname),'Database repair fixtures require a loopback test site');
  const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ page.on('dialog',dialog=>dialog.accept());
  page.setDefaultTimeout(15000);page.setDefaultNavigationTimeout(30000);
  const admin=base+'/wp-admin/admin.php?page=';const settings=admin+'filewarden-settings';
  const dismiss=()=>page.evaluate(()=>document.querySelectorAll('[data-fw-notice]').forEach(el=>window.FileWardenNotices.dismiss(el)));
@@ -24,7 +25,7 @@ module.exports=async({context,base,name})=>{
   assert.equal(await page.locator('#toplevel_page_filewarden .wp-menu-image').evaluate(el=>getComputedStyle(el,'::before').height),'20px');
   await page.screenshot({path:`build/screenshots/v15-menu-folded-${name}.png`,fullPage:true});
   await page.locator('#collapse-button').click();
-  assert.equal(await page.locator('.fw-tabs a').count(),4);assert.equal(await page.locator('.fw-tabs .fw-action-icon').count(),4);
+  assert.equal(await page.locator('.fw-tabs a').count(),2);assert.equal(await page.locator('.fw-tabs .fw-action-icon').count(),2);
   assert.equal(await page.locator('.fw-tabs a[aria-current]').evaluate(el=>getComputedStyle(el).backgroundColor),'rgba(0, 0, 0, 0)');
   const artwork=await page.locator('.fw-welcome-icon').evaluate(el=>getComputedStyle(el).backgroundImage);
   assert.match(artwork,/illustrations\/folder-welcome\.png/);

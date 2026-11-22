@@ -33,6 +33,12 @@ Plugin language and translated confirmation text never affect authorization, sto
 
 Report vulnerabilities privately to the repository maintainers once a contact channel is published. Do not post exploitable reports as public issues.
 
+## Public appearance and visitor sign-in (0.1.17-dev)
+
+Presentation settings do not participate in document authorization. Public colors are limited to ten validated hexadecimal tokens with server-side contrast checks; names are plain text and custom logos retain the independent PNG/JPEG media checks. File-type artwork is never recolored. Public stylesheets use content digests so replacing a development archive of the same version does not keep the previous cached layout.
+
+The site-wide visitor sign-in link defaults to `wp_login_url()` with WordPress filters and the existing validated local return page. A user with the separate settings capability may explicitly save an absolute HTTP(S) URL instead. The custom URL is used literally; FileWarden does not append return arguments, fetch the URL, implement authentication or grant access based on this setting. Reject unsupported schemes, relative/protocol-relative URLs, credentials, control characters and oversized input; malformed stored data falls back to WordPress. Save through the existing capability/nonce/maintenance-lock/audit flow. Anonymous request parameters cannot override the saved destination. Draft changes affect only the same-origin preview, and all output URLs remain escaped.
+
 ## Corrective candidate: additional document formats
 
 0.1.12-dev.1 accepts UTF-8 TXT/CSV, macro-free DOCX/XLSX/PPTX/ODT/ODS/ODP, and ZIP as protected attachments. Files are checked before persistence using their sanitized extension, actual content and server-derived type; submitted browser MIME is never trusted. CSV formulas, scripts, macro/ActiveX/embedded executable parts and external Office relationships/content are refused conservatively. Existing PDF/image validation and protected viewer behavior are preserved; new formats have no inline preview. This is structural content validation, not antivirus or an absolute guarantee against vulnerabilities in third-party document readers.

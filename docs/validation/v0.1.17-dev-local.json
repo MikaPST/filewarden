@@ -1,0 +1,138 @@
+{
+  "version": "0.1.17-dev",
+  "date": "2026-11-21",
+  "started": "2026-11-20",
+  "status": "local-candidate-passed",
+  "delivery": "ZIP for owner manual preproduction installation",
+  "github": {
+    "pushed": false,
+    "tagged": false,
+    "release_published": false
+  },
+  "schema": 6,
+  "environment": {
+    "os": "Windows local PC",
+    "php": "8.2.35",
+    "database": "MariaDB 10.11.11",
+    "phpunit": "10.5.66",
+    "node": "v24.22.3",
+    "playwright": "1.65.0",
+    "chromium": "158.0.8127.18",
+    "firefox": "159.0"
+  },
+  "checks": {
+    "phpunit": {
+      "tests": 82,
+      "assertions": 167,
+      "passed": true
+    },
+    "javascript": {
+      "tests": 8,
+      "passed": true
+    },
+    "php_syntax": {
+      "files": 66,
+      "passed": true
+    },
+    "javascript_syntax": {
+      "files": 28,
+      "passed": true
+    },
+    "phpcs": true,
+    "composer_validate": true,
+    "composer_audit": "No security vulnerability advisories found",
+    "catalogs": {
+      "source_entries": 453,
+      "fr_FR": true,
+      "en_US": true,
+      "placeholders_plurals_mo": true
+    }
+  },
+  "installed_zip_acceptance": {
+    "6.8": {
+      "passed": true,
+      "upgrade_from": "0.1.16-dev",
+      "real_zip_upgrade": true,
+      "documents_and_permissions_preserved": true,
+      "integration": true,
+      "http_security": true,
+      "new_and_historical_browsers": [
+        "Chromium EN/FR",
+        "Firefox EN/FR"
+      ],
+      "logs": [
+        ".tools/v17-dev/v17c68/accept-TargetEnglish.log",
+        ".tools/v17-dev/v17c68/accept-TargetFrench.log",
+        ".tools/v17-dev/v17c68/accept-HTTP.log",
+        ".tools/v17-dev/v17c68/accept-English-r2.log",
+        ".tools/v17-dev/v17c68/accept-English-chromium-tail.log",
+        ".tools/v17-dev/v17c68/accept-English-firefox.log",
+        ".tools/v17-dev/v17c68/accept-French.log"
+      ]
+    },
+    "7.1.5": {
+      "passed": true,
+      "upgrade_from": "0.1.16-dev",
+      "real_zip_upgrade": true,
+      "documents_and_permissions_preserved": true,
+      "integration": true,
+      "http_security": true,
+      "new_and_historical_browsers": [
+        "Chromium EN/FR",
+        "Firefox EN/FR"
+      ],
+      "logs": [
+        ".tools/v17-dev/v17d715/accept-TargetEnglish.log",
+        ".tools/v17-dev/v17d715/accept-TargetFrench.log",
+        ".tools/v17-dev/v17d715/accept-HTTP.log",
+        ".tools/v17-dev/v17d715/accept-English.log",
+        ".tools/v17-dev/v17d715/accept-French.log"
+      ]
+    }
+  },
+  "fresh_install": {
+    "wordpress": "7.1.5",
+    "innodb_and_safe_defaults": true,
+    "first_folder_explicit_policy": true,
+    "child_inheritance": true,
+    "contextual_upload": true,
+    "dirty_cancel": true,
+    "mobile": true
+  },
+  "appearance_security": {
+    "png_and_jpeg_accepted": true,
+    "reject_active_content_even_all_formats": true,
+    "reject_forged_mime_extension": true,
+    "reject_oversize_dimensions": true,
+    "reject_nonlocal_origin_path": true,
+    "separate_media_permissions": true,
+    "reject_css_markup_and_low_contrast": true,
+    "csrf_refused": true,
+    "draft_not_public_before_save": true,
+    "nonce_csp_without_unsafe_inline": true
+  },
+  "archive": {
+    "version": "0.1.17-dev",
+    "files": 305,
+    "sha256": "7d5d0f3e676f21820da40172f1a2df1b441758841de3b99727f554fb75335c7a",
+    "source_and_three_installations_match": true,
+    "original_asset_content_preserved": 34,
+    "svg_comparison": "line-ending normalized; original paths, shapes and colors unchanged",
+    "size": 4283227
+  },
+  "initial_harness_diagnostics": [
+    "Native media picker starts on Upload: select the native library tab before choosing the fixture.",
+    "Historical publication controls now require opening their disclosure.",
+    "Shared browser fixture names must pass through the scenarios, and repeat copies use unique names.",
+    "Update asserted row dimensions, secondary colors and asset version to the approved 0.1.17 UI.",
+    "Run English HTTP text assertions with an English local site; abandoned partial runs were not treated as passing.",
+    "Wait for the initial native WordPress administration load in the empty-install test; preserve explicit dirty-form confirmation assertions."
+  ],
+  "limits": [
+    "No owner-site installation or production documents used.",
+    "PHP 8.3/8.4, MySQL 8.0 and remote GitHub CI were not executed for this local candidate.",
+    "No complete human screen-reader review, accessibility certification or absolute security claim.",
+    "The owner must validate the real host/storage and site-specific integrations."
+  ],
+  "owned_test_services_stopped": true
+}

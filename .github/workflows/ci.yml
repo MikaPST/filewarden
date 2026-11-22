@@ -16,6 +16,7 @@ jobs:
           node-version: '22'
       - run: node --test tests/admin.test.cjs
   unit:
+    timeout-minutes: 20
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -48,6 +49,7 @@ jobs:
           path: build/filewarden-*.zip
           if-no-files-found: error
   fresh-install:
+    timeout-minutes: 30
     runs-on: ubuntu-latest
     services:
       mysql:
@@ -79,7 +81,31 @@ jobs:
           php tools/build.php
           wp plugin install "$GITHUB_WORKSPACE/build/$(basename build/filewarden-*.zip)" --activate --path=/tmp/fw-fresh
           wp eval-file "$GITHUB_WORKSPACE/tests/fresh-install.php" --path=/tmp/fw-fresh
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify first-folder and contextual upload in a real browser
+        shell: bash
+        run: |
+          npm install --prefix /tmp/fw-browser --ignore-scripts --no-audit --no-fund playwright@1.65.0
+          node /tmp/fw-browser/node_modules/playwright/cli.js install --with-deps chromium
+          php -S 127.0.0.1:8080 -t /tmp/fw-fresh > /tmp/fw-fresh-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          mkdir -p build/screenshots
+          for attempt in {1..20}; do
+            if curl --silent --fail http://127.0.0.1:8080/wp-login.php > /dev/null; then break; fi
+            sleep 1
+          done
+          FILEWARDEN_URL=http://127.0.0.1:8080 NODE_PATH=/tmp/fw-browser/node_modules node tests/v17-fresh-browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fresh-workspace-screenshots
+          path: build/screenshots/*.png
+          if-no-files-found: ignore
   integration:
+    timeout-minutes: 45
     name: integration (WP ${{ matrix.wordpress }}, from ${{ matrix.previous.version }})
     runs-on: ubuntu-latest
     strategy:
@@ -92,6 +118,7 @@ jobs:
           - {version: '0.1.13-dev', schema: '6'}
           - {version: '0.1.14-dev', schema: '6'}
           - {version: '0.1.15-dev', schema: '6'}
+          - {version: '0.1.16-dev', schema: '6'}
     services:
       mysql:
         image: mysql:8.0
@@ -126,7 +153,7 @@ jobs:
           wp config set FILEWARDEN_STORAGE_VERIFIED true --raw --path=/tmp/fw-wordpress
           wp core install --path=/tmp/fw-wordpress --url=http://127.0.0.1:8080 --title=FileWarden --admin_user=fw_admin --admin_password=disposable-test-password --admin_email=admin@example.test --skip-email
           wp language core install fr_FR de_DE fr_CA --path=/tmp/fw-wordpress
-          wp i18n make-pot "$GITHUB_WORKSPACE" /tmp/filewarden-current.pot --exclude=.tools,build,vendor,assets/pdfjs --skip-js --skip-audit
+          wp i18n make-pot "$GITHUB_WORKSPACE" /tmp/filewarden-current.pot --exclude=.tools,build,vendor,tests,assets/pdfjs --skip-js --skip-audit
           python3 tools/translation-catalogs.py --check --pot /tmp/filewarden-current.pot
           curl --fail --location --retry 3 https://github.com/MikaPST/filewarden/releases/download/v${{ matrix.previous.version }}/filewarden-${{ matrix.previous.version }}.zip -o /tmp/filewarden-${{ matrix.previous.version }}.zip
           curl --fail --location --retry 3 https://github.com/MikaPST/filewarden/releases/download/v${{ matrix.previous.version }}/filewarden-${{ matrix.previous.version }}.zip.sha256 -o /tmp/filewarden-${{ matrix.previous.version }}.zip.sha256
@@ -160,13 +187,19 @@ jobs:
             sleep 1
           done
           python3 tests/http-smoke.py
+          NODE_PATH=/tmp/fw-browser/node_modules node tests/v17-browser-suite.cjs
+          wp user meta update fw_admin locale fr_FR --path=/tmp/fw-wordpress
+          wp option update WPLANG fr_FR --path=/tmp/fw-wordpress
+          FILEWARDEN_BROWSER_SUFFIX=-fr NODE_PATH=/tmp/fw-browser/node_modules node tests/v17-browser-suite.cjs
+          wp user meta update fw_admin locale en_US --path=/tmp/fw-wordpress
+          wp option update WPLANG '' --path=/tmp/fw-wordpress
           NODE_PATH=/tmp/fw-browser/node_modules node tests/viewer-browser.cjs
           wp user meta update fw_admin locale fr_FR --path=/tmp/fw-wordpress
           wp option update WPLANG fr_FR --path=/tmp/fw-wordpress
           NODE_PATH=/tmp/fw-browser/node_modules node tests/french-browser.cjs
       - name: Preserve the exact ZIP installed and tested
         uses: actions/upload-artifact@v4
-        if: success() && matrix.wordpress == '6.8' && matrix.previous.version == '0.1.15-dev'
+        if: success() && matrix.wordpress == '6.8' && matrix.previous.version == '0.1.16-dev'
         with:
           name: filewarden-tested-candidate
           path: build/filewarden-*.zip

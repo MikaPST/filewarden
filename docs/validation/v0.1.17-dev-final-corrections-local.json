@@ -1,0 +1,126 @@
+{
+  "version": "0.1.17-dev",
+  "schema": 6,
+  "date": "2026-11-22",
+  "status": "final-local-corrections-passed",
+  "github": {
+    "pushed": false,
+    "tagged": false,
+    "release_published": false
+  },
+  "authorization": "Final owner GO 2026-11-22; local ZIP for manual preproduction installation only.",
+  "scope": [
+    "Publication tabs outside cards, spanning both columns",
+    "Preview-contextual view/denied/login controls, retained choices and drafts",
+    "Color palette label and combined guidance",
+    "Compact separate Shortcode card above Preview, native WordPress/Elementor guidance, real copy/refusal",
+    "Amber retained-access icon with shared semantic tokens and documented contrast",
+    "All changed labels/help/accessibility text in FR/EN"
+  ],
+  "checks": {
+    "phpunit": {
+      "tests": 88,
+      "assertions": 192,
+      "passed": true
+    },
+    "javascript": {
+      "tests": 8,
+      "passed": true
+    },
+    "php_syntax": {
+      "files": 70,
+      "passed": true
+    },
+    "javascript_syntax": {
+      "files": 30,
+      "passed": true
+    },
+    "phpcs": true,
+    "composer_validate": true,
+    "composer_audit": "No security vulnerability advisories found (locked dependencies including development)",
+    "catalogs": {
+      "source_entries": 472,
+      "fr_FR": true,
+      "en_US": true,
+      "mo_placeholders_plurals": true
+    },
+    "whitespace": "passed with CRLF-aware checks"
+  },
+  "wordpress": {
+    "7.1.5": {
+      "actual_previous_zip_upgrade": true,
+      "existing_public_identity_language_settings_preserved": true,
+      "full_php_integration": true,
+      "full_http_suite": true,
+      "prior_correction_browser_suite": [
+        "chromium EN/FR",
+        "firefox EN/FR"
+      ],
+      "final_zip_ui_suite": [
+        "chromium EN/FR",
+        "firefox EN/FR"
+      ],
+      "native_wordpress_shortcode_block": true,
+      "final_zip_php_http_retest": true
+    },
+    "6.8": {
+      "reused_disposable_fixture": true,
+      "actual_previous_zip_upgrade": true,
+      "all_document_folder_audit_rows_options_and_public_bytes_preserved": true,
+      "final_native_block_integration": true,
+      "protected_http": true,
+      "final_zip_ui_suite": [
+        "chromium EN/FR",
+        "firefox EN/FR"
+      ]
+    }
+  },
+  "ui_acceptance": [
+    "External tabs above both cards; same forms/iframe/output while switching",
+    "Authorized list/grid vs denied layouts/login, hidden values retained in generated shortcode",
+    "Draft name/logo/color configuration and unsaved sign-in URL survive mode/tab changes",
+    "Four palettes and ten colors retained, exact combined FR/EN help",
+    "Shortcode card above Preview, compact natural height, responsive settings → code → preview order",
+    "Real clipboard success in both engines, actual Chromium readback, deliberate refusal with manual fallback",
+    "Amber #805400 on #FFF6E8, shared recovery tone, measured contrast >=4.5:1 and existing disclosure behavior",
+    "375/320px without horizontal overflow, touch controls from prior suite and no-JS form availability"
+  ],
+  "test_sequence": "Full PHP/HTTP and prior-correction browser coverage ran before the final one-property card min-height fix. The exact final ZIP was then installed on both fixtures, retested in Chromium/Firefox FR/EN, and compared to every packaged source/installed file. No rebuild followed final acceptance.",
+  "diagnostics": [
+    "Visual QA found the inherited 420px minimum height on the new shortcode card; removed it and added compact-height/lower-whitespace regression assertions.",
+    "One generic Firefox pageerror (Object { message, code }) appeared in an intermediate run without a useful stack; added pageerror stack/failed-response capture. Instrumented Firefox rerun and full final EN/FR reruns passed with no pageerrors. Origin was not established; no assertion was removed or error filtered.",
+    "Older sign-in browser scenarios now explicitly select the denied preview when editing the newly contextual connection form."
+  ],
+  "package": {
+    "files": 317,
+    "bytes": 4296190,
+    "sha256": "d83119e346919b82e2071b833df3957cb9b66ae63ec09ad68e69df68c1e4b59a",
+    "source_and_both_installs_match": true,
+    "original_artwork_files_unchanged": 46,
+    "changed_runtime_files": [
+      "readme.txt",
+      "README.md",
+      "languages/filewarden-fr_FR.mo",
+      "languages/filewarden-fr_FR.po",
+      "languages/filewarden-en_US.mo",
+      "languages/filewarden-en_US.po",
+      "assets/admin.css",
+      "assets/admin-controls.css",
+      "assets/publisher.js",
+      "includes/AppearanceConsole.php",
+      "includes/Publisher.php"
+    ],
+    "excluded_development_files": true
+  },
+  "previous_zip": {
+    "sha256": "b5ff1e7e4f50ce37837038555541be07a054905ff2d4371444d592594a21df49",
+    "path": "build/candidate-v0.1.17-dev-corrected-2026-11-21/filewarden-0.1.17-dev.zip"
+  },
+  "limits": [
+    "Windows/PHP 8.2.35/MariaDB 10.11.11; PHP 8.3/8.4, MySQL, Linux and remote CI were not executed for this lot.",
+    "The historical browser suite for all earlier releases was not repeated in full for these layout/text changes; existing PHP/HTTP integration and prior/final UI browser suites were run proportionately.",
+    "No real owner site or documents used; target-host/storage/plugin integration acceptance remains the owner preproduction test.",
+    "No complete human screen-reader audit or security certification."
+  ],
+  "owned_test_services_stopped": true
+}

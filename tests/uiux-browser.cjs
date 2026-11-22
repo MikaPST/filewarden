@@ -10,7 +10,7 @@ module.exports = async ({page,base,fixture,name}) => {
     assert.equal(await page.locator('.fw-welcome-icon').evaluate(el=>getComputedStyle(el).width),'80px');
     assert.match(await page.locator('.fw-welcome-icon').evaluate(el=>getComputedStyle(el).backgroundImage),/folder-welcome\.png/);
     assert.equal(await page.locator('.fw-tree-create').evaluate(el=>getComputedStyle(el).gap),'10px');
-    assert.equal(await page.locator('.fw-tree-folder').filter({hasText:'Public fixtures'}).evaluate(el=>el.getBoundingClientRect().height),40,'The compact single-line folder row did not retain its approved minimum target');
+    assert.equal(await page.locator('.fw-tree-folder').filter({hasText:'Public fixtures'}).evaluate(el=>el.getBoundingClientRect().height),34,'The compact single-line folder row did not use its approved fine-pointer target');
     // Select by exact URL parameter to avoid confusing a parent ID with an unrelated longer ID.
     const target = await page.locator('.fw-tree-folder').evaluateAll((nodes,id)=>nodes.find(n=>new URL(n.href).searchParams.get('folder_id')===String(id))?.href,fixture.public_folder_id);
     assert.ok(target,'Authorized public folder is missing from the tree');

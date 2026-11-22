@@ -1,0 +1,26 @@
+{
+  "date": "2026-11-22",
+  "version": "0.1.17-dev",
+  "schema": 6,
+  "change": "Nature preset background #EDF3EE",
+  "changed_runtime_files": [
+    "includes/FrontendAppearance.php"
+  ],
+  "phpunit": {
+    "tests": 88,
+    "assertions": 192,
+    "passed": true
+  },
+  "phpcs": true,
+  "visual_check": "Real Nature field, iframe computed background rgb(237,243,238), contrast-valid save control in Chromium; no site appearance saved.",
+  "saved_appearances": "Explicit palette selection/save retained; no migration or user color overwrite.",
+  "package": {
+    "files": 317,
+    "bytes": 4296192,
+    "sha256": "ac4c40ff75f78ea9599b8850aa729e5cfe0c26c177735e64b59cf769a4a38dde",
+    "source_and_installed_match": true
+  },
+  "github_published": false,
+  "scope": "Targeted palette/contrast verification only; preceding final-correction proof remains historical.",
+  "owned_test_services_stopped": true
+}

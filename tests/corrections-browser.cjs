@@ -12,7 +12,8 @@ module.exports=async({context,base,name})=>{
   await page.goto(docs+'&tab=folder');
   const title=prefix+'-'+label+'-'+(++sequence);
   await page.locator('#fw-name').fill(title);
-  await page.locator('#folder-parent').selectOption('0');
+  assert.equal(await page.locator('form:has(#fw-name) input[name=folder_id]').inputValue(),'0');
+  await page.locator('#folder-policy').selectOption('authenticated');
   await page.locator('form:has(#fw-name) button[type=submit]').click();await page.waitForURL(/result=success/);
   assert.ok(await page.locator('.fw-notice-success').isVisible());await dismiss();
   const link=page.locator('.fw-tree-folder').filter({hasText:title});const href=await link.getAttribute('href');
@@ -32,7 +33,7 @@ module.exports=async({context,base,name})=>{
    const element=page.locator(selector);const url=await element.getAttribute(selector.endsWith('-css')?'href':'src');
    const response=await context.request.get(url);assert.equal(response.status(),200);
    const digest=crypto.createHash('sha256').update(await response.body()).digest('hex').slice(0,12);
-   assert.equal(new URL(url).searchParams.get('ver'),'0.1.16-dev-'+digest,'The loaded asset URL has no content digest');
+   assert.equal(new URL(url).searchParams.get('ver'),'0.1.17-dev-'+digest,'The loaded asset URL has no content digest');
   }
   const panel=page.locator('.fw-settings-layout>.fw-content');const before=await panel.boundingBox();
   await page.locator('[name=notification_seconds]').focus();

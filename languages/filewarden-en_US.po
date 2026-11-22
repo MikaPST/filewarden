@@ -1181,3 +1181,259 @@ msgid "%s document to classify"
 msgid_plural "%s documents to classify"
 msgstr[0] "%s document to classify"
 msgstr[1] "%s documents to classify"
+
+msgid "Leave this form without saving your changes?"
+msgstr "Leave this form without saving your changes?"
+
+msgid "Choose an access policy"
+msgstr "Choose an access policy"
+
+msgid "Add documents to classify"
+msgstr "Add documents to classify"
+
+msgid "Location: library root"
+msgstr "Location: library root"
+
+msgid "Create subfolder"
+msgstr "Create subfolder"
+
+msgid "Folder path"
+msgstr "Folder path"
+
+msgid "Previous access rules retained"
+msgstr "Previous access rules retained"
+
+msgid "This file keeps the access rules of its previous location, even after reclassification."
+msgstr "This file keeps the access rules of its previous location, even after reclassification."
+
+msgid "Public appearance"
+msgstr "Public appearance"
+
+msgid "One appearance for all FileWarden publications on this site. Changes apply only after saving."
+msgstr "One appearance for all FileWarden publications on this site. Changes apply only after saving."
+
+msgid "Starting template"
+msgstr "Starting template"
+
+msgid "Neutral"
+msgstr "Neutral"
+
+msgid "Nature"
+msgstr "Nature"
+
+msgid "Default"
+msgstr "Default"
+
+msgid "Templates change colors while preserving your custom name and logo."
+msgstr "Templates change colors while preserving your custom name and logo."
+
+msgid "Interface colors"
+msgstr "Interface colors"
+
+msgid "Interface background"
+msgstr "Interface background"
+
+msgid "Cards and fields"
+msgstr "Cards and fields"
+
+msgid "Main text"
+msgstr "Main text"
+
+msgid "Button background"
+msgstr "Button background"
+
+msgid "Button text"
+msgstr "Button text"
+
+msgid "Links and action icons"
+msgstr "Links and action icons"
+
+msgid "Button hover"
+msgstr "Button hover"
+
+msgid "Secondary text"
+msgstr "Secondary text"
+
+msgid "Borders"
+msgstr "Borders"
+
+msgid "Decorative accent"
+msgstr "Decorative accent"
+
+msgid "Additional colors"
+msgstr "Additional colors"
+
+msgid "Public name and logo"
+msgstr "Public name and logo"
+
+msgid "Name displayed to visitors"
+msgstr "Name displayed to visitors"
+
+msgid "Selected public logo"
+msgstr "Selected public logo"
+
+msgid "Official FileWarden logo"
+msgstr "Official FileWarden logo"
+
+msgid "Import a logo"
+msgstr "Import a logo"
+
+msgid "FileWarden logo"
+msgstr "FileWarden logo"
+
+msgid "Public PNG or JPEG image, up to 2 MB and 6000 pixels per side. File-type restrictions for logos always apply."
+msgstr "Public PNG or JPEG image, up to 2 MB and 6000 pixels per side. File-type restrictions for logos always apply."
+
+msgid "Show the logo"
+msgstr "Show the logo"
+
+msgid "Show the name"
+msgstr "Show the name"
+
+msgid "Save appearance"
+msgstr "Save appearance"
+
+msgid "Restore FileWarden appearance"
+msgstr "Restore FileWarden appearance"
+
+msgid "Restoring changes the preview first. Save to apply it to the site."
+msgstr "Restoring changes the preview first. Save to apply it to the site."
+
+msgid "The public appearance was saved for the whole site."
+msgstr "The public appearance was saved for the whole site."
+
+msgid "Appearance could not be saved. Check the color contrast, public name and logo permissions or format."
+msgstr "Appearance could not be saved. Check the color contrast, public name and logo permissions or format."
+
+msgid "Text contrast checked: at least 4.5:1."
+msgstr "Text contrast checked: at least 4.5:1."
+
+msgid "Improve text contrast or enter valid six-digit color codes before saving."
+msgstr "Improve text contrast or enter valid six-digit color codes before saving."
+
+msgid "Unsaved appearance changes"
+msgstr "Unsaved appearance changes"
+
+msgid "No appearance changes"
+msgstr "No appearance changes"
+
+msgid "Restore FileWarden colors, name and logo? Save afterwards to apply the change."
+msgstr "Restore FileWarden colors, name and logo? Save afterwards to apply the change."
+
+msgid "Choose a public PNG or JPEG logo"
+msgstr "Choose a public PNG or JPEG logo"
+
+msgid "Use this logo"
+msgstr "Use this logo"
+
+msgid "Choose a local PNG or JPEG image. The server will also verify its type and dimensions before saving."
+msgstr "Choose a local PNG or JPEG image. The server will also verify its type and dimensions before saving."
+
+msgid "Desktop preview"
+msgstr "Desktop preview"
+
+msgid "Mobile preview"
+msgstr "Mobile preview"
+
+msgid "Folder integration"
+msgstr "Folder integration"
+
+msgid "Search by filename"
+msgstr "Search by filename"
+
+msgid "Search for a document in the trash..."
+msgstr "Search for a document in the trash..."
+
+msgid "Reset filters"
+msgstr "Reset filters"
+
+msgid "%s document"
+msgid_plural "%s documents"
+msgstr[0] "%s document"
+msgstr[1] "%s documents"
+
+msgid "Automatic cleanup in %s day"
+msgid_plural "Automatic cleanup in %s days"
+msgstr[0] "Automatic cleanup in %s day"
+msgstr[1] "Automatic cleanup in %s days"
+
+msgid "Eligible for automatic cleanup; waiting for the scheduled task."
+msgstr "Eligible for automatic cleanup; waiting for the scheduled task."
+
+msgid "The trash is empty."
+msgstr "The trash is empty."
+
+msgid "This empties all trash documents you are authorized to delete, regardless of the current search or folder filter."
+msgstr "This empties all trash documents you are authorized to delete, regardless of the current search or folder filter."
+
+msgid "Documents can inherit this folder’s access rules. Creating a folder does not publish its content."
+msgstr "Documents can inherit this folder’s access rules. Creating a folder does not publish its content."
+
+msgid "Custom"
+msgstr "Custom"
+
+msgid "Simple and light"
+msgstr "Simple and light"
+
+msgid "Soft green"
+msgstr "Soft green"
+
+msgid "Your colors"
+msgstr "Your colors"
+
+msgid "Subfolders"
+msgstr "Subfolders"
+
+msgid "Authorized"
+msgstr "Authorized"
+
+msgid "Preview device"
+msgstr "Preview device"
+
+msgid "Visitor sign-in"
+msgstr "Visitor sign-in"
+
+msgid "Shared by all publications on this site."
+msgstr "Shared by all publications on this site."
+
+msgid "Sign-in button destination"
+msgstr "Sign-in button destination"
+
+msgid "WordPress sign-in — default"
+msgstr "WordPress sign-in — default"
+
+msgid "Custom sign-in page"
+msgstr "Custom sign-in page"
+
+msgid "Sign-in page URL"
+msgstr "Sign-in page URL"
+
+msgid "The custom page controls where visitors go after signing in."
+msgstr "The custom page controls where visitors go after signing in."
+
+msgid "Open page to check"
+msgstr "Open page to check"
+
+msgid "Enter a complete HTTP or HTTPS URL without credentials."
+msgstr "Enter a complete HTTP or HTTPS URL without credentials."
+
+msgid "Save sign-in settings"
+msgstr "Save sign-in settings"
+
+msgid "Sign-in settings saved for all site publications."
+msgstr "Sign-in settings saved for all site publications."
+
+msgid "Sign-in settings could not be saved. Check the URL and your permissions."
+msgstr "Sign-in settings could not be saved. Check the URL and your permissions."
+
+msgid "Color palette"
+msgstr "Color palette"
+
+msgid "Choose a preset palette or customize your colors while keeping your custom name and logo."
+msgstr "Choose a preset palette or customize your colors while keeping your custom name and logo."
+
+msgid "Shortcode"
+msgstr "Shortcode"
+
+msgid "Copy this code into the WordPress Shortcode block or the Elementor Shortcode widget."
+msgstr "Copy this code into the WordPress Shortcode block or the Elementor Shortcode widget."

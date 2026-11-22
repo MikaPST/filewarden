@@ -5,6 +5,7 @@ module.exports=async({context,base,name,fixture})=>{
  assert.equal(process.env.FILEWARDEN_TESTING,'1');
  assert.ok(['127.0.0.1','localhost','[::1]'].includes(new URL(base).hostname));
  const page=await context.newPage();page.setDefaultTimeout(15000);page.setDefaultNavigationTimeout(30000);
+ page.on('dialog',dialog=>dialog.accept());
  const errors=[];page.on('pageerror',e=>errors.push({message:e.message,stack:e.stack,url:page.url()}));
  const admin=base+'/wp-admin/admin.php?page=';
  const settings=admin+'filewarden-settings';
@@ -45,7 +46,7 @@ module.exports=async({context,base,name,fixture})=>{
    const image=el.querySelector('img').getBoundingClientRect();const brand=el.querySelector('.fw-brand').getBoundingClientRect();const title=el.querySelector('h1').getBoundingClientRect();
    return {logo:image.height,brand:brand.height,logoCenter:image.y+image.height/2,brandCenter:brand.y+brand.height/2,titleTop:title.y,brandBottom:brand.bottom};
   });
-  assert.equal(identity.logo,14);assert.ok(Math.abs(identity.logoCenter-identity.brandCenter)<2);assert.ok(identity.titleTop>identity.brandBottom);
+  assert.equal(identity.logo,56);assert.ok(Math.abs(identity.logoCenter-identity.brandCenter)<2);assert.ok(identity.titleTop>identity.brandBottom);
 
   await page.locator('[data-settings-section=storage]').click();
   const optin=page.locator('#fw-allow-all-types');
@@ -73,7 +74,8 @@ module.exports=async({context,base,name,fixture})=>{
   assert.equal(await page.evaluate(()=>Boolean(window.filewardenMedia.allowAllTypes)),true);
   await page.locator('[name=source][value=import]').check();assert.equal(await page.locator('.fw-format-notice').count(),0);
   await page.locator('[name=source][value=upload]').check();
-  await page.locator('#document-parent').selectOption(String(fixture.public_folder_id));
+  await navigate(admin+'filewarden&tab=add&folder_id='+fixture.public_folder_id);
+  assert.equal(await page.locator('form[data-filewarden-upload] input[name=folder_id]').inputValue(),String(fixture.public_folder_id));
   const suffix=crypto.randomUUID();
   await page.locator('#fw-file').setInputFiles([
    {name:'v16-'+suffix+'.html',mimeType:'text/html',buffer:Buffer.from('<html><body>Inert browser fixture</body></html>')},
@@ -98,10 +100,10 @@ module.exports=async({context,base,name,fixture})=>{
    await page.locator('[name=source][value=import]').check();
    assert.ok((await page.locator('body').getAttribute('class')).includes('admin-color-'+color));
    const picker=page.locator('#fw-media-picker');
-   assert.equal(await picker.evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(95, 194, 186)');
+   assert.equal(await picker.evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(241, 245, 249)');
    assert.equal(await picker.evaluate(el=>getComputedStyle(el).color),'rgb(28, 41, 66)');
    await navigate(settings+'#fw-settings-audit');
-   const open=page.getByRole('link',{name:'Open audit log',exact:true});assert.equal(await open.evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(95, 194, 186)');
+   const open=page.getByRole('link',{name:'Open audit log',exact:true});assert.equal(await open.evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(241, 245, 249)');
    const selected=page.locator('.fw-settings-nav [aria-selected=true]');
    await settledSelection();
    assert.equal(await selected.evaluate(el=>getComputedStyle(el).borderTopColor),'rgb(28, 41, 66)');

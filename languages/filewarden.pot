@@ -2,20 +2,21 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: FileWarden 0.1.16-dev\n"
+"Project-Id-Version: FileWarden 0.1.17-dev\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/filewarden\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-15T10:50:15+00:00\n"
+"POT-Creation-Date: 2026-11-22T07:02:02+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: filewarden\n"
 
 #. Plugin Name of the plugin
 #: filewarden.php
+#: includes/AppearanceConsole.php:22
 msgid "FileWarden"
 msgstr ""
 
@@ -30,19 +31,19 @@ msgid "MikaPST"
 msgstr ""
 
 #: includes/AccessSummary.php:22
-#: includes/AdminController.php:355
+#: includes/AdminController.php:377
 msgid "Inherit from folder"
 msgstr ""
 
 #: includes/AccessSummary.php:24
 #: includes/AccessSummary.php:103
-#: includes/AdminController.php:357
-#: includes/AdminWorkspace.php:481
+#: includes/AdminController.php:379
+#: includes/AdminWorkspace.php:608
 msgid "Public"
 msgstr ""
 
 #: includes/AccessSummary.php:26
-#: includes/AdminController.php:358
+#: includes/AdminController.php:380
 msgid "Authenticated users"
 msgstr ""
 
@@ -58,20 +59,21 @@ msgid "Selected roles:"
 msgstr ""
 
 #: includes/AccessSummary.php:80
-#: includes/AdminWorkspace.php:160
-#: includes/AdminWorkspace.php:167
+#: includes/AdminWorkspace.php:164
+#: includes/AdminWorkspace.php:179
 msgid "Not published"
 msgstr ""
 
 #: includes/AdminController.php:46
 #: includes/AdminWorkspace.php:114
-#: includes/AdminWorkspace.php:209
+#: includes/AdminWorkspace.php:242
 #: includes/Publication.php:98
 msgid "Documents"
 msgstr ""
 
 #: includes/AdminController.php:47
 #: includes/Publisher.php:23
+#: includes/Publisher.php:38
 msgid "Publication"
 msgstr ""
 
@@ -106,164 +108,174 @@ msgstr ""
 msgid "Persistent notifications waiting"
 msgstr ""
 
-#: includes/AdminController.php:102
+#: includes/AdminController.php:93
+#: includes/AdminController.php:114
+#: includes/AppearanceConsole.php:102
+msgid "Leave this form without saving your changes?"
+msgstr ""
+
+#: includes/AdminController.php:109
 msgid "Document preview"
 msgstr ""
 
-#: includes/AdminController.php:103
+#: includes/AdminController.php:110
 msgid "Close preview"
 msgstr ""
 
-#: includes/AdminController.php:115
+#: includes/AdminController.php:123
 msgid "KB"
 msgstr ""
 
-#: includes/AdminController.php:116
+#: includes/AdminController.php:124
 msgid "Invalid extension, empty file or size limit exceeded."
 msgstr ""
 
-#: includes/AdminController.php:117
+#: includes/AdminController.php:125
 msgid "Ready for server validation"
 msgstr ""
 
-#: includes/AdminController.php:118
+#: includes/AdminController.php:126
 msgid "Uploading and validating…"
 msgstr ""
 
-#: includes/AdminController.php:119
+#: includes/AdminController.php:127
 msgid "Saved and verified"
 msgstr ""
 
-#: includes/AdminController.php:120
+#: includes/AdminController.php:128
 msgid "Upload failed. Check the file, permissions and connection, then retry."
 msgstr ""
 
-#: includes/AdminController.php:121
-#: includes/AdminWorkspace.php:288
+#: includes/AdminController.php:129
+#: includes/AdminWorkspace.php:406
 #: includes/AuditConsole.php:273
 msgid "Document added"
 msgstr ""
 
-#: includes/AdminController.php:122
+#: includes/AdminController.php:130
 msgid "Document not added"
 msgstr ""
 
-#: includes/AdminController.php:129
+#: includes/AdminController.php:137
 msgid "Sending file…"
 msgstr ""
 
-#: includes/AdminController.php:130
+#: includes/AdminController.php:138
 msgid "Transfer complete. Encrypting and verifying the document in its destination folder…"
 msgstr ""
 
-#: includes/AdminController.php:131
+#: includes/AdminController.php:139
 msgid "The server did not confirm saving the file. Check the folder before retrying. HTTP status:"
 msgstr ""
 
-#: includes/AdminController.php:132
+#: includes/AdminController.php:140
 msgid "Connection interrupted. Check the folder before retrying; the server may still be processing the file."
 msgstr ""
 
-#: includes/AdminController.php:133
+#: includes/AdminController.php:141
 msgid "Choose a file from the Media Library first."
 msgstr ""
 
-#: includes/AdminController.php:169
+#: includes/AdminController.php:177
 msgid "Copy to FileWarden"
 msgstr ""
 
-#: includes/AdminController.php:334
+#: includes/AdminController.php:356
 msgid "Parent folder"
 msgstr ""
 
-#: includes/AdminController.php:334
-#: includes/AdminWorkspace.php:542
-#: includes/TrashConsole.php:72
+#: includes/AdminController.php:356
+#: includes/AdminWorkspace.php:669
+#: includes/TrashConsole.php:92
 msgid "Destination folder"
 msgstr ""
 
-#: includes/AdminController.php:359
+#: includes/AdminController.php:381
 msgid "Selected roles"
 msgstr ""
 
-#: includes/AdminController.php:361
+#: includes/AdminController.php:383
 msgid "Access policy"
 msgstr ""
 
-#: includes/AdminController.php:365
+#: includes/AdminController.php:385
+msgid "Choose an access policy"
+msgstr ""
+
+#: includes/AdminController.php:390
 msgid "Roles (only for selected-role policies)"
 msgstr ""
 
-#: includes/AdminController.php:369
+#: includes/AdminController.php:394
 msgid "The most restrictive rules apply: those of the file and its folder. A Public file stays private when its folder is restricted."
 msgstr ""
 
-#: includes/AdminController.php:371
+#: includes/AdminController.php:396
 msgid "Inherit: automatically follow the folder rules."
 msgstr ""
 
-#: includes/AdminController.php:387
+#: includes/AdminController.php:412
 #: includes/DocumentService.php:227
 msgid "No parent folder"
 msgstr ""
 
-#: includes/AdminController.php:387
-#: includes/AdminWorkspace.php:547
+#: includes/AdminController.php:412
+#: includes/AdminWorkspace.php:674
 msgid "Documents to classify — Not published"
 msgstr ""
 
-#: includes/AdminController.php:414
+#: includes/AdminController.php:440
 msgid "Choose a source"
 msgstr ""
 
-#: includes/AdminController.php:415
+#: includes/AdminController.php:441
 msgid "From my computer"
 msgstr ""
 
-#: includes/AdminController.php:417
+#: includes/AdminController.php:443
 msgid "From the Media Library"
 msgstr ""
 
-#: includes/AdminController.php:421
+#: includes/AdminController.php:447
 msgid "Accepted formats"
 msgstr ""
 
-#: includes/AdminController.php:425
+#: includes/AdminController.php:451
 msgid "ZIPs are kept without extraction; macros and active content are refused."
 msgstr ""
 
-#: includes/AdminController.php:427
+#: includes/AdminController.php:453
 msgid "Drop your documents here or select files"
 msgstr ""
 
 #. translators: %s: effective maximum file size.
-#: includes/AdminController.php:429
+#: includes/AdminController.php:455
 #, php-format
 msgid "Maximum file size: %s. Saving is confirmed only after storage and destination verification."
 msgstr ""
 
-#: includes/AdminController.php:430
+#: includes/AdminController.php:456
 msgid "File"
 msgstr ""
 
-#: includes/AdminController.php:432
+#: includes/AdminController.php:458
 msgid "Choose an existing document"
 msgstr ""
 
-#: includes/AdminController.php:433
+#: includes/AdminController.php:459
 msgid "FileWarden creates a protected copy. The original stays in WordPress Media and may remain publicly accessible."
 msgstr ""
 
-#: includes/AdminController.php:435
+#: includes/AdminController.php:461
 msgid "Choose a media file"
 msgstr ""
 
-#: includes/AdminController.php:438
+#: includes/AdminController.php:469
 msgid "Add to this folder"
 msgstr ""
 
 #: includes/AdminWorkspace.php:107
-#: includes/AdminWorkspace.php:160
+#: includes/AdminWorkspace.php:164
 #: includes/DocumentCollection.php:52
 msgid "Documents to classify"
 msgstr ""
@@ -277,15 +289,16 @@ msgid "Document library"
 msgstr ""
 
 #: includes/AdminWorkspace.php:116
-#: includes/AdminWorkspace.php:184
+#: includes/AdminWorkspace.php:209
+#: includes/AdminWorkspace.php:267
 msgid "Add documents"
 msgstr ""
 
 #: includes/AdminWorkspace.php:119
-#: includes/AdminWorkspace.php:163
-#: includes/AdminWorkspace.php:179
-#: includes/AdminWorkspace.php:193
-#: includes/AdminWorkspace.php:198
+#: includes/AdminWorkspace.php:175
+#: includes/AdminWorkspace.php:194
+#: includes/AdminWorkspace.php:219
+#: includes/AdminWorkspace.php:229
 #: includes/Publisher.php:25
 msgid "Create folder"
 msgstr ""
@@ -295,462 +308,680 @@ msgstr ""
 msgid "Trash"
 msgstr ""
 
-#: includes/AdminWorkspace.php:124
+#: includes/AdminWorkspace.php:126
 msgid "Document tasks"
 msgstr ""
 
 #. translators: %s: authorized document count in the recovery collection.
-#: includes/AdminWorkspace.php:152
+#: includes/AdminWorkspace.php:154
 #, php-format
 msgid "%s document to classify"
 msgid_plural "%s documents to classify"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/AdminWorkspace.php:153
+#: includes/AdminWorkspace.php:155
 msgid "Folders"
 msgstr ""
 
-#: includes/AdminWorkspace.php:167
+#: includes/AdminWorkspace.php:179
 msgid "Current folder"
 msgstr ""
 
-#: includes/AdminWorkspace.php:169
-#: includes/AdminWorkspace.php:375
+#: includes/AdminWorkspace.php:181
+#: includes/AdminWorkspace.php:502
 msgid "Edit access rules"
 msgstr ""
 
-#: includes/AdminWorkspace.php:172
+#: includes/AdminWorkspace.php:184
 msgid "Delete folder"
 msgstr ""
 
-#: includes/AdminWorkspace.php:177
+#: includes/AdminWorkspace.php:192
 msgid "Open a folder"
 msgstr ""
 
-#: includes/AdminWorkspace.php:177
+#: includes/AdminWorkspace.php:192
+#: includes/AdminWorkspace.php:219
 msgid "Create your first folder"
 msgstr ""
 
-#: includes/AdminWorkspace.php:177
+#: includes/AdminWorkspace.php:192
 msgid "Select a folder in the sidebar to view its documents or create a new folder."
 msgstr ""
 
-#: includes/AdminWorkspace.php:184
+#: includes/AdminWorkspace.php:203
+msgid "Add documents to classify"
+msgstr ""
+
+#: includes/AdminWorkspace.php:209
 msgid "Choose a source, then check the destination and access rules."
 msgstr ""
 
-#: includes/AdminWorkspace.php:189
+#: includes/AdminWorkspace.php:214
 msgid "Storage blocked. Check FileWarden settings before uploading."
 msgstr ""
 
-#: includes/AdminWorkspace.php:189
+#: includes/AdminWorkspace.php:214
 msgid "Storage unavailable"
 msgstr ""
 
-#: includes/AdminWorkspace.php:195
+#: includes/AdminWorkspace.php:221
 msgid "Folder name"
 msgstr ""
 
-#: includes/AdminWorkspace.php:197
-msgid "The parent folder rules will be inherited according to FileWarden permissions."
-msgstr ""
-
-#: includes/AdminWorkspace.php:205
-msgid "Development version. Validate deployment security before sharing confidential documents."
-msgstr ""
-
-#: includes/AdminWorkspace.php:210
-msgid "This folder or action is unavailable. Return to Documents and check your permissions."
-msgstr ""
-
-#: includes/AdminWorkspace.php:222
-msgid "FileWarden table metadata is unavailable. Review Storage and security. No folder was deleted."
-msgstr ""
-
-#: includes/AdminWorkspace.php:223
-msgid "A FileWarden database table is missing. Review Storage and security. No folder was deleted."
-msgstr ""
-
-#: includes/AdminWorkspace.php:224
-msgid "Database repair is pending. FileWarden writes remain paused. Review Storage and security to resume verification."
-msgstr ""
-
 #: includes/AdminWorkspace.php:225
-msgid "File refused: unsafe content or archive limits exceeded. Scripts, macros, encrypted and nested archives are not accepted."
-msgstr ""
-
-#: includes/AdminWorkspace.php:226
-msgid "Secure file inspection is unavailable. Ask your host to check PHP ZIP, XML support and the private temporary directory."
-msgstr ""
-
-#: includes/AdminWorkspace.php:227
-msgid "Remove the subfolders first. The folder and its documents were preserved."
+msgid "Location: library root"
 msgstr ""
 
 #: includes/AdminWorkspace.php:228
-msgid "Folder deletion requires transactional database tables (InnoDB). Ask your host to check the three FileWarden tables. No folder was deleted."
+msgid "The parent folder rules will be inherited according to FileWarden permissions."
 msgstr ""
 
-#: includes/AdminWorkspace.php:229
-msgid "Folder recovery could not be completed. The transaction was rolled back; check the database and retry."
-msgstr ""
-
-#: includes/AdminWorkspace.php:230
-#: includes/AdminWorkspace.php:252
-msgid "Access rules saved. The most restrictive rules apply immediately."
-msgstr ""
-
-#: includes/AdminWorkspace.php:231
-#: includes/AdminWorkspace.php:249
-#: includes/AdminWorkspace.php:275
-msgid "Operation completed."
-msgstr ""
-
-#: includes/AdminWorkspace.php:232
-msgid "A file with this name exists. Rename it or cancel. Versions arrive in a later milestone."
-msgstr ""
-
-#: includes/AdminWorkspace.php:233
-msgid "Operation refused or unavailable. Check permissions, inputs and storage configuration."
-msgstr ""
-
-#: includes/AdminWorkspace.php:234
-msgid "The file could not be written or read back from protected storage. No document was added."
-msgstr ""
-
-#: includes/AdminWorkspace.php:235
-msgid "FileWarden could not confirm that the document was recorded in the selected folder. Check the list before retrying."
-msgstr ""
-
-#: includes/AdminWorkspace.php:236
-msgid "The file was saved, but the audit entry could not be confirmed. Check the folder before retrying."
-msgstr ""
-
-#: includes/AdminWorkspace.php:237
-msgid "Another operation is using this folder. Try again in a moment."
+#: includes/AdminWorkspace.php:228
+msgid "Documents can inherit this folder’s access rules. Creating a folder does not publish its content."
 msgstr ""
 
 #: includes/AdminWorkspace.php:238
-msgid "You do not have permission to perform this operation."
-msgstr ""
-
-#: includes/AdminWorkspace.php:239
-msgid "The file is empty or exceeds the allowed upload size. Check FileWarden settings and your PHP upload limit."
-msgstr ""
-
-#: includes/AdminWorkspace.php:240
-msgid "Choose a valid PDF, JPEG, PNG, TXT, CSV, ZIP or supported macro-free Office document."
-msgstr ""
-
-#: includes/AdminWorkspace.php:241
-msgid "No complete upload was received. Select the file again and check the server upload limit."
-msgstr ""
-
-#: includes/AdminWorkspace.php:242
-msgid "Choose a local Media Library file that you are allowed to edit."
+msgid "Development version. Validate deployment security before sharing confidential documents."
 msgstr ""
 
 #: includes/AdminWorkspace.php:243
+msgid "This folder or action is unavailable. Return to Documents and check your permissions."
+msgstr ""
+
+#: includes/AdminWorkspace.php:250
+msgid "Search documents"
+msgstr ""
+
+#: includes/AdminWorkspace.php:250
+#: includes/Publication.php:135
+msgid "Search this folder"
+msgstr ""
+
+#: includes/AdminWorkspace.php:250
+#: includes/Publication.php:135
+#: includes/TrashConsole.php:30
+msgid "Search"
+msgstr ""
+
+#: includes/AdminWorkspace.php:277
+msgid "Create subfolder"
+msgstr ""
+
+#: includes/AdminWorkspace.php:291
+#: includes/AdminWorkspace.php:635
+#: includes/SettingsConsole.php:255
+msgid "Cancel"
+msgstr ""
+
+#: includes/AdminWorkspace.php:312
+msgid "Folder path"
+msgstr ""
+
+#: includes/AdminWorkspace.php:340
+msgid "FileWarden table metadata is unavailable. Review Storage and security. No folder was deleted."
+msgstr ""
+
+#: includes/AdminWorkspace.php:341
+msgid "A FileWarden database table is missing. Review Storage and security. No folder was deleted."
+msgstr ""
+
+#: includes/AdminWorkspace.php:342
+msgid "Database repair is pending. FileWarden writes remain paused. Review Storage and security to resume verification."
+msgstr ""
+
+#: includes/AdminWorkspace.php:343
+msgid "File refused: unsafe content or archive limits exceeded. Scripts, macros, encrypted and nested archives are not accepted."
+msgstr ""
+
+#: includes/AdminWorkspace.php:344
+msgid "Secure file inspection is unavailable. Ask your host to check PHP ZIP, XML support and the private temporary directory."
+msgstr ""
+
+#: includes/AdminWorkspace.php:345
+msgid "Remove the subfolders first. The folder and its documents were preserved."
+msgstr ""
+
+#: includes/AdminWorkspace.php:346
+msgid "Folder deletion requires transactional database tables (InnoDB). Ask your host to check the three FileWarden tables. No folder was deleted."
+msgstr ""
+
+#: includes/AdminWorkspace.php:347
+msgid "Folder recovery could not be completed. The transaction was rolled back; check the database and retry."
+msgstr ""
+
+#: includes/AdminWorkspace.php:348
+#: includes/AdminWorkspace.php:370
+msgid "Access rules saved. The most restrictive rules apply immediately."
+msgstr ""
+
+#: includes/AdminWorkspace.php:349
+#: includes/AdminWorkspace.php:367
+#: includes/AdminWorkspace.php:393
+msgid "Operation completed."
+msgstr ""
+
+#: includes/AdminWorkspace.php:350
+msgid "A file with this name exists. Rename it or cancel. Versions arrive in a later milestone."
+msgstr ""
+
+#: includes/AdminWorkspace.php:351
+msgid "Operation refused or unavailable. Check permissions, inputs and storage configuration."
+msgstr ""
+
+#: includes/AdminWorkspace.php:352
+msgid "The file could not be written or read back from protected storage. No document was added."
+msgstr ""
+
+#: includes/AdminWorkspace.php:353
+msgid "FileWarden could not confirm that the document was recorded in the selected folder. Check the list before retrying."
+msgstr ""
+
+#: includes/AdminWorkspace.php:354
+msgid "The file was saved, but the audit entry could not be confirmed. Check the folder before retrying."
+msgstr ""
+
+#: includes/AdminWorkspace.php:355
+msgid "Another operation is using this folder. Try again in a moment."
+msgstr ""
+
+#: includes/AdminWorkspace.php:356
+msgid "You do not have permission to perform this operation."
+msgstr ""
+
+#: includes/AdminWorkspace.php:357
+msgid "The file is empty or exceeds the allowed upload size. Check FileWarden settings and your PHP upload limit."
+msgstr ""
+
+#: includes/AdminWorkspace.php:358
+msgid "Choose a valid PDF, JPEG, PNG, TXT, CSV, ZIP or supported macro-free Office document."
+msgstr ""
+
+#: includes/AdminWorkspace.php:359
+msgid "No complete upload was received. Select the file again and check the server upload limit."
+msgstr ""
+
+#: includes/AdminWorkspace.php:360
+msgid "Choose a local Media Library file that you are allowed to edit."
+msgstr ""
+
+#: includes/AdminWorkspace.php:361
 msgid "Check the folder, access policy and form fields."
 msgstr ""
 
-#: includes/AdminWorkspace.php:249
+#: includes/AdminWorkspace.php:367
 msgid "Operation refused. Check your permissions, the destination, filename and storage settings."
 msgstr ""
 
-#: includes/AdminWorkspace.php:254
+#: includes/AdminWorkspace.php:372
 msgid "A file with this name already exists. Choose another name or destination."
 msgstr ""
 
-#: includes/AdminWorkspace.php:256
+#: includes/AdminWorkspace.php:374
 msgid "The source or destination rules changed. Review the destination again before confirming."
 msgstr ""
 
-#: includes/AdminWorkspace.php:258
+#: includes/AdminWorkspace.php:376
 #: includes/Notice.php:31
 msgid "Operation unavailable"
 msgstr ""
 
-#: includes/AdminWorkspace.php:261
+#: includes/AdminWorkspace.php:379
 msgid "The folder was deleted. Its documents remain in Documents to classify with their existing access restrictions."
 msgstr ""
 
-#: includes/AdminWorkspace.php:263
+#: includes/AdminWorkspace.php:381
 msgid "Folder not deleted"
 msgstr ""
 
 #. translators: 1: document name, 2: destination path.
-#: includes/AdminWorkspace.php:272
+#: includes/AdminWorkspace.php:390
 #, php-format
 msgid "File %1$s saved and verified in %2$s."
 msgstr ""
 
-#: includes/AdminWorkspace.php:287
+#: includes/AdminWorkspace.php:405
 #: includes/AuditConsole.php:286
 msgid "Folder created"
 msgstr ""
 
-#: includes/AdminWorkspace.php:289
+#: includes/AdminWorkspace.php:407
 msgid "Access rules saved"
 msgstr ""
 
-#: includes/AdminWorkspace.php:290
+#: includes/AdminWorkspace.php:408
 #: includes/AuditConsole.php:277
 msgid "Document moved"
 msgstr ""
 
-#: includes/AdminWorkspace.php:291
+#: includes/AdminWorkspace.php:409
 #: includes/AuditConsole.php:279
 msgid "Document copied"
 msgstr ""
 
-#: includes/AdminWorkspace.php:292
+#: includes/AdminWorkspace.php:410
 #: includes/AuditConsole.php:281
 msgid "Document moved to trash"
 msgstr ""
 
-#: includes/AdminWorkspace.php:293
+#: includes/AdminWorkspace.php:411
 #: includes/AuditConsole.php:283
 msgid "Document restored"
 msgstr ""
 
-#: includes/AdminWorkspace.php:294
+#: includes/AdminWorkspace.php:412
 msgid "Folder deleted"
 msgstr ""
 
-#: includes/AdminWorkspace.php:295
+#: includes/AdminWorkspace.php:413
 msgid "Trash deletion completed"
 msgstr ""
 
-#: includes/AdminWorkspace.php:296
+#: includes/AdminWorkspace.php:414
 #: includes/Notice.php:28
 msgid "Operation completed"
 msgstr ""
 
 #. translators: %s: authorized folder name.
-#: includes/AdminWorkspace.php:319
+#: includes/AdminWorkspace.php:437
 #, php-format
 msgid "Toggle subfolders: %s"
 msgstr ""
 
 #. translators: %d: trash retention days.
-#: includes/AdminWorkspace.php:340
+#: includes/AdminWorkspace.php:466
 #, php-format
 msgid "Trash for this folder. Restore files before %d days; expired files are permanently removed by scheduled cleanup."
 msgstr ""
 
-#: includes/AdminWorkspace.php:343
-#: includes/TrashConsole.php:27
-msgid "Search documents"
-msgstr ""
-
-#: includes/AdminWorkspace.php:343
-#: includes/Publication.php:121
-msgid "Search this folder"
-msgstr ""
-
-#: includes/AdminWorkspace.php:343
-#: includes/Publication.php:121
-msgid "Search"
-msgstr ""
-
-#: includes/AdminWorkspace.php:345
+#: includes/AdminWorkspace.php:470
 #: includes/AuditConsole.php:77
-#: includes/TrashConsole.php:30
+#: includes/TrashConsole.php:45
 msgid "Document"
 msgstr ""
 
-#: includes/AdminWorkspace.php:345
+#: includes/AdminWorkspace.php:470
 msgid "Size"
 msgstr ""
 
-#: includes/AdminWorkspace.php:345
+#: includes/AdminWorkspace.php:470
 msgid "File rule"
 msgstr ""
 
-#: includes/AdminWorkspace.php:345
-#: includes/AdminWorkspace.php:467
+#: includes/AdminWorkspace.php:470
+#: includes/AdminWorkspace.php:594
 msgid "Effective access"
 msgstr ""
 
-#: includes/AdminWorkspace.php:345
-#: includes/TrashConsole.php:30
+#: includes/AdminWorkspace.php:470
+#: includes/TrashConsole.php:45
 msgid "Actions"
 msgstr ""
 
-#: includes/AdminWorkspace.php:356
-msgid "Recovered file: restrictions from its former folder remain in force after reclassification."
-msgstr ""
-
-#: includes/AdminWorkspace.php:366
-#: includes/AdminWorkspace.php:467
+#: includes/AdminWorkspace.php:489
+#: includes/AdminWorkspace.php:594
 msgid "Unavailable in trash"
 msgstr ""
 
-#: includes/AdminWorkspace.php:368
+#: includes/AdminWorkspace.php:491
+msgid "Previous access rules retained"
+msgstr ""
+
+#: includes/AdminWorkspace.php:491
+msgid "This file keeps the access rules of its previous location, even after reclassification."
+msgstr ""
+
+#: includes/AdminWorkspace.php:495
 msgid "Not public: restricted by its folder."
 msgstr ""
 
-#: includes/AdminWorkspace.php:372
-#: includes/Publication.php:136
-#: includes/Publisher.php:60
+#: includes/AdminWorkspace.php:499
+#: includes/Publication.php:150
+#: includes/Publisher.php:75
 msgid "Preview"
 msgstr ""
 
-#: includes/AdminWorkspace.php:372
-#: includes/Publication.php:136
-#: includes/Viewer.php:32
+#: includes/AdminWorkspace.php:499
+#: includes/Publication.php:150
+#: includes/Viewer.php:34
 msgid "Download"
 msgstr ""
 
-#: includes/AdminWorkspace.php:374
-#: includes/AdminWorkspace.php:502
-#: includes/TrashConsole.php:35
-#: includes/TrashConsole.php:79
+#: includes/AdminWorkspace.php:501
+#: includes/AdminWorkspace.php:629
+#: includes/TrashConsole.php:55
+#: includes/TrashConsole.php:99
 msgid "Restore"
 msgstr ""
 
-#: includes/AdminWorkspace.php:376
+#: includes/AdminWorkspace.php:503
 msgid "Move"
 msgstr ""
 
-#: includes/AdminWorkspace.php:377
-#: includes/Publisher.php:60
+#: includes/AdminWorkspace.php:504
+#: includes/Publisher.php:104
 msgid "Copy"
 msgstr ""
 
-#: includes/AdminWorkspace.php:378
-#: includes/AdminWorkspace.php:502
+#: includes/AdminWorkspace.php:505
+#: includes/AdminWorkspace.php:629
 msgid "Move to trash"
 msgstr ""
 
-#: includes/AdminWorkspace.php:380
+#: includes/AdminWorkspace.php:507
 msgid "More actions"
 msgstr ""
 
-#: includes/AdminWorkspace.php:397
-#: includes/TrashConsole.php:53
+#: includes/AdminWorkspace.php:524
+#: includes/TrashConsole.php:73
 msgid "No documents match this view."
 msgstr ""
 
-#: includes/AdminWorkspace.php:401
-#: includes/Publication.php:145
+#: includes/AdminWorkspace.php:528
+#: includes/Publication.php:159
 msgid "Previous"
 msgstr ""
 
-#: includes/AdminWorkspace.php:402
-#: includes/Publication.php:148
+#: includes/AdminWorkspace.php:529
+#: includes/Publication.php:162
 msgid "Next"
 msgstr ""
 
-#: includes/AdminWorkspace.php:415
+#: includes/AdminWorkspace.php:542
 msgid "A file can restrict access, never broaden the access allowed by its folder. Global-read administrators remain an explicit exception."
 msgstr ""
 
-#: includes/AdminWorkspace.php:425
+#: includes/AdminWorkspace.php:552
 msgid "Publish this folder"
 msgstr ""
 
-#: includes/AdminWorkspace.php:454
+#: includes/AdminWorkspace.php:581
 msgid "Document action"
 msgstr ""
 
-#: includes/AdminWorkspace.php:454
+#: includes/AdminWorkspace.php:581
 msgid "Close panel"
 msgstr ""
 
-#: includes/AdminWorkspace.php:470
+#: includes/AdminWorkspace.php:597
 msgid "Remove subfolders first. No files have been changed."
 msgstr ""
 
-#: includes/AdminWorkspace.php:473
+#: includes/AdminWorkspace.php:600
 msgid "Delete this folder? Its files will be recovered in Documents to classify, unpublished and without automatic deletion. Existing file restrictions will be retained."
 msgstr ""
 
-#: includes/AdminWorkspace.php:474
+#: includes/AdminWorkspace.php:601
 msgid "Confirm folder deletion"
 msgstr ""
 
-#: includes/AdminWorkspace.php:482
+#: includes/AdminWorkspace.php:609
 msgid "Folder restrictions:"
 msgstr ""
 
-#: includes/AdminWorkspace.php:490
+#: includes/AdminWorkspace.php:617
 msgid "Changing this folder immediately changes access to its documents. File-specific restrictions are preserved."
 msgstr ""
 
-#: includes/AdminWorkspace.php:492
+#: includes/AdminWorkspace.php:619
 msgid "This folder cannot be made public while an ancestor is restricted. All ancestor restrictions remain in force."
 msgstr ""
 
-#: includes/AdminWorkspace.php:492
+#: includes/AdminWorkspace.php:619
 msgid "This file cannot be made public here. Its folder is restricted. Selecting Public does not remove the folder restrictions: unauthorized visitors will still not see or download this file."
 msgstr ""
 
-#: includes/AdminWorkspace.php:493
+#: includes/AdminWorkspace.php:620
 msgid "Save access rules"
 msgstr ""
 
-#: includes/AdminWorkspace.php:501
+#: includes/AdminWorkspace.php:628
 msgid "Restore this file in its original folder with its existing rules."
 msgstr ""
 
-#: includes/AdminWorkspace.php:501
+#: includes/AdminWorkspace.php:628
 msgid "The file will disappear from listings and its preview/download links will stop working. You can restore it from Trash before retention expires."
 msgstr ""
 
-#: includes/AdminWorkspace.php:506
+#: includes/AdminWorkspace.php:633
 msgid "This action is unavailable. Check permissions and select an available document or destination."
 msgstr ""
 
-#: includes/AdminWorkspace.php:508
-#: includes/SettingsConsole.php:255
-msgid "Cancel"
-msgstr ""
-
-#: includes/AdminWorkspace.php:552
+#: includes/AdminWorkspace.php:679
 msgid "No other destination folder is available. Create a folder or check your permissions."
 msgstr ""
 
-#: includes/AdminWorkspace.php:554
+#: includes/AdminWorkspace.php:681
 msgid "Review destination"
 msgstr ""
 
-#: includes/AdminWorkspace.php:556
+#: includes/AdminWorkspace.php:683
 msgid "Classify later"
 msgstr ""
 
-#: includes/AdminWorkspace.php:564
+#: includes/AdminWorkspace.php:691
 msgid "Remove this document from publication?"
 msgstr ""
 
-#: includes/AdminWorkspace.php:564
+#: includes/AdminWorkspace.php:691
 msgid "The document will no longer be accessible from FileWarden publications. It will remain available in Documents to classify for authorized users."
 msgstr ""
 
-#: includes/AdminWorkspace.php:566
+#: includes/AdminWorkspace.php:693
 msgid "Access at destination"
 msgstr ""
 
-#: includes/AdminWorkspace.php:566
+#: includes/AdminWorkspace.php:693
 msgid "The file rule is preserved; inherited rules change with the destination. Moving or copying into a public folder can broaden access. Check this result before confirming."
 msgstr ""
 
-#: includes/AdminWorkspace.php:576
+#: includes/AdminWorkspace.php:703
 msgid "Filename"
 msgstr ""
 
-#: includes/AdminWorkspace.php:577
+#: includes/AdminWorkspace.php:704
 msgid "Confirm classification"
 msgstr ""
 
-#: includes/AdminWorkspace.php:577
+#: includes/AdminWorkspace.php:704
 msgid "Confirm move"
 msgstr ""
 
-#: includes/AdminWorkspace.php:577
+#: includes/AdminWorkspace.php:704
 msgid "Confirm copy"
+msgstr ""
+
+#: includes/AppearanceConsole.php:18
+#: includes/Publisher.php:41
+msgid "Public appearance"
+msgstr ""
+
+#: includes/AppearanceConsole.php:18
+msgid "One appearance for all FileWarden publications on this site. Changes apply only after saving."
+msgstr ""
+
+#: includes/AppearanceConsole.php:20
+msgid "Color palette"
+msgstr ""
+
+#: includes/AppearanceConsole.php:23
+msgid "Neutral"
+msgstr ""
+
+#: includes/AppearanceConsole.php:24
+msgid "Nature"
+msgstr ""
+
+#: includes/AppearanceConsole.php:25
+msgid "Custom"
+msgstr ""
+
+#: includes/AppearanceConsole.php:30
+msgid "Default"
+msgstr ""
+
+#: includes/AppearanceConsole.php:31
+msgid "Simple and light"
+msgstr ""
+
+#: includes/AppearanceConsole.php:32
+msgid "Soft green"
+msgstr ""
+
+#: includes/AppearanceConsole.php:33
+msgid "Your colors"
+msgstr ""
+
+#: includes/AppearanceConsole.php:39
+msgid "Choose a preset palette or customize your colors while keeping your custom name and logo."
+msgstr ""
+
+#: includes/AppearanceConsole.php:39
+msgid "Interface colors"
+msgstr ""
+
+#: includes/AppearanceConsole.php:41
+msgid "Interface background"
+msgstr ""
+
+#: includes/AppearanceConsole.php:42
+msgid "Cards and fields"
+msgstr ""
+
+#: includes/AppearanceConsole.php:43
+msgid "Main text"
+msgstr ""
+
+#: includes/AppearanceConsole.php:44
+msgid "Button background"
+msgstr ""
+
+#: includes/AppearanceConsole.php:45
+msgid "Button text"
+msgstr ""
+
+#: includes/AppearanceConsole.php:46
+msgid "Links and action icons"
+msgstr ""
+
+#: includes/AppearanceConsole.php:47
+msgid "Button hover"
+msgstr ""
+
+#: includes/AppearanceConsole.php:48
+msgid "Secondary text"
+msgstr ""
+
+#: includes/AppearanceConsole.php:49
+msgid "Borders"
+msgstr ""
+
+#: includes/AppearanceConsole.php:50
+msgid "Decorative accent"
+msgstr ""
+
+#: includes/AppearanceConsole.php:54
+msgid "Additional colors"
+msgstr ""
+
+#: includes/AppearanceConsole.php:58
+msgid "Public name and logo"
+msgstr ""
+
+#: includes/AppearanceConsole.php:58
+msgid "Name displayed to visitors"
+msgstr ""
+
+#: includes/AppearanceConsole.php:64
+msgid "Selected public logo"
+msgstr ""
+
+#: includes/AppearanceConsole.php:64
+#: includes/AppearanceConsole.php:106
+msgid "Official FileWarden logo"
+msgstr ""
+
+#: includes/AppearanceConsole.php:66
+msgid "Import a logo"
+msgstr ""
+
+#: includes/AppearanceConsole.php:68
+msgid "FileWarden logo"
+msgstr ""
+
+#: includes/AppearanceConsole.php:68
+msgid "Public PNG or JPEG image, up to 2 MB and 6000 pixels per side. File-type restrictions for logos always apply."
+msgstr ""
+
+#: includes/AppearanceConsole.php:71
+msgid "Show the logo"
+msgstr ""
+
+#: includes/AppearanceConsole.php:72
+msgid "Show the name"
+msgstr ""
+
+#: includes/AppearanceConsole.php:76
+msgid "Save appearance"
+msgstr ""
+
+#: includes/AppearanceConsole.php:76
+msgid "Restore FileWarden appearance"
+msgstr ""
+
+#: includes/AppearanceConsole.php:76
+msgid "Restoring changes the preview first. Save to apply it to the site."
+msgstr ""
+
+#: includes/AppearanceConsole.php:81
+msgid "The public appearance was saved for the whole site."
+msgstr ""
+
+#: includes/AppearanceConsole.php:81
+msgid "Appearance could not be saved. Check the color contrast, public name and logo permissions or format."
+msgstr ""
+
+#: includes/AppearanceConsole.php:97
+msgid "Text contrast checked: at least 4.5:1."
+msgstr ""
+
+#: includes/AppearanceConsole.php:98
+msgid "Improve text contrast or enter valid six-digit color codes before saving."
+msgstr ""
+
+#: includes/AppearanceConsole.php:99
+msgid "Unsaved appearance changes"
+msgstr ""
+
+#: includes/AppearanceConsole.php:100
+msgid "No appearance changes"
+msgstr ""
+
+#: includes/AppearanceConsole.php:101
+msgid "Restore FileWarden colors, name and logo? Save afterwards to apply the change."
+msgstr ""
+
+#: includes/AppearanceConsole.php:103
+msgid "Choose a public PNG or JPEG logo"
+msgstr ""
+
+#: includes/AppearanceConsole.php:104
+msgid "Use this logo"
+msgstr ""
+
+#: includes/AppearanceConsole.php:105
+msgid "Choose a local PNG or JPEG image. The server will also verify its type and dimensions before saving."
+msgstr ""
+
+#: includes/AppearanceConsole.php:107
+#: includes/Publisher.php:78
+msgid "Desktop preview"
+msgstr ""
+
+#: includes/AppearanceConsole.php:108
+#: includes/Publisher.php:79
+msgid "Mobile preview"
 msgstr ""
 
 #: includes/AuditAppearance.php:26
@@ -888,7 +1119,6 @@ msgid "Until"
 msgstr ""
 
 #: includes/AuditConsole.php:109
-#: includes/TrashConsole.php:30
 msgid "Apply filters"
 msgstr ""
 
@@ -993,7 +1223,7 @@ msgid "Folder permissions changed"
 msgstr ""
 
 #: includes/AuditConsole.php:272
-#: includes/Publisher.php:60
+#: includes/Publisher.php:75
 msgid "Access denied"
 msgstr ""
 
@@ -1113,53 +1343,57 @@ msgstr ""
 msgid "Documents at the root"
 msgstr ""
 
-#: includes/Publication.php:114
+#: includes/Publication.php:116
 msgid "Folder navigation"
 msgstr ""
 
-#: includes/Publication.php:121
+#: includes/Publication.php:129
+msgid "Subfolders"
+msgstr ""
+
+#: includes/Publication.php:135
 msgid "Search documents…"
 msgstr ""
 
-#: includes/Publication.php:123
-#: includes/Publisher.php:44
+#: includes/Publication.php:137
+#: includes/Publisher.php:53
 msgid "Detailed list"
 msgstr ""
 
-#: includes/Publication.php:124
-#: includes/Publisher.php:45
+#: includes/Publication.php:138
+#: includes/Publisher.php:54
 msgid "Grid"
 msgstr ""
 
-#: includes/Publication.php:139
+#: includes/Publication.php:153
 msgid "No documents are visible in this folder."
 msgstr ""
 
-#: includes/Publication.php:201
+#: includes/Publication.php:216
 msgid "Temporarily unavailable"
 msgstr ""
 
-#: includes/Publication.php:201
+#: includes/Publication.php:216
 msgid "Access not authorized"
 msgstr ""
 
-#: includes/Publication.php:201
+#: includes/Publication.php:216
 msgid "A reserved space"
 msgstr ""
 
-#: includes/Publication.php:202
+#: includes/Publication.php:217
 msgid "Please try again later."
 msgstr ""
 
-#: includes/Publication.php:202
+#: includes/Publication.php:217
 msgid "Your account cannot access this space, or it is no longer available."
 msgstr ""
 
-#: includes/Publication.php:202
+#: includes/Publication.php:217
 msgid "Sign in to view the documents you are allowed to access."
 msgstr ""
 
-#: includes/Publication.php:206
+#: includes/Publication.php:223
 msgid "Sign in"
 msgstr ""
 
@@ -1167,72 +1401,133 @@ msgstr ""
 msgid "Create a folder before publishing documents."
 msgstr ""
 
-#: includes/Publisher.php:36
+#: includes/Publisher.php:40
+#: includes/Publisher.php:45
+msgid "Folder integration"
+msgstr ""
+
+#: includes/Publisher.php:45
 msgid "Folder to publish"
 msgstr ""
 
-#: includes/Publisher.php:42
+#: includes/Publisher.php:51
 msgid "Display"
 msgstr ""
 
-#: includes/Publisher.php:52
+#: includes/Publisher.php:61
 msgid "Unavailable space design"
 msgstr ""
 
-#: includes/Publisher.php:54
+#: includes/Publisher.php:63
 msgid "Compact"
 msgstr ""
 
-#: includes/Publisher.php:55
+#: includes/Publisher.php:64
 msgid "Centered card"
 msgstr ""
 
-#: includes/Publisher.php:56
+#: includes/Publisher.php:65
 msgid "Editorial banner"
 msgstr ""
 
-#: includes/Publisher.php:60
+#: includes/Publisher.php:69
 msgid "Update preview"
 msgstr ""
 
-#: includes/Publisher.php:60
-msgid "Copy into the Elementor Shortcode widget"
-msgstr ""
-
-#: includes/Publisher.php:60
-msgid "Shortcode copied."
-msgstr ""
-
-#: includes/Publisher.php:60
-msgid "Copy failed. Select the shortcode and copy it manually."
-msgstr ""
-
-#: includes/Publisher.php:60
+#: includes/Publisher.php:75
 msgid "Preview state"
 msgstr ""
 
-#: includes/Publisher.php:60
-msgid "Authorized display"
+#: includes/Publisher.php:75
+msgid "Authorized"
 msgstr ""
 
-#: includes/Publisher.php:60
+#: includes/Publisher.php:76
+msgid "Preview device"
+msgstr ""
+
+#: includes/Publisher.php:83
 msgid "Preview anonymous unavailable state"
 msgstr ""
 
-#: includes/Publisher.php:60
+#: includes/Publisher.php:83
 msgid "The live preview uses your account permissions. Visitors may see fewer documents."
 msgstr ""
 
-#: includes/Publisher.php:60
+#: includes/Publisher.php:83
 msgid "Loading preview…"
 msgstr ""
 
-#: includes/Publisher.php:60
+#: includes/Publisher.php:83
 msgid "Preview updated."
 msgstr ""
 
-#: includes/Publisher.php:60
+#: includes/Publisher.php:83
 msgid "Preview unavailable. Change a setting to retry."
+msgstr ""
+
+#: includes/Publisher.php:104
+msgid "Shortcode"
+msgstr ""
+
+#: includes/Publisher.php:104
+msgid "Copy this code into the WordPress Shortcode block or the Elementor Shortcode widget."
+msgstr ""
+
+#: includes/Publisher.php:104
+msgid "Shortcode copied."
+msgstr ""
+
+#: includes/Publisher.php:104
+msgid "Copy failed. Select the shortcode and copy it manually."
+msgstr ""
+
+#: includes/Publisher.php:114
+msgid "Visitor sign-in"
+msgstr ""
+
+#: includes/Publisher.php:114
+msgid "Shared by all publications on this site."
+msgstr ""
+
+#: includes/Publisher.php:116
+msgid "Sign-in button destination"
+msgstr ""
+
+#: includes/Publisher.php:118
+msgid "WordPress sign-in — default"
+msgstr ""
+
+#: includes/Publisher.php:119
+msgid "Custom sign-in page"
+msgstr ""
+
+#: includes/Publisher.php:123
+msgid "Sign-in page URL"
+msgstr ""
+
+#: includes/Publisher.php:123
+msgid "The custom page controls where visitors go after signing in."
+msgstr ""
+
+#: includes/Publisher.php:123
+msgid "Open page to check"
+msgstr ""
+
+#: includes/Publisher.php:123
+msgid "Enter a complete HTTP or HTTPS URL without credentials."
+msgstr ""
+
+#: includes/Publisher.php:123
+msgid "Save sign-in settings"
+msgstr ""
+
+#: includes/Publisher.php:128
+msgid "Sign-in settings saved for all site publications."
+msgstr ""
+
+#: includes/Publisher.php:128
+msgid "Sign-in settings could not be saved. Check the URL and your permissions."
 msgstr ""
 
 #: includes/RestController.php:144
@@ -1597,95 +1892,136 @@ msgid "All deleted documents you are allowed to manage. Automatic retention stil
 msgstr ""
 
 #: includes/TrashConsole.php:27
+msgid "Search by filename"
+msgstr ""
+
+#: includes/TrashConsole.php:27
+msgid "Search for a document in the trash..."
+msgstr ""
+
+#: includes/TrashConsole.php:27
 msgid "All folders"
 msgstr ""
 
-#: includes/TrashConsole.php:30
+#: includes/TrashConsole.php:40
+msgid "Reset filters"
+msgstr ""
+
+#. translators: %s: authorized matching document count.
+#: includes/TrashConsole.php:44
+#, php-format
+msgid "%s document"
+msgid_plural "%s documents"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/TrashConsole.php:45
 msgid "Original location"
 msgstr ""
 
-#: includes/TrashConsole.php:30
+#: includes/TrashConsole.php:45
 msgid "Deleted on"
 msgstr ""
 
-#: includes/TrashConsole.php:33
+#. translators: %s: days until eligibility for automatic trash cleanup.
+#: includes/TrashConsole.php:52
+#, php-format
+msgid "Automatic cleanup in %s day"
+msgid_plural "Automatic cleanup in %s days"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: days until eligibility for automatic trash cleanup.
+#: includes/TrashConsole.php:52
+msgid "Eligible for automatic cleanup; waiting for the scheduled task."
+msgstr ""
+
+#: includes/TrashConsole.php:53
 msgid "Unknown original location"
 msgstr ""
 
-#: includes/TrashConsole.php:36
+#: includes/TrashConsole.php:56
 msgid "Delete permanently"
 msgstr ""
 
-#: includes/TrashConsole.php:63
+#: includes/TrashConsole.php:73
+msgid "The trash is empty."
+msgstr ""
+
+#: includes/TrashConsole.php:83
 msgid "Empty trash"
 msgstr ""
 
-#: includes/TrashConsole.php:72
+#: includes/TrashConsole.php:92
 msgid "The original folder is unavailable. Choose an authorized destination before restoring."
 msgstr ""
 
-#: includes/TrashConsole.php:72
+#: includes/TrashConsole.php:92
 msgid "Select a destination"
 msgstr ""
 
-#: includes/TrashConsole.php:83
+#: includes/TrashConsole.php:103
 msgid "Permanently delete these documents?"
 msgstr ""
 
-#: includes/TrashConsole.php:83
+#: includes/TrashConsole.php:103
 msgid "documents selected. This action cannot be undone."
 msgstr ""
 
-#: includes/TrashConsole.php:91
+#: includes/TrashConsole.php:105
+msgid "This empties all trash documents you are authorized to delete, regardless of the current search or folder filter."
+msgstr ""
+
+#: includes/TrashConsole.php:114
 msgid "I understand these documents cannot be restored."
 msgstr ""
 
-#: includes/TrashConsole.php:91
+#: includes/TrashConsole.php:114
 msgid "Confirm permanent deletion"
 msgstr ""
 
-#: includes/Viewer.php:31
+#: includes/Viewer.php:32
 msgid "Preview unavailable, access expired or document protected by a password. You can try downloading the document."
 msgstr ""
 
-#: includes/Viewer.php:31
-#: includes/Viewer.php:35
+#: includes/Viewer.php:32
+#: includes/Viewer.php:37
 msgid "Loading document…"
 msgstr ""
 
-#: includes/Viewer.php:31
-#: includes/Viewer.php:33
+#: includes/Viewer.php:32
+#: includes/Viewer.php:35
 msgid "Page"
 msgstr ""
 
-#: includes/Viewer.php:32
+#: includes/Viewer.php:34
 msgid "Document actions"
 msgstr ""
 
-#: includes/Viewer.php:32
+#: includes/Viewer.php:34
 msgid "Open in new tab"
 msgstr ""
 
-#: includes/Viewer.php:33
+#: includes/Viewer.php:35
 msgid "Viewer controls"
 msgstr ""
 
-#: includes/Viewer.php:33
+#: includes/Viewer.php:35
 msgid "Previous page"
 msgstr ""
 
-#: includes/Viewer.php:33
+#: includes/Viewer.php:35
 msgid "Next page"
 msgstr ""
 
-#: includes/Viewer.php:33
+#: includes/Viewer.php:35
 msgid "Zoom"
 msgstr ""
 
-#: includes/Viewer.php:33
+#: includes/Viewer.php:35
 msgid "Fit width"
 msgstr ""
 
-#: includes/Viewer.php:35
+#: includes/Viewer.php:37
 msgid "Enable JavaScript to use the viewer, or download the document."
 msgstr ""

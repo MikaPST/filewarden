@@ -1,5 +1,9 @@
 # Roadmap
 
+## Next owner-approved addition — 0.1.18-dev
+
+The 22 November 2026 approved mockup adds a live text-contrast readability score, AA/AAA/needs-improvement states and collapsible measured-pair details in public appearance settings. This is planned, not implemented; existing server validation, saved appearance and authorization remain mandatory. See [the approved scope](lot-v0.1.18-dev.md) and SUIVI.md before beginning development.
+
 - **0.1.0 Secure foundations:** plugin bootstrap, migrations, verified private storage, ACL, protected upload/download, automated tests.
 - **0.2.0 Documents:** folders, document lifecycle, versions, trash and auditing.
 - **0.3.0 Interface:** admin manager, document detail and previews.

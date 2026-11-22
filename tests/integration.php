@@ -206,4 +206,8 @@ require __DIR__ . '/notification-integration.php';
 require __DIR__ . '/corrections-integration.php';
 require __DIR__ . '/v15-integration.php';
 require __DIR__ . '/v16-integration.php';
+require __DIR__ . '/v17-integration.php';
+require __DIR__ . '/v17-appearance-security.php';
+require __DIR__ . '/v17-corrections-integration.php';
+require __DIR__ . '/v17-final-corrections-integration.php';
 WP_CLI::success( 'Integration assertions passed.' );

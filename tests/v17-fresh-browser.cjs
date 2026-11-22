@@ -1,0 +1,50 @@
+/** Root onboarding and first contextual creation on empty disposable plugin tables. */
+const assert=require('node:assert/strict');
+const {chromium}=require('playwright');
+assert.equal(process.env.FILEWARDEN_TESTING,'1');
+const base=process.env.FILEWARDEN_URL;
+assert.ok(['127.0.0.1','localhost','[::1]'].includes(new URL(base).hostname));
+(async()=>{
+ const browser=await chromium.launch();
+ try{
+  const context=await browser.newContext({viewport:{width:1280,height:900}});
+  await context.request.get(base+'/wp-login.php');
+  await context.request.post(base+'/wp-login.php',{form:{log:'fw_admin',pwd:'disposable-test-password',testcookie:'1'}});
+  const page=await context.newPage();page.setDefaultTimeout(15000);page.setDefaultNavigationTimeout(60000);
+  const ready=require('./native-admin-ready.cjs')(page,base);
+  const errors=[];page.on('pageerror',e=>errors.push(e.message));
+  const navigate=async url=>{await page.goto(url);await ready();};
+  const submit=async selector=>{await Promise.all([page.waitForNavigation(),page.locator(selector).click({noWaitAfter:true})]);await ready();assert.equal(new URL(page.url()).searchParams.get('result'),'success');};
+  await navigate(base+'/wp-admin/admin.php?page=filewarden');
+  assert.equal(await page.locator('.fw-folder-welcome h2').textContent(),'Create your first folder');
+  await page.locator('.fw-folder-welcome a[href*="tab=folder"]').click();await ready();
+  assert.equal(await page.locator('#folder-policy').inputValue(),'');
+  assert.equal(await page.locator('#folder-parent').count(),0);
+  await page.locator('#fw-name').fill('First root folder');
+  let decision='dismiss';page.on('dialog',dialog=>decision==='dismiss'?dialog.dismiss():dialog.accept());
+  await page.locator('.fw-task-cancel').click();
+  assert.equal(await page.locator('#fw-name').inputValue(),'First root folder','Cancel dismissed a dirty form without confirmation');
+  decision='accept';await page.locator('#folder-policy').selectOption('public');
+  await submit('form:has(#fw-name) button[type=submit]');
+  assert.equal(await page.locator('.fw-folder-heading h2').textContent(),'First root folder');
+  await page.locator('.fw-creation-actions a[href*="tab=folder"]').click();await ready();
+  const rootID=new URL(page.url()).searchParams.get('folder_id');
+  assert.equal(await page.locator('#folder-parent').inputValue(),rootID);
+  assert.equal(await page.locator('#folder-policy').inputValue(),'inherit');
+  await page.locator('#fw-name').fill('Nested first folder');await submit('form:has(#fw-name) button[type=submit]');
+  assert.equal(await page.locator('.fw-breadcrumbs li').count(),2);
+  assert.equal(await page.locator('.fw-folder-heading h2').textContent(),'Nested first folder');
+  const childID=new URL(page.url()).searchParams.get('folder_id');
+  await page.locator('.fw-creation-actions a[href*="tab=add"]').click();await ready();
+  assert.equal(await page.locator('form[data-filewarden-upload] input[name=folder_id]').inputValue(),childID);
+  assert.equal(await page.locator('#document-parent').count(),0);
+  await page.locator('#fw-file').setInputFiles({name:'first-contextual.txt',mimeType:'text/plain',buffer:Buffer.from('First contextual document\n')});
+  await submit('form[data-filewarden-upload] button[type=submit]');
+  assert.equal(await page.getByRole('link',{name:'first-contextual.txt',exact:true}).count(),1);
+  await page.setViewportSize({width:375,height:900});
+  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+  await page.screenshot({path:'build/screenshots/v17-first-folder-mobile.png',fullPage:true});
+  assert.deepEqual(errors,[]);
+  console.log('Fresh onboarding: explicit root policy, dirty cancellation, child inheritance, contextual upload and mobile passed');
+ }finally{await browser.close();}
+})().catch(error=>{console.error(error);process.exitCode=1;});

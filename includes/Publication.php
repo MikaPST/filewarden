@@ -70,7 +70,7 @@ final class Publication {
 		header( 'Vary: Cookie' );
 		header( 'X-Frame-Options: SAMEORIGIN' );
 		header( 'X-Content-Type-Options: nosniff' );
-		header( "Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'; form-action 'self'; frame-ancestors 'self'; base-uri 'none'" );
+		header( "Content-Security-Policy: default-src 'none'; style-src 'self' 'nonce-" . FrontendAppearance::nonce() . "'; img-src 'self'; form-action 'self'; frame-ancestors 'self'; base-uri 'none'" );
 		header( 'Content-Type: text/html; charset=UTF-8' );
 		$style      = self::denied_style( self::query( 'denied', 'centered' ) );
 		$return_url = self::query( 'return', home_url( '/' ) );
@@ -103,7 +103,8 @@ final class Publication {
 		}
 		$assets = plugins_url( 'assets/', FILEWARDEN_PATH . 'filewarden.php' );
 		// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- Standalone private frame independent of theme hooks.
-		echo '<!doctype html><html lang="' . esc_attr( Language::html() ) . '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>' . esc_html( $title ) . '</title><link rel="stylesheet" href="' . esc_url( $assets . 'publication.css?ver=' . FILEWARDEN_VERSION ) . '"></head><body><main><header><span class="eyebrow">FILEWARDEN</span><h1>' . esc_html( $title ) . '</h1></header>';
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped,WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- Standalone frame; appearance helpers validate CSS tokens and escape every public identity field.
+		echo '<!doctype html><html lang="' . esc_attr( Language::html() ) . '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>' . esc_html( $title ) . '</title><link rel="stylesheet" href="' . esc_url( FrontendAppearance::stylesheet_url( 'publication' ) ) . '">' . FrontendAppearance::style() . '</head><body class="fw-public-theme"><main><header>' . FrontendAppearance::brand() . '<h1>' . esc_html( $title ) . '</h1></header>';
 		$context = array(
 			'action' => 'filewarden_folder',
 			'root'   => $root_reference,
@@ -111,19 +112,32 @@ final class Publication {
 			'denied' => $style,
 			'return' => $return_url,
 		);
-		echo '<nav class="fw-breadcrumbs" aria-label="' . esc_attr__( 'Folder navigation', 'filewarden' ) . '">';
+		// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped -- control_icon() emits only allowlisted, escaped static span markup; other values retain context escaping below.
+		echo '<nav class="fw-breadcrumbs" aria-label="' . esc_attr__( 'Folder navigation', 'filewarden' ) . '">' . self::control_icon( 'folder-open' ) . '<ol>';
 		foreach ( $path as $part ) {
-			echo '<a href="' . esc_url( add_query_arg( $context + array( 'folder_id' => $part['uuid'] ), admin_url( 'admin-post.php' ) ) ) . '">' . esc_html( $part['name'] ) . '</a>'; }
-		echo '</nav><div class="fw-subfolders">';
-		foreach ( FolderNavigation::children( $service, $folder ) as $child ) {
-			echo '<a href="' . esc_url( add_query_arg( $context + array( 'folder_id' => $child['uuid'] ), admin_url( 'admin-post.php' ) ) ) . '"><img width="28" height="28" alt="" src="' . esc_url( $assets . 'icons/folder.svg' ) . '">' . esc_html( $child['name'] ) . '</a>'; }
-		echo '</div>';
-		echo '<form method="get" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '"><input type="hidden" name="action" value="filewarden_folder"><input type="hidden" name="folder_id" value="' . esc_attr( $reference ) . '"><input type="hidden" name="root" value="' . esc_attr( $root_reference ) . '"><input type="hidden" name="denied" value="' . esc_attr( $style ) . '"><input type="hidden" name="return" value="' . esc_attr( $return_url ) . '"><label for="fw-search">' . esc_html__( 'Search this folder', 'filewarden' ) . '</label><div class="toolbar"><input id="fw-search" type="search" name="search" maxlength="200" value="' . esc_attr( $search ) . '" placeholder="' . esc_attr__( 'Search documents…', 'filewarden' ) . '"><button name="view" value="' . esc_attr( $view ) . '">' . esc_html__( 'Search', 'filewarden' ) . '</button><div class="views">';
+			echo '<li>';
+			if ( (int) $part['id'] === $folder ) {
+				echo '<span aria-current="page">' . esc_html( $part['name'] ) . '</span>';
+			} else {
+				echo '<a href="' . esc_url( add_query_arg( $context + array( 'folder_id' => $part['uuid'] ), admin_url( 'admin-post.php' ) ) ) . '">' . esc_html( $part['name'] ) . '</a>';
+			}
+			echo '</li>';
+		}
+		echo '</ol></nav>';
+		$children = FolderNavigation::children( $service, $folder );
+		if ( $children ) {
+			echo '<section class="fw-subfolders-group" aria-labelledby="fw-subfolders-label"><h2 id="fw-subfolders-label">' . esc_html__( 'Subfolders', 'filewarden' ) . '</h2><div class="fw-subfolders">';
+			foreach ( $children as $child ) {
+				echo '<a href="' . esc_url( add_query_arg( $context + array( 'folder_id' => $child['uuid'] ), admin_url( 'admin-post.php' ) ) ) . '"><img width="24" height="24" alt="" src="' . esc_url( $assets . 'icons/folder.svg' ) . '"><span>' . esc_html( $child['name'] ) . '</span></a>';
+			}
+			echo '</div></section>';
+		}
+		echo '<form method="get" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '"><input type="hidden" name="action" value="filewarden_folder"><input type="hidden" name="folder_id" value="' . esc_attr( $reference ) . '"><input type="hidden" name="root" value="' . esc_attr( $root_reference ) . '"><input type="hidden" name="denied" value="' . esc_attr( $style ) . '"><input type="hidden" name="return" value="' . esc_attr( $return_url ) . '"><label for="fw-search">' . esc_html__( 'Search this folder', 'filewarden' ) . '</label><div class="toolbar"><input id="fw-search" type="search" name="search" maxlength="200" value="' . esc_attr( $search ) . '" placeholder="' . esc_attr__( 'Search documents…', 'filewarden' ) . '"><button name="view" value="' . esc_attr( $view ) . '">' . self::control_icon( 'search' ) . esc_html__( 'Search', 'filewarden' ) . '</button><div class="views">';
 		foreach ( array(
 			'list' => __( 'Detailed list', 'filewarden' ),
 			'grid' => __( 'Grid', 'filewarden' ),
 		) as $layout => $label ) {
-			echo '<button name="view" value="' . esc_attr( $layout ) . '" aria-pressed="' . ( $view === $layout ? 'true' : 'false' ) . '">' . esc_html( $label ) . '</button>';
+			echo '<button name="view" value="' . esc_attr( $layout ) . '" aria-pressed="' . ( $view === $layout ? 'true' : 'false' ) . '">' . self::control_icon( 'list' === $layout ? 'list' : 'layout-grid' ) . esc_html( $label ) . '</button>';
 		}
 		echo '</div></div></form><section class="documents ' . esc_attr( $view ) . '">';
 		$visible = false;
@@ -133,7 +147,7 @@ final class Publication {
 			}
 			$visible = true;
 			$url     = $service->metadata( $row )['detail_url'];
-			echo '<article class="document"><img class="file-icon" src="' . esc_url( $assets . 'icons/' . self::icon( $row['name'] ) . '.svg' ) . '" alt="" width="64" height="72"><div class="details"><h2><a target="_blank" rel="noopener noreferrer" href="' . esc_url( $url ) . '">' . esc_html( $row['name'] ) . '</a></h2><p class="metadata"><span>' . esc_html( strtoupper( pathinfo( $row['name'], PATHINFO_EXTENSION ) ) ) . '</span><span>' . esc_html( size_format( $row['size'], 1 ) ) . '</span><time>' . esc_html( get_date_from_gmt( $row['created_at'], get_option( 'date_format' ) ) ) . '</time></p></div><div class="actions"><a class="preview" target="_blank" rel="noopener noreferrer" href="' . esc_url( $url ) . '">' . esc_html__( 'Preview', 'filewarden' ) . '<span class="sr-only"> — ' . esc_html( $row['name'] ) . '</span></a><a class="download" href="' . esc_url( add_query_arg( 'download', '1', $url ) ) . '">' . esc_html__( 'Download', 'filewarden' ) . '<span class="sr-only"> — ' . esc_html( $row['name'] ) . '</span></a></div></article>';
+			echo '<article class="document"><div class="document-identity"><img class="file-icon" src="' . esc_url( $assets . 'icons/' . self::icon( $row['name'] ) . '.svg' ) . '" alt="" width="64" height="72"><div class="details"><h2><a target="_blank" rel="noopener noreferrer" href="' . esc_url( $url ) . '">' . esc_html( $row['name'] ) . '</a></h2><p class="metadata"><span>' . esc_html( strtoupper( pathinfo( $row['name'], PATHINFO_EXTENSION ) ) ) . '</span><span>' . esc_html( size_format( $row['size'], 1 ) ) . '</span><time>' . esc_html( get_date_from_gmt( $row['created_at'], get_option( 'date_format' ) ) ) . '</time></p></div></div><div class="actions"><a class="preview" target="_blank" rel="noopener noreferrer" href="' . esc_url( $url ) . '">' . self::control_icon( 'eye' ) . esc_html__( 'Preview', 'filewarden' ) . '<span class="sr-only"> — ' . esc_html( $row['name'] ) . '</span></a><a class="download" href="' . esc_url( add_query_arg( 'download', '1', $url ) ) . '">' . self::control_icon( 'download' ) . esc_html__( 'Download', 'filewarden' ) . '<span class="sr-only"> — ' . esc_html( $row['name'] ) . '</span></a></div></article>';
 		}
 		if ( ! $visible ) {
 			echo '<p>' . esc_html__( 'No documents are visible in this folder.', 'filewarden' ) . '</p>';
@@ -165,6 +179,7 @@ final class Publication {
 			}
 		}
 		echo '</nav></main></body></html>';
+		// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
 		exit;
 	}
 
@@ -201,10 +216,24 @@ final class Publication {
 		$title     = $technical ? __( 'Temporarily unavailable', 'filewarden' ) : ( $logged_in ? __( 'Access not authorized', 'filewarden' ) : __( 'A reserved space', 'filewarden' ) );
 		$message   = $technical ? __( 'Please try again later.', 'filewarden' ) : ( $logged_in ? __( 'Your account cannot access this space, or it is no longer available.', 'filewarden' ) : __( 'Sign in to view the documents you are allowed to access.', 'filewarden' ) );
         // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- Standalone protected frame.
-		echo '<!doctype html><html lang="' . esc_attr( Language::html() ) . '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>' . esc_html( $title ) . '</title><link rel="stylesheet" href="' . esc_url( plugins_url( 'assets/publication.css?ver=' . FILEWARDEN_VERSION, FILEWARDEN_PATH . 'filewarden.php' ) ) . '"></head><body><main class="fw-denied-wrap"><section class="fw-denied fw-denied-' . esc_attr( self::denied_style( $style ) ) . '"><div class="fw-denied-symbol" aria-hidden="true">&#128274;</div><div class="fw-denied-copy"><h1>' . esc_html( $title ) . '</h1><p>' . esc_html( $message ) . '</p>';
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped,WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- Standalone frame; appearance helpers validate CSS tokens and escape every public identity field.
+		echo '<!doctype html><html lang="' . esc_attr( Language::html() ) . '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>' . esc_html( $title ) . '</title><link rel="stylesheet" href="' . esc_url( FrontendAppearance::stylesheet_url( 'publication' ) ) . '">' . FrontendAppearance::style() . '</head><body class="fw-public-theme"><main class="fw-denied-wrap">' . FrontendAppearance::brand() . '<section class="fw-denied fw-denied-' . esc_attr( self::denied_style( $style ) ) . '"><div class="fw-denied-symbol" aria-hidden="true">&#128274;</div><div class="fw-denied-copy"><h1>' . esc_html( $title ) . '</h1><p>' . esc_html( $message ) . '</p>';
 		if ( ! $technical && ! $logged_in ) {
-			echo '<a class="fw-login" target="_top" href="' . esc_url( wp_login_url( $return_url ) ) . '">' . esc_html__( 'Sign in', 'filewarden' ) . '</a>'; }
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- control_icon() returns only static allowlisted markup; the URL and label are escaped independently.
+			echo '<a class="fw-login" target="_top" href="' . esc_url( PublicationLogin::destination( $return_url ) ) . '">' . self::control_icon( 'log-in' ) . esc_html__( 'Sign in', 'filewarden' ) . '</a>'; }
 		echo '</div></section></main></body></html>';
+	}
+
+	/** Return a decorative functional icon without touching file-type artwork.
+	 *
+	 * @param string $name Fixed functional name.
+	 * @return string Escaped static markup.
+	 */
+	private static function control_icon( $name ) {
+		if ( ! in_array( $name, array( 'folder-open', 'search', 'list', 'layout-grid', 'eye', 'download', 'log-in' ), true ) ) {
+			return '';
+		}
+		return '<span class="fw-ui-icon fw-ui-' . esc_attr( $name ) . '" aria-hidden="true"></span>';
 	}
 
 	/**

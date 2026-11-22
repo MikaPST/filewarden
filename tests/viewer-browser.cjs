@@ -4,6 +4,8 @@ const fs = require('node:fs');
 const { chromium, firefox } = require('playwright');
 assert.equal(process.env.FILEWARDEN_TESTING, '1');
 const base = process.env.FILEWARDEN_URL || 'http://127.0.0.1:8080';
+const selectedBrowser = process.env.FILEWARDEN_BROWSER || '';
+assert.ok(['', 'chromium', 'firefox'].includes(selectedBrowser), 'Unknown browser selection');
 
 function pdfFixture() {
     const objects = [
@@ -29,11 +31,13 @@ function pdfFixture() {
 
 (async () => {
     for (const [name, engine] of [['chromium', chromium], ['firefox', firefox]]) {
+        if (selectedBrowser && selectedBrowser !== name) continue;
         const browser = await engine.launch();
         let page;
         try {
             const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
             page = await context.newPage();
+            page.on('dialog', dialog => dialog.accept());
             // Authenticate the disposable context without waiting on dashboard third-party resources.
             await context.request.get(base + '/wp-login.php');
             const login = await context.request.post(base + '/wp-login.php', {
@@ -42,7 +46,7 @@ function pdfFixture() {
             assert.ok(login.url().includes('/wp-admin/'), 'Fixture login failed');
             const fixture = JSON.parse(fs.readFileSync(process.env.FILEWARDEN_FIXTURES, 'utf8'));
             await page.goto(base + '/wp-admin/admin.php?page=filewarden&tab=add&folder_id=' + fixture.public_folder_id);
-            const filename = `browser-${name}.pdf`;
+            const filename = `browser-${name}-${Date.now()}.pdf`;
             assert.equal(await page.locator('#document-policy').inputValue(), 'inherit');
             await page.locator('#document-policy').selectOption('authenticated');
             await page.locator('#fw-file').setInputFiles({ name: filename, mimeType: 'application/pdf', buffer: pdfFixture() });
@@ -93,6 +97,7 @@ function pdfFixture() {
             await page.getByRole('button', { name: 'Close preview' }).click();
             await modal.waitFor({ state: 'hidden' });
             await page.goto(base + '/wp-admin/admin.php?page=filewarden-publication&folder_id=' + fixture.folder_id);
+            await page.locator('[data-publication-tab=integration]').click();
             assert.ok((await page.locator('#fw-shortcode').inputValue()).includes(fixture.folder_uuid));
             await page.locator('[name="view"][value="grid"]').check();
             assert.ok((await page.locator('#fw-shortcode').inputValue()).includes('view="grid"'));
@@ -155,7 +160,7 @@ function pdfFixture() {
             await page.getByRole('button', { name: 'Search', exact: true }).click();
             assert.equal(await page.locator('.document').count(), 0);
             await require('./workspace-browser.cjs')({ page, context, base, fixture, name });
-            await require('./ten-evolutions-browser.cjs')({ page, context, base, fixture, name });
+            await require('./ten-evolutions-browser.cjs')({ page, context, base, fixture, name, filename });
             await require('./uiux-browser.cjs')({ page, base, fixture, name });
             await require('./notifications-browser.cjs')({ context, base, name });
             await require('./corrections-browser.cjs')({ context, base, name });

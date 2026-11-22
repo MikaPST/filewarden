@@ -17,6 +17,87 @@
     };
     window.addEventListener('resize', fitCode);
     requestAnimationFrame(fitCode);
+    // Local tabs preserve the same forms and iframe; no draft is reset or saved.
+    const settings = document.querySelector('.fw-publication-settings');
+    const tabs = [...document.querySelectorAll('[data-publication-tab]')];
+    const selectTab = tab => {
+        tabs.forEach(button => {
+            const active = button === tab;
+            button.setAttribute('aria-selected', String(active));
+            button.tabIndex = active ? 0 : -1;
+            document.getElementById(button.getAttribute('aria-controls')).hidden = !active;
+        });
+        requestAnimationFrame(fitCode);
+    };
+    if (tabs.length) {
+        document.querySelector('.fw-publication-tabs').hidden = false;
+        tabs.forEach((tab, index) => {
+            tab.addEventListener('click', () => selectTab(tab));
+            tab.addEventListener('keydown', event => {
+                if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+                event.preventDefault();
+                const next = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : (index + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+                selectTab(tabs[next]); tabs[next].focus();
+            });
+        });
+        selectTab(tabs.find(tab => tab.dataset.publicationTab === settings.dataset.initialTab) || tabs[0]);
+    }
+    const devices = document.querySelector('.fw-appearance-devices');
+    if (devices) {
+        devices.hidden = false;
+        devices.querySelectorAll('[data-preview-device]').forEach(button => button.addEventListener('click', () => {
+            frame.classList.toggle('fw-preview-mobile', button.dataset.previewDevice === 'mobile');
+            devices.querySelectorAll('button').forEach(other => other.setAttribute('aria-pressed', String(other === button)));
+        }));
+    }
+    const login = document.querySelector('.fw-publication-login');
+    const loginForm = login?.querySelector('form');
+    if (loginForm) {
+        const address = loginForm.querySelector('#fw-login-url');
+        const choice = () => loginForm.querySelector('[name="publication_login[mode]"]:checked').value;
+        const snapshot = () => JSON.stringify({ mode: choice(), url: choice() === 'custom' ? address.value : '' });
+        const original = snapshot();
+        let saving = false;
+        const validURL = value => {
+            if (!value || value.length > 2048 || /[\u0000-\u0020\u007f\\]|%0[ad0]/i.test(value) || !/^https?:\/\//i.test(value)) return false;
+            try { const url = new URL(value); return ['http:', 'https:'].includes(url.protocol) && Boolean(url.hostname) && !url.username && !url.password; } catch { return false; }
+        };
+        const updateLogin = () => {
+            const custom = choice() === 'custom';
+            const valid = !custom || validURL(address.value);
+            address.disabled = !custom; address.required = custom;
+            address.setAttribute('aria-invalid', String(!valid));
+            loginForm.querySelector('.fw-login-custom').hidden = !custom;
+            loginForm.querySelector('button[type=submit]').disabled = !valid;
+            const feedback = loginForm.querySelector('.fw-login-validation');
+            feedback.textContent = valid ? '' : feedback.dataset.invalid;
+            const destination = custom ? address.value : login.dataset.wordpressUrl;
+            const check = loginForm.querySelector('.fw-login-check');
+            if (valid) { check.href = destination; check.removeAttribute('aria-disabled'); }
+            else { check.removeAttribute('href'); check.setAttribute('aria-disabled', 'true'); }
+            // Draft link affects only the same-origin FileWarden preview, never a public setting.
+            try {
+                const url = new URL(frame.contentWindow.location.href);
+                if (url.origin !== location.origin || url.searchParams.get('action') !== 'filewarden_folder') return;
+                const link = frame.contentDocument?.querySelector('body.fw-public-theme .fw-login');
+                if (link) {
+                    if (valid) { link.href = destination; link.removeAttribute('aria-disabled'); }
+                    else { link.removeAttribute('href'); link.setAttribute('aria-disabled', 'true'); }
+                }
+            } catch { /* A foreign or unavailable frame is never modified. */ }
+        };
+        loginForm.addEventListener('input', updateLogin);
+        loginForm.addEventListener('change', updateLogin);
+        loginForm.addEventListener('submit', event => {
+            if (choice() === 'custom' && !validURL(address.value)) { event.preventDefault(); return; }
+            saving = true;
+        });
+        frame.addEventListener('load', updateLogin);
+        window.addEventListener('beforeunload', event => {
+            if (!saving && snapshot() !== original) { event.preventDefault(); event.returnValue = ''; }
+        });
+        updateLogin();
+    }
     let pending;
     let requested;
     let navigation;
@@ -50,12 +131,15 @@
     form.addEventListener('submit', event => { event.preventDefault(); update(); });
     demo.addEventListener('change', update);
     const modes = [...document.querySelectorAll('[data-preview-mode]')];
-    const deniedConfig = form.querySelector('[data-preview-config="denied"]');
+    const contextual = [...document.querySelectorAll('.fw-publisher [data-preview-config]')];
+    const syncContext = () => contextual.forEach(section => {
+        section.hidden = section.dataset.previewConfig !== (demo.checked ? 'denied' : 'authorized');
+    });
     document.querySelector('.fw-preview-fallback').hidden = true;
     const changeMode = mode => {
         demo.checked = mode.dataset.previewMode === 'denied';
         modes.forEach(button => { button.setAttribute('aria-selected', String(button === mode)); button.tabIndex = button === mode ? 0 : -1; });
-        if (deniedConfig) deniedConfig.hidden = !demo.checked;
+        syncContext();
         const panel = document.getElementById('fw-preview-live-panel');
         if (panel) panel.setAttribute('aria-labelledby', mode.id);
         update();
@@ -72,7 +156,7 @@
             }
         });
     });
-    if (deniedConfig) deniedConfig.hidden = true;
+    syncContext();
     frame.addEventListener('load', () => {
         try {
             if (requested && frame.contentWindow.location.href !== requested) return;

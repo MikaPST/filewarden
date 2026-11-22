@@ -31,6 +31,7 @@ foreach ( glob( $root . '/assets/icons/*.svg' ) as $file ) {
 $files[] = 'assets/icons/' . basename( $file );
 }
 $files[] = 'assets/icons/LICENSE-lucide.txt';
+$files[] = 'assets/appearance.js';
 $files[] = 'assets/illustrations/folder-welcome.png';
 $files[] = 'assets/branding/filewarden-logo-512.png';
 foreach ( glob( $root . '/includes/*.php' ) as $file ) {
