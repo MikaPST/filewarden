@@ -4,6 +4,12 @@
 
 The 22 November 2026 approved mockup adds a live text-contrast readability score, AA/AAA/needs-improvement states and collapsible measured-pair details in public appearance settings. This is planned, not implemented; existing server validation, saved appearance and authorization remain mandatory. See [the approved scope](lot-v0.1.18-dev.md) and SUIVI.md before beginning development.
 
+The owner also requests an interactive proposal for direct document/folder rename, bulk classification/move/restore, name/date/size/type sorting and filtering, and authorized cross-folder search. Development awaits consolidation and explicit GO. Version and document-activity histories are deferred.
+
+## Published development preview — 0.1.17-dev
+
+Contextual creation, improved document/trash navigation and shared public appearance are released with the final Publication/Shortcode/visitor-login refinements and Nature #EDF3EE. Source CI passed 17/17 checks and tag/release CI 18/18; the public ZIP matches the installed/tested artifact and annotated tag. See SUIVI.md and docs/validation/v0.1.17-dev-published.json for evidence and deployment limits. Schema 6 is retained.
+
 - **0.1.0 Secure foundations:** plugin bootstrap, migrations, verified private storage, ACL, protected upload/download, automated tests.
 - **0.2.0 Documents:** folders, document lifecycle, versions, trash and auditing.
 - **0.3.0 Interface:** admin manager, document detail and previews.

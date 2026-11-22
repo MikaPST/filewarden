@@ -1,0 +1,138 @@
+{
+  "version": "0.1.17-dev",
+  "run_id": 45006521234,
+  "url": "https://github.com/MikaPST/filewarden/actions/runs/45006521234",
+  "commit": "427c23b12fdfcf505be43b90a482f2455b36e560",
+  "event": "push",
+  "attempt": 1,
+  "conclusion": "success",
+  "jobs_count": 18,
+  "checks": {
+    "phpunit": "88 tests / 192 assertions per PHP version",
+    "php": [
+      "8.2",
+      "8.3",
+      "8.4"
+    ],
+    "javascript": "8 tests",
+    "catalogs": "472 FR/EN entries, compiled catalogs, placeholders/plurals, fresh official POT",
+    "upgrade_matrix": "12 installed ZIP upgrades: versions 0.1.11–0.1.16-dev, WordPress 6.8 and current",
+    "integration": "PHP and HTTP security, protected binaries/Range, strict/permissive formats, capabilities/CSRF, retained ACLs, MyISAM failure/repair",
+    "browser": "Chromium/Firefox, new V17 scenarios EN/FR and historical regressions; fresh onboarding/upload in Chromium"
+  },
+  "jobs": [
+    {
+      "id": 137159234337,
+      "name": "checks / fresh-install",
+      "conclusion": "success",
+      "url": "https://github.com/MikaPST/filewarden/actions/runs/45006521234/job/137159234337"
+    },
+    {
+      "id": 137159234436,
+      "name": "checks / integration (WP 6.8, from 0.1.11-dev)",
+      "conclusion": "success",
+      "url": "https://github.com/MikaPST/filewarden/actions/runs/45006521234/job/137159234436"
+    },
+    {
+      "id": 137159234432,
+      "name": "checks / integration (WP 6.8, from 0.1.12-dev)",
+      "conclusion": "success",
+      "url": "https://github.com/MikaPST/filewarden/actions/runs/45006521234/job/137159234432"
+    },
+    {
+      "id": 137159234407,
+      "name": "checks / integration (WP 6.8, from 0.1.13-dev)",
+      "conclusion": "success",
+      "url": "https://github.com/MikaPST/filewarden/actions/runs/45006521234/job/137159234407"
+    },
+    {
+      "id": 137159234392,
+      "name": "checks / integration (WP 6.8, from 0.1.14-dev)",
+      "conclusion": "success",
+      "url": "https://github.com/MikaPST/filewarden/actions/runs/45006521234/job/137159234392"
+    },
+    {
+      "id": 137159234347,
+      "name": "checks / integration (WP 6.8, from 0.1.15-dev)",
+      "conclusion": "success",
+      "url": "https://github.com/MikaPST/filewarden/actions/runs/45006521234/job/137159234347"
+    },
+    {
+      "id": 137159234391,
+      "name": "checks / integration (WP 6.8, from 0.1.16-dev)",
+      "conclusion": "success",
+      "url": "https://github.com/MikaPST/filewarden/actions/runs/45006521234/job/137159234391"
+    },
+    {
+      "id": 137159234393,
+      "name": "checks / integration (WP latest, from 0.1.11-dev)",
+      "conclusion": "success",
+      "url": "https://github.com/MikaPST/filewarden/actions/runs/45006521234/job/137159234393"
+    },
+    {
+      "id": 137159234587,
+      "name": "checks / integration (WP latest, from 0.1.12-dev)",
+      "conclusion": "success",
+      "url": "https://github.com/MikaPST/filewarden/actions/runs/45006521234/job/137159234587"
+    },
+    {
+      "id": 137159234713,
+      "name": "checks / integration (WP latest, from 0.1.13-dev)",
+      "conclusion": "success",
+      "url": "https://github.com/MikaPST/filewarden/actions/runs/45006521234/job/137159234713"
+    },
+    {
+      "id": 137159234601,
+      "name": "checks / integration (WP latest, from 0.1.14-dev)",
+      "conclusion": "success",
+      "url": "https://github.com/MikaPST/filewarden/actions/runs/45006521234/job/137159234601"
+    },
+    {
+      "id": 137159234458,
+      "name": "checks / integration (WP latest, from 0.1.15-dev)",
+      "conclusion": "success",
+      "url": "https://github.com/MikaPST/filewarden/actions/runs/45006521234/job/137159234458"
+    },
+    {
+      "id": 137159234579,
+      "name": "checks / integration (WP latest, from 0.1.16-dev)",
+      "conclusion": "success",
+      "url": "https://github.com/MikaPST/filewarden/actions/runs/45006521234/job/137159234579"
+    },
+    {
+      "id": 137159234439,
+      "name": "checks / javascript",
+      "conclusion": "success",
+      "url": "https://github.com/MikaPST/filewarden/actions/runs/45006521234/job/137159234439"
+    },
+    {
+      "id": 137159234346,
+      "name": "checks / unit (8.2)",
+      "conclusion": "success",
+      "url": "https://github.com/MikaPST/filewarden/actions/runs/45006521234/job/137159234346"
+    },
+    {
+      "id": 137159234455,
+      "name": "checks / unit (8.3)",
+      "conclusion": "success",
+      "url": "https://github.com/MikaPST/filewarden/actions/runs/45006521234/job/137159234455"
+    },
+    {
+      "id": 137159234160,
+      "name": "checks / unit (8.4)",
+      "conclusion": "success",
+      "url": "https://github.com/MikaPST/filewarden/actions/runs/45006521234/job/137159234160"
+    },
+    {
+      "id": 137161353755,
+      "name": "release",
+      "conclusion": "success",
+      "url": "https://github.com/MikaPST/filewarden/actions/runs/45006521234/job/137161353755"
+    }
+  ],
+  "limits": [
+    "No user-host deployment or migration performed",
+    "Development preview; deployment acceptance remains separate",
+    "No complete human screen-reader audit"
+  ]
+}

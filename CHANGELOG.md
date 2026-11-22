@@ -1,8 +1,9 @@
 # Changelog
 
-## 0.1.17-dev — 2026-11-21 (local preproduction candidate)
+## 0.1.17-dev — 2026-11-22 (development prerelease)
 
-- Final owner-approved preproduction corrections, 2026-11-22: move Publication tabs above both cards; show integration options by preview context while retaining choices; rename Color palette and update FR/EN help; move Shortcode into a compact card above Preview with WordPress/Elementor guidance; use shared amber tokens for retained-access information and document the semantic colors. Preserve schema, existing settings/documents and authorization. Local ZIP only; see docs/corrections-finales-v0.1.17-dev.md.
+- Final owner-approved preproduction corrections, 2026-11-22: move Publication tabs above both cards; show integration options by preview context while retaining choices; rename Color palette and update FR/EN help; move Shortcode into a compact card above Preview with WordPress/Elementor guidance; use shared amber tokens for retained-access information and document the semantic colors. Preserve schema, existing settings/documents and authorization. See docs/corrections-finales-v0.1.17-dev.md.
+- Update Nature background to #EDF3EE. Existing saved appearances remain unchanged until an explicit palette selection and save. The AA/AAA text-readability indicator is planned for 0.1.18-dev, not implemented in this release.
 
 - Add contextual upload and subfolder forms below the unchanged search position; keep full source/access controls and bind contextual uploads to the open folder. Integrate root/first-folder creation with explicit access choices and open the created folder only after server confirmation. Keep legacy task URLs while simplifying navigation to Documents/Trash.
 - Add authorized ancestor breadcrumbs, wider compact guided folders, restored official header-logo proportions and secondary controls matching audit exports independently of WordPress profile colors.
@@ -11,7 +12,7 @@
 - Apply public tokens to list/grid, unavailable states and the detail viewer using a CSP nonce. Corrective decision: natural-height grid cards with 16px padding, horizontally centered identity and aligned bottom actions, without the original upper spacer.
 - Correct the retained-rule note position; introduce two persistent publication tabs, four compact palettes with bordered color capsules and a live Custom card, the standard upload icon and inline visibility choices. Compact preview switches and add functional public button icons, bounded subfolder links and a more legible breadcrumb.
 - Add a site-wide visitor sign-in destination: native WordPress filters/return by default or a validated literal HTTP(S) URL, with separate settings capability, nonce, audit and isolated draft preview. Existing shortcodes and access policies are preserved.
-- Extend local installed-ZIP functional, security, FR/EN and browser acceptance; retain schema 6. This candidate is delivered locally for owner preproduction testing, without a GitHub push, tag or release.
+- Extend installed-ZIP functional, security, FR/EN and browser acceptance; retain schema 6. Owner-authorized publication: 17/17 source checks and 18/18 release checks passed, including 12 ZIP upgrades, three PHP unit versions and both browser engines. Published ZIP verified against the exact tested artifact and all 317 tagged runtime files; SHA-256 attached. Initial CI harness corrections and public verification are recorded in docs/validation/v0.1.17-dev-*.json. No user-site deployment performed.
 
 ## 0.1.16-dev — 2026-11-20
 

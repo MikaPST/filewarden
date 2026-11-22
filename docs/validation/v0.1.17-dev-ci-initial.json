@@ -1,0 +1,168 @@
+{
+  "version": "0.1.17-dev",
+  "initial_runs": [
+    {
+      "run_id": 45005063475,
+      "url": "https://github.com/MikaPST/filewarden/actions/runs/45005063475",
+      "commit": "bd9dd0a50d9677a527932df863dc9d83b74b50e9",
+      "conclusion": "failure",
+      "passed": 5,
+      "failed": [
+        {
+          "id": 137154689735,
+          "name": "integration (WP 6.8, from 0.1.11-dev)",
+          "steps": [
+            "Exercise browser HTTP routes"
+          ]
+        },
+        {
+          "id": 137154689519,
+          "name": "integration (WP 6.8, from 0.1.12-dev)",
+          "steps": [
+            "Exercise browser HTTP routes"
+          ]
+        },
+        {
+          "id": 137154689488,
+          "name": "integration (WP 6.8, from 0.1.13-dev)",
+          "steps": [
+            "Exercise browser HTTP routes"
+          ]
+        },
+        {
+          "id": 137154689619,
+          "name": "integration (WP 6.8, from 0.1.14-dev)",
+          "steps": [
+            "Exercise browser HTTP routes"
+          ]
+        },
+        {
+          "id": 137154689511,
+          "name": "integration (WP 6.8, from 0.1.15-dev)",
+          "steps": [
+            "Exercise browser HTTP routes"
+          ]
+        },
+        {
+          "id": 137154689602,
+          "name": "integration (WP 6.8, from 0.1.16-dev)",
+          "steps": [
+            "Exercise browser HTTP routes"
+          ]
+        },
+        {
+          "id": 137154689758,
+          "name": "integration (WP latest, from 0.1.11-dev)",
+          "steps": [
+            "Exercise browser HTTP routes"
+          ]
+        },
+        {
+          "id": 137154689829,
+          "name": "integration (WP latest, from 0.1.12-dev)",
+          "steps": [
+            "Exercise browser HTTP routes"
+          ]
+        },
+        {
+          "id": 137154689608,
+          "name": "integration (WP latest, from 0.1.13-dev)",
+          "steps": [
+            "Exercise browser HTTP routes"
+          ]
+        },
+        {
+          "id": 137154689739,
+          "name": "integration (WP latest, from 0.1.14-dev)",
+          "steps": [
+            "Exercise browser HTTP routes"
+          ]
+        },
+        {
+          "id": 137154689688,
+          "name": "integration (WP latest, from 0.1.15-dev)",
+          "steps": [
+            "Exercise browser HTTP routes"
+          ]
+        },
+        {
+          "id": 137154689449,
+          "name": "integration (WP latest, from 0.1.16-dev)",
+          "steps": [
+            "Exercise browser HTTP routes"
+          ]
+        }
+      ],
+      "observed_diagnostic": {
+        "observed_job": 137154689602,
+        "error": "KeyError: FILEWARDEN_URL in tests/v17-corrections-http.py",
+        "correction_commit": "3a0476bc39d078ece4b6f61ae9223cddd87d3999",
+        "change": "Pass the loopback URL in integration job environment; runtime unchanged"
+      }
+    },
+    {
+      "run_id": 45005487818,
+      "url": "https://github.com/MikaPST/filewarden/actions/runs/45005487818",
+      "commit": "3a0476bc39d078ece4b6f61ae9223cddd87d3999",
+      "conclusion": "failure",
+      "passed": 11,
+      "failed": [
+        {
+          "id": 137156031394,
+          "name": "integration (WP 6.8, from 0.1.11-dev)",
+          "steps": [
+            "Exercise browser HTTP routes"
+          ]
+        },
+        {
+          "id": 137156031377,
+          "name": "integration (WP 6.8, from 0.1.12-dev)",
+          "steps": [
+            "Exercise browser HTTP routes"
+          ]
+        },
+        {
+          "id": 137156031123,
+          "name": "integration (WP 6.8, from 0.1.13-dev)",
+          "steps": [
+            "Exercise browser HTTP routes"
+          ]
+        },
+        {
+          "id": 137156031453,
+          "name": "integration (WP 6.8, from 0.1.14-dev)",
+          "steps": [
+            "Exercise browser HTTP routes"
+          ]
+        },
+        {
+          "id": 137156031339,
+          "name": "integration (WP 6.8, from 0.1.15-dev)",
+          "steps": [
+            "Exercise browser HTTP routes"
+          ]
+        },
+        {
+          "id": 137156031255,
+          "name": "integration (WP 6.8, from 0.1.16-dev)",
+          "steps": [
+            "Exercise browser HTTP routes"
+          ]
+        }
+      ],
+      "observed_diagnostic": {
+        "observed_job": 137156031255,
+        "error": "Strict geometry assertion: y changed 387.59375 to 364.59375 after native focus, width/height/x unchanged",
+        "correction_commit": "427c23b12fdfcf505be43b90a482f2455b36e560",
+        "change": "Capture baseline after focus-induced scrolling; retain strict before/after notification geometry comparison; runtime unchanged"
+      }
+    }
+  ],
+  "successful_replacement_run": 45005824665,
+  "source_commit": "427c23b12fdfcf505be43b90a482f2455b36e560",
+  "notes": [
+    "Initial failures remain failures; they are not counted as successful CI",
+    "No runtime change or removed assertion in these two test-harness corrections",
+    "See separate successful source and release CI evidence"
+  ]
+}

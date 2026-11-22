@@ -1,10 +1,16 @@
 # FileWarden — suivi court
 
-Mis à jour le 21 novembre 2026. Lire ce fichier à la reprise, puis vérifier l’état Git et les fichiers utiles au lot.
+Mis à jour le 22 novembre 2026. Lire ce fichier à la reprise, puis vérifier l’état Git et les fichiers utiles au lot.
 
 ## État actuel
 
-- **0.1.17-dev validée localement le 21 novembre 2026**, ZIP livré pour installation manuelle en préproduction. Aucun push, tag ou release GitHub. [Notes](docs/releases/v0.1.17-dev.md), [preuves](docs/validation/v0.1.17-dev-local.json).
+- **0.1.17-dev publiée comme préversion le 22 novembre 2026**, sur autorisation explicite du propriétaire. Tag annoté `v0.1.17-dev`, commit `427c23b12fdfcf505be43b90a482f2455b36e560`. [Release](https://github.com/MikaPST/filewarden/releases/tag/v0.1.17-dev), [ZIP](https://github.com/MikaPST/filewarden/releases/download/v0.1.17-dev/filewarden-0.1.17-dev.zip), [notes](docs/releases/v0.1.17-dev.md).
+- **CI source 17/17 et publication 18/18 réussies** : [source](https://github.com/MikaPST/filewarden/actions/runs/45005824665), [tag/release](https://github.com/MikaPST/filewarden/actions/runs/45006521234). Unités 88 tests/192 assertions sur PHP 8.2/8.3/8.4, huit tests JS, PHPCS/syntaxe/audit, 472 entrées FR/EN et POT frais ; douze mises à jour réelles de ZIP depuis 0.1.11/12/13/14/15/16-dev sur WordPress 6.8 et 7.1.5/MySQL 8.0.46, intégration/HTTP/sécurité, Chromium/Firefox EN/FR et installation neuve/premier import validés. [Preuve source](docs/validation/v0.1.17-dev-ci.json), [preuve de publication](docs/validation/v0.1.17-dev-release-ci.json).
+- **ZIP public vérifié : 317 fichiers / 4 296 097 octets**, SHA-256 `296109dc3d6d5b3662e6cd04d891827ca0ac340d7cab67916ccce966d0d41d1f`. Identique à l’archive exacte installée/testée par la CI du tag ; tous les fichiers correspondent aux blobs Git du tag, checksum et digests GitHub vérifiés. [Preuve publique](docs/validation/v0.1.17-dev-published.json). Copie téléchargée dans `build/published-v0.1.17-dev/` ; anciens ZIP locaux et empreintes conservés séparément.
+- Neuf axes, corrections de Publication/Code court/connexion/notes ambrées et fond Nature `#EDF3EE` inclus ; schéma 6, documents, droits, images originales et apparences déjà enregistrées préservés. Les deux premiers essais CI restent des échecs documentés : variable HTTP manquante puis mesure avant focus, corrigés sans changement runtime ni retrait d’assertion. [Historique](docs/validation/v0.1.17-dev-ci-initial.json).
+- Aucun site utilisateur ou base réelle modifié ; installation manuelle par le propriétaire. Version de développement, sans certification de sécurité ni audit humain complet au lecteur d’écran. Les ajouts 0.1.18-dev sont en préparation uniquement, sans code runtime.
+
+## Version précédente — repères historiques
 
 - **0.1.16-dev publiée comme préversion le 20 novembre 2026**, tag `v0.1.16-dev`, commit `ed43ab88a2317a9c8dde19496ac02e58efb08d28`. [Release et ZIP](https://github.com/MikaPST/filewarden/releases/tag/v0.1.16-dev). Publication autorisée par le propriétaire après tests ; aucun déploiement sur son site.
 - [Les dix améliorations du lot](docs/lot-v0.1.16-dev.md) sont implémentées, avec non-régression des dix évolutions originales. Langue globale FileWarden (automatique site, FR/EN, repli anglais), opt-in tous formats confirmé et audité, en-tête/notice/transferts/boutons/pastille/focus/santé de base. Tous formats désactivé par défaut ; contenus normalement refusés servis en pièces jointes opaques sans aperçu actif, droits/taille/stockage conservés. Schéma 6.
@@ -70,11 +76,10 @@ Demande explicite : fond du modèle Nature #EDF3EE. Une seule modification runti
 
 ## Publication 0.1.17-dev — autorisation du 22 novembre 2026
 
-Le propriétaire autorise explicitement le push, le tag et la prerelease avec ZIP, après validation des tests. Préparation du commit consolidé et de la CI distante : PHP 8.2/8.3/8.4, MySQL 8.0, installation neuve, mises à jour depuis 0.1.11-dev à 0.1.16-dev sur WordPress 6.8/latest, HTTP et navigateurs EN/FR. Les résultats distants et la publication restent à vérifier ; aucune réussite distante n’est présumée. Les preuves locales historiques ci-dessus restent conservées. Archive de release : candidat exact installé et testé par la CI, avec empreinte jointe.
+Le propriétaire a autorisé explicitement le push, le tag et la prerelease avec ZIP après tests. Publication terminée : source 17/17, workflow du tag 18/18, ZIP public et tag vérifiés ; voir l’état actuel et les preuves en tête de ce fichier. Les preuves locales historiques ci-dessus restent conservées. La documentation de vérification est ajoutée après le tag, sans changement runtime.
 
 ## Prochaine version — 0.1.18-dev
- 
-Publication .17 : premier commit distant `bd9dd0a`, CI 45005063475. Unités PHP 8.2/8.3/8.4, JavaScript et installation neuve validés ; intégrations arrêtées car la variable FILEWARDEN_URL n’était pas transmise au nouveau test HTTP (KeyError). Correction de la configuration CI uniquement. Exécution suivante 45005487818 : nouveaux parcours HTTP et Chromium/Firefox EN/FR validés ; ancien contrôle géométrique mesurait le panneau avant une prise de focus susceptible de faire défiler la page (23 px observés). Mesure déplacée après le focus, comparaison stricte avant/après notification conservée, puis nouvelle exécution requise avant tag/release. Aucun changement runtime dans ces deux ajustements du banc de tests.
+
 
 Première évolution validée le 22 novembre 2026 : encart Lisibilité des textes, score des huit contrastes contrôlés, niveaux AA/AAA/À améliorer/À compléter et détails repliables avec rapports réels. Mise à jour dynamique, FR/EN, clavier/mobile, validation serveur et apparences enregistrées préservées. Le score concerne les contrastes de texte, sans certification globale d’accessibilité. Démonstration approuvée ; [spécification et critères de recette](docs/lot-v0.1.18-dev.md). Phase de collecte/préparation du lot : pas de développement, changement du numéro runtime ou nouvelle archive à ce stade. Publication GitHub distincte, soumise à autorisation explicite.
 

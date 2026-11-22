@@ -1,0 +1,41 @@
+{
+  "version": "0.1.17-dev",
+  "tag": "v0.1.17-dev",
+  "commit": "427c23b12fdfcf505be43b90a482f2455b36e560",
+  "published_at": "2026-11-22T09:22:27Z",
+  "release_url": "https://github.com/MikaPST/filewarden/releases/tag/v0.1.17-dev",
+  "prerelease": true,
+  "archive": {
+    "name": "filewarden-0.1.17-dev.zip",
+    "files": 317,
+    "bytes": 4296097,
+    "sha256": "296109dc3d6d5b3662e6cd04d891827ca0ac340d7cab67916ccce966d0d41d1f",
+    "download_url": "https://github.com/MikaPST/filewarden/releases/download/v0.1.17-dev/filewarden-0.1.17-dev.zip",
+    "github_digest": "sha256:296109dc3d6d5b3662e6cd04d891827ca0ac340d7cab67916ccce966d0d41d1f"
+  },
+  "tested_artifact": {
+    "id": 14748510205,
+    "run_id": 45006521234,
+    "digest": "sha256:d309148aab47f0e7c953fbeb3897dac751d1562e157a70e638a9966d48c7658b"
+  },
+  "verification": [
+    "All 317 packaged files match tagged Git blobs byte-for-byte",
+    "Published ZIP equals the exact artifact installed and tested in release CI",
+    "SHA-256 sidecar and available GitHub digests match downloaded bytes",
+    "Annotated tag, version, schema 6, original PNG, Nature color and both catalogs verified",
+    "Release text matches tagged notes"
+  ],
+  "main_ci": {
+    "run_id": 45005824665,
+    "checks": 17
+  },
+  "release_ci": {
+    "run_id": 45006521234,
+    "checks": 18
+  },
+  "limits": [
+    "Development preview",
+    "No user-site deployment or data conversion",
+    "No complete human screen-reader audit"
+  ]
+}
