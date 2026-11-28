@@ -2,11 +2,15 @@
 
 Mis à jour le 28 novembre 2026. Vérifier l’état Git après lecture.
 
-## Première Alpha — publication GitHub autorisée et préparation en cours
+## Première Alpha — publiée et vérifiée
 
 Le propriétaire a confirmé que le dernier candidat fonctionne en préproduction et valide la proposition de première Alpha GitHub : version `0.1.19-alpha.1`, tag `v0.1.19-alpha.1`, release marquée préversion avec ZIP installable et SHA-256. Cet accord autorise commit/push/tag/publication après contrôles ; ne pas redemander son GO. Aucune soumission à WordPress.org demandée.
 
-Runtime du ZIP bc0ade58cf36d515c11b983b03c70deee1047334bada792d3757fcdbb616cfab figé. Harmonisation des métadonnées Alpha et de la recette GitHub pour les parcours actuels ; aucun ajout fonctionnel pendant la préparation. Dépôt public vérifié : MikaPST/filewarden, branche main à bb9e19d, dernière release/tag v0.1.17-dev. Les évolutions v18/v19 locales seront donc regroupées dans la première Alpha.
+Publication achevée : [FileWarden 0.1.19-alpha.1](https://github.com/MikaPST/filewarden/releases/tag/v0.1.19-alpha.1), préversion publique, tag annoté au commit `45a67ac6831d40474b8e158fffcc57cffb19c783`. Le ZIP installable publié contient 376 fichiers / 4 466 915 octets ; SHA-256 `216fbe577a67ff687abaa03cdc8cbcb4e269e6f685cbcf6052a0ffa76d3f575b`. Téléchargement réel vérifié : chaque membre correspond au blob Git du tag et l’empreinte jointe est correcte. Les 71 SVG validés sont conservés.
+
+Les évolutions v18/v19 ont été regroupées depuis la dernière release publique v0.1.17-dev. Le dernier ZIP dev validé reste préservé. Préparation Alpha : métadonnées/catalogues, recette actuelle d’import/doublon et sources de pagination exportables. Une correction CSS supplémentaire, issue de la recette Linux, fait passer les commandes du lecteur PDF à la ligne sous 480 px pour éviter un débordement lié aux polices de plateforme ; revalidée localement dans Chromium/Firefox FR/EN, ordinateur/mobile. Aucune autre modification fonctionnelle pendant cette préparation.
+
+Contrôles [main : 19/19](https://github.com/MikaPST/filewarden/actions/runs/46153157490), puis [tag et publication : 20/20](https://github.com/MikaPST/filewarden/actions/runs/46153612848), tous réussis. PHP 8.2/8.3/8.4, WordPress 6.8/latest, mises à jour depuis v0.1.11 à v0.1.17, installation neuve, HTTP/ACL/CSRF, parcours actuels EN/FR Chromium/Firefox et restauration chiffrée indépendante. Recette locale : 122 tests / 436 assertions et huit tests JS, restauration avec descriptions/octets vérifiés ; 12 fichiers de même contenu contrôlés sans altération de l’original. Les quatre serveurs HTTP locaux et la base jetable sont arrêtés, preuves préservées. Voir `docs/validation/v0.1.19-alpha.1.json`.
 
 Pendant cette préparation, rapport Plugin Check reçu : deux erreurs de readme, un avertissement i18n et sept SQL. Première lecture : fragments fixes ou déjà préparés, sans injection démontrée. Réserver le traitement systématique au [prochain lot](docs/prochain-lot-beta.md), comme demandé ; ne pas désactiver les contrôles ni assimiler un avertissement à une faille prouvée. Les résultats des candidats ci-dessous sont historiques.
 

@@ -1,0 +1,78 @@
+{
+  "date": "2026-11-28",
+  "version": "0.1.19-alpha.1",
+  "release_url": "https://github.com/MikaPST/filewarden/releases/tag/v0.1.19-alpha.1",
+  "prerelease": true,
+  "draft": false,
+  "published_archive": {
+    "tag": "v0.1.19-alpha.1",
+    "commit": "45a67ac6831d40474b8e158fffcc57cffb19c783",
+    "sha256": "216fbe577a67ff687abaa03cdc8cbcb4e269e6f685cbcf6052a0ffa76d3f575b",
+    "bytes": 4466915,
+    "files": 376,
+    "all_members_match_tag": true,
+    "published_checksum_matches": true,
+    "svg_files": 71
+  },
+  "main_checks": {
+    "run": 46153157490,
+    "jobs": 19,
+    "result": "success"
+  },
+  "tag_checks_and_publication": {
+    "run": 46153612848,
+    "jobs": 20,
+    "result": "success"
+  },
+  "local_validation": {
+    "date": "2026-11-28",
+    "version": "0.1.19-alpha.1",
+    "local_zip_sha256": "2fb4b45970170eb3937d2ac0f6c14d97b3bfec9bb72043b45a6c41944e849499",
+    "local_zip_bytes": 4467087,
+    "archive_members": 376,
+    "unchanged_svg": 71,
+    "local_wordpress": "6.8",
+    "upgrade_from": "0.1.17-dev",
+    "unit_tests": 122,
+    "unit_assertions": 436,
+    "javascript_transport_tests": 8,
+    "local_http_acceptance": "passed",
+    "browser_engines": [
+      "Chromium",
+      "Firefox"
+    ],
+    "browser_languages": [
+      "en_US",
+      "fr_FR"
+    ],
+    "browser_suites": [
+      "v19-browser",
+      "v19-document-browser",
+      "v19-same-name-browser",
+      "v19-ui-corrections-browser",
+      "v19-viewer-browser"
+    ],
+    "encrypted_cross_installation_restore": "passed: descriptions and original bytes verified",
+    "same_name_integrity": {
+      "original_unchanged": true,
+      "all_names_unique": true,
+      "same_content_files_verified": 12
+    },
+    "github_checks": {
+      "run": 46153157490,
+      "jobs": 19,
+      "result": "success",
+      "commit": "45a67ac6831d40474b8e158fffcc57cffb19c783"
+    },
+    "release": "published and independently downloaded/verified",
+    "pcp_followup": "docs/prochain-lot-beta.md",
+    "tag": "v0.1.19-alpha.1",
+    "final_mobile_correction": {
+      "file": "assets/viewer.css",
+      "change": "wrap controls below 480px across platform fonts",
+      "targeted_rechecks": "Chromium/Firefox EN/FR, desktop/mobile passed"
+    },
+    "local_services": "4 HTTP fixtures and disposable database stopped; all evidence preserved"
+  },
+  "next_scope": "docs/prochain-lot-beta.md"
+}
