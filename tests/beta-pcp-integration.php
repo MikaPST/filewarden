@@ -19,6 +19,8 @@ foreach(AuditEvents::actions()as$action=>$label)foreach(AuditEvents::statuses()a
  $assertRows(['actor_login'=>$actor,'actions'=>[$action],'statuses'=>[$status]],$expected);
 }
 $assertRows(['actor_login'=>$actor],array_keys($fixture));
+$assertRows(['actor_login'=>$actor,'from'=>'','until'=>''],array_keys($fixture));
+$assertRows(['actor_login'=>$actor,'from'=>'2026-11-28T10:20','until'=>'2026-11-28T10:20'],array_keys($fixture));
 $assertRows(['actor_login'=>$actor,'actions'=>[],'statuses'=>[]],[]);
 $assertRows(['actor_login'=>$actor,'from'=>'2026-11-28T10:21'],[]);
 $assertRows(['actor_login'=>$actor,'until'=>'2026-11-28T10:19'],[]);

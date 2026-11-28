@@ -121,8 +121,8 @@ final class AuditHistory {
 				$wpdb->prepare(
 					'SELECT id, created_at, event, actor_id, actor_login, object_id, actor_type, resource_type, resource_name, resource_rules, actor_ip, ip_expires_at FROM %i WHERE ' . "id <= %d
 		AND (%s = '' OR event = %s)
-		AND (%s = '' OR created_at >= %s)
-		AND (%s = '' OR created_at <= %s)
+		AND (%s = '' OR created_at >= NULLIF(%s, ''))
+		AND (%s = '' OR created_at <= NULLIF(%s, ''))
 		AND (%d = 0 OR ((%s <> '' AND FIND_IN_SET(CAST(event AS BINARY), %s) > 0) OR (%d = 1 AND FIND_IN_SET(CAST(event AS BINARY), %s) = 0)))
 		AND (%s = '' OR actor_login = %s OR (%d > 0 AND actor_login = '' AND actor_id = %d AND actor_type NOT IN ('imported','source_system','source_user','source_visitor','source_unknown')))
 		AND (%d = 0 OR event <> 'audit_purged')" . ' ORDER BY id DESC LIMIT %d',
@@ -152,8 +152,8 @@ final class AuditHistory {
 				$wpdb->prepare(
 					'SELECT id, created_at, event, actor_id, actor_login, object_id, actor_type, resource_type, resource_name, resource_rules FROM %i WHERE ' . "id <= %d
 		AND (%s = '' OR event = %s)
-		AND (%s = '' OR created_at >= %s)
-		AND (%s = '' OR created_at <= %s)
+		AND (%s = '' OR created_at >= NULLIF(%s, ''))
+		AND (%s = '' OR created_at <= NULLIF(%s, ''))
 		AND (%d = 0 OR ((%s <> '' AND FIND_IN_SET(CAST(event AS BINARY), %s) > 0) OR (%d = 1 AND FIND_IN_SET(CAST(event AS BINARY), %s) = 0)))
 		AND (%s = '' OR actor_login = %s OR (%d > 0 AND actor_login = '' AND actor_id = %d AND actor_type NOT IN ('imported','source_system','source_user','source_visitor','source_unknown')))
 		AND (%d = 0 OR event <> 'audit_purged')" . ' ORDER BY id DESC LIMIT %d',
@@ -202,8 +202,8 @@ final class AuditHistory {
 			$wpdb->prepare(
 				'SELECT COUNT(*) FROM %i WHERE ' . "id <= %d
 		AND (%s = '' OR event = %s)
-		AND (%s = '' OR created_at >= %s)
-		AND (%s = '' OR created_at <= %s)
+		AND (%s = '' OR created_at >= NULLIF(%s, ''))
+		AND (%s = '' OR created_at <= NULLIF(%s, ''))
 		AND (%d = 0 OR ((%s <> '' AND FIND_IN_SET(CAST(event AS BINARY), %s) > 0) OR (%d = 1 AND FIND_IN_SET(CAST(event AS BINARY), %s) = 0)))
 		AND (%s = '' OR actor_login = %s OR (%d > 0 AND actor_login = '' AND actor_id = %d AND actor_type NOT IN ('imported','source_system','source_user','source_visitor','source_unknown')))
 		AND (%d = 0 OR event <> 'audit_purged')",
@@ -263,8 +263,8 @@ final class AuditHistory {
 					$wpdb->prepare(
 						'DELETE FROM %i WHERE ' . "id <= %d
 		AND (%s = '' OR event = %s)
-		AND (%s = '' OR created_at >= %s)
-		AND (%s = '' OR created_at <= %s)
+		AND (%s = '' OR created_at >= NULLIF(%s, ''))
+		AND (%s = '' OR created_at <= NULLIF(%s, ''))
 		AND (%d = 0 OR ((%s <> '' AND FIND_IN_SET(CAST(event AS BINARY), %s) > 0) OR (%d = 1 AND FIND_IN_SET(CAST(event AS BINARY), %s) = 0)))
 		AND (%s = '' OR actor_login = %s OR (%d > 0 AND actor_login = '' AND actor_id = %d AND actor_type NOT IN ('imported','source_system','source_user','source_visitor','source_unknown')))
 		AND (%d = 0 OR event <> 'audit_purged')",
