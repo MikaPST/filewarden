@@ -132,16 +132,19 @@ $search_folder = $service->create_folder( 'Search fixtures', 0, array( 'type' =>
 fw_assert( wp_is_uuid( FileWarden\FolderReference::uuid( $search_folder ), 4 ), 'New folder UUID missing.' );
 $template = $repository->document( $ids['public'] );
 unset( $template['id'], $template['created_at'], $template['created_by'] );
+$search_source = tempnam( sys_get_temp_dir(), 'fw-search-' );
+file_put_contents( $search_source, $bytes );
 for ( $i = 0; $i < 115; $i++ ) {
     $record = $template;
     $record['uuid'] = wp_generate_uuid4();
-    // Metadata-only search fixtures never serve binary content.
-    $record['storage_key'] = bin2hex( random_bytes( 32 ) );
+    // Keep search fixtures exportable for the subsequent full-library backup acceptance.
+    $record['storage_key'] = $storage->put( $search_source, strlen( $bytes ) );
     $record['folder_id'] = $search_folder;
     $record['name'] = ( $i < 101 ? 'Hidden-' : 'Visible-' ) . $i . '.pdf';
     $record['policy'] = array( 'type' => $i < 101 ? 'authenticated' : 'public' );
     $repository->insert( 'documents', $record );
 }
+unlink( $search_source );
 wp_set_current_user( 0 );
 fw_assert( array() === FileWarden\Publication::page( $service, $search_folder, 'Hidden', 0 ), 'Search leaked restricted names.' );
 $first = FileWarden\Publication::page( $service, $search_folder, 'visible', 0 );
