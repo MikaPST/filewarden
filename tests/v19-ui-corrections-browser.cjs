@@ -58,6 +58,8 @@ const output=process.env.FILEWARDEN_UI_SCREENSHOTS;assert.ok(output.includes('.t
   await page.locator('[data-preview-device='+device+']').click();
   for(const style of['compact','centered','editorial']){
    await page.locator('[name=denied][value='+style+']').check();await preview.locator('.fw-denied-'+style).waitFor();
+   // The frame document can exist before its stylesheet or device transition has settled.
+   await page.waitForFunction(style=>{const d=document.querySelector('.filewarden-publication-frame')?.contentDocument,m=d?.querySelector('main'),c=d?.querySelector('.fw-denied-'+style),b=d?.querySelector('.fw-public-brand');if(!m||!c||!b)return false;const outer=m.getBoundingClientRect(),card=c.getBoundingClientRect(),brand=b.getBoundingClientRect();return card.left-outer.left>=15&&outer.right-card.right>=15&&Math.abs(brand.left-card.left)<1&&Math.abs(brand.right-card.right)<1;},style);
    const g=await preview.locator('main').evaluate(m=>{const brand=m.querySelector('.fw-public-brand').getBoundingClientRect(),card=m.querySelector('.fw-denied').getBoundingClientRect(),outer=m.getBoundingClientRect();return {left:Math.abs(brand.left-card.left),right:Math.abs(brand.right-card.right),marginLeft:card.left-outer.left,marginRight:outer.right-card.right,overflow:document.documentElement.scrollWidth>innerWidth+1};});
    assert.ok(g.left<1&&g.right<1,'Denied '+style+' edges differ from the separator');assert.ok(g.marginLeft>=15&&g.marginRight>=15,'Denied margins missing');assert.equal(g.overflow,false);
   }

@@ -57,5 +57,5 @@ canvas, #fw-image { display: block; margin: 0 auto; background: white; box-shado
 .fw-sr-only,#fw-status.fw-status-complete{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 #fw-viewer>header{position:relative;z-index:2;flex-shrink:0}
 @media(max-width:900px){.fw-public-theme .fw-public-name{display:none}.fw-public-theme #fw-viewer>header{flex-wrap:wrap;gap:6px 10px}.fw-title{order:1;flex-basis:calc(100% - 135px)}.fw-public-brand{order:0}#fw-viewer>header nav{order:2;border-left:0;margin-left:auto}.fw-public-theme .fw-toolbar{order:3;width:100%;justify-content:space-between;border-top:1px solid var(--fw-public-border);padding-top:6px}.fw-zoom-controls{border:0;padding-left:0}}
-@media(max-width:370px){.fw-public-theme .fw-toolbar{flex-wrap:wrap;justify-content:center;gap:7px}#fw-zoom{max-width:130px}}
+@media(max-width:480px){.fw-public-theme .fw-toolbar{flex-wrap:wrap;justify-content:center;gap:7px}#fw-zoom{max-width:130px}}
 @media(pointer:coarse){.fw-public-theme .fw-toolbar button,.fw-public-theme #fw-viewer>header nav a{width:40px;height:44px;min-width:36px}#fw-page,#fw-zoom{min-height:40px}}
