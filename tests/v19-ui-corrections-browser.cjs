@@ -34,8 +34,11 @@ const output=process.env.FILEWARDEN_UI_SCREENSHOTS;assert.ok(output.includes('.t
  await modal.locator('[name=policy_type]').selectOption('public');await modal.locator('.fw-warning:not([hidden])').waitFor();
  for(const viewport of[{width:1280,height:700},{width:1280,height:520},{width:375,height:812}]){
   await page.setViewportSize(viewport);const cancel=modal.locator('.fw-cancel');await cancel.scrollIntoViewIfNeeded();
+  // Reach the dialog's actual end: Firefox's minimal scroll need only expose the link,
+  // whereas this assertion also checks the padding below it after a viewport resize.
+  await modal.evaluate(async d=>{d.scrollTop=d.scrollHeight;await new Promise(requestAnimationFrame);await new Promise(requestAnimationFrame);});
   const g=await modal.evaluate(d=>{const c=d.querySelector('.fw-cancel').getBoundingClientRect(),b=d.querySelector('[name=save_policy]').getBoundingClientRect(),r=d.getBoundingClientRect();return{cancelCenter:(c.left+c.right)/2,saveCenter:(b.left+b.right)/2,bottom:c.bottom,border:r.bottom,innerOverflow:getComputedStyle(d.querySelector('.fw-inspector')).overflow,below:c.top>=b.bottom};});
-  assert.ok(Math.abs(g.cancelCenter-g.saveCenter)<2,'Cancel is not centered');assert.ok(g.bottom<=g.border-12,'Cancel is clipped');assert.ok(g.below);assert.equal(g.innerOverflow,'visible');
+  assert.ok(Math.abs(g.cancelCenter-g.saveCenter)<2,'Cancel is not centered');assert.ok(g.bottom<=g.border-12,'Cancel is clipped: '+JSON.stringify({viewport,...g}));assert.ok(g.below);assert.equal(g.innerOverflow,'visible');
  }
  await page.setViewportSize({width:1280,height:850});await modal.locator('.fw-cancel').scrollIntoViewIfNeeded();await page.screenshot({path:output+'/'+name+'-rights-modal.png'});
  const form=await modal.locator('form').evaluate(f=>({url:f.getAttribute('action'),fields:Object.fromEntries(new FormData(f))}));

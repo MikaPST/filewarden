@@ -35,6 +35,8 @@ assert.ok(output.includes('.tools'));
             await page.setViewportSize({ width: 375, height: 812 });
             await page.locator('#fw-zoom').selectOption('fit');
             await page.locator('#fw-zoom').selectOption('page');
+            // PDF.js rerenders asynchronously after resize/zoom; inspect the settled layout.
+            await page.waitForFunction(() => document.documentElement.scrollWidth <= innerWidth && document.getElementById('fw-canvas').getBoundingClientRect().width <= innerWidth);
             assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
             assert.ok((await page.locator('header').boundingBox()).height <= 150);
             await page.screenshot({ path: output + '/' + name + '-viewer-mobile.png' });
