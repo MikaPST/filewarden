@@ -55,7 +55,7 @@ final class Publication {
 			),
 			admin_url( 'admin-post.php' )
 		);
-		wp_enqueue_script( 'filewarden-publication-frame', plugins_url( 'assets/publication-frame.js', FILEWARDEN_PATH . 'filewarden.php' ), array(), FILEWARDEN_VERSION, true );
+		wp_enqueue_script( 'filewarden-publication-frame', plugins_url( 'assets/publication-frame.js', FILEWARDEN_PATH . 'filewarden.php' ), array(), FILEWARDEN_VERSION . '-' . substr( hash_file( 'sha256', FILEWARDEN_PATH . 'assets/publication-frame.js' ), 0, 12 ), true ); // phpcs:ignore WordPress.WP.AlternativeFunctions -- Same-version local candidates must not retain old behavior in browser caches.
 		return '<iframe class="filewarden-publication-frame" title="' . esc_attr__( 'FileWarden documents', 'filewarden' ) . '" src="' . esc_url( $url ) . '" width="100%" height="760" loading="lazy"></iframe>';
 	}
 
@@ -128,7 +128,7 @@ final class Publication {
 		if ( $children ) {
 			echo '<section class="fw-subfolders-group" aria-labelledby="fw-subfolders-label"><h2 id="fw-subfolders-label">' . esc_html__( 'Subfolders', 'filewarden' ) . '</h2><div class="fw-subfolders">';
 			foreach ( $children as $child ) {
-				echo '<a href="' . esc_url( add_query_arg( $context + array( 'folder_id' => $child['uuid'] ), admin_url( 'admin-post.php' ) ) ) . '"><img width="24" height="24" alt="" src="' . esc_url( $assets . 'icons/folder.svg' ) . '"><span>' . esc_html( $child['name'] ) . '</span></a>';
+				echo '<a href="' . esc_url( add_query_arg( $context + array( 'folder_id' => $child['uuid'] ), admin_url( 'admin-post.php' ) ) ) . '">' . self::control_icon( 'folder' ) . '<span>' . esc_html( $child['name'] ) . '</span></a>';
 			}
 			echo '</div></section>';
 		}
@@ -150,7 +150,11 @@ final class Publication {
 			echo '<article class="document"><div class="document-identity"><img class="file-icon" src="' . esc_url( $assets . 'icons/' . self::icon( $row['name'] ) . '.svg' ) . '" alt="" width="64" height="72"><div class="details"><h2><a target="_blank" rel="noopener noreferrer" href="' . esc_url( $url ) . '">' . esc_html( $row['name'] ) . '</a></h2><p class="metadata"><span>' . esc_html( strtoupper( pathinfo( $row['name'], PATHINFO_EXTENSION ) ) ) . '</span><span>' . esc_html( size_format( $row['size'], 1 ) ) . '</span><time>' . esc_html( get_date_from_gmt( $row['created_at'], get_option( 'date_format' ) ) ) . '</time></p></div></div><div class="actions"><a class="preview" target="_blank" rel="noopener noreferrer" href="' . esc_url( $url ) . '">' . self::control_icon( 'eye' ) . esc_html__( 'Preview', 'filewarden' ) . '<span class="sr-only"> — ' . esc_html( $row['name'] ) . '</span></a><a class="download" href="' . esc_url( add_query_arg( 'download', '1', $url ) ) . '">' . self::control_icon( 'download' ) . esc_html__( 'Download', 'filewarden' ) . '<span class="sr-only"> — ' . esc_html( $row['name'] ) . '</span></a></div></article>';
 		}
 		if ( ! $visible ) {
-			echo '<p>' . esc_html__( 'No documents are visible in this folder.', 'filewarden' ) . '</p>';
+			echo '<div class="fw-empty-state"><span class="fw-empty-symbol" aria-hidden="true">' . self::control_icon( '' === $search ? 'folder-open' : 'search' ) . '</span><h2>' . esc_html( '' === $search ? __( 'No documents to display', 'filewarden' ) : __( 'No results', 'filewarden' ) ) . '</h2><p>' . esc_html( '' === $search ? __( 'No documents are available to you in this folder at the moment.', 'filewarden' ) : __( 'No accessible documents match your search in this folder.', 'filewarden' ) ) . '</p>';
+			if ( '' !== $search ) {
+				echo '<a class="fw-empty-reset" href="' . esc_url( add_query_arg( $context + array( 'folder_id' => $reference ), admin_url( 'admin-post.php' ) ) ) . '">' . self::control_icon( 'rotate-ccw' ) . esc_html__( 'Clear search', 'filewarden' ) . '</a>';
+			}
+			echo '</div>';
 		}
 		echo '</section><nav class="pagination">';
 		if ( count( $rows ) > 12 || $offset > 0 ) {
@@ -219,8 +223,10 @@ final class Publication {
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped,WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- Standalone frame; appearance helpers validate CSS tokens and escape every public identity field.
 		echo '<!doctype html><html lang="' . esc_attr( Language::html() ) . '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>' . esc_html( $title ) . '</title><link rel="stylesheet" href="' . esc_url( FrontendAppearance::stylesheet_url( 'publication' ) ) . '">' . FrontendAppearance::style() . '</head><body class="fw-public-theme"><main class="fw-denied-wrap">' . FrontendAppearance::brand() . '<section class="fw-denied fw-denied-' . esc_attr( self::denied_style( $style ) ) . '"><div class="fw-denied-symbol" aria-hidden="true">&#128274;</div><div class="fw-denied-copy"><h1>' . esc_html( $title ) . '</h1><p>' . esc_html( $message ) . '</p>';
 		if ( ! $technical && ! $logged_in ) {
+			$login = PublicationLogin::current();
+			$popup = 'elementor' === $login['mode'] ? ' data-fw-popup="' . esc_attr( $login['popup_id'] ) . '"' : '';
 			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- control_icon() returns only static allowlisted markup; the URL and label are escaped independently.
-			echo '<a class="fw-login" target="_top" href="' . esc_url( PublicationLogin::destination( $return_url ) ) . '">' . self::control_icon( 'log-in' ) . esc_html__( 'Sign in', 'filewarden' ) . '</a>'; }
+			echo '<a class="fw-login" target="_top"' . $popup . ' href="' . esc_url( PublicationLogin::destination( $return_url ) ) . '">' . self::control_icon( 'log-in' ) . esc_html__( 'Sign in', 'filewarden' ) . '</a>'; }
 		echo '</div></section></main></body></html>';
 	}
 
@@ -230,7 +236,7 @@ final class Publication {
 	 * @return string Escaped static markup.
 	 */
 	private static function control_icon( $name ) {
-		if ( ! in_array( $name, array( 'folder-open', 'search', 'list', 'layout-grid', 'eye', 'download', 'log-in' ), true ) ) {
+		if ( ! in_array( $name, array( 'folder', 'folder-open', 'search', 'list', 'layout-grid', 'eye', 'download', 'log-in', 'rotate-ccw' ), true ) ) {
 			return '';
 		}
 		return '<span class="fw-ui-icon fw-ui-' . esc_attr( $name ) . '" aria-hidden="true"></span>';
@@ -276,16 +282,16 @@ final class Publication {
 	 */
 	public static function icon( $name ) {
 		$extension = strtolower( pathinfo( $name, PATHINFO_EXTENSION ) );
-		$groups    = array(
-			'pdf'     => array( 'pdf' ),
-			'word'    => array( 'doc', 'docx', 'odt' ),
-			'excel'   => array( 'xls', 'xlsx', 'csv', 'ods' ),
-			'slides'  => array( 'ppt', 'pptx', 'odp' ),
-			'image'   => array( 'jpg', 'jpeg', 'png', 'gif', 'webp' ),
-			'archive' => array( 'zip', 'rar', '7z' ),
-			'text'    => array( 'txt', 'rtf', 'md' ),
-			'audio'   => array( 'mp3', 'wav', 'ogg' ),
-			'video'   => array( 'mp4', 'webm', 'mov' ),
+		$dedicated = array( 'pdf', 'docx', 'xlsx', 'ppt', 'pptx', 'odt', 'ods', 'odp', 'csv', 'txt', 'md', 'jpg', 'jpeg', 'png', 'svg', 'zip', 'rar', '7z', 'epub', 'html', 'json', 'xml', 'yaml', 'sql', 'rtf', 'tif', 'tiff', 'eml', 'msg' );
+		if ( in_array( $extension, $dedicated, true ) ) {
+			return $extension;
+		}
+		$groups = array(
+			'word'  => array( 'doc' ),
+			'excel' => array( 'xls' ),
+			'image' => array( 'gif', 'webp' ),
+			'audio' => array( 'mp3', 'wav', 'ogg' ),
+			'video' => array( 'mp4', 'webm', 'mov' ),
 		);
 		foreach ( $groups as $kind => $extensions ) {
 			if ( in_array( $extension, $extensions, true ) ) {

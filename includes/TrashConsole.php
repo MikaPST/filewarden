@@ -22,27 +22,33 @@ final class TrashConsole {
 		$intent = isset( $_GET['trash_action'] ) && is_string( $_GET['trash_action'] ) ? sanitize_key( $_GET['trash_action'] ) : '';
 		$uuid   = isset( $_GET['document'] ) && is_string( $_GET['document'] ) ? sanitize_text_field( wp_unslash( $_GET['document'] ) ) : '';
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
-		$rows = DocumentCollection::rows( $service, true, $search, $filter );
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Authorized display query.
+		$filters = LibraryQuery::filters( $_GET );
+		$rows    = LibraryQuery::rows( $service, $filter, $filters, true );
 		Notice::show( __( 'Only authorized deleted documents are shown. Restoring requires an authorized destination.', 'filewarden' ), 'info', __( 'Trash', 'filewarden' ) );
-		echo '<section class="fw-content fw-global-trash"><h2>' . esc_html__( 'Global trash', 'filewarden' ) . '</h2><p>' . esc_html__( 'All deleted documents you are allowed to manage. Automatic retention still applies.', 'filewarden' ) . '</p><form method="get" class="fw-search fw-trash-filters"><input type="hidden" name="page" value="filewarden"><input type="hidden" name="tab" value="trash"><label for="fw-trash-search">' . esc_html__( 'Search by filename', 'filewarden' ) . '<input id="fw-trash-search" type="search" name="search" maxlength="200" value="' . esc_attr( $search ) . '" placeholder="' . esc_attr__( 'Search for a document in the trash...', 'filewarden' ) . '"></label><label for="fw-trash-folder">' . esc_html__( 'Folder', 'filewarden' ) . '<select id="fw-trash-folder" name="trash_folder"><option value="">' . esc_html__( 'All folders', 'filewarden' ) . '</option>';
+		echo '<section class="fw-content fw-global-trash"><h2>' . esc_html__( 'Global trash', 'filewarden' ) . '</h2><p>' . esc_html__( 'All deleted documents you are allowed to manage. Automatic retention still applies.', 'filewarden' ) . '</p><form method="get" class="fw-search fw-trash-filters fw-library-search"><input type="hidden" name="page" value="filewarden"><input type="hidden" name="tab" value="trash"><div class="fw-search-main"><div class="fw-search-combined"><label class="screen-reader-text" for="fw-trash-search">' . esc_html__( 'Search by filename', 'filewarden' ) . '</label><input id="fw-trash-search" type="search" name="search" maxlength="200" value="' . esc_attr( $search ) . '" placeholder="' . esc_attr__( 'Search for a document in the trash...', 'filewarden' ) . '"><label class="fw-search-field" for="fw-trash-folder">' . esc_html__( 'Original location', 'filewarden' ) . '<select id="fw-trash-folder" name="trash_folder"><option value="">' . esc_html__( 'All folders', 'filewarden' ) . '</option>';
 		foreach ( $service->folder_choices() as $id => $label ) {
 			echo '<option value="' . esc_attr( $id ) . '"' . selected( $filter, (string) $id, false ) . '>' . esc_html( $label ) . '</option>'; }
-		echo '</select></label><button class="button fw-button-accent"><span class="fw-action-icon fw-icon-search" aria-hidden="true"></span>' . esc_html__( 'Search', 'filewarden' ) . '</button>';
-		if ( '' !== $search || null !== $filter ) {
-			echo '<a href="' . esc_url(
-				add_query_arg(
-					array(
-						'page' => 'filewarden',
-						'tab'  => 'trash',
-					),
-					admin_url( 'admin.php' )
-				)
-			) . '">' . esc_html__( 'Reset filters', 'filewarden' ) . '</a>';
-		}
-		echo '</form><p class="fw-trash-count">';
+		echo '</select></label>';
+		LibraryConsole::filters(
+			$filters,
+			false,
+			array(
+				'page'         => 'filewarden',
+				'tab'          => 'trash',
+				'trash_folder' => null === $filter ? '' : $filter,
+			)
+		);
+		echo '</form>';
+		/* translators: %s: configured trash retention in days. */
+		echo '<p class="fw-trash-policy">' . esc_html( sprintf( __( 'Automatic retention: %s days from deletion.', 'filewarden' ), number_format_i18n( max( 1, (int) get_option( 'filewarden_trash_days', 30 ) ) ) ) ) . '</p>';
+		LibraryConsole::selection( $service, true );
+		echo '<p class="fw-trash-count">';
 		/* translators: %s: authorized matching document count. */
 		echo esc_html( sprintf( _n( '%s document', '%s documents', count( $rows ), 'filewarden' ), number_format_i18n( count( $rows ) ) ) );
-		echo '</p><div class="fw-table-wrap"><table class="widefat"><thead><tr><th scope="col">' . esc_html__( 'Document', 'filewarden' ) . '</th><th scope="col">' . esc_html__( 'Original location', 'filewarden' ) . '</th><th scope="col">' . esc_html__( 'Deleted on', 'filewarden' ) . '</th><th scope="col">' . esc_html__( 'Actions', 'filewarden' ) . '</th></tr></thead><tbody>';
+		echo '</p><div class="fw-table-wrap"><table class="widefat fw-trash-table"><thead><tr><th scope="col">';
+		LibraryConsole::select_header();
+		echo esc_html__( 'Document', 'filewarden' ) . '</th><th scope="col">' . esc_html__( 'Original location', 'filewarden' ) . '</th><th scope="col">' . esc_html__( 'Deleted on', 'filewarden' ) . '</th><th scope="col">' . esc_html__( 'Actions', 'filewarden' ) . '</th></tr></thead><tbody>';
 		foreach ( $rows as $row ) {
 			$origin    = json_decode( $row['trash_origin'] ?? '', true );
 			$icon      = plugins_url( 'assets/icons/' . Publication::icon( $row['name'] ) . '.svg', FILEWARDEN_PATH . 'filewarden.php' );
@@ -50,7 +56,7 @@ final class TrashConsole {
 			$remaining = max( 0, (int) ceil( ( $expiry - time() ) / DAY_IN_SECONDS ) );
 			/* translators: %s: days until eligibility for automatic trash cleanup. */
 			$retention = $remaining ? sprintf( _n( 'Automatic cleanup in %s day', 'Automatic cleanup in %s days', $remaining, 'filewarden' ), number_format_i18n( $remaining ) ) : __( 'Eligible for automatic cleanup; waiting for the scheduled task.', 'filewarden' );
-			echo '<tr><th scope="row"><div class="fw-document-name"><img src="' . esc_url( $icon ) . '" width="38" height="44" alt=""><span>' . esc_html( $row['name'] ) . '</span></div></th><td>' . esc_html( $origin['path'] ?? DocumentCollection::path( $service->repository, (int) $row['folder_id'] ) ?? __( 'Unknown original location', 'filewarden' ) ) . '</td><td>' . esc_html( get_date_from_gmt( $row['trashed_at'], 'Y-m-d H:i:s' ) ) . '<small class="fw-trash-retention">' . esc_html( $retention ) . '</small></td><td>';
+			echo '<tr><th scope="row"><div class="fw-document-name"><input type="checkbox" data-document-selection value="' . esc_attr( $row['uuid'] ) . '" aria-label="' . esc_attr( $row['name'] ) . '"><img src="' . esc_url( $icon ) . '" width="38" height="44" alt=""><span>' . esc_html( $row['name'] ) . '</span></div></th><td data-label="' . esc_attr__( 'Original location', 'filewarden' ) . '">' . esc_html( $origin['path'] ?? DocumentCollection::path( $service->repository, (int) $row['folder_id'] ) ?? __( 'Unknown original location', 'filewarden' ) ) . '</td><td data-label="' . esc_attr__( 'Deleted on', 'filewarden' ) . '">' . esc_html( get_date_from_gmt( $row['trashed_at'], 'Y-m-d H:i:s' ) ) . '<small class="fw-trash-retention">' . esc_html( $retention ) . '</small></td><td class="fw-trash-row-actions" data-label="' . esc_attr__( 'Actions', 'filewarden' ) . '">';
 			foreach ( array(
 				'restore' => __( 'Restore', 'filewarden' ),
 				'purge'   => __( 'Delete permanently', 'filewarden' ),
@@ -71,16 +77,22 @@ final class TrashConsole {
 		}
 		if ( ! $rows ) {
 			echo '<tr><td colspan="4">' . esc_html( '' !== $search || null !== $filter ? __( 'No documents match this view.', 'filewarden' ) : __( 'The trash is empty.', 'filewarden' ) ) . '</td></tr>'; }
-		echo '</tbody></table></div><p><a class="button fw-button-danger" href="' . esc_url(
-			add_query_arg(
-				array(
-					'page'         => 'filewarden',
-					'tab'          => 'trash',
-					'trash_action' => 'empty',
-				),
-				admin_url( 'admin.php' )
-			)
-		) . '"><span class="fw-action-icon fw-icon-trash-2" aria-hidden="true"></span>' . esc_html__( 'Empty trash', 'filewarden' ) . '</a></p>';
+		echo '</tbody></table></div>';
+		$has_trash = $rows || LibraryQuery::rows( $service, null, LibraryQuery::filters( array() ), true );
+		if ( ! $has_trash ) {
+			echo '<p><button class="button fw-button-danger" disabled><span class="fw-action-icon fw-icon-trash-2" aria-hidden="true"></span>' . esc_html__( 'Empty trash', 'filewarden' ) . '</button></p>';
+		} else {
+			echo '<p><a class="button fw-button-danger" href="' . esc_url(
+				add_query_arg(
+					array(
+						'page'         => 'filewarden',
+						'tab'          => 'trash',
+						'trash_action' => 'empty',
+					),
+					admin_url( 'admin.php' )
+				)
+			) . '"><span class="fw-action-icon fw-icon-trash-2" aria-hidden="true"></span>' . esc_html__( 'Empty trash', 'filewarden' ) . '</a></p>';
+		}
 		if ( 'restore' === $intent ) {
 			$row = ( new Lifecycle( $service ) )->record( $uuid, true );
 			if ( empty( $row['trashed_at'] ) ) {

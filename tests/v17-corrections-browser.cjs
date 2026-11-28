@@ -22,7 +22,7 @@ module.exports=async({context,base,name,fixture})=>{
   await page.goto(url);await ready();await frameReady();
   const publicStyle=await page.locator('.filewarden-publication-frame').evaluate(frame=>frame.contentDocument.querySelector('link[rel=stylesheet]').href);
   const publicCSS=await(await context.request.get(publicStyle)).body();
-  assert.equal(new URL(publicStyle).searchParams.get('ver'),'0.1.17-dev-'+require('node:crypto').createHash('sha256').update(publicCSS).digest('hex').slice(0,12));
+  assert.equal(new URL(publicStyle).searchParams.get('ver'),(process.env.FILEWARDEN_TARGET_VERSION || '0.1.17-dev')+'-'+require('node:crypto').createHash('sha256').update(publicCSS).digest('hex').slice(0,12));
   if((process.env.FILEWARDEN_BROWSER_SUFFIX||'').includes('-fr')){
    assert.equal(await page.locator('.fw-publisher').getAttribute('lang'),'fr-FR');
    assert.match(await tab('integration').textContent(),/Intégration du dossier/);

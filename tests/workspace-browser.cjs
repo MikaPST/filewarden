@@ -8,6 +8,11 @@ module.exports = async ({ page, context, base, fixture, name }) => {
     const inspector = page.locator('.fw-inspector');
     const navigate = async link => {
         const target = await link.getAttribute('href');
+        if (['rights','move','copy','trash','restore','delete_folder'].includes(new URL(target).searchParams.get('panel'))) {
+            await link.click();
+            await page.locator('dialog.fw-action-dialog .fw-inspector form').waitFor();
+            return;
+        }
         await Promise.all([page.waitForURL(target), link.click()]);
     };
     const openFolderRights = async () => {
@@ -28,7 +33,7 @@ module.exports = async ({ page, context, base, fixture, name }) => {
     const publicRow = page.locator('tbody tr').filter({ hasText: 'policy-public.pdf' });
     assert.ok((await publicRow.textContent()).includes('Not public: restricted by its folder.'));
     await openAction('policy-inherit.pdf', 'Edit access rules');
-    await page.waitForFunction(() => document.querySelector('.fw-inspector h2') === document.activeElement);
+    await page.waitForFunction(() => document.querySelector('dialog.fw-action-dialog .fw-close') === document.activeElement);
     await inspector.locator('[name="policy_type"]').selectOption('public');
     assert.ok(await inspector.locator('.fw-public-warning').isVisible());
     await inspector.locator('[name="policy_type"]').selectOption('inherit');
@@ -55,7 +60,7 @@ module.exports = async ({ page, context, base, fixture, name }) => {
     await openAction('policy-public.pdf', 'Copy');
     await inspector.locator('#fw-destination').selectOption(String(fixture.policy_folder));
     await Promise.all([
-        page.waitForURL(url => url.searchParams.get('panel') === 'copy' && url.searchParams.has('destination_id')),
+        inspector.locator('.fw-destination-review').waitFor(),
         inspector.getByRole('button', { name: 'Review destination' }).click()
     ]);
     await page.waitForLoadState('load');

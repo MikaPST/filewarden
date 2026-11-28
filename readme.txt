@@ -6,17 +6,29 @@ Requires PHP: 8.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Pre-alpha document-management foundation. Not ready for production.
+Alpha preview of private document management. Intended for preproduction testing.
 
 == Description ==
 
-FileWarden 0.1.17-dev is a development preview with integrated folder/document creation, breadcrumbs, a wider compact tree, per-file recovery information, searchable trash with type icons and retention information, and a site-wide public appearance editor. Choose FileWarden, Neutral, Nature or Custom colors, a public name and a local PNG/JPEG logo; preview changes before explicitly saving. Nature uses #EDF3EE; saved appearances remain unchanged until an explicit palette selection and save. Publication tabs preserve drafts. Visitor sign-in uses WordPress by default or an explicitly saved HTTP(S) destination shared by all site publications. Natural-height grid cards center the original file identity horizontally with 16px padding and actions below. Existing protected PDF/image previews, Media Library imports, inherited permissions, permanent URLs, French/English translations and shortcode publishing are preserved. ZIPs are never extracted automatically. The confirmed and audited all-format document setting remains disabled by default; refused content becomes a protected opaque attachment without active preview. Logos always retain strict image restrictions. Hosting acceptance is still required. Versions and native editor widgets remain future work.
+FileWarden 0.1.19-alpha.1 is the first public Alpha. It includes the owner-tested 0.1.18/0.1.19 development work: a document sheet, optional 400-character descriptions and authorized search, exact-content duplicate review with independent numbered copies, direct rename and multi-selection, illustrated effective-access explanations, encrypted backup/migration, Diagnostics, public color palettes and Elementor popup sign-in. Schema 9 preserves existing documents and logical links. This is a prerelease, not a stable production release. See docs/releases/v0.1.19-alpha.1.md for scope and limits.
+
+FileWarden 0.1.19-dev is a local development candidate with integrated folder/document creation, breadcrumbs, a wider compact tree, per-file recovery information, searchable trash with type icons and retention information, and a site-wide public appearance editor. Choose FileWarden, Neutral, Nature or Custom colors, a public name and a local PNG/JPEG logo; preview changes before explicitly saving. Nature uses #EDF3EE; saved appearances remain unchanged until an explicit palette selection and save. Publication tabs preserve drafts. Visitor sign-in uses WordPress by default or an explicitly saved HTTP(S) destination shared by all site publications. Natural-height grid cards center the original file identity horizontally with 16px padding and actions below. Existing protected PDF/image previews, Media Library imports, inherited permissions, permanent URLs, French/English translations and shortcode publishing are preserved. ZIPs are never extracted automatically. The confirmed and audited all-format document setting remains disabled by default; refused content becomes a protected opaque attachment without active preview. Logos always retain strict image restrictions. Hosting acceptance is still required. Versions and native editor widgets remain future work.
 
 == Installation ==
 
 Use single-site preproduction WordPress. Managed storage requires Sodium and verified HTTPS access restrictions. See docs/setup.md for verification, backups and the optional outside-webroot configuration. Do not use confidential documents before deployment validation.
 
 == Changelog ==
+
+= 0.1.19-alpha.1 =
+
+First public Alpha, consolidating the owner-validated v18/v19 candidates and their preproduction corrections. Current access explanations, modal close controls and copy/move destination fields follow the approved design. Same-name exact duplicates are reviewed before name conflicts; confirmed copies never overwrite existing documents. French/English catalogs and all original type icons are included. Version history, temporary public sharing and native editor widgets remain future work.
+
+= 0.1.19-dev =
+
+Final local acceptance refinements: consistent collapsible search filters and trash mobile cards, balanced public empty states, confirmed bulk trash and centered action dialogs, clearer destination fields and spaced backup controls. Complete or simplified encrypted transfers offer six independent components. Omitted access rules restore private administration-only content; creator attribution defaults to the restoring account in the UI. Old archives remain readable. Diagnostic distinguishes missing native Sodium and links to explicit, bounded WordPress-table conversion with independent backup and maintenance confirmation. No automatic shared-table conversion.
+Local preproduction candidate: direct rename, reviewed atomic selection actions, authorized global search and combined filters/sorts, dedicated file icons, eight-pair text readability score and encrypted backup/migration. Additive schema 7 preserves existing links/ACL and accepts schema 6 backups. Includes real diagnostics, safe backup error references, explicit Elementor popup sign-in, opt-in expiring audit IPs, action/status filters and a full-width shortcode band. Backup restores only into an empty library, with explicit access choices and independent destination encryption. IP capture defaults off. See docs/backup.md for limits and safe migration defaults.
+
 
 = 0.1.17-dev =
 Final preproduction refinements: Publication tabs above both columns, preview-contextual controls with preserved choices, Color palette wording, a shared Shortcode card above Preview with WordPress/Elementor guidance, and an amber retained-access information icon. Updated French/English catalogs. Existing documents, permissions and schema 6 preserved.

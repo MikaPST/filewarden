@@ -43,7 +43,7 @@ final class AdminController {
 	public function menu() {
 		add_menu_page( 'FileWarden', 'FileWarden', 'filewarden_manage_settings', 'filewarden', array( $this, 'page' ), 'none' );
 		add_action( 'admin_head', array( AdminBrand::class, 'menu_style' ) );
-		add_submenu_page( 'filewarden', __( 'Documents', 'filewarden' ), __( 'Documents', 'filewarden' ), 'filewarden_manage_settings', 'filewarden', array( $this, 'page' ) );
+		add_submenu_page( 'filewarden', __( 'Library', 'filewarden' ), __( 'Library', 'filewarden' ), 'filewarden_manage_settings', 'filewarden', array( $this, 'page' ) );
 		add_submenu_page( 'filewarden', __( 'Publication', 'filewarden' ), __( 'Publication', 'filewarden' ), 'filewarden_manage_settings', 'filewarden-publication', array( $this, 'publish_page' ) );
 		add_submenu_page( 'filewarden', __( 'Settings', 'filewarden' ), __( 'Settings', 'filewarden' ), 'filewarden_manage_settings', 'filewarden-settings', array( $this, 'settings_page' ) );
 		add_submenu_page( 'filewarden', __( 'Audit log', 'filewarden' ), __( 'Audit log', 'filewarden' ), 'filewarden_view_audit', 'filewarden-audit', array( $this, 'audit_page' ) );
@@ -85,7 +85,13 @@ final class AdminController {
 				'critical' => __( 'Persistent notifications waiting', 'filewarden' ),
 			)
 		);
+		if ( 'toplevel_page_filewarden' === $hook ) {
+			LibraryConsole::assets();
+		}
 		if ( 'filewarden_page_filewarden-settings' === $hook ) {
+			BackupConsole::assets( $this->service );
+			DiagnosticConsole::assets();
+			WordPressTableConsole::assets();
 			wp_enqueue_script( 'filewarden-settings', plugins_url( 'assets/settings.js', FILEWARDEN_PATH . 'filewarden.php' ), array( 'filewarden-notices' ), self::asset_version( 'assets/settings.js' ), true ); }
 		if ( 'toplevel_page_filewarden' !== $hook ) {
 			if ( 'filewarden_page_filewarden-publication' === $hook ) {
@@ -98,6 +104,7 @@ final class AdminController {
 				wp_localize_script( 'filewarden-appearance', 'filewardenAppearance', AppearanceConsole::configuration() );
 			}
 			if ( 'filewarden_page_filewarden-audit' === $hook ) {
+				wp_enqueue_script( 'filewarden-audit-filters', plugins_url( 'assets/audit-filters.js', FILEWARDEN_PATH . 'filewarden.php' ), array(), self::asset_version( 'assets/audit-filters.js' ), true );
 				wp_enqueue_script( 'filewarden-workspace', plugins_url( 'assets/workspace.js', FILEWARDEN_PATH . 'filewarden.php' ), array( 'filewarden-notices' ), self::asset_version( 'assets/workspace.js' ), true ); }
 			return;
 		}
@@ -118,6 +125,13 @@ final class AdminController {
 			'filewarden-upload-queue',
 			'filewardenQueue',
 			array(
+				'description'   => __( 'Description (optional)', 'filewarden' ),
+				'duplicate'     => __( 'This document already exists', 'filewarden' ),
+				'duplicateHelp' => __( 'A file with identical content is already available. You can keep an independent copy.', 'filewarden' ),
+				'viewExisting'  => __( 'View the existing document', 'filewarden' ),
+				'keepCopy'      => __( 'Import anyway', 'filewarden' ),
+				'importAs'      => __( 'Copy filename:', 'filewarden' ),
+				'remove'        => __( 'Remove from selection', 'filewarden' ),
 				'maxBytes'      => min( (int) get_option( 'filewarden_upload_mb', 50 ) * MB_IN_BYTES, wp_max_upload_size() ),
 				'allowAllTypes' => ImportPolicy::unrestricted(),
 				'kilobytes'     => __( 'KB', 'filewarden' ),
@@ -256,6 +270,9 @@ final class AdminController {
 				} elseif ( 'delete_folder' === $operation ) {
 					FolderLifecycle::remove( $this->service, $folder );
 					$folder = 0;
+				} elseif ( 'description' === $operation ) {
+					// phpcs:ignore WordPress.Security.ValidatedSanitizedInput -- DocumentDescription validates UTF-8, length and plain text before writing.
+					DocumentDescription::save( $this->service, sanitize_text_field( wp_unslash( $_POST['document'] ?? '' ) ), wp_unslash( $_POST['description'] ?? '' ) );
 				} elseif ( 'folder_policy' === $operation ) {
 					$folder = $this->service->change_policy( 'folder', $folder, $policy );
 				} elseif ( 'document_policy' === $operation ) {
@@ -268,17 +285,32 @@ final class AdminController {
 					$folder = $this->service->create_folder( $name, $folder, $policy );
 				} elseif ( 'upload' === $operation ) {
 					// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Upload service validates the original PHP upload structure, provenance, MIME and size.
-					$created = $this->service->upload( $_FILES['file'] ?? array(), $folder, $policy );
+					$created = $this->service->upload( $_FILES['file'] ?? array(), $folder, $policy, $this->import_options() );
 				} elseif ( 'import' === $operation ) {
 					// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- integer() strictly validates the attachment ID.
 					$id      = RestController::integer( wp_unslash( $_POST['media_id'] ?? null ) );
-					$created = $this->service->import_media( $id, $folder, $policy );
+					$created = $this->service->import_media( $id, $folder, $policy, $this->import_options() );
 				} else {
 					throw new \InvalidArgumentException( 'Invalid operation.' );
 				}
 			}
+			if ( in_array( $operation, array( 'upload', 'import' ), true ) && isset( $_POST['fw_queue'] ) && '1' === $_POST['fw_queue'] ) {
+				nocache_headers();
+				wp_send_json( array( 'saved' => true ) );
+			}
 			$result = 'database_repair' === $operation ? 'database_repaired' : ( in_array( $operation, array( 'folder_policy', 'document_policy' ), true ) ? 'policy_saved' : 'success' );
+		} catch ( DuplicateContent $error ) {
+			nocache_headers();
+			if ( isset( $_POST['fw_queue'] ) && '1' === $_POST['fw_queue'] ) {
+				wp_send_json( array( 'duplicate' => $error->review ) );
+			}
+			set_transient( 'filewarden_duplicate_' . get_current_user_id(), $error->review, 5 * MINUTE_IN_SECONDS );
+			$result = 'duplicate';
 		} catch ( \UnexpectedValueException $error ) {
+			if ( in_array( $operation, array( 'upload', 'import' ), true ) && isset( $_POST['fw_queue'] ) && '1' === $_POST['fw_queue'] ) {
+				nocache_headers();
+				wp_send_json( array( 'error' => __( 'This filename is already used in this folder. Choose another name before importing. No existing document was replaced.', 'filewarden' ) ) );
+			}
 			$result = 'duplicate';
 		} catch ( \DomainException $error ) {
 			$result = 'Remove subfolders first.' === $error->getMessage() ? 'subfolders' : 'denied';
@@ -305,7 +337,7 @@ final class AdminController {
 				'Upload failed at storage.' => 'storage',
 				'Upload failed at database.' => 'database',
 				'Upload failed at audit.' => 'audit',
-				'Document is busy.' => 'busy',
+				'Document is busy.', 'Library backup in progress.' => 'busy',
 				default => 'failed',
 			};
 		} catch ( \Throwable $error ) {
@@ -342,6 +374,20 @@ final class AdminController {
 		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '"' . ( 'database_repair' === $operation ? ' id="fw-database-repair"' : '' ) . ( $multipart ? ' enctype="multipart/form-data" data-filewarden-upload="true"' : '' ) . '>';
 		echo '<input type="hidden" name="action" value="filewarden_admin"><input type="hidden" name="operation" value="' . esc_attr( $operation ) . '">';
 		wp_nonce_field( 'filewarden_admin' );
+	}
+
+	/** Read import options after submit() checked its nonce.
+	 *
+	 * @return array Values validated by the service.
+	 */
+	private function import_options() {
+		// phpcs:disable WordPress.Security.NonceVerification,WordPress.Security.ValidatedSanitizedInput -- Service validates types, UTF-8, length and proof; submit() verifies the nonce.
+		return array(
+			'description'     => wp_unslash( $_POST['description'] ?? '' ),
+			'duplicate_proof' => wp_unslash( $_POST['duplicate_proof'] ?? '' ),
+			'import_name'     => wp_unslash( $_POST['import_name'] ?? '' ),
+		);
+		// phpcs:enable WordPress.Security.NonceVerification,WordPress.Security.ValidatedSanitizedInput
 	}
 
 	/**
@@ -465,6 +511,19 @@ final class AdminController {
 			$this->policy_controls( 'document', array( 'type' => 'inherit' ), true );
 		} else {
 			$this->policy_fields( 'document', $folder );
+		}
+		echo '<details class="fw-import-description"><summary>' . esc_html__( 'Description (optional)', 'filewarden' ) . '</summary><label for="fw-import-description" class="screen-reader-text">' . esc_html__( 'Description (optional)', 'filewarden' ) . '</label><textarea id="fw-import-description" name="description" data-description rows="3"></textarea><output class="fw-description-count">0 / 400</output></details>';
+		$duplicate = get_transient( 'filewarden_duplicate_' . get_current_user_id() );
+		$existing  = is_array( $duplicate ) ? $this->service->repository->document( $duplicate['uuid'] ?? '' ) : null;
+		if ( ! $existing || ! $this->service->permissions->can_read( $existing, wp_get_current_user() ) ) {
+			$duplicate = null;
+		}
+		if ( is_array( $duplicate ) ) {
+			delete_transient( 'filewarden_duplicate_' . get_current_user_id() );
+			if ( isset( $duplicate['import_name'] ) ) {
+				echo '<p>' . esc_html__( 'Copy filename:', 'filewarden' ) . ' <strong>' . esc_html( $duplicate['import_name'] ) . '</strong><input type="hidden" name="import_name" value="' . esc_attr( $duplicate['import_name'] ) . '"></p>';
+			}
+			echo '<div class="fw-warning"><strong>' . esc_html__( 'This document already exists', 'filewarden' ) . '</strong><p>' . esc_html( $duplicate['name'] ) . '</p><p>' . esc_html__( 'Select the same file again and submit to import an independent copy.', 'filewarden' ) . '</p><input type="hidden" name="duplicate_proof" value="' . esc_attr( $duplicate['proof'] ) . '"></div>';
 		}
 		echo '<p class="submit"><button class="button button-primary" type="submit" name="filewarden_save"><span class="fw-action-icon fw-icon-file-plus-2" aria-hidden="true"></span>' . esc_html__( 'Add to this folder', 'filewarden' ) . '</button></p>';
 		echo '</form>';

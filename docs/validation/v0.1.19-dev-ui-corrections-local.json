@@ -1,0 +1,124 @@
+{
+  "version": "0.1.19-dev",
+  "checked_on": "2026-11-28",
+  "authorization": "Owner GO for this corrective lot, local tests and ZIP only. No publication/tag/Alpha.",
+  "scope": "docs/lot-corrections-v0.1.19-dev.md",
+  "environment": {
+    "php": "8.2.35",
+    "database": "MariaDB 10.11.11",
+    "wordpress": [
+      "7.1.5 full UI acceptance",
+      "6.8 native metadata and publication smoke"
+    ],
+    "os": "Windows local PC"
+  },
+  "checks": {
+    "phpunit": {
+      "tests": 117,
+      "assertions": 422,
+      "failures": 0
+    },
+    "javascript_tests": 8,
+    "php_syntax_files": 109,
+    "runtime_js_syntax_files": 17,
+    "phpcs_errors": 0,
+    "phpcs_warnings": 0,
+    "translation_entries": 765,
+    "git_diff_check": true,
+    "browser_locales": {
+      "en_US": [
+        "Chromium",
+        "Firefox"
+      ],
+      "fr_FR": [
+        "Chromium",
+        "Firefox"
+      ]
+    },
+    "table_widths": [
+      1800,
+      1440,
+      1280,
+      1024,
+      375,
+      320
+    ],
+    "table": [
+      "semantic list table retained",
+      "six columns, three sort links, one chevron each",
+      "ascending/descending orientation and aria-sort",
+      "Type sort absent, extension filter preserved",
+      "effective access and all four action controls stay inside their columns"
+    ],
+    "rights_modal": [
+      "Cancel centered beneath save",
+      "Cancel not clipped at desktop 700px/520px and mobile 812px heights",
+      "inner inspector overflow visible; outer dialog scrolls",
+      "invalid nonce rejected with HTTP 403"
+    ],
+    "native_metadata": "Real plugin_row_meta hook preserves author/version/help and other plugin metadata; site label filewarden.org in native list",
+    "public_appearance": [
+      "folder mask uses link color: dark turquoise rgb(159,228,222)",
+      "file-type PDF artwork unfiltered and all original SVGs byte-identical",
+      "dark swatch background/surface/accent #101a2b/#192840/#76d6ce",
+      "Custom swatch still follows edited button color",
+      "three denied styles align card edges with brand separator at desktop/mobile widths"
+    ],
+    "data_integrity": "All three synthetic document identities, metadata, policies and exact SHA-256 contents unchanged after read-only UI/invalid-nonce tests; schema 8",
+    "visual_inspection": [
+      "table list and single chevrons",
+      "centered rights-modal Cancel",
+      "French dark editorial mobile margins"
+    ]
+  },
+  "package": {
+    "version": "0.1.19-dev",
+    "sha256": "69eece3320980f186987272984d0e6ebcfdeee32a9bd5389cbee7ecac3b19085",
+    "bytes": 4450339,
+    "files": 371,
+    "changed_runtime_files": [
+      "languages/filewarden-fr_FR.mo",
+      "languages/filewarden-fr_FR.po",
+      "languages/filewarden-en_US.mo",
+      "languages/filewarden-en_US.po",
+      "assets/publication.css",
+      "assets/admin-controls.css",
+      "docs/releases/v0.1.19-dev.md",
+      "includes/AdminWorkspace.php",
+      "includes/AppearanceConsole.php",
+      "includes/LibraryConsole.php",
+      "includes/Plugin.php",
+      "includes/Publication.php"
+    ],
+    "identical_to_sources_and_installed_sites": [
+      "WordPress 7.1.5",
+      "WordPress 6.8"
+    ],
+    "icons_unchanged": 71,
+    "backup_schema_repository_and_permission_code_unchanged": true,
+    "prior_zip_sha256": "4c64e193b5bcc5705bce0364c5db09dcc729d8d453e1df44b84d5576f645ec36"
+  },
+  "unchanged_backend": "No permission/query/storage/backup/schema migration changes in this corrective pass. Earlier functional/backup acceptance remains historical evidence in v0.1.19-dev-local.json; it was not re-run in full for these visual changes.",
+  "limits": [
+    "Real hosting PHP 8.5 and Elementor Pro interaction still require owner preproduction acceptance.",
+    "No complete human accessibility certification."
+  ],
+  "cleanup": {
+    "database_graceful_shutdown": true,
+    "fixture_files_preserved": true,
+    "http_servers": [
+      {
+        "port": 8135,
+        "fixture": "v19backupsource",
+        "identity_verified": true
+      },
+      {
+        "port": 8133,
+        "fixture": "v19secondarya",
+        "identity_verified": true
+      }
+    ],
+    "remaining_owned_services": 0
+  },
+  "evidence_root": ".tools/v19-dev/ui-*"
+}

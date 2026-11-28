@@ -150,6 +150,12 @@ final class RestController {
 				'message' => __( 'Invalid input, file type or size.', 'filewarden' ),
 			);
 			$status = 400;
+		} catch ( DuplicateContent $error ) {
+			$data   = array(
+				'code'   => 'filewarden_identical_content',
+				'review' => $error->review,
+			);
+			$status = 409;
 		} catch ( \UnexpectedValueException $error ) {
 			$data   = array(
 				'code'    => 'filewarden_duplicate',
@@ -255,7 +261,16 @@ final class RestController {
 		return $this->response(
 			function () use ( $request ) {
 				$files = $request->get_file_params();
-				return $this->service->upload( $files['file'] ?? array(), self::integer( $request['folder_id'] ), $this->policy( $request ) );
+				return $this->service->upload(
+					$files['file'] ?? array(),
+					self::integer( $request['folder_id'] ),
+					$this->policy( $request ),
+					array(
+						'description'     => $request['description'] ?? '',
+						'duplicate_proof' => $request['duplicate_proof'] ?? '',
+						'import_name'     => $request['import_name'] ?? '',
+					)
+				);
 			},
 			201
 		);

@@ -226,15 +226,103 @@ final class StorageService {
 		return $handle;
 	}
 
-	/**
-	 * Authenticate the entire file into an automatically removed private temporary stream.
+	/** Visit authenticated file chunks directly without plaintext temporary storage.
+	 *
+	 * @param string   $id Storage key.
+	 * @param int      $size Expected plaintext size.
+	 * @param callable $consume Bounded plaintext consumer.
+	 * @throws \RuntimeException On unavailable, truncated or altered bytes.
+	 */
+	public function visit_chunks( $id, $size, callable $consume ) {
+		$input = FileIO::attempt( fn() => fopen( $this->path( $id ), 'rb' ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+		if ( ! $input ) {
+			throw new \RuntimeException( 'File unavailable.' );
+		}
+		try {
+			if ( $this->managed ) {
+				$key   = $this->managed->key( $id );
+				$state = sodium_crypto_secretstream_xchacha20poly1305_init_pull( BackupArchive::read( $input, 24 ), $key );
+				sodium_memzero( $key );
+			}
+			$remaining = $size;
+			while ( $remaining > 0 ) {
+				$length = min( 65536, $remaining );
+				$bytes  = BackupArchive::read( $input, $length + ( $this->managed ? 17 : 0 ) );
+				if ( $this->managed ) {
+					$plain = sodium_crypto_secretstream_xchacha20poly1305_pull( $state, $bytes );
+					$tag   = $remaining === $length ? SODIUM_CRYPTO_SECRETSTREAM_XCHACHA20POLY1305_TAG_FINAL : SODIUM_CRYPTO_SECRETSTREAM_XCHACHA20POLY1305_TAG_MESSAGE;
+					if ( false === $plain || $plain[1] !== $tag ) {
+						throw new \RuntimeException( 'File integrity check failed.' );
+					}
+					$bytes = $plain[0];
+				}
+				$consume( $bytes );
+				$remaining -= $length;
+			}
+			if ( '' !== fread( $input, 1 ) || ! feof( $input ) ) { // phpcs:ignore WordPress.WP.AlternativeFunctions
+				throw new \RuntimeException( 'File integrity check failed.' );
+			}
+		} finally {
+			fclose( $input ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+		}
+	}
+
+	/** Write a new private object from bounded chunks, never a plaintext temporary file.
+	 *
+	 * @param string   $id Server-generated storage key recorded in a recovery checkpoint.
+	 * @param int      $size Expected size.
+	 * @param callable $produce Consumer-driven chunk producer.
+	 * @throws \RuntimeException If the operation cannot complete safely.
+	 * @throws \Throwable If the operation cannot complete safely.
+	 */
+	public function receive_chunks( $id, $size, callable $produce ) {
+		$state  = null;
+		$key    = $this->managed ? $this->managed->key( $id, true ) : null;
+		$output = FileIO::attempt( fn() => fopen( $this->path( $id ), 'x+b' ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+		if ( ! $output ) {
+			throw new \RuntimeException( 'Storage write failed.' );
+		}
+		try {
+			if ( ! chmod( $this->path( $id ), 0600 ) ) { // phpcs:ignore WordPress.WP.AlternativeFunctions
+				throw new \RuntimeException( 'Storage write failed.' );
+			}
+			if ( $this->managed ) {
+				list( $state, $header ) = sodium_crypto_secretstream_xchacha20poly1305_init_push( $key );
+				BackupArchive::write( $output, $header );
+				sodium_memzero( $key );
+			}
+			$remaining = $size;
+			$produce(
+				static function ( $bytes ) use ( $output, &$state, &$remaining ) {
+					if ( ! is_string( $bytes ) || strlen( $bytes ) !== min( 65536, $remaining ) || $remaining < 1 ) {
+						throw new \RuntimeException( 'Invalid storage chunk.' );
+					}
+					$remaining -= strlen( $bytes );
+					if ( null !== $state ) {
+						$bytes = sodium_crypto_secretstream_xchacha20poly1305_push( $state, $bytes, '', $remaining ? SODIUM_CRYPTO_SECRETSTREAM_XCHACHA20POLY1305_TAG_MESSAGE : SODIUM_CRYPTO_SECRETSTREAM_XCHACHA20POLY1305_TAG_FINAL );
+					}
+					BackupArchive::write( $output, $bytes );
+				}
+			);
+			if ( $remaining || ! fflush( $output ) ) { // phpcs:ignore WordPress.WP.AlternativeFunctions
+				throw new \RuntimeException( 'Storage write failed.' );
+			}
+		} catch ( \Throwable $error ) {
+			fclose( $output ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+			$this->remove( $id );
+			throw $error;
+		}
+		fclose( $output ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+	}
+
+	/** Authenticate a private stored file into a seekable temporary stream.
 	 *
 	 * @param resource $input Encrypted stream.
 	 * @param string   $id File identifier.
 	 * @param int      $size Expected plaintext size.
-	 * @return resource Seekable plaintext stream.
-	 * @throws \RuntimeException If temporary storage cannot be isolated.
-	 * @throws \Throwable If authentication or I/O fails.
+	 * @return resource Seekable plaintext.
+	 * @throws \RuntimeException If private temporary storage is unavailable.
+	 * @throws \Throwable On authentication or I/O failure.
 	 */
 	private function decrypt( $input, $id, $size ) {
 		$output = null;

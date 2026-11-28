@@ -102,7 +102,7 @@ jobs:
         if: always()
         with:
           name: fresh-workspace-screenshots
-          path: build/screenshots/*.png
+          path: build/screenshots/**/*.png
           if-no-files-found: ignore
   integration:
     timeout-minutes: 45
@@ -119,6 +119,7 @@ jobs:
           - {version: '0.1.14-dev', schema: '6'}
           - {version: '0.1.15-dev', schema: '6'}
           - {version: '0.1.16-dev', schema: '6'}
+          - {version: '0.1.17-dev', schema: '6'}
     services:
       mysql:
         image: mysql:8.0
@@ -135,6 +136,8 @@ jobs:
       FILEWARDEN_PREVIOUS_VERSION: ${{ matrix.previous.version }}
       FILEWARDEN_PREVIOUS_SCHEMA: ${{ matrix.previous.schema }}
       FILEWARDEN_PREVIOUS_ENGINE: ${{ matrix.previous.version == '0.1.14-dev' && 'MyISAM' || 'InnoDB' }}
+      FILEWARDEN_TARGET_VERSION: '0.1.19-alpha.1'
+      FILEWARDEN_ACCEPTANCE_DIR: /tmp/.tools/filewarden-alpha
     steps:
       - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2
@@ -188,19 +191,29 @@ jobs:
             sleep 1
           done
           python3 tests/http-smoke.py
-          NODE_PATH=/tmp/fw-browser/node_modules node tests/v17-browser-suite.cjs
+          mkdir -p "$FILEWARDEN_ACCEPTANCE_DIR"
+          chmod 700 "$FILEWARDEN_ACCEPTANCE_DIR"
+          FW_DOCUMENT_STAGE=ci wp eval-file "$GITHUB_WORKSPACE/tests/v19-document-integration.php" --path=/tmp/fw-wordpress
+          wp eval-file "$GITHUB_WORKSPACE/tests/v19-same-name-integration.php" --path=/tmp/fw-wordpress
+          FILEWARDEN_UI_RESULT="$FILEWARDEN_ACCEPTANCE_DIR/ui-fixture.json" wp eval-file "$GITHUB_WORKSPACE/tests/v19-ui-corrections.php" --path=/tmp/fw-wordpress
+          NODE_PATH=/tmp/fw-browser/node_modules node tests/alpha-browser-suite.cjs
           wp user meta update fw_admin locale fr_FR --path=/tmp/fw-wordpress
           wp option update WPLANG fr_FR --path=/tmp/fw-wordpress
-          FILEWARDEN_BROWSER_SUFFIX=-fr NODE_PATH=/tmp/fw-browser/node_modules node tests/v17-browser-suite.cjs
-          wp user meta update fw_admin locale en_US --path=/tmp/fw-wordpress
-          wp option update WPLANG '' --path=/tmp/fw-wordpress
-          NODE_PATH=/tmp/fw-browser/node_modules node tests/viewer-browser.cjs
-          wp user meta update fw_admin locale fr_FR --path=/tmp/fw-wordpress
-          wp option update WPLANG fr_FR --path=/tmp/fw-wordpress
-          NODE_PATH=/tmp/fw-browser/node_modules node tests/french-browser.cjs
+          wp option update filewarden_language fr_FR --path=/tmp/fw-wordpress
+          FILEWARDEN_BROWSER_SUFFIX=fr NODE_PATH=/tmp/fw-browser/node_modules node tests/alpha-browser-suite.cjs
+          FW_SAME_NAME_VERIFY=1 wp eval-file "$GITHUB_WORKSPACE/tests/v19-same-name-integration.php" --path=/tmp/fw-wordpress
+          mkdir -p /tmp/fw-restore /tmp/fw-restore-private
+          chmod 700 /tmp/fw-restore-private
+          wp core download --path=/tmp/fw-restore --version=6.8
+          wp config create --path=/tmp/fw-restore --dbname=filewarden_test --dbuser=root --dbpass=disposable-db-password --dbhost=127.0.0.1:3306 --dbprefix=fwrestore_
+          wp config set FILEWARDEN_STORAGE_DIR /tmp/fw-restore-private --path=/tmp/fw-restore
+          wp config set FILEWARDEN_STORAGE_VERIFIED true --raw --path=/tmp/fw-restore
+          wp core install --path=/tmp/fw-restore --url=http://127.0.0.1:8081 --title=FileWarden --admin_user=fw_admin --admin_password=disposable-test-password --admin_email=admin@example.test --skip-email
+          wp plugin install "$GITHUB_WORKSPACE/build/$(basename build/filewarden-*.zip)" --activate --path=/tmp/fw-restore
+          FW_DOCUMENT_STAGE=restore wp eval-file "$GITHUB_WORKSPACE/tests/v19-document-integration.php" --path=/tmp/fw-restore
       - name: Preserve the exact ZIP installed and tested
         uses: actions/upload-artifact@v4
-        if: success() && matrix.wordpress == '6.8' && matrix.previous.version == '0.1.16-dev'
+        if: success() && matrix.wordpress == '6.8' && matrix.previous.version == '0.1.17-dev'
         with:
           name: filewarden-tested-candidate
           path: build/filewarden-*.zip
@@ -209,5 +222,5 @@ jobs:
         if: always()
         with:
           name: workspace-screenshots-${{ matrix.wordpress }}-from-${{ matrix.previous.version }}
-          path: build/screenshots/*.png
+          path: build/screenshots/**/*.png
           if-no-files-found: ignore

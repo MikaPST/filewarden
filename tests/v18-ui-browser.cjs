@@ -1,0 +1,51 @@
+/** Browser/keyboard/layout tests against actual WordPress, with real action transports. */
+const fs=require('node:fs'),assert=require('node:assert/strict'),{chromium,firefox}=require('playwright');
+assert.equal(process.env.FILEWARDEN_TESTING,'1');const base=process.env.FILEWARDEN_URL,f=JSON.parse(fs.readFileSync(process.env.FILEWARDEN_UI_FIXTURES,'utf8'));assert.equal(new URL(base).hostname,'127.0.0.1');const suffix=process.env.FILEWARDEN_BROWSER_SUFFIX||'';
+(async()=>{for(const[name,engine]of[['chromium',chromium],['firefox',firefox]]){
+ const browser=await engine.launch();try{
+  const context=await browser.newContext({viewport:{width:1440,height:1000},acceptDownloads:true});await context.request.get(base+'/wp-login.php');await context.request.post(base+'/wp-login.php',{form:{log:'fw_admin',pwd:'disposable-test-password',testcookie:'1'}});
+  const page=await context.newPage();page.setDefaultTimeout(20000);const errors=[];page.on('pageerror',e=>errors.push({message:e.message,stack:e.stack,url:page.url()}));const goto=async path=>{await page.goto(base+path);await page.waitForLoadState('networkidle');};const folder=id=>'/wp-admin/admin.php?page=filewarden&folder_id='+id;
+  await goto(folder(f.folder));const search=page.locator('.fw-library-search'),toggle=search.locator('[data-filter-toggle]');
+  assert.equal(await search.locator('details').getAttribute('open'),null);await toggle.click();await search.locator('[name=type]').waitFor({state:'visible'});
+  const groups=await search.locator('fieldset').evaluateAll(els=>els.map(el=>el.getBoundingClientRect().x));assert.ok(groups[0]<groups[1]&&groups[1]<groups[2]);
+  await search.locator('[name=type]').fill('pdf');await Promise.all([page.waitForNavigation({waitUntil:'networkidle'}),search.locator('.fw-filter-actions button').click()]);
+  assert.equal(await page.locator('[data-document-selection]').count(),0);assert.equal(await page.locator('.fw-filter-chips a').count(),1);assert.equal(await page.locator('.fw-filter-count').first().textContent(),'1');
+  await Promise.all([page.waitForNavigation({waitUntil:'networkidle'}),page.locator('.fw-filter-chips a').click()]);assert.equal(await page.locator(`[data-document-selection][value="${f.document}"]`).count(),1);
+  // Actions stay in centered dialogs and do not resize the library; Escape restores the opener.
+  const row=page.locator('tr').filter({has:page.locator(`[data-document-selection][value="${f.document}"]`)});
+  const before=await page.locator('.fw-content').first().boundingBox();const move=row.locator('a[href*="panel=move"]');await row.locator('summary').click();
+  let release;const gate=new Promise(resolve=>release=resolve);const pattern=/\/wp-admin\/admin\.php\?/;
+  const slow=async route=>{if(new URL(route.request().url()).searchParams.get('panel')==='move')await gate;await route.continue().catch(()=>{});};
+  await context.route(pattern,slow);await move.click();await page.locator('dialog.fw-action-dialog').waitFor();await page.keyboard.press('Escape');await page.locator('dialog.fw-action-dialog').waitFor({state:'detached'});release();await context.unroute(pattern,slow);await move.click();
+  const modal=page.locator('dialog.fw-action-dialog');await modal.locator('select[name=destination_id]').waitFor({state:'visible'});assert.ok(Math.abs((await page.locator('.fw-content').first().boundingBox()).width-before.width)<2);
+  const centered=await modal.boundingBox();assert.ok(Math.abs(centered.x+centered.width/2-720)<2&&Math.abs(centered.y+centered.height/2-500)<2,'Action modal is not centered in the viewport');
+  const label=await modal.locator('[for=fw-destination]').boundingBox(),select=await modal.locator('#fw-destination').boundingBox();assert.ok(select.y>=label.y+label.height+7);
+  await modal.locator('#fw-destination').selectOption(String(f.target));await modal.locator('.fw-transfer-actions .button-primary').click();await modal.locator('.fw-destination-review').waitFor({state:'visible'});
+  assert.equal(await page.locator(`[data-document-selection][value="${f.document}"]`).count(),1);await page.keyboard.press('Escape');await modal.waitFor({state:'detached'});assert.equal(await move.evaluate(el=>el===document.activeElement),true);
+  // A single trash action requires an explicit POST and can be cancelled without changing the record.
+  await row.locator('a[href*="panel=trash"]').click();await modal.locator('input[name=operation][value=trash]').waitFor({state:'attached'});assert.ok(await modal.locator('input[name=operation][value=trash]').count());await page.keyboard.press('Escape');await modal.waitFor({state:'detached'});
+  // Bulk trash does not require filling the unrelated destination select.
+  await page.locator(`[data-document-selection][value="${f.document}"]`).check();await page.locator('[data-bulk-trash]').click();const bulk=page.locator('dialog.fw-library-dialog');await bulk.waitFor({state:'visible'});assert.equal(await bulk.locator('li').count(),1);await page.keyboard.press('Escape');await bulk.waitFor({state:'detached'});
+  await page.locator(`[data-document-selection][value="${f.document}"]`).uncheck();
+  const transfer=async(from,to)=>{
+   await goto(folder(from));const item=page.locator('tr').filter({has:page.locator(`[data-document-selection][value="${f.document}"]`)});await item.locator('summary').click();await item.locator('a[href*="panel=move"]').click();
+   await modal.locator('#fw-destination').waitFor();await modal.locator('#fw-destination').selectOption(String(to));await modal.locator('.fw-transfer-actions .button-primary').click();await modal.locator('.fw-destination-review').waitFor();
+   await Promise.all([page.waitForNavigation({waitUntil:'networkidle'}),modal.locator('form:has(input[name=operation][value=move]) [type=submit]').click()]);
+   await goto(folder(to));assert.equal(await page.locator(`[data-document-selection][value="${f.document}"]`).count(),1);
+  };
+  await transfer(f.folder,f.target);await transfer(f.target,f.folder);
+  await row.locator('summary').click();await row.locator('a[href*="panel=trash"]').click();await modal.locator('form:has(input[value=trash])').waitFor();
+  await Promise.all([page.waitForNavigation({waitUntil:'networkidle'}),modal.locator('form:has(input[name=operation][value=trash]) [type=submit]').click()]);await goto(folder(f.folder));assert.equal(await page.locator(`[data-document-selection][value="${f.document}"]`).count(),0);
+  const restore=async()=>{await goto('/wp-admin/admin.php?page=filewarden&tab=trash&search='+encodeURIComponent(f.name));await page.locator('a[href*="trash_action=restore"]').click();await page.waitForLoadState('networkidle');await Promise.all([page.waitForNavigation({waitUntil:'networkidle'}),page.locator('.fw-trash-confirm form button').click()]);await goto(folder(f.folder));assert.equal(await page.locator(`[data-document-selection][value="${f.document}"]`).count(),1);};
+  await restore();await page.locator(`[data-document-selection][value="${f.document}"]`).check();await page.locator('[data-bulk-trash]').click();await bulk.waitFor();await Promise.all([page.waitForNavigation({waitUntil:'networkidle'}),bulk.locator('button[type=submit]').click()]);await restore();
+  for(const width of[375,320]){await page.setViewportSize({width,height:950});await toggle.click();await search.locator('[name=type]').waitFor({state:'visible'});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));await page.screenshot({path:`build/screenshots/ui-search-${name}${suffix}-${width}.png`,fullPage:true});await page.keyboard.press('Escape');await search.locator('[name=type]').focus();await page.keyboard.press('Escape');}
+  await page.setViewportSize({width:1440,height:1000});await goto('/wp-admin/admin.php?page=filewarden&tab=trash');await page.locator('[data-filter-toggle]').click();assert.ok(await page.locator('.fw-filter-groups').isVisible());
+  for(const width of[375,320]){await page.setViewportSize({width,height:950});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));assert.equal(await page.locator('.fw-trash-table tr').last().evaluate(el=>getComputedStyle(el).display),'block');await page.screenshot({path:`build/screenshots/ui-trash-${name}${suffix}-${width}.png`,fullPage:true});}
+  // Empty states occupy the full grid and retain balanced internal spacing.
+  for(const query of['','&search=no-such-file']){await goto('/wp-admin/admin-post.php?action=filewarden_folder&folder_id='+f.empty+'&view=grid'+query);const empty=page.locator('.fw-empty-state');await empty.waitFor();const box=await empty.boundingBox(),icon=await empty.locator('.fw-empty-symbol').boundingBox(),desc=await empty.locator('p').boundingBox();assert.ok(icon.y-box.y>=19&&box.y+box.height-desc.y-desc.height>=19);assert.equal(await empty.locator('.fw-empty-reset').count(),query?1:0);await page.screenshot({path:`build/screenshots/ui-empty-${name}${suffix}${query?'-search':''}.png`,fullPage:true});}
+  await page.setViewportSize({width:1440,height:1000});await goto('/wp-admin/admin.php?page=filewarden-settings#fw-settings-backup');const form=page.locator('[data-backup-start=backup]');assert.equal(await form.locator('[data-backup-component]:checked').count(),6);await form.locator('[value=simplified]').check();assert.equal(await form.locator('[data-backup-component]:checked').count(),0);await form.locator('[value=complete]').check();assert.equal(await form.locator('[data-backup-component]:checked').count(),6);
+  assert.deepEqual(errors,[]);console.log('PASS UI '+name+suffix+': real filters/chips, modal review/cancel/focus, destination geometry, bulk-trash without destination, 320/375 layouts and empty states.');
+  await context.close();
+  const fallback=await browser.newContext({javaScriptEnabled:false});await fallback.request.get(base+'/wp-login.php');await fallback.request.post(base+'/wp-login.php',{form:{log:'fw_admin',pwd:'disposable-test-password',testcookie:'1'}});const plain=await fallback.newPage();await plain.goto(base+folder(f.folder));await plain.locator('.fw-library-filters summary').click();assert.ok(await plain.locator('[name=type]').isVisible());await fallback.close();
+ }finally{await browser.close();}
+}})().catch(e=>{console.error(e);process.exitCode=1});

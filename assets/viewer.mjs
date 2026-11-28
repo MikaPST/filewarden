@@ -7,9 +7,11 @@ const zoom = document.getElementById('fw-zoom');
 const pageInput = document.getElementById('fw-page');
 const previous = document.getElementById('fw-previous');
 const next = document.getElementById('fw-next');
+let currentScale = 1;
 let pdf, pageNumber = 1, generation = 0, rendering, loadingTask;
 
 function fail() {
+    status.classList.remove('fw-status-complete');
     status.textContent = root.dataset.error;
     canvas.hidden = true;
     image.hidden = true;
@@ -17,6 +19,7 @@ function fail() {
 
 async function render() {
     const current = ++generation;
+    status.classList.remove('fw-status-complete');
     status.textContent = root.dataset.loading;
     try {
         if (rendering) {
@@ -27,7 +30,10 @@ async function render() {
         const page = await pdf.getPage(pageNumber);
         if (current !== generation) return;
         const natural = page.getViewport({ scale: 1 });
-        const scale = zoom.value === 'fit' ? Math.max(0.1, (stage.clientWidth - 40) / natural.width) : Number(zoom.value);
+        const fitWidth = Math.max(0.1, (stage.clientWidth - 40) / natural.width);
+        const scale = zoom.value === 'fit' ? fitWidth : zoom.value === 'page' ? Math.max(0.1, Math.min(fitWidth, (stage.clientHeight - 40) / natural.height)) : Number(zoom.value);
+        currentScale = scale;
+        updateZoomButtons();
         const viewport = page.getViewport({ scale });
         // Bound canvas memory even for unusually large pages or high-DPI screens.
         const ratio = Math.min(window.devicePixelRatio || 1, 2, Math.sqrt(16000000 / (viewport.width * viewport.height)));
@@ -45,16 +51,37 @@ async function render() {
         previous.disabled = pageNumber <= 1;
         next.disabled = pageNumber >= pdf.numPages;
         status.textContent = `${root.dataset.pageLabel} ${pageNumber} / ${pdf.numPages}`;
+        status.classList.add('fw-status-complete');
     } catch (error) {
         if (current === generation && error.name !== 'RenderingCancelledException') fail();
     }
 }
 
 function resizeImage() {
-    const width = zoom.value === 'fit' ? Math.min(image.naturalWidth, Math.max(1, stage.clientWidth - 40)) : image.naturalWidth * Number(zoom.value);
+    const width = zoom.value === 'fit' ? Math.min(image.naturalWidth, Math.max(1, stage.clientWidth - 40)) : zoom.value === 'page' ? Math.min(image.naturalWidth, Math.max(1, stage.clientWidth - 40), Math.max(1, stage.clientHeight - 40) * image.naturalWidth / image.naturalHeight) : image.naturalWidth * Number(zoom.value);
+    currentScale = width / image.naturalWidth;
+    updateZoomButtons();
     image.style.width = `${width}px`;
     image.style.height = 'auto';
 }
+
+function enableZoom() {
+    zoom.disabled = false;
+    document.getElementById('fw-zoom-in').disabled = false;
+    document.getElementById('fw-zoom-out').disabled = false;
+}
+function updateZoomButtons() {
+    document.getElementById('fw-zoom-in').disabled = currentScale >= 2;
+    document.getElementById('fw-zoom-out').disabled = currentScale <= 0.5;
+}
+function stepZoom(direction) {
+    const values = [0.5, 0.75, 1, 1.25, 1.5, 2];
+    const value = direction > 0 ? values.find(value => value > currentScale + 0.001) ?? 2 : [...values].reverse().find(value => value < currentScale - 0.001) ?? 0.5;
+    zoom.value = String(value);
+    if (pdf) render(); else if (image.naturalWidth) resizeImage();
+}
+document.getElementById('fw-zoom-in').addEventListener('click', () => stepZoom(1));
+document.getElementById('fw-zoom-out').addEventListener('click', () => stepZoom(-1));
 
 try {
     if (root.dataset.kind === 'pdf') {
@@ -73,7 +100,7 @@ try {
         document.getElementById('fw-total').textContent = pdf.numPages;
         pageInput.max = pdf.numPages;
         pageInput.disabled = false;
-        zoom.disabled = false;
+        enableZoom();
         previous.addEventListener('click', () => { pageNumber = Math.max(1, pageNumber - 1); render(); });
         next.addEventListener('click', () => { pageNumber = Math.min(pdf.numPages, pageNumber + 1); render(); });
         pageInput.addEventListener('change', () => {
@@ -87,7 +114,7 @@ try {
         image.addEventListener('error', fail);
         image.addEventListener('load', () => {
             image.hidden = false;
-            zoom.disabled = false;
+            enableZoom();
             status.textContent = '';
             resizeImage();
         });
@@ -101,7 +128,7 @@ let resizeTimer;
 window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
-        if (zoom.value !== 'fit') return;
+        if (!['fit', 'page'].includes(zoom.value)) return;
         if (pdf) render();
         else if (image.naturalWidth) resizeImage();
     }, 150);

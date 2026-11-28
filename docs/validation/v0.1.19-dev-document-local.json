@@ -1,0 +1,159 @@
+{
+  "date": "2026-11-28",
+  "version": "0.1.19-dev",
+  "status": "local candidate for owner preproduction testing",
+  "schema": "9",
+  "zip": "build/filewarden-0.1.19-dev.zip",
+  "sha256": "f715e9ea92f2c068d48588fcd9b3d9ba0528d193a661c3fad2775a9144d25c66",
+  "bytes": 4463834,
+  "files": 375,
+  "previous_zip": "build/filewarden-0.1.19-dev-before-document-features.zip",
+  "previous_sha256": "69eece3320980f186987272984d0e6ebcfdeee32a9bd5389cbee7ecac3b19085",
+  "environment": {
+    "php": "8.2.35",
+    "database": "MariaDB 10.11.11",
+    "wordpress": [
+      "7.1.5",
+      "6.8"
+    ],
+    "browsers": [
+      "Chromium",
+      "Firefox"
+    ],
+    "languages": [
+      "fr_FR",
+      "en_US"
+    ],
+    "scope": "disposable loopback fixtures only"
+  },
+  "checks": {
+    "phpunit": {
+      "tests": 119,
+      "assertions": 429,
+      "passed": true
+    },
+    "javascript_transport_tests": {
+      "tests": 8,
+      "passed": true
+    },
+    "phpcs": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "syntax": {
+      "runtime_php": 65,
+      "runtime_js_mjs": 17,
+      "passed": true
+    },
+    "catalogs": {
+      "source_entries": 797,
+      "fr_en_placeholders_plurals_verified": true
+    },
+    "package": {
+      "all_members_match_sources": true,
+      "all_members_match_two_installed_sites": true,
+      "runtime_allowlist_only": true,
+      "official_svg_assets_unchanged": 71
+    },
+    "migration": {
+      "actual_schema8_to9_preserves_original_rows": true,
+      "repeatable": true,
+      "schema8_pending_backup_resumes_before_additive_migration": true,
+      "fresh_schema9": true
+    },
+    "descriptions": [
+      "400 Unicode code points including emoji accepted",
+      "401 and malformed UTF-8 refused",
+      "plain text normalization",
+      "empty clears",
+      "independent per-file import values",
+      "read-only write denied",
+      "invalid CSRF nonce denied",
+      "audit failure rolls back",
+      "authorized name OR description search",
+      "private description search match concealed",
+      "not added to public viewer or metadata DTO"
+    ],
+    "duplicates": [
+      "server size and SHA-256 then exact bytes",
+      "native managed encrypted streams",
+      "equal stored hash with different bytes does not match",
+      "unreadable candidate skipped before opening even missing binary",
+      "active candidates only",
+      "forged confirmation refused",
+      "candidate ACL change invalidates confirmation",
+      "independent identity and storage after import anyway",
+      "other files finish while review waits",
+      "local upload and Media Library paths",
+      "no permanent duplicate marker"
+    ],
+    "rights": [
+      "explicit save clears retained_rules with policy atomically",
+      "audit failure retains old policy and restrictions",
+      "folder and ancestor chain remains authoritative",
+      "invalid/missing chains fail closed including global readers"
+    ],
+    "backup": [
+      "real encrypted schema9 export",
+      "cross-installation description and original-byte restoration",
+      "schema8 archive analysis",
+      "real manifest v1/v2/v3 restores into managed encrypted destination",
+      "altered archive refused",
+      "activation rollback and retry",
+      "hostile description types/length/markup/UTF-8 refused"
+    ],
+    "browser": [
+      "sheet via filename and Information",
+      "eye still directly previews",
+      "description edit/cancel/counter/save/search",
+      "same authoritative chain in sheet and rights modal",
+      "desktop and 390px mobile",
+      "limited authenticated account can read allowed library but no hidden sheet metadata",
+      "previous table/Cancel/palette/denied-style corrections retained",
+      "real PDF viewer zoom and toolbar on desktop/mobile"
+    ],
+    "publication": {
+      "github_commit_tag_release": false,
+      "alpha": false
+    },
+    "composer_validate_strict": true
+  },
+  "evidence": [
+    "tests/v19-document-integration.php",
+    "tests/v19-document-security.php",
+    "tests/v19-document-pending.php",
+    "tests/v19-document-browser.cjs",
+    "tests/v19-restore-integration.php",
+    "tests/v19-ui-corrections-browser.cjs",
+    "tests/v19-viewer-browser.cjs",
+    "tests/Unit/ContentDuplicatesTest.php",
+    ".tools/v19-dev/document-result.json",
+    ".tools/v19-dev/document-package-proof.json",
+    ".tools/v19-dev/document-pending.json",
+    ".tools/v19-dev/document-legacy/target-result.json",
+    ".tools/v19-dev/document-browser-fr-final.log",
+    ".tools/v19-dev/document-browser-68-final.log",
+    ".tools/v19-dev/document-browser-fr.log",
+    ".tools/v19-dev/document-ui-regression.log",
+    ".tools/v19-dev/document-viewer.log",
+    ".tools/v19-dev/document-phpcs-final.log",
+    ".tools/v19-dev/document-phpunit-final.log",
+    ".tools/v19-dev/document-js-tests-final.log",
+    ".tools/v19-dev/services-cleanup.json"
+  ],
+  "limits": [
+    "Not a production security certification",
+    "PHP 8.5/LiteSpeed hosting not executed locally",
+    "Native managed encryption was exercised with only the hosting HTTPS probe fixture-isolated; real host isolation must pass Diagnostic",
+    "Not a large-library or load benchmark",
+    "No human full-accessibility certification",
+    "Send and document/version histories remain deferred",
+    "Public description display is outside this lot"
+  ],
+  "cleanup": {
+    "owned_http_servers_stopped": 3,
+    "database_graceful_shutdown": true,
+    "remaining_owned_services": 0,
+    "fixture_files_preserved": true
+  }
+}

@@ -20,6 +20,14 @@ final class AuditConsole {
 		foreach ( array( 'event', 'actor_login', 'from', 'until' ) as $key ) {
 			$fields[ $key ] = isset( $source[ $key ] ) && is_string( $source[ $key ] ) ? sanitize_text_field( wp_unslash( $source[ $key ] ) ) : '';
 		}
+		foreach ( array(
+			'actions'  => AuditEvents::actions(),
+			'statuses' => AuditEvents::statuses(),
+		) as $key => $choices ) {
+			// Only canonical allowlisted keys survive; malformed choices never widen a purge.
+			$selected       = AuditEvents::selection( isset( $source[ $key ] ) ? wp_unslash( $source[ $key ] ) : '', $choices );
+			$fields[ $key ] = $selected ? implode( ',', $selected ) : 'none';
+		}
 		return $fields;
 	}
 	/** Render the console without exposing a log to unauthorized visitors. */
@@ -63,7 +71,15 @@ final class AuditConsole {
 					echo '<details class="fw-log-line" data-event-id="' . esc_attr( $row['id'] ) . '"><summary><time>' . esc_html( get_date_from_gmt( $row['created_at'], 'Y-m-d H:i:s' ) ) . '</time> <strong>' . esc_html( $row['event'] ) . '</strong> <span>' . esc_html( sprintf( 'WordPress: %s · #%d', $login ? $login : __( 'Unavailable', 'filewarden' ), $row['actor_id'] ) ) . '</span></summary><pre><code>' . esc_html( wp_json_encode( $technical, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE ) ) . '</code></pre></details>';
 				} else {
 					$actor_id = (int) $row['actor_id'];
-					if ( 0 === $actor_id ) {
+					if ( ( 'imported' === ( $row['actor_type'] ?? '' ) || str_starts_with( $row['actor_type'] ?? '', 'source_' ) ) ) {
+						/* translators: 1: original login, 2: source user ID, not a destination identity. */
+						$actor = match ( $row['actor_type'] ) {
+							'source_system' => __( 'System action on the source site', 'filewarden' ),
+							'source_visitor' => __( 'Visitor on the source site', 'filewarden' ),
+							/* translators: 1: original login; 2: source account ID, never a destination identity. */
+							default => sprintf( __( '%1$s · source site account #%2$d', 'filewarden' ), $login ? $login : __( 'Unavailable', 'filewarden' ), $actor_id ),
+						};
+					} elseif ( 0 === $actor_id ) {
 						$actor = match ( $row['actor_type'] ?? '' ) {
 							'visitor' => __( 'Visitor not logged in', 'filewarden' ), 'system' => __( 'System action', 'filewarden' ), default => __( 'Unknown legacy actor', 'filewarden' ) };
 					} elseif ( $login ) {
@@ -77,7 +93,7 @@ final class AuditConsole {
 					$detail     = $resource ? ( 'folder' === $technical['resource_type'] ? __( 'Folder', 'filewarden' ) : __( 'Document', 'filewarden' ) ) . ' : ' . $resource : __( 'Resource name unavailable', 'filewarden' );
 					$appearance = AuditAppearance::event( $row['event'] );
 					$icon       = plugins_url( 'assets/icons/' . $appearance[2] . '.svg', FILEWARDEN_PATH . 'filewarden.php' );
-					echo '<article class="fw-log-line fw-log-simple fw-log-' . esc_attr( $appearance[0] ) . '" data-event-id="' . esc_attr( $row['id'] ) . '"><div class="fw-log-summary"><time>' . esc_html( get_date_from_gmt( $row['created_at'], 'Y-m-d H:i:s' ) ) . '</time><div class="fw-log-event"><span class="fw-log-category"><span class="fw-log-icon" style="' . esc_attr( '--fw-log-icon:url(' . $icon . ')' ) . '" aria-hidden="true"></span>' . esc_html( $appearance[1] ) . '</span><strong>' . esc_html( self::event_label( $row['event'] ) ) . '</strong></div><span>' . esc_html( $actor ) . '</span></div><p class="fw-log-resource">' . esc_html( $detail ) . '</p><details><summary>' . esc_html__( 'Show technical details', 'filewarden' ) . '</summary><pre><code>' . esc_html( wp_json_encode( $technical, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE ) ) . '</code></pre></details></article>';
+					echo '<article class="fw-log-line fw-log-simple fw-log-' . esc_attr( $appearance[0] ) . '" data-event-id="' . esc_attr( $row['id'] ) . '"><div class="fw-log-summary"><time>' . esc_html( get_date_from_gmt( $row['created_at'], 'Y-m-d H:i:s' ) ) . '</time><div class="fw-log-event"><span class="fw-log-category"><span class="fw-log-icon" style="' . esc_attr( '--fw-log-icon:url(' . $icon . ')' ) . '" aria-hidden="true"></span>' . esc_html( AuditEvents::statuses()[ AuditEvents::classify( $row['event'] )[1] ] ) . '</span><strong>' . esc_html( AuditEvents::actions()[ AuditEvents::classify( $row['event'] )[0] ] ) . '</strong></div><span>' . esc_html( $actor ) . '</span></div><p class="fw-log-resource">' . esc_html( $detail ) . '</p><details><summary>' . esc_html__( 'Show technical details', 'filewarden' ) . '</summary><pre><code>' . esc_html( wp_json_encode( $technical, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE ) ) . '</code></pre></details></article>';
 				}
 			}
 			if ( ! $rows ) {
@@ -94,13 +110,17 @@ final class AuditConsole {
 						admin_url( 'admin.php' )
 					)
 				) . '">' . esc_html__( 'Older events', 'filewarden' ) . '</a></p>'; }
-			echo '</section><aside class="fw-content fw-audit-controls"><h2>' . esc_html__( 'Filters and exports', 'filewarden' ) . '</h2><form id="fw-audit-filters" method="get"><input type="hidden" name="view" value="' . esc_attr( $view ) . '"><input type="hidden" name="page" value="filewarden-audit"><p><label for="fw-event">' . esc_html__( 'Event type', 'filewarden' ) . '</label><select id="fw-event" name="event"><option value="">' . esc_html__( 'All events', 'filewarden' ) . '</option>';
+			echo '</section><aside class="fw-content fw-audit-controls"><h2>' . esc_html__( 'Filters and exports', 'filewarden' ) . '</h2><form id="fw-audit-filters" method="get"><input type="hidden" name="view" value="' . esc_attr( $view ) . '"><input type="hidden" name="page" value="filewarden-audit"><h3>' . esc_html__( 'Event type', 'filewarden' ) . '</h3>';
+			self::picker( 'actions', __( 'Action', 'filewarden' ), AuditEvents::actions(), $filters['actions'] );
+			self::picker( 'statuses', __( 'Status', 'filewarden' ), AuditEvents::statuses(), $filters['statuses'] );
+			echo '<details class="fw-audit-advanced"' . ( $input['actor_login'] || $input['event'] ? ' open' : '' ) . '><summary>' . esc_html__( 'Advanced filters', 'filewarden' ) . '</summary><p><label for="fw-event">' . esc_html__( 'Technical event', 'filewarden' ) . '</label><select id="fw-event" name="event"><option value="">' . esc_html__( 'All events', 'filewarden' ) . '</option>';
 			global $wpdb;
-            // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Fixed bounded query, after audit authorization.
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Bounded read after authorization.
 			$events = $wpdb->get_col( "SELECT DISTINCT event FROM {$wpdb->prefix}filewarden_audit_logs ORDER BY event LIMIT 200" );
 			foreach ( $events as $event ) {
-				echo '<option value="' . esc_attr( $event ) . '"' . selected( $input['event'], $event, false ) . '>' . esc_html( self::event_label( $event ) ) . '</option>'; }
-			echo '</select></p><details class="fw-audit-advanced"' . ( $input['actor_login'] ? ' open' : '' ) . '><summary>' . esc_html__( 'Advanced filters', 'filewarden' ) . '</summary><p><label for="fw-actor-login">' . esc_html__( 'WordPress username', 'filewarden' ) . '</label><input id="fw-actor-login" name="actor_login" type="search" maxlength="60" value="' . esc_attr( $input['actor_login'] ) . '"></p></details>';
+				echo '<option value="' . esc_attr( $event ) . '"' . selected( $input['event'], $event, false ) . '>' . esc_html( $event ) . '</option>';
+			}
+			echo '</select></p><p><label for="fw-actor-login">' . esc_html__( 'WordPress username', 'filewarden' ) . '</label><input id="fw-actor-login" name="actor_login" type="search" maxlength="60" value="' . esc_attr( $input['actor_login'] ) . '"></p></details>';
 			foreach ( array(
 				'from'  => __( 'From', 'filewarden' ),
 				'until' => __( 'Until', 'filewarden' ),
@@ -173,6 +193,25 @@ final class AuditConsole {
 		} catch ( \Throwable $error ) {
 			Notice::show( __( 'Audit unavailable. Check your permissions and date filters.', 'filewarden' ), 'error', __( 'Audit unavailable', 'filewarden' ) ); }
 	}
+	/** Render one vertically stacked multi-choice filter.
+	 *
+	 * @param string $name Canonical field.
+	 * @param string $label Heading.
+	 * @param array  $choices Labels.
+	 * @param array  $selected Keys.
+	 */
+	private static function picker( $name, $label, array $choices, array $selected ) {
+		$all = count( $selected ) === count( $choices );
+		/* translators: %d: number of selected filter choices. */
+		$summary = $all ? __( 'All', 'filewarden' ) : sprintf( __( '%d selected', 'filewarden' ), count( $selected ) );
+		/* translators: %d: number of selected filter choices, updated locally before applying. */
+		echo '<div class="fw-audit-picker"><span id="fw-' . esc_attr( $name ) . '-label">' . esc_html( $label ) . '</span><details data-audit-picker data-all="' . esc_attr__( 'All', 'filewarden' ) . '" data-count="' . esc_attr__( '%d selected', 'filewarden' ) . '"><summary aria-labelledby="fw-' . esc_attr( $name ) . '-label fw-' . esc_attr( $name ) . '-summary"><span id="fw-' . esc_attr( $name ) . '-summary">' . esc_html( $summary ) . '</span></summary><div class="fw-audit-picker-options"><input type="hidden" name="' . esc_attr( $name ) . '[]" value="none">';
+		foreach ( $choices as $key => $text ) {
+			echo '<label><input type="checkbox" name="' . esc_attr( $name ) . '[]" value="' . esc_attr( $key ) . '"' . checked( in_array( $key, $selected, true ), true, false ) . '> ' . esc_html( $text ) . '</label>';
+		}
+		echo '</div></details></div>';
+	}
+
 	/**
 	 * Resolve the stored WordPress login, including pre-migration audit events.
 	 *
@@ -182,6 +221,8 @@ final class AuditConsole {
 	private static function actor_login( array $row ) {
 		if ( ! empty( $row['actor_login'] ) ) {
 			return (string) $row['actor_login']; }
+		if ( ( 'imported' === ( $row['actor_type'] ?? '' ) || str_starts_with( $row['actor_type'] ?? '', 'source_' ) ) ) {
+			return ''; }
 		$user = ! empty( $row['actor_id'] ) ? get_userdata( (int) $row['actor_id'] ) : false;
 		return $user ? (string) $user->user_login : '';
 	}
@@ -204,6 +245,11 @@ final class AuditConsole {
 		$repo   = new Repository();
 		$record = 'document' === $type ? $repo->document_by_id( $id, true ) : $repo->folder( $id );
 		$user   = wp_get_current_user();
+		if ( 'imported' === ( $row['actor_type'] ?? '' ) || str_starts_with( $row['actor_type'] ?? '', 'source_' ) ) {
+			$snapshot = json_decode( $row['resource_rules'] ?? '', true );
+			$uuid     = $snapshot['source_uuid'] ?? '';
+			$record   = $uuid ? ( 'document' === $type ? $repo->document( $uuid, true ) : $repo->folder_by_uuid( $uuid ) ) : null;
+		}
 		if ( $record ) {
 			unset( $record['trashed_at'], $record['purging'] );
 			return ( new PermissionService( array( $repo, 'folder' ) ) )->can_read( $record, $user ) ? (string) ( ! empty( $row['resource_name'] ) ? $row['resource_name'] : $record['name'] ) : '';
@@ -228,7 +274,7 @@ final class AuditConsole {
 	/** Normalize one authorized audit record for both views and versioned exports.
 	 *
 	 * @param array $row Database event.
-	 * @return array Stable schema 2 record.
+	 * @return array Schema 3 record; original keys plus expiring actor IP.
 	 */
 	private static function export_record( array $row ) {
 		$date  = \DateTimeImmutable::createFromFormat( '!Y-m-d H:i:s', $row['created_at'], new \DateTimeZone( 'UTC' ) );
@@ -236,21 +282,22 @@ final class AuditConsole {
 		$type  = $row['resource_type'] ?? '';
 		if ( ! in_array( $type, array( 'document', 'folder' ), true ) ) {
 			$type = ''; }
-		$login      = self::actor_login( $row );
-		$name       = self::resource_name( $row );
-		$successful = in_array( $event, array( 'document_uploaded', 'document_policy_changed', 'folder_policy_changed', 'document_move_completed', 'document_copy_completed', 'document_trashed', 'document_restored', 'document_purged', 'folder_created', 'folder_deleted_files_recovered', 'settings_changed', 'all_file_types_enabled', 'all_file_types_disabled', 'audit_purged', 'download_started', 'download_head', 'database_repaired' ), true );
+		$login = self::actor_login( $row );
+		$ip    = AuditIp::visible( $row );
+		$name  = self::resource_name( $row );
 		return array(
-			'schema_version'     => 2,
+			'schema_version'     => 3,
 			'id'                 => (int) $row['id'],
 			'created_at_UTC'     => $date ? $date->format( 'Y-m-d\TH:i:s\Z' ) : null,
 			'event'              => $event,
 			'actor_id'           => (int) $row['actor_id'],
 			'actor_login'        => $login ? $login : null,
+			'actor_ip'           => $ip ? $ip : null,
 			'actor_type'         => ! empty( $row['actor_type'] ) ? $row['actor_type'] : ( $row['actor_id'] ? 'user' : 'unknown' ),
 			'resource_type'      => $type ? $type : null,
 			'resource_id'        => $type ? (int) $row['object_id'] : null,
 			'resource_name'      => $name ? $name : null,
-			'outcome'            => str_contains( $event, 'denied' ) ? 'denied' : ( str_contains( $event, 'failed' ) ? 'failure' : ( str_ends_with( $event, '_requested' ) ? 'requested' : ( $successful ? 'success' : 'unknown' ) ) ),
+			'outcome'            => AuditEvents::classify( $event )[1],
 			'object_id_or_count' => (int) $row['object_id'],
 		);
 	}
@@ -265,6 +312,7 @@ final class AuditConsole {
 		$labels = array(
 			'database_repair_requested'        => __( 'Database repair requested', 'filewarden' ),
 			'database_repaired'                => __( 'Database tables repaired and verified', 'filewarden' ),
+			'wordpress_tables_converted'       => __( 'WordPress restoration tables converted and verified', 'filewarden' ),
 			'all_file_types_enabled'           => __( 'All file types enabled', 'filewarden' ),
 			'all_file_types_disabled'          => __( 'File type restrictions restored', 'filewarden' ),
 			'folder_policy_change_requested'   => __( 'Folder permission change requested', 'filewarden' ),
@@ -273,6 +321,7 @@ final class AuditConsole {
 			'document_uploaded'                => __( 'Document added', 'filewarden' ),
 			'document_policy_change_requested' => __( 'Document permission change requested', 'filewarden' ),
 			'document_policy_changed'          => __( 'Document permissions changed', 'filewarden' ),
+			'document_description_changed'     => __( 'Document description changed', 'filewarden' ),
 			'document_move_requested'          => __( 'Document move requested', 'filewarden' ),
 			'document_move_completed'          => __( 'Document moved', 'filewarden' ),
 			'document_copy_requested'          => __( 'Document copy requested', 'filewarden' ),
@@ -283,6 +332,21 @@ final class AuditConsole {
 			'document_restored'                => __( 'Document restored', 'filewarden' ),
 			'document_purge_requested'         => __( 'Document purge requested', 'filewarden' ),
 			'document_purged'                  => __( 'Document permanently deleted', 'filewarden' ),
+			'document_renamed'                 => __( 'Document renamed', 'filewarden' ),
+			'document_rename_requested'        => __( 'Document rename requested', 'filewarden' ),
+			'folder_renamed'                   => __( 'Folder renamed', 'filewarden' ),
+			'folder_rename_requested'          => __( 'Folder rename requested', 'filewarden' ),
+			'backup_requested'                 => __( 'Encrypted backup requested', 'filewarden' ),
+			'backup_created'                   => __( 'Encrypted backup created', 'filewarden' ),
+			'backup_download_started'          => __( 'Encrypted backup download started', 'filewarden' ),
+			'backup_downloaded'                => __( 'Encrypted backup downloaded', 'filewarden' ),
+			'backup_analysis_requested'        => __( 'Backup analysis requested', 'filewarden' ),
+			'backup_analysis_completed'        => __( 'Backup authenticated', 'filewarden' ),
+			'backup_restore_requested'         => __( 'Library restoration requested', 'filewarden' ),
+			'backup_restored'                  => __( 'Library restored', 'filewarden' ),
+			'backup_cancelled'                 => __( 'Backup job cancelled', 'filewarden' ),
+			'backup_failed'                    => __( 'Backup job failed', 'filewarden' ),
+			'backup_restore_failed'            => __( 'Library restoration failed', 'filewarden' ),
 			'folder_created'                   => __( 'Folder created', 'filewarden' ),
 			'folder_create_requested'          => __( 'Folder creation requested', 'filewarden' ),
 			'folder_delete_requested'          => __( 'Folder deletion requested', 'filewarden' ),
@@ -390,7 +454,7 @@ final class AuditConsole {
 			$public_roots[] = $_SERVER['DOCUMENT_ROOT']; }
 		$stream = FileIO::temporary( $public_roots );
 		try {
-			$headers = array( 'schema_version', 'id', 'created_at_UTC', 'event', 'actor_id', 'actor_login', 'actor_type', 'resource_type', 'resource_id', 'resource_name', 'outcome', 'object_id_or_count' );
+			$headers = array( 'schema_version', 'id', 'created_at_UTC', 'event', 'actor_id', 'actor_login', 'actor_ip', 'actor_type', 'resource_type', 'resource_id', 'resource_name', 'outcome', 'object_id_or_count' );
 			if ( 'jsonl' !== $format ) {
 				self::line( $stream, $headers, $format ); }
 			do {

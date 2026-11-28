@@ -2,11 +2,17 @@
 const assert = require('node:assert/strict');
 
 module.exports = async ({ page, context, base, fixture, name, filename }) => {
+    const uploadName = name + Date.now();
     const documents = base + '/wp-admin/admin.php?page=filewarden';
     const folderURL = documents + '&folder_id=' + fixture.public_folder_id;
     const publicFolder = folderURL + '&search=' + encodeURIComponent(filename);
     const go = async link => {
         const href = await link.getAttribute('href');
+        if (['rights','move','copy','trash','restore','delete_folder'].includes(new URL(href).searchParams.get('panel'))) {
+            await link.click();
+            await page.locator('dialog.fw-action-dialog .fw-inspector form').waitFor();
+            return;
+        }
         await Promise.all([page.waitForURL(href), link.click()]);
     };
     const action = async label => {
@@ -51,17 +57,17 @@ module.exports = async ({ page, context, base, fixture, name, filename }) => {
     await page.goto(publicFolder + '&tab=add');
     assert.ok(await page.locator('.fw-dropzone').isVisible());
     await page.locator('#fw-file').setInputFiles([
-        { name: 'queued-' + name + '.txt', mimeType: 'text/plain', buffer: Buffer.from('A validated text document\n') },
-        { name: 'queued-' + name + '.zip', mimeType: 'application/zip', buffer: Buffer.from(fixture.safe_zip_base64, 'base64') }
+        { name: 'queued-' + uploadName + '.txt', mimeType: 'text/plain', buffer: Buffer.from('A validated text document\n') },
+        { name: 'queued-' + uploadName + '.zip', mimeType: 'application/zip', buffer: Buffer.from(fixture.safe_zip_base64, 'base64') }
     ]);
     assert.equal(await page.locator('.fw-upload-item').count(), 2);
     await page.locator('[name=filewarden_save]').click();
     await page.waitForFunction(() => [...document.querySelectorAll('.fw-upload-item [role=status]')].every(el => el.textContent === 'Saved and verified'));
     await page.waitForFunction(() => document.querySelector('form[data-filewarden-upload]').getAttribute('aria-busy') === null);
-    await page.goto(folderURL + '&search=' + encodeURIComponent('queued-' + name + '.zip'));
-    assert.equal(await page.getByRole('link', { name: 'queued-' + name + '.zip', exact: true }).count(), 1);
+    await page.goto(folderURL + '&search=' + encodeURIComponent('queued-' + uploadName + '.zip'));
+    assert.equal(await page.getByRole('link', { name: 'queued-' + uploadName + '.zip', exact: true }).count(), 1);
     await page.goto(publicFolder + '&tab=add');
-    await page.locator('#fw-file').setInputFiles({ name: 'unsafe-' + name + '.zip', mimeType: 'application/zip', buffer: Buffer.from(fixture.unsafe_zip_base64, 'base64') });
+    await page.locator('#fw-file').setInputFiles({ name: 'unsafe-' + uploadName + '.zip', mimeType: 'application/zip', buffer: Buffer.from(fixture.unsafe_zip_base64, 'base64') });
     await page.locator('[name=filewarden_save]').click();
     await page.waitForURL(/result=unsafe_file/);
     assert.ok((await page.locator('.fw-notice-error').textContent()).includes('Scripts, macros'));
@@ -71,8 +77,8 @@ module.exports = async ({ page, context, base, fixture, name, filename }) => {
         for (const file of files) transfer.items.add(new File([Uint8Array.from(atob(file.bytes), c => c.charCodeAt(0))], file.name));
         zone.dispatchEvent(new DragEvent('drop', { bubbles: true, cancelable: true, dataTransfer: transfer }));
     }, [
-        { name: 'dropped-' + name + '.txt', bytes: Buffer.from('Dropped text fixture\n').toString('base64') },
-        { name: 'dropped-unsafe-' + name + '.zip', bytes: fixture.unsafe_zip_base64 }
+        { name: 'dropped-' + uploadName + '.txt', bytes: Buffer.from('Dropped text fixture\n').toString('base64') },
+        { name: 'dropped-unsafe-' + uploadName + '.zip', bytes: fixture.unsafe_zip_base64 }
     ]);
     assert.equal(await page.locator('.fw-upload-item').count(), 2);
     await page.locator('[name=filewarden_save]').click();
@@ -125,8 +131,8 @@ module.exports = async ({ page, context, base, fixture, name, filename }) => {
     assert.equal(await page.locator('.fw-trash-confirm [name=confirm]').isChecked(), false);
     await page.goto(documents + '&tab=trash'); // cancel; no irreversible bulk request is sent.
     if (name === 'firefox') {
-        await page.goto(folderURL + '&search=' + encodeURIComponent('queued-' + name + '.zip'));
-        const queued = page.locator('tbody tr').filter({ hasText: 'queued-' + name + '.zip' });
+        await page.goto(folderURL + '&search=' + encodeURIComponent('queued-' + uploadName + '.zip'));
+        const queued = page.locator('tbody tr').filter({ hasText: 'queued-' + uploadName + '.zip' });
         await queued.locator('.fw-context summary').click();
         await go(queued.getByRole('link', { name: 'Move to trash', exact: true }));
         await page.getByRole('button', { name: 'Move to trash', exact: true }).click();
@@ -160,7 +166,7 @@ module.exports = async ({ page, context, base, fixture, name, filename }) => {
     await page.locator('#fw-copy-status').filter({ hasText: 'Copy failed.' }).waitFor();
     // 09: all categories have real content and changing one value preserves the others.
     await page.goto(base + '/wp-admin/admin.php?page=filewarden-settings');
-    assert.equal(await page.locator('.fw-settings-nav [role=tab]').count(), 5);
+    assert.equal(await page.locator('.fw-settings-nav [role=tab]').count(), 7);
     assert.equal(await page.locator('.fw-health').getAttribute('data-storage-status'), 'verified');
     const trashDays = await page.locator('[name=trash_days]').inputValue();
     const auditDays = await page.locator('[name=audit_days]').inputValue();
@@ -173,7 +179,7 @@ module.exports = async ({ page, context, base, fixture, name, filename }) => {
     assert.equal(await page.locator('[name=audit_days]').inputValue(), auditDays);
     await page.locator('[data-settings-section=storage]').focus();
     await page.locator('[data-settings-section=storage]').press('ArrowDown');
-    assert.equal(await page.locator('[data-settings-section=documents]').getAttribute('aria-selected'), 'true');
+    assert.equal(await page.locator('[data-settings-section=backup]').getAttribute('aria-selected'), 'true');
     await page.setViewportSize({ width: 375, height: 812 });
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
     await page.screenshot({ path: 'build/screenshots/settings-categories-mobile-' + name + '.png', fullPage: true });

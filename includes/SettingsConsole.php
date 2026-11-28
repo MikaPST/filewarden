@@ -9,9 +9,10 @@ namespace FileWarden;
 /** Save only submitted settings; hidden or absent categories never reset values. */
 final class SettingsConsole {
 	const FIELDS = array(
-		'upload_mb'  => array( 50, 1, 1024 ),
-		'trash_days' => array( 30, 1, 3650 ),
-		'audit_days' => array( 365, 1, 3650 ),
+		'upload_mb'     => array( 50, 1, 1024 ),
+		'trash_days'    => array( 30, 1, 3650 ),
+		'audit_days'    => array( 365, 1, 3650 ),
+		'audit_ip_days' => array( 30, 1, 3650 ),
 	);
 
 	/** One registry for navigation and panel headings; extensions may add read-only categories.
@@ -29,6 +30,11 @@ final class SettingsConsole {
 				'label'       => __( 'Storage and security', 'filewarden' ),
 				'description' => __( 'Keep your documents separate from the plugin code.', 'filewarden' ),
 				'icon'        => 'shield-check',
+			),
+			'backup'    => array(
+				'label'       => __( 'Backup and migration', 'filewarden' ),
+				'description' => __( 'Export or restore an encrypted library.', 'filewarden' ),
+				'icon'        => 'download',
 			),
 			'documents' => array(
 				'label'       => __( 'Documents and limits', 'filewarden' ),
@@ -55,6 +61,11 @@ final class SettingsConsole {
 			$section['icon'] = sanitize_key( $section['icon'] );
 			$sections[ $id ] = $section;
 		}
+		$sections['diagnostic'] = array(
+			'label'       => __( 'Diagnostic', 'filewarden' ),
+			'description' => __( 'Check prerequisites and identify blocked operations.', 'filewarden' ),
+			'icon'        => 'stethoscope',
+		);
 		return $sections;
 	}
 
@@ -77,6 +88,13 @@ final class SettingsConsole {
 			if ( $value < $bounds[1] || $value > $bounds[2] ) {
 				throw new \InvalidArgumentException( 'Invalid settings.' ); }
 			$values[ 'filewarden_' . $name ] = $value;
+		}
+		if ( array_key_exists( 'audit_collect_ip', $source ) ) {
+			$ip_choice = wp_unslash( $source['audit_collect_ip'] );
+			if ( ! is_string( $ip_choice ) || ! in_array( $ip_choice, array( '0', '1' ), true ) ) {
+				throw new \InvalidArgumentException( 'Invalid audit IP setting.' );
+			}
+			$values['filewarden_audit_collect_ip'] = $ip_choice;
 		}
 		if ( array_key_exists( 'notification_seconds', $source ) ) {
 			$value = RestController::integer( wp_unslash( $source['notification_seconds'] ) );
@@ -185,6 +203,8 @@ final class SettingsConsole {
 		echo '</div></nav><section class="fw-content">';
 		$ui->form_start( 'settings' );
 		foreach ( $sections as $id => $section ) {
+			if ( in_array( $id, array( 'backup', 'diagnostic' ), true ) ) {
+				continue; }
 			echo '<section id="fw-settings-' . esc_attr( $id ) . '" class="fw-settings-panel"><h2 tabindex="-1">' . esc_html( $section['label'] ) . '</h2><p class="fw-settings-description">' . esc_html( $section['description'] ) . '</p>';
 			if ( 'general' === $id ) {
 				self::language_panel();
@@ -201,6 +221,7 @@ final class SettingsConsole {
 				echo '<p>' . esc_html__( 'Documents are stored separately from the plugin. Storage operations remain blocked until protection is verified.', 'filewarden' ) . '</p><p>' . esc_html( $message ) . '</p>'; }
 			if ( 'storage' === $id ) {
 				self::import_panel();
+				WordPressTableConsole::render();
 				if ( ! $database_ready ) {
 					self::database_panel( $database, $pending );
 				}
@@ -216,6 +237,7 @@ final class SettingsConsole {
 			if ( 'documents' === $id && ! ImportPolicy::unrestricted() ) {
 				echo '<p>' . esc_html__( 'ZIP files remain downloadable archives; they are inspected but never extracted automatically.', 'filewarden' ) . '</p><p>' . esc_html__( 'Executable files, active content, macros and unsafe archives are refused.', 'filewarden' ) . '</p>'; }
 			if ( 'audit' === $id ) {
+				echo '<section class="fw-audit-ip-settings"><h3>' . esc_html__( 'Network origin of sensitive events', 'filewarden' ) . '</h3><input type="hidden" name="audit_collect_ip" value="0"><label><input type="checkbox" name="audit_collect_ip" value="1"' . checked( '1' === get_option( 'filewarden_audit_collect_ip', '0' ), true, false ) . '> ' . esc_html__( 'Record IP addresses for access refusals and sensitive operations', 'filewarden' ) . '</label><p class="description">' . esc_html__( 'Disabled by default. Includes permission and security-setting changes, permanent deletion, audit exports and backup/restoration operations. Ordinary document views are excluded.', 'filewarden' ) . '</p><p><label for="fw-audit-ip-days">' . esc_html__( 'IP retention (days)', 'filewarden' ) . '</label><input id="fw-audit-ip-days" name="audit_ip_days" type="number" min="1" max="3650" value="' . esc_attr( get_option( 'filewarden_audit_ip_days', 30 ) ) . '" required></p><p class="description">' . esc_html__( 'Initially 30 days, never longer than audit retention. Expired IPs are hidden immediately and erased by scheduled cleanup. Disabling collection stops new IP records.', 'filewarden' ) . '</p><p class="description">' . esc_html__( 'The server connection address is used. Forwarded headers are accepted only from proxies explicitly configured by the server operator.', 'filewarden' ) . '</p></section>';
 				echo '<a class="button fw-button-accent" href="' . esc_url( admin_url( 'admin.php?page=filewarden-audit' ) ) . '"><span class="fw-action-icon fw-icon-scroll-text" aria-hidden="true"></span>' . esc_html__( 'Open audit log', 'filewarden' ) . '</a>'; }
 			echo '</section>';
 		}
@@ -224,13 +246,19 @@ final class SettingsConsole {
 		$ui->form_start( 'database_repair' );
 		echo '</form>';
 		self::import_confirmation();
+		BackupConsole::render();
+		DiagnosticConsole::render();
 		echo '</section></div></div>';
 	}
 
 	/** Render the plugin-wide language preference before notification settings. */
 	private static function language_panel() {
 		echo '<section class="fw-language-settings"><h3><span class="fw-action-icon fw-icon-languages" aria-hidden="true"></span>' . esc_html__( 'Language', 'filewarden' ) . '</h3><p><label for="fw-language">' . esc_html__( 'FileWarden language', 'filewarden' ) . '</label><select id="fw-language" name="language" aria-describedby="fw-language-help">';
-		foreach ( array( 'auto' => __( 'Automatic — WordPress site language', 'filewarden' ) ) + Language::LANGUAGES as $value => $label ) {
+		foreach ( array(
+			'auto'  => __( 'Automatic — Site language', 'filewarden' ),
+			'fr_FR' => 'FR — Français',
+			'en_US' => 'EN — English',
+		) as $value => $label ) {
 			echo '<option value="' . esc_attr( $value ) . '"' . selected( Language::choice(), $value, false ) . '>' . esc_html( $label ) . '</option>';
 		}
 		echo '</select></p><p class="description" id="fw-language-help">' . esc_html__( 'Choose the language of FileWarden interfaces and messages. Automatic mode uses English when the site language is unavailable.', 'filewarden' ) . '</p>';
@@ -261,7 +289,7 @@ final class SettingsConsole {
 	 * @param bool  $pending Interrupted repair checkpoint.
 	 */
 	private static function database_panel( array $database, $pending ) {
-		echo '<div class="fw-database-panel"><h3>' . esc_html__( 'Transactional database tables', 'filewarden' ) . '</h3>';
+		echo '<div id="fw-database-repair-section" class="fw-database-panel" tabindex="-1"><h3>' . esc_html__( 'Transactional database tables', 'filewarden' ) . '</h3>';
 		$messages = array(
 			'ready'        => __( 'The three FileWarden tables use InnoDB.', 'filewarden' ),
 			'incompatible' => __( 'Existing MyISAM tables prevent safe folder deletion. Convert the three FileWarden tables to InnoDB after backing up.', 'filewarden' ),

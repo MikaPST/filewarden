@@ -29,7 +29,7 @@ def run(request, admin, reader, anon, fixtures):
         assert address.path.endswith('/assets/' + stylesheet + '.css')
         status, _, css, _ = request(anon, address.path + '?' + address.query)
         assert status == 200
-        expected = '0.1.17-dev-' + hashlib.sha256(css).hexdigest()[:12]
+        expected = os.environ.get('FILEWARDEN_TARGET_VERSION', '0.1.17-dev') + '-' + hashlib.sha256(css).hexdigest()[:12]
         assert urllib.parse.parse_qs(address.query)['ver'] == [expected], 'Same-version style cache key does not identify the installed CSS'
     private = '/wp-admin/admin-post.php?action=filewarden_content&document=' + fixtures['private'] + '&download=1'
     assert request(anon, private)[0] == 404

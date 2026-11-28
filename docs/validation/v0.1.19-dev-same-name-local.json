@@ -1,0 +1,134 @@
+{
+  "date": "2026-11-28",
+  "version": "0.1.19-dev",
+  "schema": "9",
+  "sha256": "bc0ade58cf36d515c11b983b03c70deee1047334bada792d3757fcdbb616cfab",
+  "bytes": 4467535,
+  "files": 376,
+  "php_files": 66,
+  "runtime_js_files": 17,
+  "all_members_match_sources_and_two_installed_sites": true,
+  "official_svg_unchanged": 71,
+  "protected_modules_unchanged": [
+    "Installer",
+    "PermissionService",
+    "Policy",
+    "Repository",
+    "StorageService",
+    "ManagedStorage",
+    "FrontendAppearance",
+    "Publication",
+    "Viewer",
+    "BackupArchive",
+    "BackupComponents",
+    "BackupConsole",
+    "BackupErrors",
+    "BackupJobs",
+    "BackupManifest",
+    "BackupRestore",
+    "BackupService"
+  ],
+  "previous_sha256": "f715e9ea92f2c068d48588fcd9b3d9ba0528d193a661c3fad2775a9144d25c66",
+  "status": "local candidate for owner preproduction testing",
+  "scope": [
+    "same original filename duplicates on computer/Media import",
+    "illustrated authoritative access steps",
+    "shared modal close style",
+    "copy/move destination spacing and label"
+  ],
+  "environment": {
+    "php": "8.2.35",
+    "database": "MariaDB 10.11.11",
+    "browser_wordpress": "7.1.5",
+    "installed_zip_wordpress": [
+      "7.1.5",
+      "6.8"
+    ],
+    "browsers": [
+      "Chromium",
+      "Firefox"
+    ],
+    "languages": [
+      "fr_FR",
+      "en_US"
+    ],
+    "viewports": [
+      "desktop",
+      "390px mobile"
+    ]
+  },
+  "checks": {
+    "phpunit": {
+      "tests": 122,
+      "assertions": 436,
+      "passed": true
+    },
+    "javascript_tests": 8,
+    "phpcs": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "catalogs": 809,
+    "syntax_php": 66,
+    "syntax_runtime_js": 17,
+    "integration": [
+      "restricted folder, three roles",
+      "same filename and same content reviewed before name conflict",
+      "reviewed numbered name bound to confirmation",
+      "name race requires renewed review",
+      "independent UUID/storage, identical original-content hash",
+      "different content gives explicit name warning",
+      "extension change refused",
+      "actual Media duplicate and confirmed import"
+    ],
+    "browser": [
+      "same filename computer multipart upload and Media import",
+      "another file finishes while duplicate waits",
+      "copy filename displayed before confirmation",
+      "four real chain levels with notes and icons",
+      "restrictive condition highlighted, retained rule amber",
+      "same steps in sheet and rights modal",
+      "hovered Information/Rename close controls have identical computed size/font/color/background/border/radius",
+      "close and Escape preserved",
+      "copy and move select/action spacing at least 17px (18px target)",
+      "label/select spacing at least 9px (10px target)",
+      "label at least 14px semi-bold",
+      "mobile dialog no horizontal overflow"
+    ]
+  },
+  "integrity": {
+    "original_unchanged": true,
+    "all_names_unique": true,
+    "same_content_files_verified": 14
+  },
+  "cleanup": {
+    "fixture_files_preserved": true,
+    "http_servers": [
+      {
+        "port": 8135,
+        "identity_verified": true,
+        "fixture": "v19backupsource"
+      }
+    ],
+    "database_graceful_shutdown": true,
+    "remaining_owned_services": 0
+  },
+  "authorization": "Owner explicitly confirmed GO for the four corrections. No commit/tag/GitHub release/Alpha.",
+  "evidence": [
+    "tests/Unit/ImportNamesTest.php",
+    "tests/v19-same-name-integration.php",
+    "tests/v19-same-name-browser.cjs",
+    ".tools/v19-dev/same-name-package-proof.json",
+    ".tools/v19-dev/same-name-browser-fr.log",
+    ".tools/v19-dev/same-name-browser-en.log",
+    ".tools/v19-dev/same-name-phpunit.log",
+    ".tools/v19-dev/same-name-phpcs.log",
+    ".tools/v19-dev/same-name-js-tests.log",
+    ".tools/v19-dev/same-name-integrity.json"
+  ],
+  "limits": [
+    "PHP 8.5/LiteSpeed hosting not executed locally",
+    "No production security/full human accessibility certification",
+    "No new end-to-end backup restoration for this narrow correction: backup/storage/schema/authorization modules byte-identical to previously validated ZIP"
+  ]
+}

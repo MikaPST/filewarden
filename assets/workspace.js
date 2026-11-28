@@ -43,6 +43,10 @@
         const panel = menu.querySelector('.fw-context-menu');
         const rect = menu.querySelector('summary').getBoundingClientRect();
         panel.style.position = 'fixed';
+        panel.style.right = 'auto';
+        panel.style.width = 'max-content';
+        panel.style.maxWidth = Math.max(1, innerWidth - 16) + 'px';
+        panel.style.boxSizing = 'border-box';
         panel.style.left = Math.max(8, Math.min(rect.right - panel.offsetWidth, innerWidth - panel.offsetWidth - 8)) + 'px';
         panel.style.top = Math.max(8, rect.bottom + panel.offsetHeight < innerHeight - 8 ? rect.bottom + 6 : rect.top - panel.offsetHeight - 6) + 'px';
     };

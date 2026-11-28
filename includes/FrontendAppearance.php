@@ -29,6 +29,30 @@ final class FrontendAppearance {
 				'border'      => '#dce4ee',
 				'accent'      => '#5fc2ba',
 			),
+			'dark'       => array(
+				'background'  => '#101a2b',
+				'surface'     => '#192840',
+				'text'        => '#e6edf7',
+				'button'      => '#76d6ce',
+				'button_text' => '#102338',
+				'link'        => '#9fe4de',
+				'hover'       => '#a0e7df',
+				'muted'       => '#b6c4d8',
+				'border'      => '#3d536f',
+				'accent'      => '#76d6ce',
+			),
+			'terracotta' => array(
+				'background'  => '#faf2ec',
+				'surface'     => '#fffaf6',
+				'text'        => '#432c25',
+				'button'      => '#914833',
+				'button_text' => '#ffffff',
+				'link'        => '#85432e',
+				'hover'       => '#743724',
+				'muted'       => '#755b50',
+				'border'      => '#ddc7ba',
+				'accent'      => '#b25f45',
+			),
 			'neutral'    => array(
 				'background'  => '#f7f7f8',
 				'surface'     => '#ffffff',
@@ -80,7 +104,7 @@ final class FrontendAppearance {
 	 */
 	public static function validate( array $input ) {
 		$result = self::defaults();
-		if ( ! is_string( $input['preset'] ?? null ) || ! in_array( $input['preset'], array( 'filewarden', 'neutral', 'nature', 'custom' ), true ) ) {
+		if ( ! is_string( $input['preset'] ?? null ) || ! in_array( $input['preset'], array_merge( array_keys( self::presets() ), array( 'custom' ) ), true ) ) {
 			throw new \InvalidArgumentException( 'Invalid appearance.' );
 		}
 		$result['preset'] = $input['preset'];
@@ -136,14 +160,39 @@ final class FrontendAppearance {
 	 */
 	public static function contrast_failures( array $colors ) {
 		$failures = array();
-		foreach ( array( array( 'text', 'background' ), array( 'text', 'surface' ), array( 'button_text', 'button' ), array( 'button_text', 'hover' ), array( 'link', 'surface' ), array( 'link', 'background' ), array( 'muted', 'surface' ), array( 'muted', 'background' ) ) as $pair ) {
-			$a = self::luminance( $colors[ $pair[0] ] );
-			$b = self::luminance( $colors[ $pair[1] ] );
-			if ( ( max( $a, $b ) + 0.05 ) / ( min( $a, $b ) + 0.05 ) < 4.5 ) {
-				$failures[] = implode( '/', $pair );
+		foreach ( self::contrast_report( $colors ) as $pair => $ratio ) {
+			if ( null === $ratio || $ratio < 4.5 ) {
+				$failures[] = $pair;
 			}
 		}
 		return $failures;
+	}
+
+	/** The shared server/client text pair registry.
+	 *
+	 * @return array Text and background token pairs.
+	 */
+	public static function contrast_pairs() {
+		return array( array( 'text', 'background' ), array( 'text', 'surface' ), array( 'button_text', 'button' ), array( 'button_text', 'hover' ), array( 'link', 'surface' ), array( 'link', 'background' ), array( 'muted', 'surface' ), array( 'muted', 'background' ) );
+	}
+
+	/** Calculate unrounded ratios; malformed drafts remain explicitly incomplete.
+	 *
+	 * @param array $colors Draft tokens.
+	 * @return array Pair names mapped to ratios or null.
+	 */
+	public static function contrast_report( array $colors ) {
+		$result = array();
+		foreach ( self::contrast_pairs() as $pair ) {
+			$ratio = null;
+			if ( isset( $colors[ $pair[0] ], $colors[ $pair[1] ] ) && preg_match( '/^#[a-f0-9]{6}$/iD', $colors[ $pair[0] ] ) && preg_match( '/^#[a-f0-9]{6}$/iD', $colors[ $pair[1] ] ) ) {
+				$a     = self::luminance( $colors[ $pair[0] ] );
+				$b     = self::luminance( $colors[ $pair[1] ] );
+				$ratio = ( max( $a, $b ) + 0.05 ) / ( min( $a, $b ) + 0.05 );
+			}
+			$result[ implode( '/', $pair ) ] = $ratio;
+		}
+		return $result;
 	}
 
 	/** Read persistent values; malformed stored CSS never reaches a response.
@@ -236,7 +285,7 @@ final class FrontendAppearance {
 	 * @return string Trusted style markup.
 	 */
 	public static function style() {
-		$css = 'body.fw-public-theme{';
+		$css = 'body.fw-public-theme{color-scheme:' . ( self::luminance( self::current()['colors']['background'] ) < 0.18 ? 'dark' : 'light' ) . ';';
 		foreach ( self::current()['colors'] as $key => $value ) {
 			$css .= '--fw-public-' . str_replace( '_', '-', $key ) . ':' . $value . ';';
 		}

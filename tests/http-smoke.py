@@ -99,18 +99,33 @@ assert "result=denied" in request(reader, "/wp-admin/admin-post.php", data=urlli
 }).encode())[3], "Reader must not be allowed to import"
 
 
-def upload(name, payload, folder=None):
+def upload(name, payload, folder=None, acknowledge=True, review=None):
     if folder is None:
         folder = fixtures["public_folder_id"]
     boundary = "fw-" + uuid.uuid4().hex
     chunks = []
     fields = {"action": "filewarden_admin", "operation": "add_document", "source": "upload", "_wpnonce": nonce,
               "folder_id": str(folder), "policy_type": "authenticated"}
+    fields.update(review or {})
     for key, value in fields.items():
         chunks.append(f'--{boundary}\r\nContent-Disposition: form-data; name="{key}"\r\n\r\n{value}\r\n'.encode())
     chunks.append(f'--{boundary}\r\nContent-Disposition: form-data; name="file"; filename="{name}"\r\nContent-Type: application/pdf\r\n\r\n'.encode() + payload + b"\r\n")
     chunks.append(f'--{boundary}--\r\n'.encode())
-    return request(admin, "/wp-admin/admin-post.php", b"".join(chunks), {"Content-Type": "multipart/form-data; boundary=" + boundary})
+    result = request(admin, "/wp-admin/admin-post.php", b"".join(chunks), {"Content-Type": "multipart/form-data; boundary=" + boundary})
+    if acknowledge and "result=duplicate" in result[3]:
+        proof = re.search(rb'name="duplicate_proof" value="([^"]+)"', result[2])
+        proposed = re.search(rb'name="import_name" value="([^"]+)"', result[2])
+        if proof:
+            return upload(name, payload, folder, False, {"duplicate_proof": unescape(proof.group(1).decode()), "import_name": unescape(proposed.group(1).decode()) if proposed else name})
+    return result
+
+
+def preview_link(listing, filename):
+    # Filename now opens the sheet. Binary/preview tests must follow the actual eye action.
+    row = next(row for row in re.findall(rb'<tr\b.*?</tr>', listing, re.S) if filename.encode() in row)
+    match = re.search(rb'<a\b[^>]*data-filewarden-preview[^>]*href="([^"]+)"', row)
+    assert match, "Protected preview action missing"
+    return unescape(match.group(1).decode()).removeprefix(base)
 
 
 pdf = b"%PDF-1.4\n1 0 obj<</Type/Catalog>>endobj\n%%EOF\n"
@@ -119,13 +134,11 @@ assert status == 200 and "result=success" in root_url
 root_document = urllib.parse.parse_qs(urllib.parse.urlsplit(root_url).query)["created"][0]
 root_binary = "/wp-admin/admin-post.php?" + urllib.parse.urlencode({"action": "filewarden_content", "document": root_document, "download": "1"})
 assert request(admin, root_binary)[0] == 404, "Recovery download accepted a publication URL without its management nonce"
-root_link = re.search(rb'href="([^"]+)"[^>]*>root-unpublished\.pdf</a>', listing)
-assert root_link, "Unpublished upload missing from management listing"
-root_binary = unescape(root_link.group(1).decode()).removeprefix(base) + "&download=1"
+root_binary = preview_link(listing, "root-unpublished.pdf") + "&download=1"
 assert request(admin, root_binary)[2] == pdf, "Unpublished upload bytes were not preserved"
 assert request(anon, root_binary)[0] == 404 and request(reader, root_binary)[0] == 404, "Unpublished document became accessible to ordinary readers"
 assert "result=success" in upload("upload-test.pdf", pdf)[3]
-assert "result=duplicate" in upload("upload-test.pdf", pdf)[3]
+assert "result=duplicate" in upload("upload-test.pdf", pdf, acknowledge=False)[3]
 assert "result=format" in upload("malicious.php", b"<?php echo 'blocked';")[3]
 assert "result=format" in upload("fake.pdf", b"not a PDF")[3]
 from format_fixtures import document_fixtures
@@ -153,11 +166,19 @@ status, _, page, url = request(admin, "/wp-admin/admin-post.php", data=urllib.pa
     "action": "filewarden_admin", "operation": "add_document", "source": "import", "_wpnonce": nonce,
     "folder_id": str(fixtures["folder_id"]), "policy_type": "authenticated", "media_id": str(fixtures["media_id"])
 }).encode())
+if "result=duplicate" in url:
+    # The earlier PNG-format test intentionally imported these exact bytes already.
+    proof = re.search(rb'name="duplicate_proof" value="([^"]+)"', page)
+    proposed = re.search(rb'name="import_name" value="([^"]+)"', page)
+    assert proof and proposed, "Authorized media duplicate review missing"
+    status, _, page, url = request(admin, "/wp-admin/admin-post.php", data=urllib.parse.urlencode({
+        "action": "filewarden_admin", "operation": "add_document", "source": "import", "_wpnonce": nonce,
+        "folder_id": str(fixtures["folder_id"]), "policy_type": "authenticated", "media_id": str(fixtures["media_id"]),
+        "duplicate_proof": unescape(proof.group(1).decode()), "import_name": unescape(proposed.group(1).decode())
+    }).encode())
 assert status == 200 and "result=success" in url and "folder_id=" + str(fixtures["folder_id"]) in url
 assert b"filewarden-fixture.png saved and verified in Restricted / Public child" in page
-match = re.search(rb'href="([^"]+)"[^>]*>filewarden-fixture\.png</a>', page)
-assert match, "Imported image missing from destination listing"
-detail = urllib.parse.urlsplit(unescape(match.group(1).decode()))
+detail = urllib.parse.urlsplit(preview_link(page, "filewarden-fixture.png"))
 preview = detail.path + "?" + detail.query + "&preview=1"
 assert request(anon, preview)[0] == 404
 status, headers, pixels, _ = request(editor, preview)

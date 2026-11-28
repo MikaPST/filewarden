@@ -59,9 +59,10 @@ final class FolderLifecycle {
 					if ( false === $wpdb->update(
 						$wpdb->prefix . 'filewarden_documents',
 						array(
-							'folder_id'      => 0,
-							'retained_rules' => $saved,
-							'trash_origin'   => ! empty( $row['trash_origin'] ) ? $row['trash_origin'] : ( ! empty( $row['trashed_at'] ) ? wp_json_encode(
+							'folder_id'       => 0,
+							'folder_added_at' => current_time( 'mysql', true ),
+							'retained_rules'  => $saved,
+							'trash_origin'    => ! empty( $row['trash_origin'] ) ? $row['trash_origin'] : ( ! empty( $row['trashed_at'] ) ? wp_json_encode(
 								array(
 									'folder_id' => $id,
 									'path'      => DocumentCollection::path( $service->repository, $id ),
@@ -69,7 +70,7 @@ final class FolderLifecycle {
 							) : null ),
 						),
 						array( 'id' => $row['id'] ),
-						array( '%d', '%s', '%s' ),
+						array( '%d', '%s', '%s', '%s' ),
 						array( '%d' )
 					) ) {
 						throw new \RuntimeException( 'Recovery write failed.' ); }

@@ -33,12 +33,12 @@ $extra=static function($sections){$sections['acceptance-extra']=array('label'=>'
 add_filter('filewarden_settings_sections',$extra);
 try {
     $sections=FileWarden\SettingsConsole::sections();
-    fw_assert(6===count($sections)&&!isset($sections['../bad']),'Category registry lost defaults or accepted an invalid ID.');
+    fw_assert(8===count($sections)&&!isset($sections['../bad'])&&array_key_last($sections)==='diagnostic','Category registry lost defaults or accepted an invalid ID.');
     ob_start();FileWarden\SettingsConsole::page($service,new FileWarden\AdminController($service));$settings_markup=ob_get_clean();
     fw_assert(str_contains($settings_markup,'data-settings-section="acceptance-extra"')&&str_contains($settings_markup,'id="fw-settings-acceptance-extra"'),'Extra category did not produce both a link and panel.');
     fw_assert(str_contains($settings_markup,'Registry acceptance description'),'Extra panel lost its description.');
 } finally {remove_filter('filewarden_settings_sections',$extra);}
-fw_assert(5===count(FileWarden\SettingsConsole::sections()),'Fixture category leaked into ordinary settings.');
+fw_assert(7===count(FileWarden\SettingsConsole::sections()),'Fixture category leaked into ordinary settings.');
 $version=new ReflectionMethod(FileWarden\AdminController::class,'asset_version');
 foreach(array('assets/admin.css','assets/notices.js','assets/settings.js')as$asset){
     fw_assert(FILEWARDEN_VERSION.'-'.substr(hash_file('sha256',FILEWARDEN_PATH.$asset),0,12)===$version->invoke(null,$asset),'Asset URL does not identify its actual contents.');

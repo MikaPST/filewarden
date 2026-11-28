@@ -8,6 +8,14 @@
 body.fw-public-theme{background:var(--fw-public-background,#f4f7fb);color:var(--fw-public-text,#1c2942);color-scheme:light}
 .fw-public-theme .fw-public-brand{display:flex;align-items:center;gap:10px;padding-bottom:12px;border-bottom:2px solid var(--fw-public-accent,#5fc2ba);margin-bottom:16px;min-width:0}
 .fw-public-theme .fw-public-brand:empty{display:none}
+.fw-public-theme .fw-empty-state{grid-column:1/-1;width:100%;box-sizing:border-box;text-align:center;padding:24px;margin:8px 0;background:var(--fw-public-surface,#fff);color:var(--fw-public-text,#1c2942);border:1px solid var(--fw-public-border,#dce4ee);border-radius:12px}
+.fw-public-theme .fw-empty-state h2{font-size:20px;margin:12px 0 8px}
+.fw-public-theme .fw-empty-state p{max-width:650px;margin:0 auto;line-height:1.65;color:inherit}
+.fw-public-theme .fw-empty-symbol{display:inline-flex;align-items:center;justify-content:center;width:60px;height:60px;border-radius:50%;background:var(--fw-public-background,#f4f7fb);color:var(--fw-public-link,#3b556d)}
+.fw-public-theme .fw-empty-symbol .fw-ui-icon{width:36px;height:36px}
+.fw-public-theme .fw-empty-reset{display:inline-flex;align-items:center;justify-content:center;gap:8px;margin-top:18px;padding:10px 14px;border:1px solid var(--fw-public-border,#dce4ee);border-radius:8px;color:var(--fw-public-link,#3b556d);background:var(--fw-public-surface,#fff);text-decoration:none;font-weight:600}
+.fw-ui-rotate-ccw{--fw-ui-icon:url('icons/rotate-ccw.svg')}
+@media(max-width:600px){.fw-public-theme .fw-empty-state{padding:20px}}
 .fw-public-theme .fw-public-logo{width:38px;height:38px;object-fit:contain;flex:none}
 .fw-public-theme .fw-public-name{color:var(--fw-public-text,#1c2942);font-size:13px;letter-spacing:.12em;overflow-wrap:anywhere}
 .fw-public-theme .document-identity{display:flex;align-items:center;gap:20px;flex:1;min-width:0}
@@ -21,7 +29,11 @@ body.fw-public-theme{background:var(--fw-public-background,#f4f7fb);color:var(--
 .fw-public-theme :is(button,.actions a,.pagination a,.fw-login):hover{background:var(--fw-public-hover,#3b556d)!important;border-color:var(--fw-public-hover,#3b556d)!important;color:var(--fw-public-button-text,#fff)!important}
 .fw-public-theme :is(a,button,input):focus-visible{outline-color:var(--fw-public-link,#3b556d)}
 .fw-public-theme .fw-denied-symbol{background:var(--fw-public-background,#f4f7fb);color:var(--fw-public-link,#3b556d)}
-.fw-public-theme .fw-denied-wrap>.fw-public-brand{margin:0 20px 20px}
+.fw-public-theme .fw-denied-wrap{padding:20px}
+.fw-public-theme .fw-denied-wrap>.fw-public-brand{margin:0 0 20px}
+@media(max-width:760px){.fw-public-theme .fw-denied-wrap{padding:16px}}
+.fw-ui-folder{--fw-ui-icon:url('icons/folder.svg')}
+.fw-public-theme .fw-subfolders>a>.fw-ui-folder{width:24px;height:24px;color:inherit}
 .fw-public-theme .grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr));align-items:stretch}
 .fw-public-theme .grid .document{display:flex;flex-direction:column;align-items:center;min-height:0;max-width:280px;padding:16px;gap:0}
 .fw-public-theme .grid .document-identity{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;flex:none;width:100%}

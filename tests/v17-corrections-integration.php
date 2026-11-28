@@ -38,7 +38,7 @@ try{
  ob_start();FileWarden\Publisher::page($fix_service);$fix_html=ob_get_clean();$_GET=$fix_before_get;
  $fix_assert(2===substr_count($fix_html,'data-publication-tab='),'The two publication tabs are missing.');
  $fix_assert(!str_contains($fix_html,'<details class="fw-publication-integration"'),'Integration still starts in a folded disclosure.');
- $fix_assert(4===substr_count($fix_html,'class="fw-appearance-preset"')&&10===substr_count($fix_html,'data-color-picker='),'Compact templates lost a preset or a color control.');
+ $fix_assert((count(FileWarden\FrontendAppearance::presets())+1)===substr_count($fix_html,'class="fw-appearance-preset"')&&10===substr_count($fix_html,'data-color-picker='),'Compact templates lost a preset or a color control.');
  $fix_assert(str_contains($fix_html,'fw-icon-upload')&&str_contains($fix_html,'class="fw-appearance-checks"'),'Upload/check layout was not rendered.');
  $_GET=array('collection'=>'unfiled','search'=>'v17-');
  ob_start();(new FileWarden\AdminWorkspace($fix_service,new FileWarden\AdminController($fix_service)))->render();$fix_html=ob_get_clean();$_GET=$fix_before_get;

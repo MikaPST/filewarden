@@ -29,7 +29,7 @@ const base = process.env.FILEWARDEN_URL || 'http://127.0.0.1:8080';
             await page.goto(base + '/wp-admin/admin.php?page=filewarden-settings');
             assert.match(await page.locator('.fw-settings-nav').textContent(), /Stockage et sécurité/);
             assert.match(await page.locator('.fw-settings-nav').textContent(), /Documents et limites/);
-            assert.equal(await page.locator('.fw-settings-nav [role=tab]').count(), 5);
+            assert.equal(await page.locator('.fw-settings-nav [role=tab]').count(), 7);
             assert.equal(await page.locator('[name=notification_seconds]').inputValue(),'10');
             assert.match(await page.locator('#fw-notification-help').textContent(),/Définissez la durée pendant laquelle les notifications restent visibles/);
             await page.evaluate(()=>window.FileWardenNotices.show({type:'success',message:'Exemple de réception',persistent:false}));

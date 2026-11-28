@@ -1,5 +1,25 @@
 # Security policy and design notes
 
+## Lot autorisé 0.1.19-dev
+
+Voir [le périmètre des 16 points](lot-v0.1.19-dev.md) et [les notes du candidat](releases/v0.1.19-dev.md). Les contrôles d’accès et capacités restent inchangés. La migration additive de schéma 8 ajoute une date d’arrivée nullable ; aucune date historique inconnue n’est reconstruite. Le manifeste 3 inclut huit composants, avec import des anciens manifestes 1/2. Les paquets de configuration seule peuvent être appliqués sur une bibliothèque existante sans modifier documents, dossiers ni politiques ; une restauration de bibliothèque exige toujours une destination vide. Le chiffrement, les validations serveur, la confirmation, le verrou d’écriture et la reprise transactionnelle restent requis. Les mots de passe et clés du site source ne sont jamais exportés.
+
+
+## Nouvelle passe UI et sauvegarde sélective — 0.1.18-dev
+
+Lot validé par le propriétaire le 23 novembre 2026 : recherche/filtres homogènes Documents/Corbeille, cartes mobiles de corbeille, états publics vides centrés, destination lisible, suppressions multiples confirmées et modales d’action. Le Diagnostic différencie le module Sodium absent et ouvre l’assistant volontaire de conversion des trois tables WordPress nécessaires à la restauration, sans conversion au clic du lien. Sauvegarde complète ou transfert simplifié, options authentifiées indépendantes et restauration privée à l’administration sans reprise des droits ; attribution globale des créateurs par défaut dans l’interface. Voir [le guide sauvegarde](backup.md) et [le périmètre de correction](lot-ui-v0.1.18-dev.md). Résultats de cette passe dans `docs/validation/v0.1.18-dev-ui-pass-local.json` ; les preuves des anciens ZIP restent historiques.
+
+
+## Corrective candidate 0.1.18-dev
+
+Diagnostic reports use an explicit safe-field whitelist. Bounded in-memory Sodium/Argon2id checks and an exclusive random private storage witness do not modify library documents; the witness is removed in finally. Unknown measurements stay unknown. SQL metadata denial never implies transaction readiness. The diagnostic does not repair or certify a deployment.
+
+Audit network collection is opt-in, off by default, limited to an explicit sensitive-event catalog. Retention defaults to 30 days and cannot exceed audit retention. Expired addresses are hidden immediately from details/exports and physically cleared by bounded cleanup. REMOTE_ADDR is authoritative unless FILEWARDEN_TRUSTED_PROXIES is explicitly defined by the server administrator as an array of trusted IP/CIDR ranges. In that case, a bounded valid X-Forwarded-For chain is walked from the right, discarding trusted hops; malformed headers fall back to REMOTE_ADDR. Never populate this constant from a request. CLI/cron and ordinary viewing/download events do not collect an address. An IP is not proof of identity.
+
+Schema 7 adds only audit IP/expiry fields. Legacy encrypted job and database-repair barriers defer migration while keeping recovery routes available on schema 6. Backup manifests accept both schemas; restoration resets IP capture off and does not import source security secrets. Audit exports use schema 3. Legacy source actors with coincident numeric IDs are not resolved as current-site accounts.
+
+Elementor popup mode accepts only a positive numeric template ID. The same-origin parent frame binds user click/keyboard actions directly to the known popup API; no arbitrary encoded action, cross-origin message or script is accepted. Missing Elementor Pro leaves the native WordPress sign-in fallback.
+
 FileWarden is pre-alpha and must not be deployed for confidential documents.
 
 ## Explicit legacy database-engine repair (0.1.15-dev)
@@ -54,3 +74,9 @@ Archive validation also requires a ZIP signature and an allowlisted detected MIM
 ## Browser viewer
 
 The 0.1.6 viewer uses locally bundled PDF.js 6.5.438 with evaluation disabled, XFA disabled, no scripting/annotation layer and canvas-rendered fonts. Each PDF/image request is independently authorized. Raw PDFs retain attachment disposition and a sandbox CSP; the trusted HTML viewer has a separate self-only CSP permitting its module, worker and WASM decoders. No document is transmitted to a remote viewer. Authorized users can save the bytes; this is not DRM. Maintain the pinned PDF.js distribution and its license notices with upstream security updates.
+
+## Document lot 0.1.19-dev
+
+Descriptions remain private document metadata, not executable HTML or a public search field. Server validation rejects invalid UTF-8/overlength values; backup validation also rejects noncanonical markup, unexpected types and overlength values before activation. Archive memory budgets include descriptions. JSON review responses and REST errors are private/no-store; native fallback review is user-scoped, short-lived and read-checked again. A hidden duplicate is neither named nor reported as a match. A stored equal hash is insufficient: original bytes must match, with bounded private buffers. User/session-bound confirmation is invalidated by candidate rule changes. The display does not independently calculate permissions.
+
+Local native encrypted-stream tests isolate only the hosting HTTPS protection probe. They do not certify deployment isolation or PHP 8.5/LiteSpeed compatibility. Run the preproduction Diagnostic and human acceptance after installing the candidate.

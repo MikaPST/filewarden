@@ -3,6 +3,15 @@ use FileWarden\PublicationLogin;
 use PHPUnit\Framework\TestCase;
 
 final class PublicationLoginTest extends TestCase {
+    public function test_popup_shortcode_is_parsed_without_execution(): void {
+        foreach (['1252',' [elementor-template id="1252"] ',"[elementor-template id='1252']"] as $value) {
+            self::assertSame(1252,PublicationLogin::validate(['mode'=>'elementor','popup_id'=>$value])['popup_id']);
+        }
+        foreach (['[elementor-template id="1252" id="2"]','[elementor-template id="1252"]<script>','[elementor-template id="0"]','[elementor-template id="2147483648"]','[other id="1252"]'] as $value) {
+            try { PublicationLogin::validate(['mode'=>'elementor','popup_id'=>$value]);self::fail('Unsafe shortcode accepted'); }
+            catch (InvalidArgumentException $error) { self::assertSame('Invalid Elementor popup identifier.',$error->getMessage()); }
+        }
+    }
     public function test_native_mode_discards_custom_destination_without_changing_wordpress_behavior(): void {
         self::assertSame(['mode'=>'wordpress','url'=>''],PublicationLogin::validate(['mode'=>'wordpress','url'=>'javascript:alert(1)']));
     }

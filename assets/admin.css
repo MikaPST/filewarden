@@ -115,3 +115,47 @@
 .fw-workspace .fw-log-simple{--fw-log-tone:#b0c2dc;border-left:3px solid var(--fw-log-tone);padding:12px 0 12px 12px;margin:6px 0}.fw-workspace .fw-log-info{--fw-log-tone:#8cb9ff}.fw-workspace .fw-log-config{--fw-log-tone:var(--fw-brand-turquoise)}.fw-workspace .fw-log-success{--fw-log-tone:#80d5a3}.fw-workspace .fw-log-warning{--fw-log-tone:#ffc078}.fw-workspace .fw-log-deleted,.fw-workspace .fw-log-error{--fw-log-tone:#ffaaa3}.fw-log-event{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.fw-log-simple .fw-log-category{grid-column:auto;display:inline-flex;align-items:center;gap:6px;color:var(--fw-log-tone);font-size:11px;font-weight:600;border:1px solid var(--fw-log-tone);border-radius:5px;padding:2px 7px;line-height:1.6}.fw-log-category .fw-log-icon{display:inline-block;flex:none;width:14px;height:14px;background:currentColor;mask:var(--fw-log-icon) center/contain no-repeat;-webkit-mask:var(--fw-log-icon) center/contain no-repeat}.fw-workspace .fw-button-danger{display:inline-flex;align-items:center;gap:8px}.fw-workspace .fw-button-danger .fw-action-icon{margin:0}
 @media(max-width:782px){.fw-workspace .fw-heading{align-items:flex-start}.fw-workspace .fw-brand-logo{width:44px;height:44px}.fw-workspace .fw-heading-identity{gap:10px}.fw-workspace .fw-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0}.fw-workspace .fw-tabs a{padding:10px 6px}.fw-health-check{margin-left:0;flex-basis:100%}.fw-workspace .fw-health{padding:14px}.fw-workspace .fw-health-summary h2{font-size:15px}.fw-log-event{align-items:flex-start;flex-direction:column}}
 .fw-health-check{min-width:0;max-width:100%;overflow-wrap:anywhere}.fw-health-check time{max-width:100%;white-space:normal;overflow-wrap:anywhere}.fw-database-panel .button{display:inline-flex;align-items:center;gap:8px;max-width:100%;box-sizing:border-box;white-space:normal;overflow-wrap:anywhere;line-height:1.5;padding:8px 12px;text-align:left}.fw-database-panel .button .fw-action-icon{margin:0}
+
+/* Text contrast results use the same eight pairs as server validation. */
+.fw-workspace .fw-contrast-report {padding:14px 0;border-top:1px solid var(--fw-border, #dce4ee);margin-top:16px;}
+.fw-workspace .fw-contrast-report h4 {margin:0 0 8px;}
+.fw-workspace .fw-contrast-segments {display:flex;gap:4px;margin:10px 0 14px;max-width:320px;}
+.fw-workspace .fw-contrast-segments span {flex:1;height:5px;background:var(--fw-warning, #805400);border-radius:3px;}
+.fw-workspace .fw-contrast-segments span[data-pass=true] {background:var(--fw-notice-success, #167348);}
+.fw-workspace .fw-contrast-report li {display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:4px 0;}
+
+.fw-workspace .fw-selection {display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px;background:var(--fw-surface-subtle, #f4f7fb);border-radius:10px;margin:16px 0;}
+.fw-workspace .fw-search {flex-wrap:wrap;}
+.fw-workspace .fw-search label {display:flex;gap:8px;align-items:center;}
+.fw-workspace .fw-library-filters {flex-basis:100%;}
+.fw-workspace .fw-library-filters[open] {display:flex;flex-wrap:wrap;gap:12px;}
+.fw-workspace .fw-document-location {display:block;font-weight:normal;overflow-wrap:anywhere;}
+.filewarden-admin.fw-library-dialog {border:1px solid var(--fw-border, #dce4ee);border-radius:16px;max-width:min(540px, calc(100vw - 40px));padding:24px;}
+.filewarden-admin.fw-library-dialog label {display:grid;gap:8px;}
+.filewarden-admin.fw-library-dialog button {margin:12px 8px 0 0;}
+:is(.filewarden-admin,.fw-settings) .fw-backup label {display:grid;gap:8px;margin:12px 0;}
+:is(.filewarden-admin,.fw-settings) .fw-backup label:has(input[type=checkbox]) {display:flex;align-items:flex-start;}
+:is(.filewarden-admin,.fw-settings) .fw-backup input:not([type=checkbox]) {max-width:100%;}
+:is(.filewarden-admin,.fw-settings) .fw-backup-progress {margin:20px 0;padding:16px;background:var(--fw-surface-subtle, #f4f7fb);border-radius:12px;}
+:is(.filewarden-admin,.fw-settings) .fw-backup-progress progress {width:100%;accent-color:var(--fw-navy, #1c2942);}
+:is(.filewarden-admin,.fw-settings) .fw-backup .fw-tabs {display:flex;gap:12px;}
+:is(.filewarden-admin,.fw-settings) .fw-backup .fw-tabs button {background:transparent;color:inherit;border:0;border-bottom:3px solid transparent;padding:10px;cursor:pointer;}
+:is(.filewarden-admin,.fw-settings) .fw-backup .fw-tabs button[aria-pressed=true] {border-color:var(--fw-navy, #1c2942);font-weight:700;}
+:is(.filewarden-admin,.fw-settings) .fw-backup-tools {display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+@media(max-width:600px){.fw-workspace .fw-selection,.fw-workspace .fw-search label {align-items:stretch;flex-direction:column;}.fw-workspace .fw-selection select {width:100%;}}
+
+.fw-workspace .fw-contrast-report h4{display:flex;align-items:center;gap:8px}
+.fw-workspace .fw-contrast-report[data-level=aa] [data-contrast-summary],.fw-workspace .fw-contrast-report[data-level=aaa] [data-contrast-summary]{color:#167348;font-weight:600}
+.fw-workspace .fw-contrast-report[data-level=improve] [data-contrast-summary],.fw-workspace .fw-contrast-report[data-level=incomplete] [data-contrast-summary]{color:var(--fw-recovery-tone,#805400);font-weight:600}
+.fw-settings .fw-backup input[type=password],.fw-settings .fw-backup input[type=text]{width:100%;min-height:40px;border:1px solid var(--fw-line);border-radius:8px;padding:8px 10px}
+
+.fw-settings .fw-backup select{width:100%;max-width:100%;min-width:0;border:1px solid var(--fw-line);border-radius:8px;min-height:40px}
+
+/* Isolated review dialogs retain FileWarden controls outside the page wrapper. */
+.filewarden-admin.fw-library-dialog>form{padding:0;border:0;background:transparent}
+.filewarden-admin.fw-library-dialog h2{margin-top:0;color:#1c2942}
+.filewarden-admin.fw-library-dialog input{width:100%;min-height:40px;border:1px solid #dce4ee;border-radius:8px}
+.filewarden-admin.fw-library-dialog .button{border-radius:8px;color:#1c2942;border-color:#3b556d;background:#f1f5f9}
+.filewarden-admin.fw-library-dialog .button-primary{background:#1c2942;color:#fff;border-color:#1c2942}
+.filewarden-admin.fw-library-dialog :is(button,input):focus:not(:focus-visible){outline:none;box-shadow:none}
+.filewarden-admin.fw-library-dialog :is(button,input):focus-visible{outline:2px solid #1c2942;outline-offset:3px;box-shadow:none}

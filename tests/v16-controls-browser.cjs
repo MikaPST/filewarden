@@ -14,7 +14,7 @@ module.exports=async({context,base,name,fixture})=>{
   });
   assert.ok(Math.abs(position.center-position.parentCenter)<1,'Badge dropped below its label');
   assert.ok(position.right<=position.parentRight+1);
-  assert.equal(await page.locator('.fw-search button').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(241, 245, 249)');
+  assert.equal(await page.locator('.fw-search-main button[type=submit]').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(241, 245, 249)');
   const active=page.locator('.fw-tabs a[aria-current]');
   assert.equal(await active.evaluate(el=>getComputedStyle(el).borderBottomColor),'rgb(28, 41, 66)');
   await Promise.all([page.waitForNavigation(),active.click({noWaitAfter:true})]);await ready();assert.equal(await active.evaluate(el=>getComputedStyle(el).boxShadow),'none');

@@ -45,6 +45,8 @@ final class AuditHistory {
 				$result[ $key ] = $date->setTimezone( new \DateTimeZone( 'UTC' ) )->format( 'Y-m-d H:i:' ) . ( 'until' === $key ? '59' : '00' );
 			}
 		}
+		$result['actions']  = AuditEvents::selection( $input['actions'] ?? '', AuditEvents::actions() );
+		$result['statuses'] = AuditEvents::selection( $input['statuses'] ?? '', AuditEvents::statuses() );
 		if ( $result['actor_login'] ) {
 			$user = get_user_by( 'login', $result['actor_login'] );
 			if ( $user ) {
@@ -75,9 +77,30 @@ final class AuditHistory {
 				$where .= ' AND ' . $wpdb->prepare( $expression, $filters[ $key ] );
 			}
 		}
+		if ( isset( $filters['actions'], $filters['statuses'] ) ) {
+			$codes = array();
+			foreach ( AuditEvents::CATALOG as $event => $kind ) {
+				if ( in_array( $kind[0], $filters['actions'], true ) && in_array( $kind[1], $filters['statuses'], true ) ) {
+					$codes[] = $event;
+				}
+			}
+			$parts = array();
+			if ( $codes ) {
+				$slots = implode( ',', array_fill( 0, count( $codes ), '%s' ) );
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- Placeholder count is generated from bounded canonical values.
+				$parts[] = $wpdb->prepare( "CAST(event AS BINARY) IN ($slots)", $codes );
+			}
+			if ( in_array( 'other', $filters['actions'], true ) && in_array( 'unknown', $filters['statuses'], true ) ) {
+				$known = array_keys( AuditEvents::CATALOG );
+				$slots = implode( ',', array_fill( 0, count( $known ), '%s' ) );
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- Fixed catalog values, with generated placeholders.
+				$parts[] = $wpdb->prepare( "CAST(event AS BINARY) NOT IN ($slots)", $known );
+			}
+			$where .= $parts ? ' AND (' . implode( ' OR ', $parts ) . ')' : ' AND 1 = 0';
+		}
 		if ( ! empty( $filters['actor_login'] ) ) {
 			if ( ! empty( $filters['actor_id'] ) ) {
-				$where .= $wpdb->prepare( " AND (actor_login = %s OR (actor_login = '' AND actor_id = %d))", $filters['actor_login'], $filters['actor_id'] );
+				$where .= $wpdb->prepare( " AND (actor_login = %s OR (actor_login = '' AND actor_id = %d AND actor_type NOT IN ('imported','source_system','source_user','source_visitor','source_unknown')))", $filters['actor_login'], $filters['actor_id'] );
 			} else {
 				$where .= $wpdb->prepare( ' AND actor_login = %s', $filters['actor_login'] ); }
 		}
@@ -117,8 +140,10 @@ final class AuditHistory {
 		global $wpdb;
 		self::authorize();
 		$where = self::where( $filters, $upper );
-        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- where() returns exclusively prepared conditions.
-		$rows = $wpdb->get_results( $wpdb->prepare( "SELECT id, created_at, event, actor_id, actor_login, object_id, actor_type, resource_type, resource_name, resource_rules FROM {$wpdb->prefix}filewarden_audit_logs WHERE $where ORDER BY id DESC LIMIT %d", min( 1000, max( 1, $limit ) ) ), ARRAY_A );
+        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- where() returns exclusively prepared conditions.
+		$network = AuditIp::available() ? ', actor_ip, ip_expires_at' : '';
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- Network columns are a fixed literal; where() is prepared.
+		$rows = $wpdb->get_results( $wpdb->prepare( "SELECT id, created_at, event, actor_id, actor_login, object_id, actor_type, resource_type, resource_name, resource_rules$network FROM {$wpdb->prefix}filewarden_audit_logs WHERE $where ORDER BY id DESC LIMIT %d", min( 1000, max( 1, $limit ) ) ), ARRAY_A );
 		if ( $wpdb->last_error ) {
 			throw new \RuntimeException( 'Audit query failed.' ); }
 		return $rows ?? array();
@@ -138,7 +163,7 @@ final class AuditHistory {
 		if ( ! current_user_can( 'filewarden_manage_audit' ) ) {
 			throw new \DomainException( 'Access denied.' ); }
 		$where = self::where( $filters, $upper, true );
-        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- where() contains prepared values only.
+        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- where() contains prepared values only.
 		$count = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}filewarden_audit_logs WHERE $where" );
 		if ( $wpdb->last_error ) {
 			throw new \RuntimeException( 'Audit query failed.' ); }
@@ -172,7 +197,7 @@ final class AuditHistory {
 				throw new \RuntimeException( 'Audit transaction failed.' ); }
 			try {
 				$where = self::where( $filters, $upper, true );
-                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Reviewed prepared conditions.
+                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- Reviewed prepared conditions.
 				$deleted = $wpdb->query( "DELETE FROM {$wpdb->prefix}filewarden_audit_logs WHERE $where" );
 				if ( false === $deleted || $deleted !== $review['count'] ) {
 					throw new \RuntimeException( 'Audit purge changed; review again.' ); }

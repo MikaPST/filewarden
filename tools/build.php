@@ -32,6 +32,14 @@ $files[] = 'assets/icons/' . basename( $file );
 }
 $files[] = 'assets/icons/LICENSE-lucide.txt';
 $files[] = 'assets/appearance.js';
+$files[] = 'assets/library.js';
+$files[] = 'assets/action-dialog.js';
+$files[] = 'assets/backup.js';
+$files[] = 'assets/diagnostic.js';
+$files[] = 'assets/wordpress-tables.js';
+$files[] = 'assets/audit-filters.js';
+$files[] = 'docs/backup.md';
+$files[] = 'docs/releases/v' . $version . '.md';
 $files[] = 'assets/illustrations/folder-welcome.png';
 $files[] = 'assets/branding/filewarden-logo-512.png';
 foreach ( glob( $root . '/includes/*.php' ) as $file ) {

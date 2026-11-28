@@ -36,7 +36,7 @@ module.exports = async ({ page, base, name }) => {
         if (format === 'jsonl') {
             const records = lines.map(JSON.parse);
             assert.ok(records.every(row => row.actor_login === 'fw_admin' && row.actor_type === 'user' && row.event === 'audit_export_fixture'));
-            assert.ok(records.every(row => row.schema_version === 2 && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(row.created_at_UTC)));
+            assert.ok(records.every(row => row.schema_version === 3 && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(row.created_at_UTC)));
             assert.equal(new Set(records.map(row => row.id)).size, 1005);
         }
         else assert.ok(data.includes('actor_login') && data.includes('fw_admin'));

@@ -53,13 +53,13 @@ module.exports=async({context,base,name,fixture})=>{
   assert.equal(await page.locator('.fw-table-wrap>p.fw-warning').count(),0);
   await navigate(admin+'filewarden&tab=trash');
   await page.locator('#fw-trash-search').fill('v17-');await page.locator('#fw-trash-folder').selectOption(String(fixture.v17_child_id));
-  await Promise.all([page.waitForNavigation(),page.locator('.fw-trash-filters button').click({noWaitAfter:true})]);await ready();
+  await Promise.all([page.waitForNavigation(),page.locator('.fw-trash-filters .fw-search-main button').click({noWaitAfter:true})]);await ready();
   assert.equal(await page.locator('tbody .fw-document-name img').count(),2);
   const icons=await page.locator('tbody .fw-document-name img').evaluateAll(images=>images.map(img=>({src:img.src,loaded:img.complete&&img.naturalWidth>0})));
-  assert.ok(icons.every(icon=>icon.loaded));assert.ok(icons.some(icon=>icon.src.endsWith('/pdf.svg')));assert.ok(icons.some(icon=>icon.src.endsWith('/image.svg')));
+  assert.ok(icons.every(icon=>icon.loaded));assert.ok(icons.some(icon=>icon.src.endsWith('/pdf.svg')));assert.ok(icons.some(icon=>icon.src.endsWith('/png.svg')));
   assert.match(await page.locator('.fw-trash-count').textContent(),/2/);
   assert.equal(await page.locator('.fw-trash-retention').count(),2);
-  assert.ok(await page.locator('.fw-trash-filters a').isVisible());
+  await page.locator('.fw-trash-filters [data-filter-toggle]').click();assert.ok(await page.locator('.fw-trash-filters .fw-filter-actions a').isVisible());await page.locator('.fw-trash-filters [data-filter-toggle]').click();
   assert.equal(await page.locator('tbody .fw-icon-rotate-ccw').count(),2);assert.equal(await page.locator('tbody .fw-icon-trash-2').count(),2);
   await page.screenshot({path:`build/screenshots/v17-trash-${name}.png`,fullPage:true});
 

@@ -1,5 +1,21 @@
 # Permissions proposal
 
+## Lot autorisé 0.1.19-dev
+
+Voir [le périmètre des 16 points](lot-v0.1.19-dev.md) et [les notes du candidat](releases/v0.1.19-dev.md). Les contrôles d’accès et capacités restent inchangés. La migration additive de schéma 8 ajoute une date d’arrivée nullable ; aucune date historique inconnue n’est reconstruite. Le manifeste 3 inclut huit composants, avec import des anciens manifestes 1/2. Les paquets de configuration seule peuvent être appliqués sur une bibliothèque existante sans modifier documents, dossiers ni politiques ; une restauration de bibliothèque exige toujours une destination vide. Le chiffrement, les validations serveur, la confirmation, le verrou d’écriture et la reprise transactionnelle restent requis. Les mots de passe et clés du site source ne sont jamais exportés.
+
+
+## Nouvelle passe UI et sauvegarde sélective — 0.1.18-dev
+
+Lot validé par le propriétaire le 23 novembre 2026 : recherche/filtres homogènes Documents/Corbeille, cartes mobiles de corbeille, états publics vides centrés, destination lisible, suppressions multiples confirmées et modales d’action. Le Diagnostic différencie le module Sodium absent et ouvre l’assistant volontaire de conversion des trois tables WordPress nécessaires à la restauration, sans conversion au clic du lien. Sauvegarde complète ou transfert simplifié, options authentifiées indépendantes et restauration privée à l’administration sans reprise des droits ; attribution globale des créateurs par défaut dans l’interface. Voir [le guide sauvegarde](backup.md) et [le périmètre de correction](lot-ui-v0.1.18-dev.md). Résultats de cette passe dans `docs/validation/v0.1.18-dev-ui-pass-local.json` ; les preuves des anciens ZIP restent historiques.
+
+
+## Diagnostic, audit network data and visitor sign-in (0.1.18-dev)
+
+Diagnostic execution and its transient report require filewarden_manage_settings and a fresh AJAX nonce, independently checked by the service. No repair is performed. IP collection can be enabled only by a settings manager; audit IP details and exports require existing audit authorization and resource-name checks. Export and purge share validated action/status/date/actor scopes; an empty selection never becomes all events. The additive schema migration does not regrant a previously revoked audit-management capability.
+
+Popup Elementor settings use the existing settings capability/nonce and strict positive template ID validation. The public click invokes only the parent's same-origin Elementor popup API; the ordinary WordPress login link is the fallback. No visitor is granted a capability.
+
 ## Legacy database repair (0.1.15-dev)
 
 The explicit engine-repair transport requires `filewarden_manage_settings`, the existing admin nonce and an explicit backup/maintenance confirmation; the repair service independently checks the settings capability. It targets only the three current-prefix FileWarden tables. Global document read never grants this operation. Missing SQL ALTER permissions or unverifiable metadata do not bypass transaction safety. An incomplete repair checkpoint blocks plugin mutations, including audit writes, until a verified retry; external SQL writers must be paused separately. No user or role is granted a new capability by this release.
@@ -52,3 +68,9 @@ Les noms historiques du journal restent des métadonnées protégées : contrôl
 ## Advanced formats and plugin language (0.1.16-dev)
 
 Both settings require the existing FileWarden settings capability and the existing administrative CSRF nonce; upload or global-read privileges do not grant settings privileges. Enabling all formats additionally requires an explicit risk confirmation and is audited with the WordPress actor. The server reads the stored setting; request flags cannot enable it. The mode never widens document/folder ACLs, changes publication state, grants WordPress upload permissions or enables executable/HTML/SVG previews. Import/download authorization remains mandatory. Language affects labels only, never permissions, resource identities or machine export keys.
+
+## Explicit file-rule replacement — document lot 0.1.19-dev
+
+Saving a document policy intentionally clears its retained_rules in the same SQL update, transaction and audit boundary. No extra checkbox is required. Moving/reclassifying alone retains those restrictions. The live folder/ancestor intersection and management-only unfiled collection still apply. A failed update or audit rolls both changes back. PermissionService::rules is shared by authorization and explanations; malformed policies, missing ancestry and cycles fail closed, including global readers. Unknown role slugs remain restrictive predicates, not public fallbacks.
+
+Description writes require edit-files and manage-permissions capabilities plus readable active content and the shared writer/access locks. Administration transports additionally require settings access and valid CSRF nonces. Descriptions, duplicate names/locations and sheets are never disclosed before current read authorization. Exact-duplicate checks ignore unreadable and trashed candidates; confirmations recheck content and current rules.

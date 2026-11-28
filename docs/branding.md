@@ -1,10 +1,26 @@
 # FileWarden — Brand & Design Guidelines
 
+## Corrections de préproduction v19 — 28 novembre 2026
+
+Le tableau Documents reste une liste : chevron unique fin à droite du libellé (gris au repos, navy et orienté selon le tri actif), sans raccourci Type ; espace réservé aux quatre actions et marge entre accès effectif et actions. Les liens Annuler des modales sont centrés sous la validation, avec marge basse et un seul conteneur de défilement. Les pictogrammes fonctionnels de sous-dossiers héritent de la couleur des liens de la palette publique, sans recoloration des icônes de fichiers. Les trois cartes d’accès refusé s’alignent sur le séparateur et la marque avec marges identiques. La pastille sombre représente background/surface/accent (#101a2b / #192840 / #76d6ce) ; Personnalisé continue de refléter les couleurs saisies.
+
+## Lot autorisé 0.1.19-dev
+
+Voir [le périmètre des 16 points](lot-v0.1.19-dev.md) et [les notes du candidat](releases/v0.1.19-dev.md). Les contrôles d’accès et capacités restent inchangés. La migration additive de schéma 8 ajoute une date d’arrivée nullable ; aucune date historique inconnue n’est reconstruite. Le manifeste 3 inclut huit composants, avec import des anciens manifestes 1/2. Les paquets de configuration seule peuvent être appliqués sur une bibliothèque existante sans modifier documents, dossiers ni politiques ; une restauration de bibliothèque exige toujours une destination vide. Le chiffrement, les validations serveur, la confirmation, le verrou d’écriture et la reprise transactionnelle restent requis. Les mots de passe et clés du site source ne sont jamais exportés.
+
+Les maquettes validées définissent les raffinements d’interface v19 et les palettes publiques FileWarden sombre/Terracotta ; leurs dix couleurs sont consignées dans le périmètre. Ces palettes publiques ne changent ni les assets officiels, ni les couleurs internes de marque. Le nom d’auteur est Michaël PASTOR.
+
+
+## Nouvelle passe UI et sauvegarde sélective — 0.1.18-dev
+
+Lot validé par le propriétaire le 23 novembre 2026 : recherche/filtres homogènes Documents/Corbeille, cartes mobiles de corbeille, états publics vides centrés, destination lisible, suppressions multiples confirmées et modales d’action. Le Diagnostic différencie le module Sodium absent et ouvre l’assistant volontaire de conversion des trois tables WordPress nécessaires à la restauration, sans conversion au clic du lien. Sauvegarde complète ou transfert simplifié, options authentifiées indépendantes et restauration privée à l’administration sans reprise des droits ; attribution globale des créateurs par défaut dans l’interface. Voir [le guide sauvegarde](backup.md) et [le périmètre de correction](lot-ui-v0.1.18-dev.md). Résultats de cette passe dans `docs/validation/v0.1.18-dev-ui-pass-local.json` ; les preuves des anciens ZIP restent historiques.
+
+
 **Project:** FileWarden for WordPress  
 **Version:** 1.1  
 **Status:** Approved brand guidelines  
 **License:** GPL-2.0-or-later (project code)  
-**Maintainer:** MikaPST
+**Maintainer:** Michaël PASTOR
 
 ---
 
@@ -435,3 +451,18 @@ This revision supersedes the preceding tiny header: restore the original 56px of
 The guided folder rail is 290px on desktop, 270px with an inspector and 245px at intermediate widths, then stacked on mobile. Fine-pointer folder rows use a compact 34px minimum; coarse pointers retain 44px targets. Preserve wrapped names and hierarchy guides. Documents/Trash remain navigation; contextual creation actions appear below the existing search. Retained access notes are per-file accessible information disclosures.
 
 Public appearance is independent of administration branding: a single persistent configuration for all publication frames and viewers, default FileWarden, with approved Neutral and Nature presets and a Custom card reflecting all ten current colors. Allow strict color tokens, a plain public name and validated local PNG/JPEG logo; never recolor the official logo or the actual file-type assets. Color changes affect functional controls only. The approved corrective lot supersedes strict vertical centering: natural-height grid cards use 16px padding, horizontally centered icon/name/metadata and actions at the bottom of each row, without an upper spacer. Contrast validation of implemented text pairs is not a full accessibility certification. Publication uses two Navy-underlined local tabs, compact segmented preview controls, bounded subfolder links and a lightly surfaced breadcrumb with a non-link current folder.
+
+
+### Approved refinements — 0.1.18-dev
+
+Use the owner's exact dedicated type icons and the AUDIO/video updates, distinguish PPT/PPTX and JPG/JPEG, remove the generic Presentation/Archive assets and retain FILE for unknown/no extension. New artwork does not change accepted formats. Rename uses a small outline pencil, with an accessible name; selections use the existing secondary controls and confirmed-review dialog.
+
+The text-readability panel presents the eight actual server/client text pairs, explicit AA/AAA/incomplete/improvement states and an eight-segment indicator. Reuse notice success #167348 and Classification Amber #805400 as functional tones, never as replacement brand colors. This score does not certify whole-site accessibility. Backup settings reuse the vertical category rail, Navy-underlined local tabs, notices and native keyboard-operable controls. Keep secret inputs and private job details out of notifications, URLs and public pages.
+
+### Approved document sheet — 0.1.19-dev
+
+Reuse the existing centered native action dialog, original type assets, Navy primary controls and outline Preview. Use natural content height with one dialog scroll region, compact adjacent Preview/Download, divided Description/Information/Effective access sections, and a keyboard-operable access disclosure. Retained-rule and duplicate warnings reuse Classification Amber and its existing surface. Upload descriptions belong to each queue item; warnings remain visible for both computer and Media sources. Do not add persistent duplicate badges or public description rendering in this lot. Preserve the semantic list table and mobile adaptations.
+
+### Approved preproduction refinements — same-name/access/modal lot
+
+Understand access uses illustrated steps from the actual chain: icon, source title, right-aligned rule and a short explanatory line. Restrictive predicates use Slate/soft surface; retained rules use existing Classification Amber. Keep all ancestors, native disclosure semantics and mobile wrapping. Shared fw-modal-close applies the same quiet borderless Navy cross, 8px radius, turquoise-tinted hover and visible keyboard focus in Rename/Information/action dialogs, preserving 34px fine and 44px coarse targets. Copy/Move destination uses a 14px semi-bold label, 10px label/select gap and 18px before actions. Same-name copy suggestions must be visible before confirmation; no silent overwrite or persistent duplicate badge. Existing official type assets are unchanged.

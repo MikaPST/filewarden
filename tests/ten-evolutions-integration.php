@@ -96,7 +96,7 @@ $audit_rows = FileWarden\AuditHistory::rows( FileWarden\AuditHistory::filters( a
 fw_assert( 'deleted-origin.pdf' === $audit_rows[0]['resource_name'] && 'user' === $audit_rows[0]['actor_type'], 'Purge audit lost resource or actor snapshots.' );
 $export = new ReflectionMethod( FileWarden\AuditConsole::class, 'export_record' );
 $event = $export->invoke( null, $audit_rows[0] );
-fw_assert( 2 === $event['schema_version'] && 1 === preg_match( '/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/', $event['created_at_UTC'] ), 'Audit JSONL version or UTC ISO 8601 date is missing.' );
+fw_assert( 3 === $event['schema_version'] && 1 === preg_match( '/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/', $event['created_at_UTC'] ), 'Audit JSONL version or UTC ISO 8601 date is missing.' );
 fw_assert( 'deleted-origin.pdf' === $event['resource_name'], 'Authorized audit export lost a deleted resource name.' );
 $malformed = $audit_rows[0];
 $malformed['resource_rules'] = '{"policies":"invalid"}';

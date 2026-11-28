@@ -29,10 +29,25 @@
             .map(value => value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4);
         return .2126 * rgb[0] + .7152 * rgb[1] + .0722 * rgb[2];
     };
-    const validContrast = colors => {
-        if (!Object.values(colors).every(validHex)) return false;
-        const pairs = [['text', 'background'], ['text', 'surface'], ['button_text', 'button'], ['button_text', 'hover'], ['link', 'surface'], ['link', 'background'], ['muted', 'surface'], ['muted', 'background']];
-        return pairs.every(([a, b]) => (Math.max(luminance(colors[a]), luminance(colors[b])) + .05) / (Math.min(luminance(colors[a]), luminance(colors[b])) + .05) >= 4.5);
+    const contrastReport = colors => messages.contrast.pairs.map(([a, b]) =>
+        validHex(colors[a]) && validHex(colors[b])
+            ? (Math.max(luminance(colors[a]), luminance(colors[b])) + .05) / (Math.min(luminance(colors[a]), luminance(colors[b])) + .05) : null);
+    const renderContrast = colors => {
+        const ratios = contrastReport(colors);
+        const valid = Object.values(colors).every(validHex);
+        const count = ratios.filter(ratio => ratio !== null && ratio >= 4.5).length;
+        const level = !valid ? 'incomplete' : count < ratios.length ? 'improve' : Math.min(...ratios) >= 7 ? 'aaa' : 'aa';
+        const report = form.querySelector('.fw-contrast-report');
+        report.dataset.level = level;
+        const summary = messages.contrast[level] + (!valid ? '' : ` · ${count}/${ratios.length} ${messages.contrast.compliant}`);
+        const node = report.querySelector('[data-contrast-summary]');
+        if (node.textContent !== summary) node.textContent = summary;
+        report.querySelectorAll('.fw-contrast-segments span').forEach((segment, i) => segment.dataset.pass = String(ratios[i] !== null && ratios[i] >= 4.5));
+        report.querySelectorAll('[data-contrast-ratio]').forEach((node, i) => {
+            const ratio = ratios[i];
+            node.textContent = ratio === null ? messages.contrast.incomplete : ratio.toLocaleString(document.documentElement.lang, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ':1 · ' + (ratio >= 7 ? 'AAA' : ratio >= 4.5 ? 'AA' : messages.contrast.improve);
+        });
+        return valid && count === ratios.length;
     };
     const preview = value => {
         try {
@@ -61,7 +76,7 @@
     };
     const render = () => {
         const value = draft();
-        const valid = validContrast(value.colors);
+        const valid = renderContrast(value.colors);
         const status = form.querySelector('.fw-appearance-contrast');
         status.textContent = valid ? messages.contrastOK : messages.contrastError;
         status.dataset.valid = String(valid);
@@ -121,7 +136,7 @@
     });
     frame.addEventListener('load', render);
     form.addEventListener('submit', event => {
-        if (!validContrast(draft().colors)) { event.preventDefault(); return; }
+        if (!renderContrast(draft().colors)) { event.preventDefault(); return; }
         submitting = true;
     });
     window.addEventListener('beforeunload', event => {

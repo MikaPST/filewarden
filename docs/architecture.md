@@ -1,5 +1,23 @@
 # Architecture proposal
 
+## Lot autorisé 0.1.19-dev
+
+Voir [le périmètre des 16 points](lot-v0.1.19-dev.md) et [les notes du candidat](releases/v0.1.19-dev.md). Les contrôles d’accès et capacités restent inchangés. La migration additive de schéma 8 ajoute une date d’arrivée nullable ; aucune date historique inconnue n’est reconstruite. Le manifeste 3 inclut huit composants, avec import des anciens manifestes 1/2. Les paquets de configuration seule peuvent être appliqués sur une bibliothèque existante sans modifier documents, dossiers ni politiques ; une restauration de bibliothèque exige toujours une destination vide. Le chiffrement, les validations serveur, la confirmation, le verrou d’écriture et la reprise transactionnelle restent requis. Les mots de passe et clés du site source ne sont jamais exportés.
+
+
+## Nouvelle passe UI et sauvegarde sélective — 0.1.18-dev
+
+Lot validé par le propriétaire le 23 novembre 2026 : recherche/filtres homogènes Documents/Corbeille, cartes mobiles de corbeille, états publics vides centrés, destination lisible, suppressions multiples confirmées et modales d’action. Le Diagnostic différencie le module Sodium absent et ouvre l’assistant volontaire de conversion des trois tables WordPress nécessaires à la restauration, sans conversion au clic du lien. Sauvegarde complète ou transfert simplifié, options authentifiées indépendantes et restauration privée à l’administration sans reprise des droits ; attribution globale des créateurs par défaut dans l’interface. Voir [le guide sauvegarde](backup.md) et [le périmètre de correction](lot-ui-v0.1.18-dev.md). Résultats de cette passe dans `docs/validation/v0.1.18-dev-ui-pass-local.json` ; les preuves des anciens ZIP restent historiques.
+
+
+## Corrective candidate 0.1.18-dev
+
+Publisher places one full-width Shortcode band directly after the external tabs; settings and preview start below it on the same row. The same output nodes and iframe are preserved across tab/context/device changes. publication-frame.js invokes only the known same-origin parent Elementor popup API after a user action on an explicitly configured numeric popup link; WordPress login remains the href fallback.
+
+AuditEvents centralizes the fixed event/action/outcome mapping; AuditHistory translates the same validated action/status scopes into prepared conditions for display/export/purge. Unknown events stay undetermined. AuditIp centralizes opt-in capture, proxy trust and visibility/retention; schema 7 only adds audit network fields. Active legacy backup/repair barriers defer the additive migration without disabling recovery UI.
+
+Diagnostics runs bounded capability-checked observations, returns whitelisted safe fields and never repairs data. DiagnosticConsole provides the nonce/capability-protected AJAX transport. The last Settings category is outside the settings form; diagnostic.js renders text-only results and downloads the transient redacted JSON report.
+
 ## Publication corrections (0.1.17-dev)
 
 The final 22 November layout places the two tabs outside both cards. The right output column contains a compact Shortcode card above the same preview iframe. `publisher.js` toggles authorized list/grid or denied layout/login sections without disabling/resetting their controls; the code retains both selections. Both forms remain available without JavaScript. A native WordPress Shortcode block uses the existing shortcode registration, not a new FileWarden editor block. Retained-rule disclosures reuse the central recovery amber tone/surface; no permission or database service changes.
@@ -65,3 +83,9 @@ FileValidator bounds ZIP/Office member streams, rejects active content and valid
 ImportPolicy preserves FileValidator as the strict default. Only an exact persisted opt-in allows validation failures to become application/octet-stream; DocumentService rechecks it under the common writer gate before saving. The fresh option read is prepared and does not flush unrelated option caches. SettingsConsole validates all provided fields, requires explicit enable confirmation, serializes policy changes through that gate and records the WordPress actor. Binary downloads retain attachment/nosniff/sandbox headers; viewers refuse opaque content.
 
 Language selects a bundled catalog for the filewarden domain only. Its automatic mode reads the site's WPLANG setting, not the request/user locale, and maps supported language families through a registry. Both MO catalogs are bundled so explicit English overrides a French WordPress profile. Server-rendered HTML and localized JavaScript share the same choice. See languages.md for catalog extraction and future additions. No global locale mutation or new schema is needed.
+
+## Document sheet and exact imports (schema 9)
+
+DocumentDescription validates UTF-8/plain text and counts at most 400 Unicode code points without mbstring. DocumentSheet renders authorized administration-only metadata and the authoritative PermissionService::rules chain. LibraryQuery checks authorization before matching names/descriptions. Repository policy updates clear retained_rules only for explicit document policy saves, under an audited transaction.
+
+ContentDuplicates uses the indexed size/SHA-256 pair to scan active candidates in bounded batches, checks authorization, opens private StorageService streams (including managed decryption) and compares 64 KiB blocks plus EOF. Its session/user/content/name/destination/current-rule-bound proof is reviewed again under the shared access-rules writer gate. DuplicateContent contains only authorized review metadata. The queue keeps originals in the browser and resends only the selected file on confirmation; no public cleartext staging or cross-file acknowledgement exists. Importing anyway creates independent identity/storage, never deduplication aliases.

@@ -32,3 +32,30 @@ button:disabled { opacity: .5; cursor: default; }
 canvas, #fw-image { display: block; margin: 0 auto; background: white; box-shadow: 0 3px 18px #0006; }
 [hidden] { display: none !important; }
 @media (max-width: 600px) { header { padding: 10px; } #fw-stage { padding: 8px; } #fw-pages button { font-size: 12px; } }
+
+/* Compact shared toolbar keeps document navigation available while the stage scrolls. */
+.fw-public-theme #fw-viewer>header{flex-wrap:nowrap;gap:12px;padding:7px 12px;min-height:54px;border-bottom:1px solid var(--fw-public-border)}
+.fw-public-theme #fw-viewer>header .fw-public-brand{gap:6px;flex:none}
+.fw-public-theme .fw-public-logo{width:28px;height:28px}
+.fw-public-theme .fw-public-name{font-size:10px;max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fw-title h1{font-size:13px;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}
+.fw-title span{font-size:11px}
+.fw-public-theme .fw-toolbar{border:0;gap:12px;padding:0;flex-wrap:nowrap}
+#fw-pages{gap:5px;font-size:12px;white-space:nowrap}
+#fw-page{width:42px;padding:5px 2px;text-align:center;appearance:textfield;font-size:12px}
+#fw-page::-webkit-inner-spin-button{appearance:none}
+.fw-zoom-controls{display:flex;align-items:center;gap:3px;border-left:1px solid var(--fw-public-border);padding-left:8px}
+#fw-zoom{max-width:160px;padding:6px;font-size:12px}
+.fw-public-theme .fw-toolbar button,.fw-public-theme #fw-viewer>header nav a{position:relative;display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;min-width:32px;padding:0;border:0;background:transparent;color:var(--fw-public-link);border-radius:5px;text-decoration:none}
+.fw-public-theme .fw-toolbar button:hover:not(:disabled),.fw-public-theme #fw-viewer>header nav a:hover{background:var(--fw-public-hover);color:var(--fw-public-button-text)}
+.fw-toolbar button>span[aria-hidden]{font-size:22px;line-height:1}
+#fw-viewer>header nav{gap:3px;border-left:1px solid var(--fw-public-border);padding-left:8px}
+.fw-viewer-icon{display:inline-block;background:currentColor;width:18px;height:18px;mask:var(--fw-viewer-icon) center/contain no-repeat;-webkit-mask:var(--fw-viewer-icon) center/contain no-repeat}
+.fw-viewer-external{--fw-viewer-icon:url('icons/external-link.svg')}.fw-viewer-download{--fw-viewer-icon:url('icons/download.svg')}
+.fw-viewer-tooltip{display:none;position:absolute;top:calc(100% + 5px);right:0;z-index:3;width:max-content;max-width:180px;padding:5px 8px;border-radius:5px;font-size:11px;line-height:1.5;background:var(--fw-public-button);color:var(--fw-public-button-text);pointer-events:none}
+:is(button,a):hover>.fw-viewer-tooltip,:is(button,a):focus-visible>.fw-viewer-tooltip{display:block}
+.fw-sr-only,#fw-status.fw-status-complete{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+#fw-viewer>header{position:relative;z-index:2;flex-shrink:0}
+@media(max-width:900px){.fw-public-theme .fw-public-name{display:none}.fw-public-theme #fw-viewer>header{flex-wrap:wrap;gap:6px 10px}.fw-title{order:1;flex-basis:calc(100% - 135px)}.fw-public-brand{order:0}#fw-viewer>header nav{order:2;border-left:0;margin-left:auto}.fw-public-theme .fw-toolbar{order:3;width:100%;justify-content:space-between;border-top:1px solid var(--fw-public-border);padding-top:6px}.fw-zoom-controls{border:0;padding-left:0}}
+@media(max-width:370px){.fw-public-theme .fw-toolbar{flex-wrap:wrap;justify-content:center;gap:7px}#fw-zoom{max-width:130px}}
+@media(pointer:coarse){.fw-public-theme .fw-toolbar button,.fw-public-theme #fw-viewer>header nav a{width:40px;height:44px;min-width:36px}#fw-page,#fw-zoom{min-height:40px}}

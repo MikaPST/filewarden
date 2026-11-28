@@ -22,6 +22,8 @@ final class AppearanceConsole {
 			'filewarden' => __( 'FileWarden', 'filewarden' ),
 			'neutral'    => __( 'Neutral', 'filewarden' ),
 			'nature'     => __( 'Nature', 'filewarden' ),
+			'dark'       => __( 'FileWarden dark', 'filewarden' ),
+			'terracotta' => __( 'Terracotta', 'filewarden' ),
 			'custom'     => __( 'Custom', 'filewarden' ),
 		);
 		$palettes           = FrontendAppearance::presets();
@@ -30,10 +32,13 @@ final class AppearanceConsole {
 			'filewarden' => __( 'Default', 'filewarden' ),
 			'neutral'    => __( 'Simple and light', 'filewarden' ),
 			'nature'     => __( 'Soft green', 'filewarden' ),
+			'dark'       => __( 'Deep navy and turquoise', 'filewarden' ),
+			'terracotta' => __( 'Warm earth and cream', 'filewarden' ),
 			'custom'     => __( 'Your colors', 'filewarden' ),
 		);
 		foreach ( $palettes as $key => $colors ) {
-			$palette = '--fw-palette-button:' . $colors['button'] . ';--fw-palette-accent:' . $colors['accent'] . ';--fw-palette-background:' . $colors['background'];
+			$swatch  = 'dark' === $key ? array( $colors['background'], $colors['surface'], $colors['accent'] ) : array( $colors['button'], $colors['accent'], $colors['background'] );
+			$palette = '--fw-palette-button:' . $swatch[0] . ';--fw-palette-accent:' . $swatch[1] . ';--fw-palette-background:' . $swatch[2];
 			echo '<button type="button" class="fw-appearance-preset" data-preset="' . esc_attr( $key ) . '" aria-pressed="' . ( $value['preset'] === $key ? 'true' : 'false' ) . '"><span class="fw-palette" aria-hidden="true"><span class="fw-palette-' . esc_attr( $key ) . '" style="' . esc_attr( $palette ) . '"></span></span><strong>' . esc_html( $labels[ $key ] ) . '</strong><small>' . esc_html( $captions[ $key ] ) . '</small></button>';
 		}
 		echo '</div><input type="hidden" name="appearance[preset]" value="' . esc_attr( $value['preset'] ) . '"><p class="description">' . esc_html__( 'Choose a preset palette or customize your colors while keeping your custom name and logo.', 'filewarden' ) . '</p></section><details class="fw-appearance-section" open><summary><span class="fw-action-icon fw-icon-palette" aria-hidden="true"></span>' . esc_html__( 'Interface colors', 'filewarden' ) . '</summary>';
@@ -55,7 +60,9 @@ final class AppearanceConsole {
 			}
 			echo '<div class="fw-appearance-color"><label for="fw-appearance-' . esc_attr( $key ) . '">' . esc_html( $label ) . '</label><input type="color" id="fw-appearance-' . esc_attr( $key ) . '" data-color-picker="' . esc_attr( $key ) . '" value="' . esc_attr( $value['colors'][ $key ] ) . '" aria-label="' . esc_attr( $label ) . '"><input name="appearance[colors][' . esc_attr( $key ) . ']" data-color="' . esc_attr( $key ) . '" value="' . esc_attr( $value['colors'][ $key ] ) . '" pattern="#[a-fA-F0-9]{6}" maxlength="7" required aria-label="' . esc_attr( $label ) . '"></div>';
 		}
-		echo '</details><p class="fw-appearance-contrast" role="status"></p></details><details class="fw-appearance-section"><summary>' . esc_html__( 'Public name and logo', 'filewarden' ) . '</summary><p><label for="fw-public-name">' . esc_html__( 'Name displayed to visitors', 'filewarden' ) . '</label><input id="fw-public-name" name="appearance[name]" value="' . esc_attr( $value['name'] ) . '" maxlength="64"></p>';
+		echo '</details><p class="fw-appearance-contrast" role="status"></p>';
+		ContrastConsole::render( $value['colors'] );
+		echo '</details><details class="fw-appearance-section"><summary>' . esc_html__( 'Public name and logo', 'filewarden' ) . '</summary><p><label for="fw-public-name">' . esc_html__( 'Name displayed to visitors', 'filewarden' ) . '</label><input id="fw-public-name" name="appearance[name]" value="' . esc_attr( $value['name'] ) . '" maxlength="64"></p>';
 		try {
 			$logo = FrontendAppearance::logo_url( $value['logo_id'] );
 		} catch ( \Throwable $error ) {
@@ -93,6 +100,7 @@ final class AppearanceConsole {
 			'current'       => FrontendAppearance::current(),
 			'defaults'      => FrontendAppearance::defaults(),
 			'presets'       => FrontendAppearance::presets(),
+			'contrast'      => ContrastConsole::configuration(),
 			'officialLogo'  => FrontendAppearance::logo_url(),
 			'contrastOK'    => __( 'Text contrast checked: at least 4.5:1.', 'filewarden' ),
 			'contrastError' => __( 'Improve text contrast or enter valid six-digit color codes before saving.', 'filewarden' ),

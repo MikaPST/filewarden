@@ -1,0 +1,32 @@
+<?php
+/** Cross-installation authenticated restore, old manifest compatibility and atomic failure acceptance. */
+if(!defined('WP_CLI')||!WP_CLI||getenv('FILEWARDEN_TESTING')!=='1'||(!str_contains(wp_normalize_path(ABSPATH),'/.tools/v19-dev/v19secondarya/')&&!str_contains(wp_normalize_path(ABSPATH),'/.tools/v19-dev/v19documenttarget/'))||wp_parse_url(home_url(),PHP_URL_HOST)!=='127.0.0.1')exit(1);
+use FileWarden\{Repository,PermissionService,StorageService,ManagedStorage,DocumentService,AuditService,BackupService,BackupJobs,BackupRestore,BackupManifest,BackupComponents,BackupArchive};
+function fwr19_assert($ok,$why){if(!$ok)throw new RuntimeException($why);}
+function fwr19_refuse($fn,$why){try{$fn();}catch(Throwable $e){return;}throw new RuntimeException($why);}
+global $wpdb;wp_set_current_user(1);$proof=getenv('FILEWARDEN_V19_RESULT');fwr19_assert($proof&&str_contains($proof,'.tools'),'Isolated evidence required');$source=json_decode(file_get_contents($proof),true);$password='disposable v19 backup password 2026';
+$repo=new Repository();$legacy=new StorageService(FILEWARDEN_STORAGE_DIR,[ABSPATH],true);$fresh=$wpdb->get_results("SELECT * FROM {$wpdb->prefix}filewarden_documents",ARRAY_A);fwr19_assert(count($fresh)===1&&$fresh[0]['name']==='fresh.pdf'&&!$repo->folders(0),'Fresh isolated target required');$legacy->remove($fresh[0]['storage_key']);$wpdb->delete($wpdb->prefix.'filewarden_documents',['id'=>$fresh[0]['id']]);
+// Native encryption is real; local PHP has no hosting HTTPS isolation route. Only that probe is fixture-isolated.
+$managed=new ManagedStorage();(new ReflectionProperty($managed,'verified'))->setValue($managed,true);$storage=new StorageService('',[ABSPATH],false,$managed);$service=new DocumentService($repo,new PermissionService([$repo,'folder']),$storage,new AuditService());
+$empty=fn()=>BackupService::empty_library();$empty();
+// Re-encode the already authenticated small fixture as the two historical manifest formats.
+$input=fopen($source['archive'],'rb');$cursor=BackupArchive::open($input,$password);$json='';do{[$kind,$bytes]=BackupArchive::pull($input,$cursor);if($kind==='M')$json.=$bytes;else fwr19_assert($kind==='N','Invalid test frame');}while($kind==='M');$manifest=json_decode($json,true);$frames=[];do{[$kind,$bytes]=BackupArchive::pull($input,$cursor);$frames[]=[$kind,$bytes];}while($kind!=='Z');fclose($input);
+$archives=['v3'=>$source['archive']];
+foreach([1,2]as$version){$old=$manifest;$old['version']=$version;$old['schema']='7';foreach($old['documents']as&$row)unset($row['folder_added_at']);unset($row);if($version===1)unset($old['components']);else unset($old['components']['documents'],$old['components']['folders']);BackupManifest::validate($old);$path=dirname($proof).'/legacy-v'.$version.'.fwbackup';$out=fopen($path,'x+b');$salt=random_bytes(16);$key=BackupArchive::key($password,$salt);$state=BackupArchive::create($out,$key,$salt);sodium_memzero($key);$text=wp_json_encode($old);for($offset=0;$offset<strlen($text);$offset+=BackupArchive::CHUNK)BackupArchive::push($out,$state,'M',substr($text,$offset,BackupArchive::CHUNK));BackupArchive::push($out,$state,'N');foreach($frames as[$kind,$bytes])BackupArchive::push($out,$state,$kind,$bytes);fclose($out);$archives['v'.$version]=$path;}
+$bad=dirname($proof).'/altered-v19.fwbackup';$bytes=file_get_contents($source['archive']);$bytes[strlen($bytes)-10]=chr(ord($bytes[strlen($bytes)-10])^1);file_put_contents($bad,$bytes);
+fwr19_refuse(function()use($service,$password,$bad){$job=BackupService::start($service,'restore',$password,$bad);do{$job=BackupService::tick($service,$job['id']);}while($job['status']==='working');},'Altered archive accepted');$empty();fwr19_assert(!get_option(BackupJobs::BARRIER),'Failed authentication kept barrier');
+$results=[];$previous=[];
+foreach($archives as$format=>$archive){
+ if($previous){$rows=$wpdb->get_results("SELECT uuid,storage_key FROM {$wpdb->prefix}filewarden_documents",ARRAY_A);fwr19_assert(!array_diff(array_column($rows,'uuid'),$previous),'Unknown records in disposable target');foreach($rows as$row)$storage->remove($row['storage_key']);foreach(['documents','folders']as$kind)$wpdb->query($wpdb->prepare('DELETE FROM %i',$wpdb->prefix.'filewarden_'.$kind));}
+ $empty();$job=BackupService::start($service,'restore',$password,$archive);do{$job=BackupService::tick($service,$job['id']);}while($job['status']==='working');fwr19_assert($job['status']==='review'&&!$job['configuration_only'],'Library scope lost');
+ $roles=array_fill_keys($job['roles'],'administrator');$choices=['permissions'=>true,'settings'=>true,'appearance'=>true,'audit'=>true,'creators'=>'current'];
+ if($format==='v3'){
+  $filter=static fn($sql)=>str_starts_with($sql,'INSERT INTO `'.$GLOBALS['wpdb']->prefix.'filewarden_documents`')?'INVALID SQL FOR V19 RESTORE ROLLBACK':$sql;
+  $suppress=$wpdb->suppress_errors(true);add_filter('query',$filter);try{fwr19_refuse(fn()=>BackupRestore::apply($service,$job['id'],$roles,[],$choices),'Injected activation error ignored');}finally{remove_filter('query',$filter);$wpdb->suppress_errors($suppress);}$empty();
+ }
+ $done=BackupRestore::apply($service,$job['id'],$roles,[],$choices);fwr19_assert($done['status']==='restored','Restoration incomplete');$previous=[];
+ foreach($manifest['documents']as$expected){$row=$repo->document($expected['uuid'],true);fwr19_assert($row&&$row['uuid']===$expected['uuid']&&$row['created_at']===$expected['created_at'],'Logical identity/import date changed');$hash=hash_init('sha256');$storage->visit_chunks($row['storage_key'],(int)$row['size'],fn($bytes)=>hash_update($hash,$bytes));fwr19_assert(hash_final($hash)===$expected['sha256'],'Restored document bytes differ');fwr19_assert(filesize($storage->path($row['storage_key']))>(int)$row['size'],'Destination document is not encrypted');fwr19_assert($format==='v3'?$row['folder_added_at']===$expected['folder_added_at']:$row['folder_added_at']===null,'Arrival date compatibility failed');$previous[]=$row['uuid'];}
+ $results[]=$format;
+}
+file_put_contents(dirname($proof).'/target-result.json',wp_json_encode(['formats'=>$results,'tamper_refused'=>true,'activation_rollback_retry'=>true,'encrypted_destination'=>true,'document_count'=>count($previous)],JSON_PRETTY_PRINT));
+WP_CLI::success('V19: v3, legacy v2 and v1 actual encrypted cross-installation restores, preserved links/import dates, unknown legacy arrival dates, altered archive refusal and activation rollback/retry passed.');

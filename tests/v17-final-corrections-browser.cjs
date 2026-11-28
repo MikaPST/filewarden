@@ -19,7 +19,7 @@ module.exports=async({context,base,name,fixture})=>{
   await page.waitForFunction(()=>document.querySelector('.fw-appearance-devices')?.hidden===false);
   const geometry=await page.evaluate(()=>{const nav=document.querySelector('.fw-publication-tabs'),left=document.querySelector('.fw-publication-settings'),code=document.querySelector('.fw-shortcode-card'),preview=document.querySelector('.fw-preview-box');return {navOutside:!nav.closest('.fw-content'),navBottom:nav.getBoundingClientRect().bottom,leftTop:left.getBoundingClientRect().top,codeTop:code.getBoundingClientRect().top,codeBottom:code.getBoundingClientRect().bottom,previewTop:preview.getBoundingClientRect().top,codeX:code.getBoundingClientRect().x,previewX:preview.getBoundingClientRect().x,navWidth:nav.getBoundingClientRect().width,workspaceWidth:document.querySelector('.fw-publisher').getBoundingClientRect().width};});
   assert.ok(geometry.navOutside&&geometry.navBottom<geometry.leftTop&&geometry.navWidth>=geometry.workspaceWidth*.95);
-  assert.ok(Math.abs(geometry.leftTop-geometry.codeTop)<2&&geometry.previewTop>=geometry.codeBottom+16&&Math.abs(geometry.codeX-geometry.previewX)<1);
+  assert.ok(geometry.codeBottom<geometry.leftTop&&Math.abs(geometry.leftTop-geometry.previewTop)<2);
   assert.ok(geometry.codeBottom-geometry.codeTop<260,'The shortcode card reserves excessive empty height');
   assert.equal(await page.locator('#fw-shortcode-title').textContent(),fr?'Code court':'Shortcode');
   assert.equal(await page.locator('#fw-shortcode-help').textContent(),fr?'Copiez ce code dans le bloc « Code court » de WordPress ou dans le widget « Code court » d’Elementor.':'Copy this code into the WordPress Shortcode block or the Elementor Shortcode widget.');
@@ -50,7 +50,7 @@ module.exports=async({context,base,name,fixture})=>{
   await page.screenshot({path:`build/screenshots/v17-final-publication-${name}.png`,fullPage:true});
   for(const width of [375,320]){
    await page.setViewportSize({width,height:900});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
-   const order=await page.evaluate(()=>{const a=document.querySelector('.fw-publication-settings').getBoundingClientRect(),b=document.querySelector('.fw-shortcode-card').getBoundingClientRect(),c=document.querySelector('.fw-preview-box').getBoundingClientRect();return a.bottom<=b.top&&b.bottom<c.top;});assert.ok(order,'Mobile output order differs from settings → shortcode → preview');
+   const order=await page.evaluate(()=>{const a=document.querySelector('.fw-publication-settings').getBoundingClientRect(),b=document.querySelector('.fw-shortcode-card').getBoundingClientRect(),c=document.querySelector('.fw-preview-box').getBoundingClientRect();return b.bottom<=a.top&&a.bottom<c.top;});assert.ok(order,'Mobile output order differs from shortcode → settings → preview');
    assert.ok(await page.locator('.fw-shortcode-card').evaluate(card=>card.getBoundingClientRect().bottom-card.querySelector('#fw-copy-status').getBoundingClientRect().bottom<40),'Shortcode card has excessive lower whitespace');
   }
   await page.screenshot({path:`build/screenshots/v17-final-mobile-${name}.png`,fullPage:true});

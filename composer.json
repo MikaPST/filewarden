@@ -1,6 +1,6 @@
 {
   "name": "mikapst/filewarden",
-  "description": "Secure document management for WordPress (pre-alpha)",
+  "description": "Secure document management for WordPress (Alpha preview)",
   "type": "wordpress-plugin",
   "license": "GPL-2.0-or-later",
   "require": {"php": ">=8.2"},

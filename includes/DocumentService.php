@@ -113,9 +113,14 @@ final class DocumentService {
 				throw new \DomainException( 'Access denied.' );
 			}
 			$policy = Policy::validate( $policy, array_keys( wp_roles()->roles ), $document || (int) $record['parent_id'] > 0 );
-			$this->audit->record( $kind . '_policy_change_requested', (int) $record['id'] );
-			$this->repository->update_policy( $document ? 'documents' : 'folders', (int) $record['id'], $policy );
-			$this->audit->record( $kind . '_policy_changed', (int) $record['id'] );
+			$this->repository->require_transactions();
+			LibraryActions::transaction(
+				function () use ( $kind, $record, $document, $policy ) {
+					$this->audit->record( $kind . '_policy_change_requested', (int) $record['id'] );
+					$this->repository->update_policy( $document ? 'documents' : 'folders', (int) $record['id'], $policy );
+					$this->audit->record( $kind . '_policy_changed', (int) $record['id'] );
+				}
+			);
 			return (int) ( $document ? $record['folder_id'] : $record['id'] );
 		} finally {
 			if ( $document_lock ) {
@@ -205,17 +210,18 @@ final class DocumentService {
 	 * @param array $file file value.
 	 * @param mixed $folder folder value.
 	 * @param mixed $policy policy value.
+	 * @param array $options Optional description and duplicate confirmation.
 	 * @throws \InvalidArgumentException When the operation cannot be completed safely.
 	 * @return mixed Operation result.
 	 */
-	public function upload( array $file, $folder, $policy ) {
+	public function upload( array $file, $folder, $policy, array $options = array() ) {
 		if ( in_array( $file['error'] ?? null, array( UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE ), true ) ) {
 			throw new \InvalidArgumentException( 'Upload exceeds server limit.' );
 		}
 		if ( ! isset( $file['error'], $file['tmp_name'], $file['name'] ) || UPLOAD_ERR_OK !== $file['error'] || ! is_string( $file['tmp_name'] ) || ! is_string( $file['name'] ) || ! is_uploaded_file( $file['tmp_name'] ) ) {
 			throw new \InvalidArgumentException( 'Invalid upload.' );
 		}
-		return $this->store( $file, $folder, $policy );
+		return $this->store( $file, $folder, $policy, $options );
 	}
 
 	/**
@@ -253,10 +259,11 @@ final class DocumentService {
 	 * @param int   $id Attachment ID.
 	 * @param int   $folder Destination folder.
 	 * @param array $policy Destination access policy.
+	 * @param array $options Optional description and duplicate confirmation.
 	 * @return array Document metadata.
 	 * @throws \InvalidArgumentException If the source is not an accessible local attachment.
 	 */
-	public function import_media( $id, $folder, $policy ) {
+	public function import_media( $id, $folder, $policy, array $options = array() ) {
 		$this->require_capability( 'upload_files' );
 		if ( 'attachment' !== get_post_type( $id ) || ! current_user_can( 'edit_post', $id ) ) {
 			throw new \InvalidArgumentException( 'Media unavailable.' );
@@ -274,7 +281,8 @@ final class DocumentService {
 				'name'     => wp_basename( $path ),
 			),
 			$folder,
-			$policy
+			$policy,
+			$options
 		);
 	}
 
@@ -284,13 +292,15 @@ final class DocumentService {
 	 * @param array $file File path and original name.
 	 * @param int   $folder Destination folder.
 	 * @param array $policy Destination access policy.
+	 * @param array $options Optional description and duplicate confirmation.
 	 * @return array Document metadata.
+	 * @throws DuplicateContent If a readable exact duplicate needs review.
 	 * @throws \InvalidArgumentException If the file is invalid.
 	 * @throws \UnexpectedValueException If the name already exists.
 	 * @throws \RuntimeException If persistence or verification fails.
 	 * @throws \Throwable If storage fails.
 	 */
-	private function store( array $file, $folder, $policy ) {
+	private function store( array $file, $folder, $policy, array $options = array() ) {
 		$this->require_capability( 'filewarden_upload_files' );
 		// This milestone requires explicit policy management; delegated upload defaults follow later.
 		$this->require_capability( 'filewarden_manage_permissions' );
@@ -301,7 +311,12 @@ final class DocumentService {
 		$this->require_folder( $folder );
 		$policy = Policy::validate( $policy ?? array( 'type' => 'inherit' ), array_keys( wp_roles()->roles ), true );
 		$this->storage->root();
-		$name  = sanitize_file_name( $file['name'] );
+		$description   = DocumentDescription::validate( $options['description'] ?? '' );
+		$name          = sanitize_file_name( $file['name'] );
+		$original_name = $name;
+		if ( isset( $options['import_name'] ) && '' !== $options['import_name'] ) {
+			$name = LibraryActions::name( $options['import_name'], $original_name );
+		}
 		$size  = FileIO::attempt( fn() => filesize( $file['tmp_name'] ) );
 		$limit = min( max( 1, (int) get_option( 'filewarden_upload_mb', 50 ) ) * MB_IN_BYTES, wp_max_upload_size() );
 		if ( '' === $name || strlen( $name ) > 255 || false === $size || $size < 1 || $size > $limit ) {
@@ -309,7 +324,7 @@ final class DocumentService {
 		}
 		$extension = strtolower( pathinfo( $name, PATHINFO_EXTENSION ) );
 		$mime      = FileIO::attempt( fn() => ImportPolicy::mime( $file['tmp_name'], $extension ) );
-		$lock      = $this->repository->lock( $folder );
+		$lock      = $this->repository->lock( 'access-rules' );
 		$key       = null;
 		$stage     = null;
 		try {
@@ -317,15 +332,40 @@ final class DocumentService {
 			if ( 'application/octet-stream' === $mime && ! ImportPolicy::unrestricted( true ) ) {
 				throw new \InvalidArgumentException( 'Unsupported file type.' );
 			}
-			if ( $this->repository->duplicate( $folder, $name ) ) {
-				throw new \UnexpectedValueException( 'Rename this file before uploading. Version creation is not available yet.' );
-			}
 			$this->audit->record( 'upload_requested', $folder );
-			$stage  = 'storage';
 			$digest = FileIO::attempt( fn() => hash_file( 'sha256', $file['tmp_name'] ) );
 			if ( false === $digest ) {
 				throw new \RuntimeException( 'File verification failed.' );
 			}
+			$match = ContentDuplicates::find( $this, $file['tmp_name'], $size, $digest );
+			if ( $match ) {
+				$import_name = $this->repository->duplicate( $folder, $name ) ? ImportNames::available( $original_name, fn( $candidate ) => $this->repository->duplicate( $folder, $candidate ) ) : $name;
+				$proof       = ContentDuplicates::proof( $match, $folder, $import_name, $digest, $this );
+				if ( $import_name !== $name || ! is_string( $options['duplicate_proof'] ?? null ) || ! hash_equals( $proof, $options['duplicate_proof'] ) ) {
+					throw new DuplicateContent(
+						array(
+							'import_name' => $import_name,
+							'uuid'        => $match['uuid'],
+							'name'        => $match['name'],
+							'location'    => DocumentCollection::path( $this->repository, (int) $match['folder_id'] ),
+							'url'         => add_query_arg(
+								array(
+									'page'      => 'filewarden',
+									'panel'     => 'details',
+									'folder_id' => $match['folder_id'],
+									'document'  => $match['uuid'],
+								),
+								admin_url( 'admin.php' )
+							),
+							'proof'       => $proof,
+						)
+					);
+				}
+			}
+			if ( $this->repository->duplicate( $folder, $name ) ) {
+				throw new \UnexpectedValueException( 'Rename this file before uploading. Version creation is not available yet.' );
+			}
+			$stage  = 'storage';
 			$key    = $this->storage->put( $file['tmp_name'], $size );
 			$handle = $this->storage->open( $key, $size );
 			try {
@@ -345,6 +385,7 @@ final class DocumentService {
 					'uuid'        => $uuid,
 					'folder_id'   => $folder,
 					'name'        => $name,
+					'description' => $description,
 					'storage_key' => $key,
 					'mime'        => $mime,
 					'size'        => $size,

@@ -10,6 +10,8 @@
             item.tabIndex = item === link ? 0 : -1;
         }
         for (const panel of panels) panel.hidden = '#' + panel.id !== link.getAttribute('href');
+        const save = nav.closest('.fw-settings-layout').querySelector('form .submit');
+        if (save) save.hidden = ['backup', 'diagnostic'].includes(link.dataset.settingsSection);
         if (focus) document.querySelector(link.getAttribute('href')).querySelector('h2').focus();
     };
     const tablist = nav.querySelector('.fw-settings-links') || nav;
@@ -39,10 +41,22 @@
         const target = links.find(link => link.hash === location.hash);
         if (target) select(target);
     });
-    document.querySelectorAll('[data-fw-open-storage]').forEach(link => link.addEventListener('click', event => {
+    document.addEventListener('click', event => {
+        const link = event.target.closest('[data-fw-open-storage]'); if (!link) return;
         const target = links.find(item => item.dataset.settingsSection === 'storage');
-        if (target) { event.preventDefault(); target.click(); select(target, true); }
-    }));
+        if (target) {
+            const helper = document.getElementById(link.dataset.fwRepairTarget || 'fw-wp-table-conversion');
+            // A fresh diagnostic can discover an anomaly absent when the page was rendered.
+            if (!helper) return;
+            event.preventDefault(); target.click(); select(target, true);
+            if (helper) { helper.classList.add('fw-helper-highlight'); helper.scrollIntoView({block:'center'}); helper.focus({preventScroll:true}); }
+        }
+    });
+    const repair = new URL(location.href).searchParams.get('repair');
+    if (['wordpress','plugin'].includes(repair)) {
+        const helper = document.getElementById(repair === 'wordpress' ? 'fw-wp-table-conversion' : 'fw-database-repair-section');
+        if (helper) { helper.classList.add('fw-helper-highlight'); helper.scrollIntoView({block:'center'}); }
+    }
     nav.closest('.fw-settings-layout').querySelector('form').addEventListener('invalid', event => {
         const panel = event.target.closest('.fw-settings-panel');
         const link = links.find(link => link.hash === '#' + panel?.id);

@@ -41,21 +41,10 @@ final class PermissionService {
 		// Unfiled content is a management-only recovery collection, never public.
 		if ( isset( $record['folder_id'] ) && 0 === (int) $record['folder_id'] && ! ( $user->has_cap( 'filewarden_manage_settings' ) && $user->has_cap( 'filewarden_manage_permissions' ) ) ) {
 			return false; }
-		// Resolve the complete ancestry first: missing parents and cycles fail closed.
-		$policies = array_merge( array( $record['policy'] ?? null ), is_array( $record['retained_rules'] ?? null ) ? $record['retained_rules'] : ( empty( $record['retained_rules'] ) ? array() : array( null ) ) );
-		$parent   = (int) ( $record['folder_id'] ?? $record['parent_id'] ?? 0 );
-		$seen     = array();
-		while ( $parent ) {
-			if ( isset( $seen[ $parent ] ) || count( $seen ) >= 100 ) {
-				return false;
-			}
-			$seen[ $parent ] = true;
-			$folder          = ( $this->folder_lookup )( $parent );
-			if ( ! $folder ) {
-				return false;
-			}
-			$policies[] = $folder['policy'] ?? null;
-			$parent     = (int) $folder['parent_id'];
+		try {
+			$policies = $this->rules( $record );
+		} catch ( \DomainException $error ) {
+			return false;
 		}
 		if ( $user->has_cap( 'filewarden_read_all_files' ) ) {
 			return true;
@@ -66,5 +55,37 @@ final class PermissionService {
 			}
 		}
 		return true;
+	}
+
+	/** Resolve the authoritative chain, shared with access explanations.
+	 *
+	 * @param array $record Document or folder.
+	 * @return array Ordered policies.
+	 * @throws \DomainException For malformed rules or ancestry.
+	 */
+	public function rules( array $record ) {
+		$policies = array_merge( array( $record['policy'] ?? null ), is_array( $record['retained_rules'] ?? null ) ? $record['retained_rules'] : ( empty( $record['retained_rules'] ) ? array() : array( null ) ) );
+		$parent   = (int) ( $record['folder_id'] ?? $record['parent_id'] ?? 0 );
+		$seen     = array();
+		while ( $parent ) {
+			if ( isset( $seen[ $parent ] ) || count( $seen ) >= 100 ) {
+				throw new \DomainException( 'Invalid ancestry.' );
+			}
+			$seen[ $parent ] = true;
+			$folder          = ( $this->folder_lookup )( $parent );
+			if ( ! $folder ) {
+				throw new \DomainException( 'Missing ancestor.' );
+			}
+			$policies[] = $folder['policy'] ?? null;
+			$parent     = (int) $folder['parent_id'];
+		}
+		foreach ( $policies as $policy ) {
+			try {
+				Policy::validate( $policy, is_array( $policy['roles'] ?? null ) ? $policy['roles'] : array(), true );
+			} catch ( \InvalidArgumentException $error ) {
+				throw new \DomainException( 'Invalid access rule.' );
+			}
+		}
+		return $policies;
 	}
 }

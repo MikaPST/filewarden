@@ -1,0 +1,64 @@
+{
+  "version": "0.1.18-dev",
+  "date": "2026-11-23",
+  "status": "targeted_local_correction_validated_not_yet_packaged",
+  "reported_incident": {
+    "operation": "Create encrypted backup",
+    "stage": "immediate failure before progress",
+    "cause_on_preproduction": "not yet established",
+    "server_user_reported": {
+      "php": "8.5.13",
+      "sapi": "litespeed",
+      "memory_limit": "512M",
+      "max_execution_time": 360,
+      "upload_max_filesize": "128M",
+      "post_max_size": "128M",
+      "opcache_full": true
+    },
+    "native_sodium_and_mbstring_status_on_host": "unknown"
+  },
+  "reproduced_locally": {
+    "php": "8.2.35",
+    "native_sodium": true,
+    "mbstring": false,
+    "old_failure": "Call to undefined function FileWarden\\mb_check_encoding()",
+    "same_generic_ui_message": true,
+    "is_proof_of_user_host_cause": false
+  },
+  "changes": [
+    "Validate phrase with bounded UTF-8 PCRE instead of optional mbstring; preserve minimum 16 code points and maximum 1024 bytes",
+    "Keep Argon2id costs, cryptographic key bytes and FWBACK01 format unchanged",
+    "Give fixed safe error codes and translated actionable guidance; never return exception text, paths, phrase or previous cause",
+    "Separate unavailable disk-space information from insufficient disk capacity; no bypass of checks"
+  ],
+  "tests": {
+    "phpunit": {
+      "tests": 99,
+      "assertions": 315,
+      "passed": true
+    },
+    "native_sodium_round_trip_without_mbstring": true,
+    "invalid_utf8_and_unicode_minimum_and_byte_maximum": true,
+    "missing_sodium_safe_failure": true,
+    "known_error_categories": 17,
+    "unknown_exception_and_previous_cause_redaction": true,
+    "phpcs_errors": 0,
+    "phpcs_warnings": 0,
+    "changed_php_syntax_checked": true,
+    "fr_en_source_entries": 598
+  },
+  "test_harness_adjustment": "Standalone no-mbstring round-trip initially omitted the FileIO autoloader; corrected the harness to use tests/bootstrap.php, then passed.",
+  "limits": [
+    "Not tested on PHP 8.5.13 or LiteSpeed",
+    "Does not establish which startup check fails on the user hosting",
+    "No user site modified",
+    "No new encrypted-backup HTTP/migration run after this targeted correction; original v18 migration evidence remains separate",
+    "Existing delivered ZIP not rebuilt; source correction will be packaged with consolidated approved batch"
+  ],
+  "publication": {
+    "github_push": false,
+    "tag": false,
+    "release": false
+  },
+  "next_scope": "Elementor/IP/stacked audit filters merged into v18 collection; awaiting consolidated GO for those additions"
+}

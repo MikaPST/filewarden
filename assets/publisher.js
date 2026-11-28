@@ -54,8 +54,13 @@
     const loginForm = login?.querySelector('form');
     if (loginForm) {
         const address = loginForm.querySelector('#fw-login-url');
+        const popupId = loginForm.querySelector('#fw-login-popup');
         const choice = () => loginForm.querySelector('[name="publication_login[mode]"]:checked').value;
-        const snapshot = () => JSON.stringify({ mode: choice(), url: choice() === 'custom' ? address.value : '' });
+        const snapshot = () => JSON.stringify({ mode: choice(), url: choice() === 'custom' ? address.value : '', popup: choice() === 'elementor' ? popupId.value : '' });
+        popupId.addEventListener('change', () => {
+            const match = /^\[elementor-template\s+id\s*=\s*(["'])([1-9][0-9]{0,9})\1\s*\]$/.exec(popupId.value.trim());
+            if (match && Number(match[2]) <= 2147483647) popupId.value = match[2];
+        });
         const original = snapshot();
         let saving = false;
         const validURL = value => {
@@ -64,13 +69,21 @@
         };
         const updateLogin = () => {
             const custom = choice() === 'custom';
-            const valid = !custom || validURL(address.value);
+            const elementor = choice() === 'elementor';
+            const rawPopup = popupId.value.trim();
+            const matchPopup = /^\[elementor-template\s+id\s*=\s*(["'])([1-9][0-9]{0,9})\1\s*\]$/.exec(rawPopup);
+            const numericPopup = matchPopup ? matchPopup[2] : rawPopup;
+            const validPopup = /^[1-9][0-9]{0,9}$/.test(numericPopup) && Number(numericPopup) <= 2147483647;
+            const valid = (!custom || validURL(address.value)) && (!elementor || validPopup);
+            popupId.disabled = !elementor; popupId.required = elementor;
+            popupId.setAttribute('aria-invalid', String(elementor && !validPopup));
+            loginForm.querySelector('.fw-login-elementor').hidden = !elementor;
             address.disabled = !custom; address.required = custom;
             address.setAttribute('aria-invalid', String(!valid));
             loginForm.querySelector('.fw-login-custom').hidden = !custom;
             loginForm.querySelector('button[type=submit]').disabled = !valid;
             const feedback = loginForm.querySelector('.fw-login-validation');
-            feedback.textContent = valid ? '' : feedback.dataset.invalid;
+            feedback.textContent = valid ? '' : elementor ? feedback.dataset.invalidPopup : feedback.dataset.invalid;
             const destination = custom ? address.value : login.dataset.wordpressUrl;
             const check = loginForm.querySelector('.fw-login-check');
             if (valid) { check.href = destination; check.removeAttribute('aria-disabled'); }
@@ -81,6 +94,8 @@
                 if (url.origin !== location.origin || url.searchParams.get('action') !== 'filewarden_folder') return;
                 const link = frame.contentDocument?.querySelector('body.fw-public-theme .fw-login');
                 if (link) {
+                    if (elementor && validPopup) link.dataset.fwPopup = popupId.value;
+                    else delete link.dataset.fwPopup;
                     if (valid) { link.href = destination; link.removeAttribute('aria-disabled'); }
                     else { link.removeAttribute('href'); link.setAttribute('aria-disabled', 'true'); }
                 }
@@ -89,7 +104,7 @@
         loginForm.addEventListener('input', updateLogin);
         loginForm.addEventListener('change', updateLogin);
         loginForm.addEventListener('submit', event => {
-            if (choice() === 'custom' && !validURL(address.value)) { event.preventDefault(); return; }
+            if (loginForm.querySelector('button[type=submit]').disabled) { event.preventDefault(); return; }
             saving = true;
         });
         frame.addEventListener('load', updateLogin);

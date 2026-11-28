@@ -140,6 +140,9 @@ final class Repository {
 		$data['policy']     = wp_json_encode( $data['policy'] );
 		$data['created_by'] = get_current_user_id();
 		$data['created_at'] = current_time( 'mysql', true );
+		if ( 'documents' === $kind ) {
+			$data['folder_added_at'] = $data['created_at'];
+		}
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Custom tables require fresh authorization data and prepared database access.
 		if ( false === $wpdb->insert( $wpdb->prefix . 'filewarden_' . $kind, $data ) ) {
 			throw new \RuntimeException( 'Database write failed.' );
@@ -165,6 +168,8 @@ final class Repository {
 			throw new \RuntimeException( 'Document is busy.' ); }
 		try {
 			DatabaseUpgrade::guard();
+			WordPressTables::guard();
+			BackupJobs::guard();
 			// Serialize a whole folder: database collations may equate differently spelled names.
 			$key = 'fw_' . substr( hash( 'sha256', $wpdb->prefix . ':' . $folder ), 0, 60 );
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Custom tables require fresh authorization data and prepared database access.
@@ -209,7 +214,14 @@ final class Repository {
 			throw new \InvalidArgumentException( 'Invalid record type.' );
 		}
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Prepared update on allowlisted custom tables, no stale permission cache.
-		if ( false === $wpdb->update( $wpdb->prefix . 'filewarden_' . $kind, array( 'policy' => wp_json_encode( $policy ) ), array( 'id' => $id ), array( '%s' ), array( '%d' ) ) ) {
+		if ( false === $wpdb->update(
+			$wpdb->prefix . 'filewarden_' . $kind,
+			( 'documents' === $kind ? array(
+				'policy'         => wp_json_encode( $policy ),
+				'retained_rules' => null,
+			) : array( 'policy' => wp_json_encode( $policy ) ) ),
+			array( 'id' => $id )
+		) ) {
 			throw new \RuntimeException( 'Policy update failed.' );
 		}
 	}
@@ -224,8 +236,17 @@ final class Repository {
 	 */
 	public function update_document( $id, array $fields ) {
 		global $wpdb;
-		if ( array_diff( array_keys( $fields ), array( 'folder_id', 'name', 'trashed_at', 'trash_origin', 'retained_rules', 'purging' ) ) ) {
+		if ( array_diff( array_keys( $fields ), array( 'folder_id', 'name', 'description', 'trashed_at', 'trash_origin', 'retained_rules', 'purging' ) ) ) {
 			throw new \InvalidArgumentException( 'Invalid fields.' ); }
+		if ( array_key_exists( 'folder_id', $fields ) ) {
+			$before = $this->document_by_id( $id, true );
+			if ( ! $before ) {
+				throw new \RuntimeException( 'Document unavailable.' );
+			}
+			if ( (int) $before['folder_id'] !== (int) $fields['folder_id'] ) {
+				$fields['folder_added_at'] = current_time( 'mysql', true );
+			}
+		}
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery -- wpdb prepares values for a fixed custom table.
 		if ( false === $wpdb->update( $wpdb->prefix . 'filewarden_documents', $fields, array( 'id' => $id ) ) ) {
 			throw new \RuntimeException( 'Document update failed.' ); }

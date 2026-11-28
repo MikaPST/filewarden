@@ -1,0 +1,64 @@
+<?php
+/** Disposable installed-candidate acceptance; no user site or secrets. */
+if(!defined('WP_CLI')||!WP_CLI||getenv('FILEWARDEN_TESTING')!=='1'||(!str_contains(wp_normalize_path(ABSPATH),'/.tools/v18-dev/')&&!str_contains(wp_normalize_path(ABSPATH),'/.tools/v19-dev/')))exit(1);
+use FileWarden\{AuditConsole,AuditEvents,AuditHistory,AuditIp,AuditService,BackupJobs,BackupManifest,Diagnostics,DocumentService,Installer,PermissionService,PublicationLogin,Repository,SettingsConsole,StorageService};
+global $wpdb;
+function fwc_assert($ok,$message){if(!$ok)throw new RuntimeException($message);}
+function fwc_reject($call,$message){try{$call();}catch(Throwable$error){return;}throw new RuntimeException($message);}
+wp_set_current_user(1);
+$repo=new Repository();$storage=new StorageService(FILEWARDEN_STORAGE_DIR,[ABSPATH],true);$service=new DocumentService($repo,new PermissionService([$repo,'folder']),$storage,new AuditService());
+fwc_assert(get_option('filewarden_schema')===FileWarden\Installer::SCHEMA,'schema migration missing');
+fwc_assert(array_key_last(SettingsConsole::sections())==='diagnostic','Diagnostic not last');
+$role=get_role('administrator');$prior=$role->has_cap('filewarden_manage_audit');$role->remove_cap('filewarden_manage_audit');Installer::migrate();fwc_assert(!$role->has_cap('filewarden_manage_audit'),'migration regranted a revoked capability');if($prior)$role->add_cap('filewarden_manage_audit');
+$snapshot=[];
+foreach(['documents','folders']as$kind)$snapshot[$kind]=$wpdb->get_results("SELECT * FROM {$wpdb->prefix}filewarden_$kind ORDER BY id",ARRAY_A);
+$root=$storage->root();$before=glob($root.'/diagnostic-*.tmp');
+$report=Diagnostics::run($service);
+fwc_assert(count($report['checks'])===11,'diagnostic incomplete');
+fwc_assert(!array_filter($report['checks'],fn($r)=>!in_array($r['state'],['good','blocked','unknown'],true)),'diagnostic state invalid');
+fwc_assert(glob($root.'/diagnostic-*.tmp')===$before,'diagnostic witness not cleaned');
+$json=wp_json_encode($report);
+foreach([$root,ABSPATH,get_option('filewarden_managed_key','never-export-key'),get_option(BackupJobs::KEY,'never-export-job-key')]as$private)if($private)fwc_assert(!str_contains($json,$private),'diagnostic leaked protected data');
+foreach($snapshot as$kind=>$rows)fwc_assert($wpdb->get_results("SELECT * FROM {$wpdb->prefix}filewarden_$kind ORDER BY id",ARRAY_A)===$rows,'diagnostic changed library rows');
+$tag='fw-complements-'.bin2hex(random_bytes(4));
+$add=function($event,$ip='',$expiry=null,$age=0)use($wpdb,$tag){
+ fwc_assert($wpdb->insert($wpdb->prefix.'filewarden_audit_logs',['actor_id'=>0,'actor_login'=>$tag,'actor_type'=>'unknown','event'=>$event,'object_id'=>0,'created_at'=>gmdate('Y-m-d H:i:s',time()-$age),'actor_ip'=>$ip,'ip_expires_at'=>$expiry])!==false,'fixture audit insert');
+ return (int)$wpdb->insert_id;
+};
+$requested=$add('document_copy_requested');$success=$add('document_copy_completed');$add('document_move_completed');$add('unknown_requested');
+$upper=AuditHistory::upper();
+$base=['actor_login'=>$tag];
+$actor=wp_get_current_user();
+$imported=$add('settings_changed');
+$wpdb->update($wpdb->prefix.'filewarden_audit_logs',['actor_id'=>$actor->ID,'actor_login'=>'','actor_type'=>'source_user'],['id'=>$imported]);
+$actorFilter=AuditHistory::filters(['actor_login'=>$actor->user_login]);
+fwc_assert(!in_array((string)$imported,array_column(AuditHistory::rows($actorFilter,AuditHistory::upper()),'id'),true),'source numeric actor matched a different installation user');
+$filter=AuditHistory::filters($base+['actions'=>'copy','statuses'=>'success']);
+fwc_assert(array_column(AuditHistory::rows($filter,$upper), 'id')==[(string)$success]||array_map('intval',array_column(AuditHistory::rows($filter,$upper),'id'))===[$success],'action/status result mismatch');
+$none=AuditHistory::filters($base+['actions'=>['none'],'statuses'=>'success']);
+fwc_assert(AuditHistory::rows($none,$upper)===[]&&AuditHistory::review($none,$upper)['count']===0,'empty choices widened scope');
+$unknown=AuditHistory::filters($base+['actions'=>'other','statuses'=>'unknown']);
+fwc_assert(count(AuditHistory::rows($unknown,$upper))===1,'unknown event inferred as request');
+fwc_reject(fn()=>AuditHistory::filters($base+['actions'=>[['copy']]]),'nested filter accepted');
+$oldDays=get_option('filewarden_audit_ip_days',30);$oldCollect=get_option('filewarden_audit_collect_ip','0');
+update_option('filewarden_audit_ip_days',30);update_option('filewarden_audit_collect_ip','1');
+$_SERVER['REMOTE_ADDR']='203.0.113.8';$_SERVER['HTTP_X_FORWARDED_FOR']='198.51.100.9';
+fwc_assert(AuditIp::capture('access_denied',false)==='203.0.113.8','untrusted header accepted');
+fwc_assert(AuditIp::capture('download_started',false)===''&&AuditIp::capture('access_denied',true)==='','nonsensitive/background IP collected');
+$expired=$add('access_denied','203.0.113.9',gmdate('Y-m-d H:i:s',time()-1),2);
+$row=$wpdb->get_row($wpdb->prepare('SELECT * FROM %i WHERE id=%d',$wpdb->prefix.'filewarden_audit_logs',$expired),ARRAY_A);
+$export=new ReflectionMethod(AuditConsole::class,'export_record');$record=$export->invoke(null,$row);
+fwc_assert($record['schema_version']===3&&$record['actor_ip']===null,'expired IP disclosed in export');
+AuditService::cleanup();
+$erased=$wpdb->get_row($wpdb->prepare('SELECT actor_ip,ip_expires_at FROM %i WHERE id=%d',$wpdb->prefix.'filewarden_audit_logs',$expired),ARRAY_A);
+fwc_assert($erased&&$erased['actor_ip']===''&&$erased['ip_expires_at']===null,'expired IP not erased');
+update_option('filewarden_audit_ip_days',$oldDays);update_option('filewarden_audit_collect_ip',$oldCollect);
+$setting=PublicationLogin::validate(['mode'=>'elementor','popup_id'=>'1252']);
+fwc_assert($setting['popup_id']===1252&&$setting['url']==='','popup canonicalization');
+$manifest=BackupManifest::capture()[0];fwc_assert($manifest['schema']===FileWarden\Installer::SCHEMA,'new backup schema missing');BackupManifest::validate($manifest);
+$invalidIp=$manifest;$invalidIp['audit_logs'][0]['actor_ip']='203.0.113.8<script>';
+fwc_reject(fn()=>BackupManifest::validate($invalidIp),'malformed imported IP accepted');
+$invalidExpiry=$manifest;$invalidExpiry['audit_logs'][0]['ip_expires_at']='tomorrow';
+fwc_reject(fn()=>BackupManifest::validate($invalidExpiry),'malformed imported IP expiry accepted');
+$legacy=$manifest;$legacy['schema']='6';unset($legacy['settings']['audit_ip_days']);foreach($legacy['audit_logs']as&$item)unset($item['actor_ip'],$item['ip_expires_at']);unset($item);BackupManifest::validate($legacy);
+WP_CLI::success('v18 complements: additive migration, revoked-capability preservation, real diagnostic and witness cleanup/redaction, action/status/empty/unknown scopes, expiring IPs, safe proxy boundaries, popup validation and legacy archive compatibility passed.');

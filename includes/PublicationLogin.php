@@ -20,8 +20,25 @@ final class PublicationLogin {
 	 */
 	public static function validate( array $input ) {
 		$mode = $input['mode'] ?? null;
-		if ( ! in_array( $mode, array( 'wordpress', 'custom' ), true ) ) {
+		if ( ! in_array( $mode, array( 'wordpress', 'custom', 'elementor' ), true ) ) {
 			throw new \InvalidArgumentException( 'Invalid login destination.' );
+		}
+		if ( 'elementor' === $mode ) {
+			$id = $input['popup_id'] ?? null;
+			if ( is_string( $id ) ) {
+				$id = trim( $id );
+				if ( preg_match( '/^\[elementor-template\s+id\s*=\s*([\"\'])([1-9][0-9]{0,9})\1\s*\]$/D', $id, $match ) ) {
+					$id = $match[2];
+				}
+			}
+			if ( ( ! is_string( $id ) && ! is_int( $id ) ) || ! preg_match( '/^[1-9][0-9]{0,9}$/D', (string) $id ) || (int) $id > 2147483647 ) {
+				throw new \InvalidArgumentException( 'Invalid Elementor popup identifier.' );
+			}
+			return array(
+				'mode'     => 'elementor',
+				'url'      => '',
+				'popup_id' => (int) $id,
+			);
 		}
 		// phpcs:ignore WordPress.WP.CapitalPDangit.MisspelledInText -- Internal option identifier, not a product label.
 		if ( 'wordpress' === $mode ) {

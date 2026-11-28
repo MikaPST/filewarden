@@ -1,0 +1,8 @@
+<?php
+if(!defined('WP_CLI')||!WP_CLI||getenv('FILEWARDEN_TESTING')!=='1'||!str_contains(ABSPATH,'v18uiselect715')||wp_parse_url(home_url(),PHP_URL_HOST)!=='127.0.0.1')exit(1);
+use FileWarden\{Repository,PermissionService,StorageService,BackupComponents,BackupJobs};
+wp_set_current_user(1);global $wpdb;$expected=json_decode(file_get_contents(getenv('FILEWARDEN_SELECTIVE_RESULT')),true);$case=getenv('FILEWARDEN_SELECTIVE_UI_CASE');if(!in_array($case,['complete','simplified'],true))throw new RuntimeException('Unknown fixture case');$m=$expected['cases'][$case]['manifest'];
+$repo=new Repository();$permissions=new PermissionService([$repo,'folder']);$storage=new StorageService(FILEWARDEN_STORAGE_DIR,[ABSPATH],true);
+foreach($m['documents']as$source){$row=$repo->document($source['uuid'],true);if(!$row||$row['policy']!==BackupComponents::private_policy()||(int)$row['created_by']!==1)throw new RuntimeException('Browser restore not private/current-account');$hash=hash_init('sha256');$storage->visit_chunks($row['storage_key'],(int)$row['size'],fn($bytes)=>hash_update($hash,$bytes));if(hash_final($hash)!==$source['sha256'])throw new RuntimeException('Browser restored bytes differ');$row['trashed_at']=null;if($permissions->can_read($row,new WP_User(0))||$permissions->can_read($row,get_user_by('login','selective-reader')))throw new RuntimeException('Browser restored private data leaked');}
+if(get_role('fw_source_reader')||get_option(BackupJobs::BARRIER))throw new RuntimeException('Browser restore created role or retained barrier');
+WP_CLI::success('Actual browser restoration verified: bytes, administration-only ACL, current creator, absent source role and released write barrier.');

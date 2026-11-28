@@ -33,7 +33,7 @@ module.exports=async({context,base,name})=>{
    const element=page.locator(selector);const url=await element.getAttribute(selector.endsWith('-css')?'href':'src');
    const response=await context.request.get(url);assert.equal(response.status(),200);
    const digest=crypto.createHash('sha256').update(await response.body()).digest('hex').slice(0,12);
-   assert.equal(new URL(url).searchParams.get('ver'),'0.1.17-dev-'+digest,'The loaded asset URL has no content digest');
+   assert.equal(new URL(url).searchParams.get('ver'),(process.env.FILEWARDEN_TARGET_VERSION || '0.1.17-dev')+'-'+digest,'The loaded asset URL has no content digest');
   }
   const panel=page.locator('.fw-settings-layout>.fw-content');
   // Native focus may scroll the page; measure the notification independently of that scroll.
@@ -88,10 +88,10 @@ module.exports=async({context,base,name})=>{
   await page.reload();assert.equal(await page.locator('[name=notification_seconds]').inputValue(),'5');
   assert.equal(await page.locator('[name=upload_mb]').inputValue(),'29');
   await page.goto(settings+'&fw_settings_fixture=1');
-  assert.equal(await page.locator('.fw-settings-nav [role=tab]').count(),6);
+  assert.equal(await page.locator('.fw-settings-nav [role=tab]').count(),8);
   await page.locator('[data-settings-section=acceptance-extra]').click();
   assert.equal(await page.locator('#fw-settings-acceptance-extra .fw-settings-description').textContent(),'Registry acceptance description');
-  await page.goto(settings);assert.equal(await page.locator('.fw-settings-nav [role=tab]').count(),5);
+  await page.goto(settings);assert.equal(await page.locator('.fw-settings-nav [role=tab]').count(),7);
   await page.locator('[name=notification_seconds]').selectOption('10');
   await page.locator('[data-settings-section=documents]').click();await page.locator('[name=upload_mb]').fill('50');
   await page.getByRole('button',{name:'Save settings',exact:true}).click();await page.waitForURL(/result=success/);await dismiss();
@@ -109,7 +109,7 @@ module.exports=async({context,base,name})=>{
   await page.locator('#fw-file').setInputFiles({name:filename,mimeType:'text/plain',buffer:bytes});
   await page.locator('[name=filewarden_save]').click();await page.waitForURL(/result=success/);
   assert.ok(await page.locator('.fw-notice-success').isVisible());await dismiss();
-  const originalDownload=await page.locator('tbody tr').filter({hasText:filename}).locator('a[href*="download=1"]').getAttribute('href');
+  const originalDownload=await page.locator('tbody tr').filter({hasText:filename}).locator('a[aria-label="Download"]').getAttribute('href');
   for(const width of [1280,768,375]){
    await page.setViewportSize({width,height:900});
    const row=page.locator('tbody tr').filter({hasText:filename});
@@ -133,7 +133,7 @@ module.exports=async({context,base,name})=>{
   assert.equal(await page.locator('.fw-tree-folder').filter({hasText:folder.title}).count(),0);
   assert.equal(Number((await page.locator('.fw-recovery-count').textContent()).match(/\d+/)[0]),prior+1);
   assert.equal((await context.request.get(originalDownload)).status(),404,'Recovered file stayed published through its former URL');
-  const recoveryDownload=await page.locator('tbody tr').filter({hasText:filename}).locator('a[href*="download=1"]').getAttribute('href');
+  const recoveryDownload=await page.locator('tbody tr').filter({hasText:filename}).locator('a[aria-label="Download"]').getAttribute('href');
   const recovered=await context.request.get(recoveryDownload);assert.equal(recovered.status(),200);assert.deepEqual(await recovered.body(),bytes);
   assert.ok(await page.locator('.fw-notice-success').isVisible());
   await page.screenshot({path:'build/screenshots/correction-deletion-'+name+'.png',fullPage:true});

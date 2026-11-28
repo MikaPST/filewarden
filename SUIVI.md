@@ -1,14 +1,130 @@
 # FileWarden — suivi court
 
-Mis à jour le 22 novembre 2026. Lire ce fichier à la reprise, puis vérifier l’état Git et les fichiers utiles au lot.
+Mis à jour le 28 novembre 2026. Vérifier l’état Git après lecture.
 
-## État actuel
+## Première Alpha — publication GitHub autorisée et préparation en cours
 
-- **0.1.17-dev publiée comme préversion le 22 novembre 2026**, sur autorisation explicite du propriétaire. Tag annoté `v0.1.17-dev`, commit `427c23b12fdfcf505be43b90a482f2455b36e560`. [Release](https://github.com/MikaPST/filewarden/releases/tag/v0.1.17-dev), [ZIP](https://github.com/MikaPST/filewarden/releases/download/v0.1.17-dev/filewarden-0.1.17-dev.zip), [notes](docs/releases/v0.1.17-dev.md).
-- **CI source 17/17 et publication 18/18 réussies** : [source](https://github.com/MikaPST/filewarden/actions/runs/45005824665), [tag/release](https://github.com/MikaPST/filewarden/actions/runs/45006521234). Unités 88 tests/192 assertions sur PHP 8.2/8.3/8.4, huit tests JS, PHPCS/syntaxe/audit, 472 entrées FR/EN et POT frais ; douze mises à jour réelles de ZIP depuis 0.1.11/12/13/14/15/16-dev sur WordPress 6.8 et 7.1.5/MySQL 8.0.46, intégration/HTTP/sécurité, Chromium/Firefox EN/FR et installation neuve/premier import validés. [Preuve source](docs/validation/v0.1.17-dev-ci.json), [preuve de publication](docs/validation/v0.1.17-dev-release-ci.json).
-- **ZIP public vérifié : 317 fichiers / 4 296 097 octets**, SHA-256 `296109dc3d6d5b3662e6cd04d891827ca0ac340d7cab67916ccce966d0d41d1f`. Identique à l’archive exacte installée/testée par la CI du tag ; tous les fichiers correspondent aux blobs Git du tag, checksum et digests GitHub vérifiés. [Preuve publique](docs/validation/v0.1.17-dev-published.json). Copie téléchargée dans `build/published-v0.1.17-dev/` ; anciens ZIP locaux et empreintes conservés séparément.
-- Neuf axes, corrections de Publication/Code court/connexion/notes ambrées et fond Nature `#EDF3EE` inclus ; schéma 6, documents, droits, images originales et apparences déjà enregistrées préservés. Les deux premiers essais CI restent des échecs documentés : variable HTTP manquante puis mesure avant focus, corrigés sans changement runtime ni retrait d’assertion. [Historique](docs/validation/v0.1.17-dev-ci-initial.json).
-- Aucun site utilisateur ou base réelle modifié ; installation manuelle par le propriétaire. Version de développement, sans certification de sécurité ni audit humain complet au lecteur d’écran. Les ajouts 0.1.18-dev sont en préparation uniquement, sans code runtime.
+Le propriétaire a confirmé que le dernier candidat fonctionne en préproduction et valide la proposition de première Alpha GitHub : version `0.1.19-alpha.1`, tag `v0.1.19-alpha.1`, release marquée préversion avec ZIP installable et SHA-256. Cet accord autorise commit/push/tag/publication après contrôles ; ne pas redemander son GO. Aucune soumission à WordPress.org demandée.
+
+Runtime du ZIP bc0ade58cf36d515c11b983b03c70deee1047334bada792d3757fcdbb616cfab figé. Harmonisation des métadonnées Alpha et de la recette GitHub pour les parcours actuels ; aucun ajout fonctionnel pendant la préparation. Dépôt public vérifié : MikaPST/filewarden, branche main à bb9e19d, dernière release/tag v0.1.17-dev. Les évolutions v18/v19 locales seront donc regroupées dans la première Alpha.
+
+Pendant cette préparation, rapport Plugin Check reçu : deux erreurs de readme, un avertissement i18n et sept SQL. Première lecture : fragments fixes ou déjà préparés, sans injection démontrée. Réserver le traitement systématique au [prochain lot](docs/prochain-lot-beta.md), comme demandé ; ne pas désactiver les contrôles ni assimiler un avertissement à une faille prouvée. Les résultats des candidats ci-dessous sont historiques.
+
+## Correctif doublons et finitions — ZIP terminé pour préproduction
+
+GO explicite reçu pour les quatre points, corrigés et validés : même nom à l’import, étapes Comprendre l’accès, fermeture des modales homogène, destination Copier/Déplacer plus lisible et espacée. ZIP courant : `build/filewarden-0.1.19-dev.zip`, 376 fichiers / 4467535 octets, SHA-256 `bc0ade58cf36d515c11b983b03c70deee1047334bada792d3757fcdbb616cfab`. Schéma 9 inchangé. ZIP précédent préservé sous `build/filewarden-0.1.19-dev-before-same-name-fix.zip` (f715e9ea92f2c068d48588fcd9b3d9ba0528d193a661c3fad2775a9144d25c66).
+
+122 tests / 436 assertions, 8 tests JS, PHPCS sans erreur/avertissement, syntaxe de 66 PHP runtime et 17 JS/MJS, 809 entrées FR/EN. Chromium/Firefox FR/EN, ordinateur/mobile, exactement le même nom depuis ordinateur et Média dans un dossier à trois rôles. Course de nom revérifiée ; original intact, 14 fichiers de même contenu vérifiés avec des noms distincts. Étapes réelles sur trois dossiers/conditions conservées, X de styles calculés identiques, label 14px et espaces mesurés. ZIP identique aux sources et installations 7.1.5/6.8 ; 71 SVG et modules sensibles inchangés. Services locaux arrêtés, fixtures conservées. [Preuves et limites](docs/validation/v0.1.19-dev-same-name-local.json). Aucun commit/tag/publication GitHub.
+
+Les résultats des lots ci-dessous restent historiques.
+
+## Compléments documentaires v19 — ZIP terminé pour préproduction
+
+Lot autorisé le 28 novembre, implémenté et validé localement. ZIP courant : `build/filewarden-0.1.19-dev.zip`, 375 fichiers / 4 463 834 octets, SHA-256 `f715e9ea92f2c068d48588fcd9b3d9ba0528d193a661c3fad2775a9144d25c66`. Schéma 9 additif ; manifeste 3. Archives antérieures conservées. Le ZIP est identique aux sources et aux installations WordPress 7.1.5 / 6.8. Les 71 SVG officiels sont inchangés. [Preuves et limites](docs/validation/v0.1.19-dev-document-local.json).
+
+119 tests unitaires / 429 assertions, 8 tests JS, PHPCS sans erreur/avertissement, syntaxe de 65 fichiers PHP runtime et 17 JS/MJS, 797 traductions FR/EN. Services HTTP et base de recette arrêtés, fichiers de fixtures conservés. Parcours réels dans Chromium/Firefox, FR/EN, ordinateur/mobile ; droits/CSRF/rollback, doublons sur flux chiffrés, descriptions et recherches autorisées, migration 8→9/reprise différée et restaurations chiffrées entre installations (manifestes 1/2/3). Aucun commit/tag/publication GitHub ni passage en Alpha. Les résultats des lots ci-dessous restent historiques.
+
+Voir [le lot documentaire](docs/lot-document-v0.1.19-dev.md). Les quatre fonctionnalités choisies sont validées : doublons (taille/SHA-256/comparaison exacte, résultats autorisés, avertissement limité à l’import, choix de conserver une copie), fiche centrée (nom/menu Informations, œil pour aperçu direct), explication de l’accès effectif (détail repliable, synthèse dans la modale de droits) et description facultative/recherche. Limite finale de description : 400 caractères, compteur 0 / 400, fiche et import, recherche nom + description soumise aux droits. Également validé : remplacer les restrictions antérieures lors d’un enregistrement explicite des droits, sans case supplémentaire, avec disparition de la pastille après succès. GO consolidé reçu le 28 novembre 2026 : développement, tests locaux et ZIP autorisés. Implémentation et recette terminées, ZIP documentaire identifié ci-dessus. Send réservé à Alpha/Bêta ; pas de publication autorisée. Le ZIP du lot précédent décrit ci-dessous reste préservé.
+
+## Corrections de préproduction v19 — ZIP corrigé livré
+
+Corrections terminées et validées localement. ZIP courant : `build/filewarden-0.1.19-dev.zip` (371 fichiers, 4450339 octets), SHA-256 `69eece3320980f186987272984d0e6ebcfdeee32a9bd5389cbee7ecac3b19085`. Identique aux sources et aux deux installations locales. Preuves : `docs/validation/v0.1.19-dev-ui-corrections-local.json`.
+
+117 tests / 422 assertions, 8 tests JS, 109 fichiers PHP et 17 JS runtime syntaxiquement valides, PHPCS sans erreur ni avertissement, 765 entrées FR/EN. Géométrie/tri/modale/CSRF/palette/marges validés dans Chromium et Firefox, français et anglais ; contrôle natif WordPress 6.8 complémentaire. Trois documents de fixture : identités, métadonnées, droits et contenus inchangés. 71 SVG officiels identiques ; code de sauvegarde, schéma et permissions inchangé. Les deux serveurs HTTP et la base de recette sont arrêtés, fixtures conservées. Aucune publication GitHub.
+
+GO reçu pour le lot [corrections v19](docs/lot-corrections-v0.1.19-dev.md) : tableau en liste/chevron unique/retrait Type/colonnes, Annuler centré, lien filewarden.org, icônes et pastille sombre, marges des trois styles d’accès refusé. Tests locaux et nouveau ZIP demandés. Pas de publication GitHub. ZIP antérieur préservé dans build/filewarden-0.1.19-dev-before-ui-corrections.zip (SHA-256 4c64e193b5bcc5705bce0364c5db09dcc729d8d453e1df44b84d5576f645ec36). Les résultats et SHA de la livraison initiale ci-dessous restent historiques.
+
+## Lot 0.1.19-dev — candidat local prêt pour préproduction
+
+Les 16 points validés sont implémentés. ZIP : `build/filewarden-0.1.19-dev.zip` (371 fichiers, 4 449 422 octets), SHA-256 `4c64e193b5bcc5705bce0364c5db09dcc729d8d453e1df44b84d5576f645ec36`. Installé et comparé octet par octet aux sources et aux deux WordPress locaux 6.8 / 7.1.5. Aucune publication GitHub, aucun commit, tag ou changement vers Alpha effectué pour ce lot.
+
+Recette locale : PHP 8.2.35, MariaDB 10.11.11 ; 117 tests PHPUnit / 422 assertions, 8 tests JS, PHPCS sans erreur ni avertissement, syntaxe de 107 fichiers PHP et 17 fichiers JS runtime, 766 entrées FR/EN. Composer valide, audit sans avis ni dépendance abandonnée. Tests HTTP d’ACL/CSRF/MIME/ranges, interfaces EN/FR et lecteur compact dans Chromium/Firefox ; régressions historiques exécutées par modules après adaptation des anciens sélecteurs. Mise à jour réelle v18 → v19 et reprise d’une tâche v18 avant migration différée vérifiées.
+
+Sauvegardes : 252 combinaisons valides de composants, trois restaurations chiffrées de configuration sur bibliothèque remplie, restauration réelle sur une seconde installation avec chiffrement de destination, anciens manifestes v1/v2 et nouveau v3, refus mot de passe/paquet altéré/bibliothèque remplie, rollback d’activation et reprise, 18 manifestes hostiles refusés. 71 SVG officiels identiques au ZIP v18 préservé ; extension inconnue → file. Preuves et limites : `docs/validation/v0.1.19-dev-local.json`.
+
+Schéma SQL 8, manifeste 3. Les dates d’arrivée historiques inconnues restent « — ». PHP 8.5/hébergement réel, ouverture Elementor Pro réelle et validation humaine complète d’accessibilité restent à vérifier en préproduction. Les mentions d’attente de GO dans le détail historique ci-dessous sont obsolètes : le GO global a autorisé l’ensemble et ce lot est désormais livré localement.
+
+GO global reçu le 27 novembre 2026 pour les 16 points ci-dessous, tests locaux et livraison ZIP. Les mentions historiques « attendre GO » ci-dessous sont levées par cet accord. Aucune publication GitHub/tag autorisée. ZIP v18 préservé dans build/filewarden-0.1.18-dev-before-v19.zip (SHA-256 a2a910ad84e7e6dd133acbb8dce42a22792c14a9e105baf1642228de370017b2).
+
+Le propriétaire valide la préparation sous 0.1.19-dev, avec une éventuelle première 0.1.19-alpha.1 après corrections, tests et recette de préproduction. Il transmet les demandes une par une ; attendre son GO consolidé avant développement. Aucun accord de publication pour ce nouveau lot.
+
+**Correction 1 — menu contextuel des documents** : lors du défilement avec le menu « … » ouvert, sa largeur augmente progressivement. Capture de préproduction fournie le 27 novembre. Lecture du code : le repositionnement passe le menu en position fixe et recalcule sa gauche à partir de sa largeur mesurée, tout en conservant la contrainte droite du CSS ; mécanisme cohérent avec l’étirement cumulatif observé. Pas de reproduction navigateur nouvelle ni de correction runtime à ce stade. Attendu : menu compact de largeur stable, ancrage cohérent au bouton, maintien dans le viewport, fonctionnement identique après plusieurs défilements dans les deux sens et redimensionnements. Prévoir tests ordinateur/mobile et clavier. [Lot en préparation](docs/lot-v0.1.19-dev.md).
+
+**Évolution 2 — sélection intégrée au tableau** : maquette interactive validée par le propriétaire. Case de sélection des documents visibles dans l’en-tête de première colonne, état intermédiaire pour sélection partielle ; suppression du bandeau permanent. Barre compacte uniquement dès une sélection, compteur, déplacer/classer, mise à la corbeille et désélection. Destination dans une modale, actions navy et corbeille rouge, adaptation mobile. Attendre le GO global avant implémentation.
+
+**Évolution 3 — recherche compacte et tri du tableau** : démo ordinateur/mobile entièrement validée. Périmètre intégré à droite du champ ; Rechercher puis Filtres sur une ligne ordinateur, adaptation mobile. Filtres repliables et compteur actif ; suppression de Trier par, tri ascendant/descendant dans les en-têtes Document/Taille/Ajouté le. Nouvelle colonne date et heure d’arrivée dans le dossier entre Taille et Règle du fichier, actualisée lors des déplacements, date d’import conservée et reprise des anciennes données à définir sans dates inventées. Voir le lot pour les détails. Aucun changement runtime avant GO global.
+
+**Correction 4 — infobulle Renommer** : ajouter « Renommer » sur le bouton crayon des documents, comme Aperçu/Télécharger, même style et comportement au survol/focus, nom accessible et traduction FR/EN. Aucun texte permanent supplémentaire dans le tableau. À implémenter après GO global.
+
+**Correction 5 — droits du document en modale** : remplacer le panneau latéral « Modifier les droits » d’un fichier par une modale centrée cohérente avec les autres actions, sans rétrécir le tableau. Conserver tous les champs et explications, contrôles serveur et autorisations ; fermeture/Échap/focus et mobile. Attendre GO global.
+
+**Correction 6 — finition modale Renommer** : bouton fermer carré avec croix centrée, suppression du double encadrement navy du champ et bordure homogène. Focus clavier discret mais visible, comportements de sélection/validation conservés. Vérifier styles hérités et mobile. Attendre GO global.
+
+**Évolution 7 — aperçu compact** : maquette ordinateur/mobile validée. Barre compacte logo/nom/métadonnées, navigation page/total, zoom moins/plus et ajustements, ouvrir/télécharger avec infobulles ; document centré sur fond neutre, suppression du compteur de page redondant et adaptation mobile. Préserver sécurité, formats existants, identité et traductions. Attendre GO global.
+
+**Évolution 8 — titre et fil d’Ariane du dossier** : maquette validée. Retirer le bouton textuel Renommer ; crayon seul sans fond/contour à droite du titre, infobulle et modale, accessibilité clavier/tactile préservée. Fil d’Ariane au-dessus à la place de DOSSIER ACTUEL, fond léger, icône dossier, chevrons, parents cliquables et courant navy/gras ; adaptation chemins longs/mobile. Attendre GO global.
+
+**Évolution 9 — réglage popup Elementor** : accès direct à la liste des fenêtres modales du site via URL d’administration dynamique, nouvel onglet, en remplacement de la documentation ; aide sur le numéro du code court. Saisie ID ou `[elementor-template id="1252"]`, extraction/affichage et stockage de l’ID seul, validation serveur stricte sans exécution du code court. Approche validée ; conserver droits, prérequis et secours WordPress, traductions FR/EN. Attendre GO global.
+
+**Évolution 10 — langue compacte** : proposition validée, sélecteur Général réduit vers 40–44 px et choix Automatique — Langue du site / FR — Français / EN — English, sans drapeaux. Conserver pictogramme de traduction, accessibilité, sélecteur natif et logique des langues existante. Attendre GO global.
+
+**Ajustement 11 — titre Préférences** : demande de rendre l’en-tête du menu latéral plus visible. Proposition navy 16–18 px semi-gras, espacement normal, marges et séparation discrète, hiérarchie de page et mobile préservés, FR/EN. Attendre GO global.
+
+**Ajustement 12 — espacement sous les titres** : réduire le vide entre Publication et ses onglets ; harmoniser l’espace titre/navigation ou titre/contenu sur les pages FileWarden, ordinateur/mobile. Vérifier les marges cumulées, préserver logo/nom/titres et leurs proportions. Attendre GO global.
+
+**Évolution 13 — palettes supplémentaires** : FileWarden sombre (navy profond, turquoise) et Terracotta (crème, terre cuite) validées via démo ; dix couleurs de chaque palette consignées dans le lot. Ajouter aux palettes publiques en conservant identité personnalisée et icônes officielles. Contrastes texte préliminaires calculés ; vérifier tous les états à l’intégration, sans affirmer une conformité globale. Attendre GO global.
+
+**Évolution 14 — sauvegarde plus explicite et configuration seule** : ensemble validé. Complète sans cases avec résumé ; Transfert simplifié devient Sauvegarde personnalisée avec options regroupées et dépendances. Documents/arborescence deviennent sélectionnables, export réglages/apparence seuls possible ; configuration seule restaurable sur destination non vide avec confirmation sans toucher bibliothèque, exigence vide conservée pour restauration de bibliothèque. Phrase secrète devient Mot de passe de la sauvegarde partout FR/EN, chiffrement/validations et anciens imports préservés. Voir lot pour périmètre et tests. Attendre GO global.
+
+**Ajustement 15 — menu Bibliothèque** : libellé Bibliothèque au singulier validé pour le sous-menu WordPress auparavant Documents (Library en anglais). Conserver titre Bibliothèque de documents, onglet interne Documents, routes/identifiants et droits. Attendre GO global.
+
+**Ajustement 16 — auteur et liens** : Michaël PASTOR remplace MikaPST dans l’attribution ; Author URI fourni explicitement : https://michael-pastor.fr. Site de l’extension retenu : https://filewarden.org, à vérifier prêt avant finalisation. Aucun identifiant GitHub changé ni site externe modifié. Attendre GO global.
+
+## 0.1.18-dev — passe UI et sauvegarde sélective validée, ZIP prêt pour recette
+
+GO explicite du propriétaire pour l’ensemble du lot, tests locaux et livraison d’un nouveau ZIP de préproduction. **Aucune publication GitHub autorisée pour la v18.** Aucun site utilisateur modifié. Le précédent ZIP est conservé dans `build/filewarden-0.1.18-dev-before-ui-pass.zip` (SHA-256 `2abd52030001a6e31fa38e5a68a309684c9f7d049793c9c8493cac119aa99759`).
+
+Implémenté :
+
+1. Recherche/filtres Documents et Corbeille homogènes, panneaux repliés par défaut, groupes Type/Période d’ajout/Taille, pastilles retirables, boutons appliquer/réinitialiser et normalisation des extensions. Cartes de corbeille mobiles et conservation réelle.
+2. États publics vides/no-result centrés, pleine largeur en grille, pictogrammes, effacement de recherche et marges haut/bas équilibrées, couleurs personnalisées préservées.
+3. Mise à la corbeille multiple confirmée dans les dossiers et Documents à classer, limite 50, droits de chaque document, refus des sélections périmées et métadonnées/audit atomiques ; aucune suppression définitive nouvelle.
+4. Modales centrées pour les actions, sans réduire la liste ; formulaires serveur et revue de destination conservés, annulation/Échap/focus, fermeture possible pendant le chargement en lecture seule, protection contre doubles confirmations et scroll mobile. Destinations lisibles et espacées, actions de sauvegarde avec écart 12 px.
+5. Diagnostic distinguant Sodium natif absent/API défaillante/dérivation en échec ; conseils hébergeur FR/EN. Liens vers les réparations qui ouvrent/surlignent leur catégorie sans conversion au clic, y compris anomalie découverte après affichage initial.
+6. Assistant volontaire options/posts/postmeta : double capacité, nonce, sauvegarde indépendante et maintenance confirmées, limites 200 000 lignes/64 Mio par table, exclusion SQL, empreintes du contenu/structure, conversion/reprise par table et contrôle final. Aucun rollback global des ALTER promis ; écritures externes à suspendre séparément. Le disque PHP ne sert pas de preuve pour une base distante.
+7. Sauvegarde complète (défaut) ou transfert simplifié : documents/arborescence obligatoires ; corbeille, droits, créateurs, réglages, apparence/logo et audit facultatifs, avec omission réelle des données. Manifestes v1 importables, nouveau v2 authentifié ; conteneur FWBACK01 et schéma 7 conservés. Sans droits source : privé administration selon les exceptions explicites de lecture globale. Attribution globale au compte restaurateur par défaut ; correspondances individuelles seulement si retenues. Aucun compte/privilège créé ; acteurs historiques source distincts. Restauration sur bibliothèque vide maintenue.
+
+Validation déjà acquise : 110 tests PHP / 387 assertions, huit tests JS, PHPCS sans erreur/avertissement, 749 entrées FR/EN ; intégration historique et mise à jour réelle ZIP public v17 sur WordPress 6.8 et 7.1.5, HTTP de sécurité ; 64 combinaisons d’options et quatre restaurations chiffrées réelles, anciennes archives schéma 6 et nouveau manifeste v2, mauvaises phrases/altérations/rollback/reprises ; interface réelle de restauration complète ignorée et simplifiée, téléchargement protégé, conversion guidée réelle avec lien Diagnostic et confirmations. Chromium/Firefox EN/FR, 320/375 px, clavier et repli sans JS ; non-régression Publication/Diagnostic/journal réussie sur les deux WordPress. Centrage final et fermeture des modales pendant le chargement vérifiés. Le 27 novembre, intégration et HTTP complets repassés sur deux installations propres avec langue explicite pour le banc HTTP, puis chaque octet du ZIP comparé aux sources et aux deux installations.
+
+
+Archive finale : **372 fichiers / 4442810 octets**, SHA-256 `a2a910ad84e7e6dd133acbb8dce42a22792c14a9e105baf1642228de370017b2`. [ZIP](build/filewarden-0.1.18-dev.zip), [empreinte](build/filewarden-0.1.18-dev.zip.sha256), [preuve de cette passe](docs/validation/v0.1.18-dev-ui-pass-local.json). Les deux serveurs HTTP de recette finale et la base locale sont arrêtés après vérification d’identité ; fixtures et preuves préservées. Livraison locale seulement ; le propriétaire effectuera la recette sur son hébergement.
+
+Incident du banc conservé : un test ajoutait un utilisateur après le début de la maintenance, modifiant une option WordPress ; le contrôle a correctement refusé la reprise. Aucun point de reprise n’a été effacé. Préparation des utilisateurs déplacée avant la maintenance, cas corrigés réussis sur les fixtures propres `v18uifinalb715` / `v18uifinalb68`, avec preuve que l’ALTER défaillant simulé a effectivement été atteint. Les anciennes fixtures et leurs checkpoints restent conservés, sans site utilisateur concerné.
+
+Retour réel de préproduction : le propriétaire a converti ses trois tables WordPress en InnoDB et activé Sodium. Son rapport est 11/11 et sa sauvegarde a réussi. Sa restauration n’est pas encore confirmée terminée sur son site ; aucune compatibilité complète PHP 8.5/LiteSpeed n’est revendiquée. MySQL 8, Elementor Pro réel, CI distante, gros volumes et audit humain complet d’accessibilité hors recette locale. Dans les fixtures de migration, chiffrement réel mais contrôle HTTPS simulé pour le serveur local.
+
+[Périmètre](docs/lot-ui-v0.1.18-dev.md) · [Guide sauvegarde](docs/backup.md) · [Notes](docs/releases/v0.1.18-dev.md).
+
+## Candidat précédent — historique avant la passe UI
+
+GO consolidé reçu le 23 novembre après validation de la démonstration Diagnostic. Les sept axes initiaux sont conservés ; les six compléments sont implémentés : correctif de démarrage/erreurs de sauvegarde, Popup Elementor, collecte IP facultative/expiration, filtres Action puis Statut du journal, bandeau Code court transversal, Diagnostic en dernière catégorie des Réglages. [Périmètre](docs/lot-corrections-v0.1.18-dev.md).
+
+**Livraison ZIP locale uniquement pour la recette du propriétaire. Aucun push, tag ni release GitHub 0.1.18-dev autorisé ou réalisé.** Aucun site utilisateur modifié.
+
+- Schéma 7 additif, identifiants/fichiers/réglages préservés ; archives de schéma 6 et 7 acceptées. Reprise réelle d'une sauvegarde ancienne vérifiée : migration différée sous verrou, reprise complète, migration à la requête suivante et contrôle des octets. Collecte IP désactivée par défaut, conservation 30 jours bornée par le journal.
+- 104 tests PHP / 349 assertions, huit tests JS, PHPCS sans erreur/avertissement. FR/EN : 691 entrées. PHP 8.2.35, MariaDB 10.11.11, WordPress 6.8 et 7.1.5. Intégration historique complète et installation du ZIP public 0.1.17-dev → candidat réussies sur les deux versions ; suites HTTP et finales réussies sur les deux versions.
+- Diagnostic réel et rapport expurgé, témoins privés nettoyés, filtres vides/inconnus/périmètres, expiration IP et rejet de faux proxy vérifiés. Nouveaux parcours navigateur et anciens parcours Publication passent dans Chromium/Firefox en français ; passe anglaise réussie dans les deux navigateurs.
+- Migration réelle schéma 7 entre installations à clés/IDs distincts et restauration d'une archive schéma 6 réussies, y compris mauvaise phrase, altération, rollback SQL/options/logo et reprise avant/après activation. Le chiffrement est réel ; seul le contrôle HTTPS est simulé dans cette fixture locale spécialisée.
+- Échec initial en préproduction : le retour utilisateur confirme désormais la réussite des tests de chiffrement et de création de sauvegarde après activation de Sodium chez l'hébergeur. Les trois tables WordPress ont aussi été converties en InnoDB par le propriétaire pour préparer la restauration. Ce retour réel est distinct de la recette locale PHP 8.2 et ne valide pas tous les parcours PHP 8.5/LiteSpeed.
+- Elementor Pro lui-même non installé localement : API compatible simulée avec véritable iframe, click/Entrée et secours WordPress vérifiés. Prévoir sa recette réelle sur le site. PHP 8.5/LiteSpeed, MySQL 8, CI distante, gros volumes et audit humain complet d'accessibilité non exécutés.
+
+L'archive initiale (356 fichiers, SHA-256 167150cbd5dee74d1acfe1f9f83b6403417275c586509731584a52443a8223bf) est préservée séparément dans build/filewarden-0.1.18-dev-initial-before-complements.zip ; ses preuves restent historiques. Le ZIP corrigé final contient 365 fichiers / 4402672 octets ; SHA-256 2abd52030001a6e31fa38e5a68a309684c9f7d049793c9c8493cac119aa99759. Chaque fichier a été comparé aux sources et aux deux installations finales testées. Les douze serveurs HTTP jetables et la base locale sont arrêtés après vérification d'identité ; fixtures et preuves conservées. [Preuve finale](docs/validation/v0.1.18-dev-complements-local.json).
+
+[Notes](docs/releases/v0.1.18-dev.md) · [Preuve initiale historique](docs/validation/v0.1.18-dev-local.json) · [Guide sauvegarde](docs/backup.md).
+
+## Dernière publication — 0.1.17-dev
+
+Publiée le 22 novembre sur autorisation explicite, tag `v0.1.17-dev`, commit `427c23b12fdfcf505be43b90a482f2455b36e560`. [Release](https://github.com/MikaPST/filewarden/releases/tag/v0.1.17-dev). CI source 17/17, release 18/18 ; ZIP public 317 fichiers / 4 296 097 octets, SHA-256 `296109dc3d6d5b3662e6cd04d891827ca0ac340d7cab67916ccce966d0d41d1f`. [Preuve source](docs/validation/v0.1.17-dev-ci.json), [release](docs/validation/v0.1.17-dev-release-ci.json), [ZIP public](docs/validation/v0.1.17-dev-published.json). Résultats historiques distincts du candidat actuel.
 
 ## Version précédente — repères historiques
 
@@ -36,51 +152,6 @@ Mis à jour le 22 novembre 2026. Lire ce fichier à la reprise, puis vérifier l
 - Déploiement par ZIP depuis WordPress ; ne pas réutiliser les anciens scripts FTP. Aucun test destructif sur les documents du site réel.
 - Ne conserver ici aucun identifiant secret, mot de passe ou document personnel.
 
-## Candidat initial validé — 0.1.17-dev (historique)
+## Compléments du lot
 
-**GO reçu le 20 novembre 2026.** Les neuf axes sont implémentés et la recette finale du ZIP est validée sur des WordPress locaux isolés. Livraison uniquement sous `filewarden-0.1.17-dev.zip` pour installation manuelle par le propriétaire. Aucun push, tag ou release GitHub autorisé pour ce candidat.
-
-1. Boutons secondaires identiques aux exports, indépendants du profil WordPress.
-2. Logo officiel 56/44 px et FILEWARDEN 20/18 px sur une même ligne, titre dessous.
-3. Arborescence élargie, plus compacte, cibles tactiles conservées.
-4. Fil d’Ariane des parents autorisés.
-5. Formulaires contextuels sous la recherche, destination documentaire fixée au dossier ouvert.
-6. Navigation Documents/Corbeille, création racine/premier dossier intégrée avec droits explicites.
-7. Pastille d’information par fichier conservant des règles antérieures, sans modification d’ACL.
-8. Corbeille avec icônes de types, recherche/filtre combinés, compteur/réinitialisation et conservation.
-9. Apparence publique commune au site : modèles FileWarden/Neutre/Nature, couleurs et contraste, nom/logo PNG/JPEG, aperçu et enregistrement explicite ; vrais pictogrammes et identité de grille centrée.
-
-Limites retenues du logo : médiathèque WordPress native, PNG/JPEG local de 2 Mo/6 000 px maximum, autorisations média distinctes ; refus des contenus actifs même en mode tous formats. Nom public limité à 64 caractères. Schéma 6 inchangé.
-
-Contrôles finaux validés : 82 tests PHP/167 assertions, huit tests JS, PHPCS/syntaxe, 453 entrées FR/EN, Composer validation/audit ; mises à jour réelles depuis le ZIP 0.1.16-dev, intégration et nouveaux parcours Chromium/Firefox EN/FR. L’installation neuve vérifie InnoDB et les réglages par défaut. Non-régression historique intégrale, HTTP et nouveaux parcours Chromium/Firefox FR/EN validés sur WordPress 6.8 et 7.1.5. Installation neuve, premier dossier, annulation modifiée et premier import contextuel validés sur 7.1.5. ZIP de 305 fichiers, 4 283 227 octets, identique aux trois installations et au code ; SHA-256 `7d5d0f3e676f21820da40172f1a2df1b441758841de3b99727f554fb75335c7a`. Les 34 assets d’origine conservent leur contenu (fins de ligne SVG normalisées pour la comparaison). PHP 8.3/8.4, MySQL et CI distante non exécutés pour ce candidat ; aucun site utilisateur modifié. Services locaux jetables arrêtés après vérification d’identité ; fixtures et captures conservées. Voir la preuve structurée pour les ajustements du banc de tests et les limites.
-
-Références : [lot détaillé](docs/lot-v0.1.17-dev.md), [notes du candidat](docs/releases/v0.1.17-dev.md), [droits](docs/permissions.md), [sécurité](docs/security.md), [déploiement](docs/deployment.md).
-
-## Lot correctif 0.1.17-dev — GO du 21 novembre 2026
-
-Les dix corrections du [cahier validé](docs/corrections-v0.1.17-dev.md) sont terminées et validées localement. Unités **88 tests/192 assertions**, PHPCS, syntaxe (69 PHP/29 JS), huit tests JS, 471 entrées FR/EN et audit Composer validés. Mises à jour réelles du ZIP initial, intégration et HTTP sur WordPress 6.8 et 7.1.5 ; parcours ciblés Chromium/Firefox FR/EN, non-régression regroupée et installation neuve/premier import validés. Styles publics identifiés par contenu ; cibles tactiles de 44 px vérifiées. [Preuve exacte, séquence des retests et limites](docs/validation/v0.1.17-dev-corrections-local.json).
-
-ZIP corrigé livré localement : `build/filewarden-0.1.17-dev.zip`, **317 fichiers / 4 294 924 octets**, SHA-256 `b5ff1e7e4f50ce37837038555541be07a054905ff2d4371444d592594a21df49`, identique aux sources et aux trois installations finales. Les 35 visuels d’origine sont préservés ; candidat initial conservé dans build/candidate-v0.1.17-dev-initial. Version et schéma 6 inchangés. Aucun push, tag ou release GitHub autorisé pour ce lot. Services locaux jetables arrêtés après contrôle d’identité, captures/fixtures conservées. Étape suivante : recette manuelle du ZIP corrigé sur la préproduction par le propriétaire.
-
-
-## Dernières corrections — GO du 22 novembre 2026
-
-Les dernières corrections sont terminées : onglets Publication hors cartes, options contextuelles avec choix/brouillons conservés, Palette de couleurs et aide, carte Code court compacte au-dessus de l’aperçu avec texte WordPress/Elementor, pastille ambrée/charte, FR/EN. Unités 88/192, huit tests JS, PHPCS/syntaxe, audit Composer et 472 entrées FR/EN validés. WordPress 7.1.5 : mise à jour réelle du précédent ZIP et intégration/HTTP complets ; 6.8 : toutes les lignes documents/dossiers/audit, options et octets de la fixture préservés lors de la mise à jour. Bloc Code court WordPress natif et parcours Chromium/Firefox FR/EN, mobile 375/320px et sans JS validés. Dernière hauteur héritée supprimée après contrôle visuel puis retestée. [Périmètre et résultats](docs/corrections-finales-v0.1.17-dev.md), [preuve et limites/diagnostics](docs/validation/v0.1.17-dev-final-corrections-local.json).
-
-ZIP local final `build/filewarden-0.1.17-dev.zip` : **317 fichiers / 4 296 190 octets**, SHA-256 `d83119e346919b82e2071b833df3957cb9b66ae63ec09ad68e69df68c1e4b59a`. Identique aux sources empaquetées et aux deux installations finales ; 46 assets d’origine identiques au précédent ZIP. Archive précédente b5ff conservée dans build/candidate-v0.1.17-dev-corrected-2026-11-21. Version et schéma 6 inchangés. Aucun push/tag/release GitHub. Services de test identifiés arrêtés, fixtures/captures conservées. Prochaine étape : installation et recette manuelle par le propriétaire en préproduction.
-
-
-## Ajustement Nature — 22 novembre 2026
-
-Demande explicite : fond du modèle Nature #EDF3EE. Une seule modification runtime (FrontendAppearance.php), charte actualisée ; apparences enregistrées préservées, sélectionner Nature puis enregistrer pour appliquer la nouvelle palette. Unités 88/192 et PHPCS validés ; champ et fond calculé de l’aperçu réel vérifiés dans Chromium, validation des contrastes active. ZIP local comparé aux sources et à l’installation : 317 fichiers, 4296192 octets, SHA-256 `ac4c40ff75f78ea9599b8850aa729e5cfe0c26c177735e64b59cf769a4a38dde`. Ancien ZIP d831 préservé dans build/candidate-v0.1.17-dev-final-before-nature. Aucun push/tag/release. Indicateur de lisibilité validé pour la prochaine version 0.1.18-dev, non implémenté. Preuve : docs/validation/v0.1.17-dev-nature-local.json.
-
-## Publication 0.1.17-dev — autorisation du 22 novembre 2026
-
-Le propriétaire a autorisé explicitement le push, le tag et la prerelease avec ZIP après tests. Publication terminée : source 17/17, workflow du tag 18/18, ZIP public et tag vérifiés ; voir l’état actuel et les preuves en tête de ce fichier. Les preuves locales historiques ci-dessus restent conservées. La documentation de vérification est ajoutée après le tag, sans changement runtime.
-
-## Prochaine version — 0.1.18-dev
-
-
-Première évolution validée le 22 novembre 2026 : encart Lisibilité des textes, score des huit contrastes contrôlés, niveaux AA/AAA/À améliorer/À compléter et détails repliables avec rapports réels. Mise à jour dynamique, FR/EN, clavier/mobile, validation serveur et apparences enregistrées préservées. Le score concerne les contrastes de texte, sans certification globale d’accessibilité. Démonstration approuvée ; [spécification et critères de recette](docs/lot-v0.1.18-dev.md). Phase de collecte/préparation du lot : pas de développement, changement du numéro runtime ou nouvelle archive à ce stade. Publication GitHub distincte, soumise à autorisation explicite.
-
-Demande complémentaire : démonstration interactive du renommage document/dossier à lien et droits constants, sélection multiple pour classer/déplacer/restaurer, tris/filtres nom/date/taille/type et recherche globale limitée aux documents autorisés. Présentation avant développement ; les historiques de versions et d’activité sont explicitement reportés.
+Le regroupement des propositions autrefois réservées à la version suivante est validé et développé. Diagnostic et bandeau transversal inclus. Historiques de versions/activité, sauvegardes planifiées et autres catégories suggérées restent reportés. Voir docs/prochain-lot.md pour les décisions historiques, remplacées par le GO consolidé du 23 novembre.

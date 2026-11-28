@@ -21,11 +21,38 @@
 
 [Suivi court du projet et organisation des prochains lots](SUIVI.md)
 
-> **Status: 0.1.17-dev development preview. Not production-ready. Do not use confidential documents before deployment security validation.**
+> **Status: 0.1.19-alpha.1 — first Alpha, approved for GitHub publication after owner preproduction acceptance. Not a stable production release. Validate deployment security before using confidential documents.**
 
 FileWarden is a free, open-source WordPress document-management plugin focused on private storage, inherited access control and modern publishing interfaces. Single-site only for the first version, confirmed by the owner.
 
-## Nouveautés 0.1.17-dev
+## Première Alpha 0.1.19-alpha.1
+
+La première Alpha regroupe les évolutions v18/v19 et leurs corrections validées en préproduction par le propriétaire : fiche document, descriptions de 400 caractères, recherche autorisée, doublons exacts avec copie indépendante à nom annoncé, sélection multiple, explications des accès par étapes, sauvegardes chiffrées, Diagnostic et personnalisation publique. Les contrôles GitHub Actions du commit et du tag conditionnent sa publication. [Notes de l’Alpha](docs/releases/v0.1.19-alpha.1.md).
+
+Le schéma 9 et le runtime validé du dernier candidat v19 sont conservés ; ce passage harmonise l’identité Alpha et automatise la recette actuelle. Le rapport Plugin Check reçu pendant la préparation est suivi séparément dans [le prochain lot](docs/prochain-lot-beta.md), avant toute soumission à WordPress.org.
+
+## Historique — candidat local 0.1.19-dev
+
+Les 16 améliorations validées regroupent la recherche compacte et les tris du tableau, la sélection contextuelle, la date d’arrivée dans le dossier, les modales et le lecteur, les palettes Sombre/Terracotta, l’aide Popup Elementor, les réglages plus compacts et l’attribution Michaël PASTOR. Le menu WordPress s’appelle Bibliothèque. Voir [les notes du candidat](docs/releases/v0.1.19-dev.md) et [le périmètre](docs/lot-v0.1.19-dev.md).
+
+La sauvegarde complète inclut tous les composants sans afficher de cases ; la sauvegarde personnalisée permet aussi un export des réglages et de l’apparence seuls, restaurable sur une destination non vide sans toucher aux documents ou dossiers. Les autres restaurations de bibliothèque exigent une destination vide. Le mot de passe de sauvegarde protège le même conteneur chiffré ; les anciens manifestes 1/2 restent lisibles, les nouveaux utilisent le manifeste 3. [Guide sauvegarde](docs/backup.md).
+
+Schéma 9 additif (date d’arrivée du schéma 8, puis description facultative) : la date d’arrivée dans le dossier est distincte de la date d’import. Les anciennes dates inconnues restent inconnues. Les paramètres existants et les fichiers restent conservés à la mise à jour. Le ZIP local est destiné à la préproduction ; aucun tag ou publication GitHub v19 n’est autorisé par cette livraison.
+
+Le lot documentaire ajoute la fiche privée, les descriptions (400 caractères), la recherche administrative nom/description et les doublons exacts à l’import, avec confirmation par fichier. Enregistrer explicitement les droits remplace les restrictions antérieures, en conservant les contraintes du dossier actuel. Voir les notes de la v19 pour les preuves locales et limites.
+
+## Historique — candidat local 0.1.18-dev
+
+
+Le candidat comprend le renommage, la sélection multiple, les tris/filtres et la recherche autorisée, les nouveaux pictogrammes, les contrastes AA/AAA et la sauvegarde/migration chiffrée. Les compléments ajoutent le Diagnostic dans les Réglages, la connexion Popup Elementor, la collecte IP facultative avec expiration, les filtres Action/Statut du journal et un bandeau Code court transversal. [Périmètre et limites](docs/lot-corrections-v0.1.18-dev.md). Schéma 7 additif ; archives de schéma 6 compatibles. La collecte IP reste désactivée par défaut.
+
+Le ZIP local reste destiné à la préproduction. La dernière release publique est 0.1.17-dev ; aucune publication GitHub 0.1.18-dev n'est réalisée. Le Diagnostic est disponible dans **Réglages → Diagnostic**, en dernière position ; il ne répare pas les données. La sauvegarde nécessite Sodium ; mbstring n'est pas nécessaire pour vérifier la phrase. [Guide sauvegarde](docs/backup.md).
+
+La dernière passe ajoute une recherche et des filtres homogènes dans Documents et la Corbeille, des états publics vides centrés, la mise à la corbeille multiple et des modales de confirmation. Les actions de sauvegarde sont espacées et adaptées au mobile. Les sauvegardes proposent un profil complet ou un transfert simplifié, avec six composants facultatifs. Sans reprise des droits source, les dossiers et documents restaurés restent privés et réservés à l’administration selon les exceptions explicites de lecture globale existantes. L’interface propose l’attribution globale au compte restaurateur ; les correspondances individuelles restent facultatives. Les anciens paquets restent lisibles. [Détail de la passe](docs/lot-ui-v0.1.18-dev.md).
+
+Le Diagnostic distingue le module PHP Sodium natif absent et propose un accès à l’assistant volontaire de conversion des trois tables WordPress nécessaires à la restauration. Le lien ne convertit rien : sauvegarde indépendante, maintenance et confirmations explicites sont requises. Cet assistant ne s’affiche que si une anomalie ou une reprise le nécessite.
+
+## Nouveautés précédentes 0.1.17-dev
 
 Ce lot ajoute la création de dossiers et l’import directement dans le dossier ouvert, un fil d’Ariane, une arborescence plus large et des boutons harmonisés. La corbeille retrouve les pictogrammes de fichiers, une recherche explicite, un compteur et le délai de conservation ; les notes de récupération deviennent des pastilles par fichier. Publication permet de personnaliser l’apparence publique commune au site : modèles FileWarden/Neutre/Nature/Personnalisé, dix couleurs, nom et logo PNG/JPEG, aperçu et enregistrement explicite. Ses deux onglets conservent les brouillons ; la connexion des visiteurs utilise WordPress par défaut ou une URL HTTP(S) personnalisée commune au site. Les vrais pictogrammes restent inchangés ; les cartes de grille ont une hauteur naturelle, des marges de 16 px, une identité centrée horizontalement et leurs actions en bas. Voir [les neuf axes initiaux](docs/lot-v0.1.17-dev.md), [les dix corrections validées](docs/corrections-v0.1.17-dev.md) et [les notes du candidat](docs/releases/v0.1.17-dev.md).
 
@@ -96,3 +123,12 @@ New publication shortcodes use a permanent UUID v4 for each folder, excluding th
 ## Emplacement de l’extension et mises à jour
 
 Le code de FileWarden se trouve dans `wp-content/plugins/filewarden/` ; les documents chiffrés sont conservés séparément dans `wp-content/filewarden-storage/`. Pour les mises à jour, utiliser le ZIP de release depuis l’administration WordPress. Consulter la [procédure de déploiement](docs/deployment.md) pour l’arborescence, les sauvegardes et le nettoyage des anciens transferts manuels.
+
+
+## Local candidate 0.1.18-dev
+
+This candidate adds direct document/folder rename, reviewed atomic multi-document moves/classification/restoration, combined authorized search/sorting/filters, the approved file-type artwork, an eight-pair AA/AAA text-contrast indicator and encrypted full-library backup/migration. Existing document links, strict inherited policies and schema 6 are retained. Version and activity histories remain deferred.
+
+Backup and migration live in Settings, after Storage and security. Archives use Argon2id and Sodium secretstream; keep the phrase separately. Restoration requires an empty library, explicit role/creator mappings and transactional FileWarden plus WordPress options/posts/postmeta tables. It never imports accounts, credentials, source keys or storage paths. The all-format exception and custom sign-in URL reset to safe defaults. Default managed destination storage re-encrypts with its own key; the explicit outside-webroot backend retains its existing storage format.
+
+Initial limits: one-hour private jobs, 10,000 rows per plugin table, 4 MiB manifest, 256 MiB per file, and the destination PHP upload limit. Files are processed one at a time with bounded binary buffers. These are enforced limits, not a large-volume benchmark. See docs/backup.md and the local release notes. No 0.1.18 GitHub release/tag is published by this local delivery.

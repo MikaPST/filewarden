@@ -1,15 +1,15 @@
-# Copyright (C) 2026 MikaPST
+# Copyright (C) 2026 Michaël PASTOR
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: FileWarden 0.1.17-dev\n"
+"Project-Id-Version: FileWarden 0.1.19-alpha.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/filewarden\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-22T07:02:02+00:00\n"
+"POT-Creation-Date: 2026-11-28T13:49:32+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: filewarden\n"
@@ -20,37 +20,48 @@ msgstr ""
 msgid "FileWarden"
 msgstr ""
 
+#. Plugin URI of the plugin
+#: filewarden.php
+msgid "https://filewarden.org"
+msgstr ""
+
 #. Description of the plugin
 #: filewarden.php
-msgid "Private document management for WordPress (pre-alpha foundation)."
+msgid "Private document management for WordPress (Alpha preview)."
 msgstr ""
 
 #. Author of the plugin
 #: filewarden.php
-msgid "MikaPST"
+msgid "Michaël PASTOR"
+msgstr ""
+
+#. Author URI of the plugin
+#: filewarden.php
+msgid "https://michael-pastor.fr"
 msgstr ""
 
 #: includes/AccessSummary.php:22
-#: includes/AdminController.php:377
+#: includes/AdminController.php:423
 msgid "Inherit from folder"
 msgstr ""
 
 #: includes/AccessSummary.php:24
-#: includes/AccessSummary.php:103
-#: includes/AdminController.php:379
-#: includes/AdminWorkspace.php:608
+#: includes/AccessSummary.php:88
+#: includes/AdminController.php:425
+#: includes/AdminWorkspace.php:696
+#: includes/DocumentSheet.php:19
 msgid "Public"
 msgstr ""
 
 #: includes/AccessSummary.php:26
-#: includes/AdminController.php:380
+#: includes/AdminController.php:426
 msgid "Authenticated users"
 msgstr ""
 
 #: includes/AccessSummary.php:29
 #: includes/AccessSummary.php:34
 #: includes/AccessSummary.php:40
-#: includes/AccessSummary.php:88
+#: includes/AccessSummary.php:73
 msgid "Access unavailable"
 msgstr ""
 
@@ -58,17 +69,15 @@ msgstr ""
 msgid "Selected roles:"
 msgstr ""
 
-#: includes/AccessSummary.php:80
+#: includes/AccessSummary.php:65
 #: includes/AdminWorkspace.php:164
-#: includes/AdminWorkspace.php:179
+#: includes/AdminWorkspace.php:184
 msgid "Not published"
 msgstr ""
 
 #: includes/AdminController.php:46
-#: includes/AdminWorkspace.php:114
-#: includes/AdminWorkspace.php:242
-#: includes/Publication.php:98
-msgid "Documents"
+#: includes/BackupConsole.php:35
+msgid "Library"
 msgstr ""
 
 #: includes/AdminController.php:47
@@ -82,9 +91,9 @@ msgid "Settings"
 msgstr ""
 
 #: includes/AdminController.php:49
-#: includes/AuditConsole.php:42
-#: includes/AuditConsole.php:58
-#: includes/SettingsConsole.php:44
+#: includes/AuditConsole.php:50
+#: includes/AuditConsole.php:66
+#: includes/SettingsConsole.php:50
 msgid "Audit log"
 msgstr ""
 
@@ -108,169 +117,213 @@ msgstr ""
 msgid "Persistent notifications waiting"
 msgstr ""
 
-#: includes/AdminController.php:93
-#: includes/AdminController.php:114
-#: includes/AppearanceConsole.php:102
+#: includes/AdminController.php:99
+#: includes/AdminController.php:121
+#: includes/AppearanceConsole.php:110
 msgid "Leave this form without saving your changes?"
 msgstr ""
 
-#: includes/AdminController.php:109
+#: includes/AdminController.php:116
+#: includes/AuditEvents.php:84
 msgid "Document preview"
 msgstr ""
 
-#: includes/AdminController.php:110
+#: includes/AdminController.php:117
 msgid "Close preview"
 msgstr ""
 
-#: includes/AdminController.php:123
-msgid "KB"
-msgstr ""
-
-#: includes/AdminController.php:124
-msgid "Invalid extension, empty file or size limit exceeded."
-msgstr ""
-
-#: includes/AdminController.php:125
-msgid "Ready for server validation"
-msgstr ""
-
-#: includes/AdminController.php:126
-msgid "Uploading and validating…"
-msgstr ""
-
-#: includes/AdminController.php:127
-msgid "Saved and verified"
-msgstr ""
-
 #: includes/AdminController.php:128
-msgid "Upload failed. Check the file, permissions and connection, then retry."
+#: includes/AdminController.php:515
+#: includes/DocumentSheet.php:79
+msgid "Description (optional)"
 msgstr ""
 
 #: includes/AdminController.php:129
-#: includes/AdminWorkspace.php:406
-#: includes/AuditConsole.php:273
-msgid "Document added"
+#: includes/AdminController.php:526
+msgid "This document already exists"
 msgstr ""
 
 #: includes/AdminController.php:130
-msgid "Document not added"
+msgid "A file with identical content is already available. You can keep an independent copy."
+msgstr ""
+
+#: includes/AdminController.php:131
+msgid "View the existing document"
+msgstr ""
+
+#: includes/AdminController.php:132
+msgid "Import anyway"
+msgstr ""
+
+#: includes/AdminController.php:133
+#: includes/AdminController.php:524
+msgid "Copy filename:"
+msgstr ""
+
+#: includes/AdminController.php:134
+msgid "Remove from selection"
 msgstr ""
 
 #: includes/AdminController.php:137
-msgid "Sending file…"
+msgid "KB"
 msgstr ""
 
 #: includes/AdminController.php:138
-msgid "Transfer complete. Encrypting and verifying the document in its destination folder…"
+msgid "Invalid extension, empty file or size limit exceeded."
 msgstr ""
 
 #: includes/AdminController.php:139
-msgid "The server did not confirm saving the file. Check the folder before retrying. HTTP status:"
+msgid "Ready for server validation"
 msgstr ""
 
 #: includes/AdminController.php:140
-msgid "Connection interrupted. Check the folder before retrying; the server may still be processing the file."
+msgid "Uploading and validating…"
 msgstr ""
 
 #: includes/AdminController.php:141
+msgid "Saved and verified"
+msgstr ""
+
+#: includes/AdminController.php:142
+msgid "Upload failed. Check the file, permissions and connection, then retry."
+msgstr ""
+
+#: includes/AdminController.php:143
+#: includes/AdminWorkspace.php:425
+#: includes/AuditConsole.php:321
+msgid "Document added"
+msgstr ""
+
+#: includes/AdminController.php:144
+msgid "Document not added"
+msgstr ""
+
+#: includes/AdminController.php:151
+msgid "Sending file…"
+msgstr ""
+
+#: includes/AdminController.php:152
+msgid "Transfer complete. Encrypting and verifying the document in its destination folder…"
+msgstr ""
+
+#: includes/AdminController.php:153
+msgid "The server did not confirm saving the file. Check the folder before retrying. HTTP status:"
+msgstr ""
+
+#: includes/AdminController.php:154
+msgid "Connection interrupted. Check the folder before retrying; the server may still be processing the file."
+msgstr ""
+
+#: includes/AdminController.php:155
 msgid "Choose a file from the Media Library first."
 msgstr ""
 
-#: includes/AdminController.php:177
+#: includes/AdminController.php:191
 msgid "Copy to FileWarden"
 msgstr ""
 
-#: includes/AdminController.php:356
+#: includes/AdminController.php:312
+msgid "This filename is already used in this folder. Choose another name before importing. No existing document was replaced."
+msgstr ""
+
+#: includes/AdminController.php:402
 msgid "Parent folder"
 msgstr ""
 
-#: includes/AdminController.php:356
-#: includes/AdminWorkspace.php:669
-#: includes/TrashConsole.php:92
+#: includes/AdminController.php:402
+#: includes/AdminWorkspace.php:757
+#: includes/LibraryConsole.php:76
+#: includes/LibraryConsole.php:111
+#: includes/TrashConsole.php:104
 msgid "Destination folder"
 msgstr ""
 
-#: includes/AdminController.php:381
+#: includes/AdminController.php:427
 msgid "Selected roles"
 msgstr ""
 
-#: includes/AdminController.php:383
+#: includes/AdminController.php:429
 msgid "Access policy"
 msgstr ""
 
-#: includes/AdminController.php:385
+#: includes/AdminController.php:431
 msgid "Choose an access policy"
 msgstr ""
 
-#: includes/AdminController.php:390
+#: includes/AdminController.php:436
 msgid "Roles (only for selected-role policies)"
 msgstr ""
 
-#: includes/AdminController.php:394
+#: includes/AdminController.php:440
 msgid "The most restrictive rules apply: those of the file and its folder. A Public file stays private when its folder is restricted."
 msgstr ""
 
-#: includes/AdminController.php:396
+#: includes/AdminController.php:442
 msgid "Inherit: automatically follow the folder rules."
 msgstr ""
 
-#: includes/AdminController.php:412
-#: includes/DocumentService.php:227
+#: includes/AdminController.php:458
+#: includes/DocumentService.php:233
 msgid "No parent folder"
 msgstr ""
 
-#: includes/AdminController.php:412
-#: includes/AdminWorkspace.php:674
+#: includes/AdminController.php:458
+#: includes/AdminWorkspace.php:762
+#: includes/LibraryConsole.php:115
 msgid "Documents to classify — Not published"
 msgstr ""
 
-#: includes/AdminController.php:440
+#: includes/AdminController.php:486
 msgid "Choose a source"
 msgstr ""
 
-#: includes/AdminController.php:441
+#: includes/AdminController.php:487
 msgid "From my computer"
 msgstr ""
 
-#: includes/AdminController.php:443
+#: includes/AdminController.php:489
 msgid "From the Media Library"
 msgstr ""
 
-#: includes/AdminController.php:447
+#: includes/AdminController.php:493
 msgid "Accepted formats"
 msgstr ""
 
-#: includes/AdminController.php:451
+#: includes/AdminController.php:497
 msgid "ZIPs are kept without extraction; macros and active content are refused."
 msgstr ""
 
-#: includes/AdminController.php:453
+#: includes/AdminController.php:499
 msgid "Drop your documents here or select files"
 msgstr ""
 
 #. translators: %s: effective maximum file size.
-#: includes/AdminController.php:455
+#: includes/AdminController.php:501
 #, php-format
 msgid "Maximum file size: %s. Saving is confirmed only after storage and destination verification."
 msgstr ""
 
-#: includes/AdminController.php:456
+#: includes/AdminController.php:502
 msgid "File"
 msgstr ""
 
-#: includes/AdminController.php:458
+#: includes/AdminController.php:504
 msgid "Choose an existing document"
 msgstr ""
 
-#: includes/AdminController.php:459
+#: includes/AdminController.php:505
 msgid "FileWarden creates a protected copy. The original stays in WordPress Media and may remain publicly accessible."
 msgstr ""
 
-#: includes/AdminController.php:461
+#: includes/AdminController.php:507
 msgid "Choose a media file"
 msgstr ""
 
-#: includes/AdminController.php:469
+#: includes/AdminController.php:526
+msgid "Select the same file again and submit to import an independent copy."
+msgstr ""
+
+#: includes/AdminController.php:528
 msgid "Add to this folder"
 msgstr ""
 
@@ -288,23 +341,29 @@ msgstr ""
 msgid "Document library"
 msgstr ""
 
+#: includes/AdminWorkspace.php:114
+#: includes/AdminWorkspace.php:249
+#: includes/Publication.php:98
+msgid "Documents"
+msgstr ""
+
 #: includes/AdminWorkspace.php:116
-#: includes/AdminWorkspace.php:209
-#: includes/AdminWorkspace.php:267
+#: includes/AdminWorkspace.php:216
+#: includes/AdminWorkspace.php:286
 msgid "Add documents"
 msgstr ""
 
 #: includes/AdminWorkspace.php:119
 #: includes/AdminWorkspace.php:175
-#: includes/AdminWorkspace.php:194
-#: includes/AdminWorkspace.php:219
-#: includes/AdminWorkspace.php:229
+#: includes/AdminWorkspace.php:199
+#: includes/AdminWorkspace.php:226
+#: includes/AdminWorkspace.php:236
 #: includes/Publisher.php:25
 msgid "Create folder"
 msgstr ""
 
 #: includes/AdminWorkspace.php:122
-#: includes/TrashConsole.php:26
+#: includes/TrashConsole.php:28
 msgid "Trash"
 msgstr ""
 
@@ -324,471 +383,508 @@ msgstr[1] ""
 msgid "Folders"
 msgstr ""
 
-#: includes/AdminWorkspace.php:179
-msgid "Current folder"
-msgstr ""
-
-#: includes/AdminWorkspace.php:181
-#: includes/AdminWorkspace.php:502
+#: includes/AdminWorkspace.php:186
+#: includes/AdminWorkspace.php:557
+#: includes/DocumentSheet.php:96
 msgid "Edit access rules"
 msgstr ""
 
-#: includes/AdminWorkspace.php:184
+#: includes/AdminWorkspace.php:189
 msgid "Delete folder"
 msgstr ""
 
-#: includes/AdminWorkspace.php:192
+#: includes/AdminWorkspace.php:197
 msgid "Open a folder"
 msgstr ""
 
-#: includes/AdminWorkspace.php:192
-#: includes/AdminWorkspace.php:219
+#: includes/AdminWorkspace.php:197
+#: includes/AdminWorkspace.php:226
 msgid "Create your first folder"
 msgstr ""
 
-#: includes/AdminWorkspace.php:192
+#: includes/AdminWorkspace.php:197
 msgid "Select a folder in the sidebar to view its documents or create a new folder."
 msgstr ""
 
-#: includes/AdminWorkspace.php:203
+#: includes/AdminWorkspace.php:208
 msgid "Add documents to classify"
 msgstr ""
 
-#: includes/AdminWorkspace.php:209
+#: includes/AdminWorkspace.php:216
 msgid "Choose a source, then check the destination and access rules."
 msgstr ""
 
-#: includes/AdminWorkspace.php:214
+#: includes/AdminWorkspace.php:221
 msgid "Storage blocked. Check FileWarden settings before uploading."
 msgstr ""
 
-#: includes/AdminWorkspace.php:214
+#: includes/AdminWorkspace.php:221
 msgid "Storage unavailable"
 msgstr ""
 
-#: includes/AdminWorkspace.php:221
+#: includes/AdminWorkspace.php:228
+#: includes/LibraryConsole.php:68
 msgid "Folder name"
 msgstr ""
 
-#: includes/AdminWorkspace.php:225
+#: includes/AdminWorkspace.php:232
 msgid "Location: library root"
 msgstr ""
 
-#: includes/AdminWorkspace.php:228
+#: includes/AdminWorkspace.php:235
 msgid "The parent folder rules will be inherited according to FileWarden permissions."
 msgstr ""
 
-#: includes/AdminWorkspace.php:228
+#: includes/AdminWorkspace.php:235
 msgid "Documents can inherit this folder’s access rules. Creating a folder does not publish its content."
 msgstr ""
 
-#: includes/AdminWorkspace.php:238
+#: includes/AdminWorkspace.php:245
 msgid "Development version. Validate deployment security before sharing confidential documents."
 msgstr ""
 
-#: includes/AdminWorkspace.php:243
+#: includes/AdminWorkspace.php:250
 msgid "This folder or action is unavailable. Return to Documents and check your permissions."
 msgstr ""
 
-#: includes/AdminWorkspace.php:250
+#: includes/AdminWorkspace.php:257
 msgid "Search documents"
 msgstr ""
 
-#: includes/AdminWorkspace.php:250
+#: includes/AdminWorkspace.php:257
 #: includes/Publication.php:135
 msgid "Search this folder"
 msgstr ""
 
-#: includes/AdminWorkspace.php:250
-#: includes/Publication.php:135
-#: includes/TrashConsole.php:30
-msgid "Search"
-msgstr ""
-
-#: includes/AdminWorkspace.php:277
+#: includes/AdminWorkspace.php:296
 msgid "Create subfolder"
 msgstr ""
 
-#: includes/AdminWorkspace.php:291
-#: includes/AdminWorkspace.php:635
-#: includes/SettingsConsole.php:255
+#: includes/AdminWorkspace.php:310
+#: includes/AdminWorkspace.php:723
+#: includes/DocumentSheet.php:79
+#: includes/LibraryConsole.php:69
+#: includes/SettingsConsole.php:283
 msgid "Cancel"
 msgstr ""
 
-#: includes/AdminWorkspace.php:312
+#: includes/AdminWorkspace.php:331
 msgid "Folder path"
 msgstr ""
 
-#: includes/AdminWorkspace.php:340
+#: includes/AdminWorkspace.php:359
 msgid "FileWarden table metadata is unavailable. Review Storage and security. No folder was deleted."
 msgstr ""
 
-#: includes/AdminWorkspace.php:341
+#: includes/AdminWorkspace.php:360
 msgid "A FileWarden database table is missing. Review Storage and security. No folder was deleted."
 msgstr ""
 
-#: includes/AdminWorkspace.php:342
+#: includes/AdminWorkspace.php:361
 msgid "Database repair is pending. FileWarden writes remain paused. Review Storage and security to resume verification."
 msgstr ""
 
-#: includes/AdminWorkspace.php:343
+#: includes/AdminWorkspace.php:362
 msgid "File refused: unsafe content or archive limits exceeded. Scripts, macros, encrypted and nested archives are not accepted."
 msgstr ""
 
-#: includes/AdminWorkspace.php:344
+#: includes/AdminWorkspace.php:363
 msgid "Secure file inspection is unavailable. Ask your host to check PHP ZIP, XML support and the private temporary directory."
 msgstr ""
 
-#: includes/AdminWorkspace.php:345
+#: includes/AdminWorkspace.php:364
 msgid "Remove the subfolders first. The folder and its documents were preserved."
 msgstr ""
 
-#: includes/AdminWorkspace.php:346
+#: includes/AdminWorkspace.php:365
 msgid "Folder deletion requires transactional database tables (InnoDB). Ask your host to check the three FileWarden tables. No folder was deleted."
 msgstr ""
 
-#: includes/AdminWorkspace.php:347
+#: includes/AdminWorkspace.php:366
 msgid "Folder recovery could not be completed. The transaction was rolled back; check the database and retry."
 msgstr ""
 
-#: includes/AdminWorkspace.php:348
-#: includes/AdminWorkspace.php:370
+#: includes/AdminWorkspace.php:367
+#: includes/AdminWorkspace.php:389
 msgid "Access rules saved. The most restrictive rules apply immediately."
 msgstr ""
 
-#: includes/AdminWorkspace.php:349
-#: includes/AdminWorkspace.php:367
-#: includes/AdminWorkspace.php:393
+#: includes/AdminWorkspace.php:368
+#: includes/AdminWorkspace.php:386
+#: includes/AdminWorkspace.php:412
+#: includes/LibraryConsole.php:44
 msgid "Operation completed."
 msgstr ""
 
-#: includes/AdminWorkspace.php:350
+#: includes/AdminWorkspace.php:369
 msgid "A file with this name exists. Rename it or cancel. Versions arrive in a later milestone."
 msgstr ""
 
-#: includes/AdminWorkspace.php:351
+#: includes/AdminWorkspace.php:370
 msgid "Operation refused or unavailable. Check permissions, inputs and storage configuration."
 msgstr ""
 
-#: includes/AdminWorkspace.php:352
+#: includes/AdminWorkspace.php:371
 msgid "The file could not be written or read back from protected storage. No document was added."
 msgstr ""
 
-#: includes/AdminWorkspace.php:353
+#: includes/AdminWorkspace.php:372
 msgid "FileWarden could not confirm that the document was recorded in the selected folder. Check the list before retrying."
 msgstr ""
 
-#: includes/AdminWorkspace.php:354
+#: includes/AdminWorkspace.php:373
 msgid "The file was saved, but the audit entry could not be confirmed. Check the folder before retrying."
 msgstr ""
 
-#: includes/AdminWorkspace.php:355
+#: includes/AdminWorkspace.php:374
 msgid "Another operation is using this folder. Try again in a moment."
 msgstr ""
 
-#: includes/AdminWorkspace.php:356
+#: includes/AdminWorkspace.php:375
 msgid "You do not have permission to perform this operation."
 msgstr ""
 
-#: includes/AdminWorkspace.php:357
+#: includes/AdminWorkspace.php:376
 msgid "The file is empty or exceeds the allowed upload size. Check FileWarden settings and your PHP upload limit."
 msgstr ""
 
-#: includes/AdminWorkspace.php:358
+#: includes/AdminWorkspace.php:377
 msgid "Choose a valid PDF, JPEG, PNG, TXT, CSV, ZIP or supported macro-free Office document."
 msgstr ""
 
-#: includes/AdminWorkspace.php:359
+#: includes/AdminWorkspace.php:378
 msgid "No complete upload was received. Select the file again and check the server upload limit."
 msgstr ""
 
-#: includes/AdminWorkspace.php:360
+#: includes/AdminWorkspace.php:379
 msgid "Choose a local Media Library file that you are allowed to edit."
 msgstr ""
 
-#: includes/AdminWorkspace.php:361
+#: includes/AdminWorkspace.php:380
 msgid "Check the folder, access policy and form fields."
 msgstr ""
 
-#: includes/AdminWorkspace.php:367
+#: includes/AdminWorkspace.php:386
 msgid "Operation refused. Check your permissions, the destination, filename and storage settings."
 msgstr ""
 
-#: includes/AdminWorkspace.php:372
+#: includes/AdminWorkspace.php:391
 msgid "A file with this name already exists. Choose another name or destination."
 msgstr ""
 
-#: includes/AdminWorkspace.php:374
+#: includes/AdminWorkspace.php:393
 msgid "The source or destination rules changed. Review the destination again before confirming."
 msgstr ""
 
-#: includes/AdminWorkspace.php:376
+#: includes/AdminWorkspace.php:395
 #: includes/Notice.php:31
 msgid "Operation unavailable"
 msgstr ""
 
-#: includes/AdminWorkspace.php:379
+#: includes/AdminWorkspace.php:398
 msgid "The folder was deleted. Its documents remain in Documents to classify with their existing access restrictions."
 msgstr ""
 
-#: includes/AdminWorkspace.php:381
+#: includes/AdminWorkspace.php:400
 msgid "Folder not deleted"
 msgstr ""
 
 #. translators: 1: document name, 2: destination path.
-#: includes/AdminWorkspace.php:390
+#: includes/AdminWorkspace.php:409
 #, php-format
 msgid "File %1$s saved and verified in %2$s."
 msgstr ""
 
-#: includes/AdminWorkspace.php:405
-#: includes/AuditConsole.php:286
+#: includes/AdminWorkspace.php:424
+#: includes/AuditConsole.php:350
 msgid "Folder created"
 msgstr ""
 
-#: includes/AdminWorkspace.php:407
+#: includes/AdminWorkspace.php:426
 msgid "Access rules saved"
 msgstr ""
 
-#: includes/AdminWorkspace.php:408
-#: includes/AuditConsole.php:277
+#: includes/AdminWorkspace.php:427
+#: includes/AuditConsole.php:326
 msgid "Document moved"
 msgstr ""
 
-#: includes/AdminWorkspace.php:409
-#: includes/AuditConsole.php:279
+#: includes/AdminWorkspace.php:428
+#: includes/AuditConsole.php:328
 msgid "Document copied"
 msgstr ""
 
-#: includes/AdminWorkspace.php:410
-#: includes/AuditConsole.php:281
+#: includes/AdminWorkspace.php:429
+#: includes/AuditConsole.php:330
 msgid "Document moved to trash"
 msgstr ""
 
-#: includes/AdminWorkspace.php:411
-#: includes/AuditConsole.php:283
+#: includes/AdminWorkspace.php:430
+#: includes/AuditConsole.php:332
 msgid "Document restored"
 msgstr ""
 
-#: includes/AdminWorkspace.php:412
+#: includes/AdminWorkspace.php:431
 msgid "Folder deleted"
 msgstr ""
 
-#: includes/AdminWorkspace.php:413
+#: includes/AdminWorkspace.php:432
 msgid "Trash deletion completed"
 msgstr ""
 
-#: includes/AdminWorkspace.php:414
+#: includes/AdminWorkspace.php:433
 #: includes/Notice.php:28
 msgid "Operation completed"
 msgstr ""
 
 #. translators: %s: authorized folder name.
-#: includes/AdminWorkspace.php:437
+#: includes/AdminWorkspace.php:456
 #, php-format
 msgid "Toggle subfolders: %s"
 msgstr ""
 
 #. translators: %d: trash retention days.
-#: includes/AdminWorkspace.php:466
+#: includes/AdminWorkspace.php:485
 #, php-format
 msgid "Trash for this folder. Restore files before %d days; expired files are permanently removed by scheduled cleanup."
 msgstr ""
 
-#: includes/AdminWorkspace.php:470
-#: includes/AuditConsole.php:77
-#: includes/TrashConsole.php:45
+#: includes/AdminWorkspace.php:491
+msgid "authorized documents match this view"
+msgstr ""
+
+#: includes/AdminWorkspace.php:502
+#: includes/AuditConsole.php:93
+#: includes/TrashConsole.php:51
 msgid "Document"
 msgstr ""
 
-#: includes/AdminWorkspace.php:470
+#: includes/AdminWorkspace.php:504
+#: includes/DocumentSheet.php:85
 msgid "Size"
 msgstr ""
 
-#: includes/AdminWorkspace.php:470
+#: includes/AdminWorkspace.php:506
+msgid "Added on"
+msgstr ""
+
+#: includes/AdminWorkspace.php:507
+#: includes/DocumentSheet.php:22
 msgid "File rule"
 msgstr ""
 
-#: includes/AdminWorkspace.php:470
-#: includes/AdminWorkspace.php:594
+#: includes/AdminWorkspace.php:507
+#: includes/AdminWorkspace.php:662
+#: includes/DocumentSheet.php:93
 msgid "Effective access"
 msgstr ""
 
-#: includes/AdminWorkspace.php:470
-#: includes/TrashConsole.php:45
+#: includes/AdminWorkspace.php:507
+#: includes/TrashConsole.php:51
+#: includes/TrashConsole.php:59
 msgid "Actions"
 msgstr ""
 
-#: includes/AdminWorkspace.php:489
-#: includes/AdminWorkspace.php:594
-msgid "Unavailable in trash"
+#: includes/AdminWorkspace.php:533
+msgid "Description match:"
 msgstr ""
 
-#: includes/AdminWorkspace.php:491
-msgid "Previous access rules retained"
+#: includes/AdminWorkspace.php:539
+msgid "Access details"
 msgstr ""
 
-#: includes/AdminWorkspace.php:491
-msgid "This file keeps the access rules of its previous location, even after reclassification."
-msgstr ""
-
-#: includes/AdminWorkspace.php:495
+#: includes/AdminWorkspace.php:539
+#: includes/AdminWorkspace.php:546
 msgid "Not public: restricted by its folder."
 msgstr ""
 
-#: includes/AdminWorkspace.php:499
+#: includes/AdminWorkspace.php:540
+msgid "Arrival date unavailable for older documents"
+msgstr ""
+
+#: includes/AdminWorkspace.php:540
+#: includes/AdminWorkspace.php:662
+msgid "Unavailable in trash"
+msgstr ""
+
+#: includes/AdminWorkspace.php:542
+msgid "Previous access rules retained"
+msgstr ""
+
+#: includes/AdminWorkspace.php:542
+msgid "This file keeps the access rules of its previous location, even after reclassification."
+msgstr ""
+
+#: includes/AdminWorkspace.php:550
+#: includes/AdminWorkspace.php:564
+#: includes/DocumentSheet.php:74
 #: includes/Publication.php:150
-#: includes/Publisher.php:75
+#: includes/Publisher.php:76
 msgid "Preview"
 msgstr ""
 
-#: includes/AdminWorkspace.php:499
+#: includes/AdminWorkspace.php:550
+#: includes/AdminWorkspace.php:564
+#: includes/DocumentSheet.php:74
 #: includes/Publication.php:150
 #: includes/Viewer.php:34
 msgid "Download"
 msgstr ""
 
-#: includes/AdminWorkspace.php:501
-#: includes/AdminWorkspace.php:629
-#: includes/TrashConsole.php:55
-#: includes/TrashConsole.php:99
+#: includes/AdminWorkspace.php:555
+#: includes/AdminWorkspace.php:717
+#: includes/BackupConsole.php:13
+#: includes/TrashConsole.php:61
+#: includes/TrashConsole.php:111
 msgid "Restore"
 msgstr ""
 
-#: includes/AdminWorkspace.php:503
+#: includes/AdminWorkspace.php:556
+#: includes/AuditAppearance.php:26
+#: includes/Notice.php:29
+msgid "Information"
+msgstr ""
+
+#: includes/AdminWorkspace.php:558
 msgid "Move"
 msgstr ""
 
-#: includes/AdminWorkspace.php:504
-#: includes/Publisher.php:104
+#: includes/AdminWorkspace.php:559
+#: includes/Publisher.php:105
 msgid "Copy"
 msgstr ""
 
-#: includes/AdminWorkspace.php:505
-#: includes/AdminWorkspace.php:629
+#: includes/AdminWorkspace.php:560
+#: includes/AdminWorkspace.php:717
+#: includes/AuditEvents.php:77
 msgid "Move to trash"
 msgstr ""
 
-#: includes/AdminWorkspace.php:507
+#: includes/AdminWorkspace.php:562
 msgid "More actions"
 msgstr ""
 
-#: includes/AdminWorkspace.php:524
-#: includes/TrashConsole.php:73
+#: includes/AdminWorkspace.php:583
+#: includes/TrashConsole.php:79
 msgid "No documents match this view."
 msgstr ""
 
-#: includes/AdminWorkspace.php:528
-#: includes/Publication.php:159
+#: includes/AdminWorkspace.php:587
+#: includes/Publication.php:163
 msgid "Previous"
 msgstr ""
 
-#: includes/AdminWorkspace.php:529
-#: includes/Publication.php:162
+#: includes/AdminWorkspace.php:588
+#: includes/Publication.php:166
 msgid "Next"
 msgstr ""
 
-#: includes/AdminWorkspace.php:542
+#: includes/AdminWorkspace.php:608
 msgid "A file can restrict access, never broaden the access allowed by its folder. Global-read administrators remain an explicit exception."
 msgstr ""
 
-#: includes/AdminWorkspace.php:552
+#: includes/AdminWorkspace.php:618
 msgid "Publish this folder"
 msgstr ""
 
-#: includes/AdminWorkspace.php:581
+#: includes/AdminWorkspace.php:648
 msgid "Document action"
 msgstr ""
 
-#: includes/AdminWorkspace.php:581
+#: includes/AdminWorkspace.php:648
 msgid "Close panel"
 msgstr ""
 
-#: includes/AdminWorkspace.php:597
+#: includes/AdminWorkspace.php:678
 msgid "Remove subfolders first. No files have been changed."
 msgstr ""
 
-#: includes/AdminWorkspace.php:600
+#: includes/AdminWorkspace.php:681
 msgid "Delete this folder? Its files will be recovered in Documents to classify, unpublished and without automatic deletion. Existing file restrictions will be retained."
 msgstr ""
 
-#: includes/AdminWorkspace.php:601
+#: includes/AdminWorkspace.php:682
 msgid "Confirm folder deletion"
 msgstr ""
 
-#: includes/AdminWorkspace.php:609
+#: includes/AdminWorkspace.php:689
+msgid "The new rules will replace previous restrictions, while respecting the current folder rules."
+msgstr ""
+
+#: includes/AdminWorkspace.php:697
 msgid "Folder restrictions:"
 msgstr ""
 
-#: includes/AdminWorkspace.php:617
+#: includes/AdminWorkspace.php:705
 msgid "Changing this folder immediately changes access to its documents. File-specific restrictions are preserved."
 msgstr ""
 
-#: includes/AdminWorkspace.php:619
+#: includes/AdminWorkspace.php:707
 msgid "This folder cannot be made public while an ancestor is restricted. All ancestor restrictions remain in force."
 msgstr ""
 
-#: includes/AdminWorkspace.php:619
+#: includes/AdminWorkspace.php:707
 msgid "This file cannot be made public here. Its folder is restricted. Selecting Public does not remove the folder restrictions: unauthorized visitors will still not see or download this file."
 msgstr ""
 
-#: includes/AdminWorkspace.php:620
+#: includes/AdminWorkspace.php:708
 msgid "Save access rules"
 msgstr ""
 
-#: includes/AdminWorkspace.php:628
+#: includes/AdminWorkspace.php:716
 msgid "Restore this file in its original folder with its existing rules."
 msgstr ""
 
-#: includes/AdminWorkspace.php:628
+#: includes/AdminWorkspace.php:716
 msgid "The file will disappear from listings and its preview/download links will stop working. You can restore it from Trash before retention expires."
 msgstr ""
 
-#: includes/AdminWorkspace.php:633
+#: includes/AdminWorkspace.php:721
 msgid "This action is unavailable. Check permissions and select an available document or destination."
 msgstr ""
 
-#: includes/AdminWorkspace.php:679
+#: includes/AdminWorkspace.php:767
 msgid "No other destination folder is available. Create a folder or check your permissions."
 msgstr ""
 
-#: includes/AdminWorkspace.php:681
+#: includes/AdminWorkspace.php:769
+#: includes/LibraryConsole.php:77
 msgid "Review destination"
 msgstr ""
 
-#: includes/AdminWorkspace.php:683
+#: includes/AdminWorkspace.php:771
 msgid "Classify later"
 msgstr ""
 
-#: includes/AdminWorkspace.php:691
+#: includes/AdminWorkspace.php:779
 msgid "Remove this document from publication?"
 msgstr ""
 
-#: includes/AdminWorkspace.php:691
+#: includes/AdminWorkspace.php:779
 msgid "The document will no longer be accessible from FileWarden publications. It will remain available in Documents to classify for authorized users."
 msgstr ""
 
-#: includes/AdminWorkspace.php:693
+#: includes/AdminWorkspace.php:781
 msgid "Access at destination"
 msgstr ""
 
-#: includes/AdminWorkspace.php:693
+#: includes/AdminWorkspace.php:781
 msgid "The file rule is preserved; inherited rules change with the destination. Moving or copying into a public folder can broaden access. Check this result before confirming."
 msgstr ""
 
-#: includes/AdminWorkspace.php:703
+#: includes/AdminWorkspace.php:791
 msgid "Filename"
 msgstr ""
 
-#: includes/AdminWorkspace.php:704
+#: includes/AdminWorkspace.php:792
 msgid "Confirm classification"
 msgstr ""
 
-#: includes/AdminWorkspace.php:704
+#: includes/AdminWorkspace.php:792
 msgid "Confirm move"
 msgstr ""
 
-#: includes/AdminWorkspace.php:704
+#: includes/AdminWorkspace.php:792
 msgid "Confirm copy"
 msgstr ""
 
@@ -814,179 +910,190 @@ msgid "Nature"
 msgstr ""
 
 #: includes/AppearanceConsole.php:25
+msgid "FileWarden dark"
+msgstr ""
+
+#: includes/AppearanceConsole.php:26
+msgid "Terracotta"
+msgstr ""
+
+#: includes/AppearanceConsole.php:27
 msgid "Custom"
 msgstr ""
 
-#: includes/AppearanceConsole.php:30
+#: includes/AppearanceConsole.php:32
 msgid "Default"
 msgstr ""
 
-#: includes/AppearanceConsole.php:31
+#: includes/AppearanceConsole.php:33
 msgid "Simple and light"
 msgstr ""
 
-#: includes/AppearanceConsole.php:32
+#: includes/AppearanceConsole.php:34
 msgid "Soft green"
 msgstr ""
 
-#: includes/AppearanceConsole.php:33
+#: includes/AppearanceConsole.php:35
+msgid "Deep navy and turquoise"
+msgstr ""
+
+#: includes/AppearanceConsole.php:36
+msgid "Warm earth and cream"
+msgstr ""
+
+#: includes/AppearanceConsole.php:37
 msgid "Your colors"
 msgstr ""
 
-#: includes/AppearanceConsole.php:39
+#: includes/AppearanceConsole.php:44
 msgid "Choose a preset palette or customize your colors while keeping your custom name and logo."
 msgstr ""
 
-#: includes/AppearanceConsole.php:39
+#: includes/AppearanceConsole.php:44
 msgid "Interface colors"
 msgstr ""
 
-#: includes/AppearanceConsole.php:41
+#: includes/AppearanceConsole.php:46
 msgid "Interface background"
 msgstr ""
 
-#: includes/AppearanceConsole.php:42
+#: includes/AppearanceConsole.php:47
 msgid "Cards and fields"
 msgstr ""
 
-#: includes/AppearanceConsole.php:43
+#: includes/AppearanceConsole.php:48
 msgid "Main text"
 msgstr ""
 
-#: includes/AppearanceConsole.php:44
+#: includes/AppearanceConsole.php:49
 msgid "Button background"
 msgstr ""
 
-#: includes/AppearanceConsole.php:45
+#: includes/AppearanceConsole.php:50
 msgid "Button text"
 msgstr ""
 
-#: includes/AppearanceConsole.php:46
+#: includes/AppearanceConsole.php:51
 msgid "Links and action icons"
 msgstr ""
 
-#: includes/AppearanceConsole.php:47
+#: includes/AppearanceConsole.php:52
 msgid "Button hover"
 msgstr ""
 
-#: includes/AppearanceConsole.php:48
+#: includes/AppearanceConsole.php:53
 msgid "Secondary text"
 msgstr ""
 
-#: includes/AppearanceConsole.php:49
+#: includes/AppearanceConsole.php:54
 msgid "Borders"
 msgstr ""
 
-#: includes/AppearanceConsole.php:50
+#: includes/AppearanceConsole.php:55
 msgid "Decorative accent"
 msgstr ""
 
-#: includes/AppearanceConsole.php:54
+#: includes/AppearanceConsole.php:59
 msgid "Additional colors"
 msgstr ""
 
-#: includes/AppearanceConsole.php:58
+#: includes/AppearanceConsole.php:65
 msgid "Public name and logo"
 msgstr ""
 
-#: includes/AppearanceConsole.php:58
+#: includes/AppearanceConsole.php:65
 msgid "Name displayed to visitors"
 msgstr ""
 
-#: includes/AppearanceConsole.php:64
+#: includes/AppearanceConsole.php:71
 msgid "Selected public logo"
 msgstr ""
 
-#: includes/AppearanceConsole.php:64
-#: includes/AppearanceConsole.php:106
+#: includes/AppearanceConsole.php:71
+#: includes/AppearanceConsole.php:114
 msgid "Official FileWarden logo"
 msgstr ""
 
-#: includes/AppearanceConsole.php:66
+#: includes/AppearanceConsole.php:73
 msgid "Import a logo"
 msgstr ""
 
-#: includes/AppearanceConsole.php:68
+#: includes/AppearanceConsole.php:75
 msgid "FileWarden logo"
 msgstr ""
 
-#: includes/AppearanceConsole.php:68
+#: includes/AppearanceConsole.php:75
 msgid "Public PNG or JPEG image, up to 2 MB and 6000 pixels per side. File-type restrictions for logos always apply."
 msgstr ""
 
-#: includes/AppearanceConsole.php:71
+#: includes/AppearanceConsole.php:78
 msgid "Show the logo"
 msgstr ""
 
-#: includes/AppearanceConsole.php:72
+#: includes/AppearanceConsole.php:79
 msgid "Show the name"
 msgstr ""
 
-#: includes/AppearanceConsole.php:76
+#: includes/AppearanceConsole.php:83
 msgid "Save appearance"
 msgstr ""
 
-#: includes/AppearanceConsole.php:76
+#: includes/AppearanceConsole.php:83
 msgid "Restore FileWarden appearance"
 msgstr ""
 
-#: includes/AppearanceConsole.php:76
+#: includes/AppearanceConsole.php:83
 msgid "Restoring changes the preview first. Save to apply it to the site."
 msgstr ""
 
-#: includes/AppearanceConsole.php:81
+#: includes/AppearanceConsole.php:88
 msgid "The public appearance was saved for the whole site."
 msgstr ""
 
-#: includes/AppearanceConsole.php:81
+#: includes/AppearanceConsole.php:88
 msgid "Appearance could not be saved. Check the color contrast, public name and logo permissions or format."
 msgstr ""
 
-#: includes/AppearanceConsole.php:97
+#: includes/AppearanceConsole.php:105
 msgid "Text contrast checked: at least 4.5:1."
 msgstr ""
 
-#: includes/AppearanceConsole.php:98
+#: includes/AppearanceConsole.php:106
 msgid "Improve text contrast or enter valid six-digit color codes before saving."
 msgstr ""
 
-#: includes/AppearanceConsole.php:99
+#: includes/AppearanceConsole.php:107
 msgid "Unsaved appearance changes"
 msgstr ""
 
-#: includes/AppearanceConsole.php:100
+#: includes/AppearanceConsole.php:108
 msgid "No appearance changes"
 msgstr ""
 
-#: includes/AppearanceConsole.php:101
+#: includes/AppearanceConsole.php:109
 msgid "Restore FileWarden colors, name and logo? Save afterwards to apply the change."
 msgstr ""
 
-#: includes/AppearanceConsole.php:103
+#: includes/AppearanceConsole.php:111
 msgid "Choose a public PNG or JPEG logo"
 msgstr ""
 
-#: includes/AppearanceConsole.php:104
+#: includes/AppearanceConsole.php:112
 msgid "Use this logo"
 msgstr ""
 
-#: includes/AppearanceConsole.php:105
+#: includes/AppearanceConsole.php:113
 msgid "Choose a local PNG or JPEG image. The server will also verify its type and dimensions before saving."
 msgstr ""
 
-#: includes/AppearanceConsole.php:107
-#: includes/Publisher.php:78
+#: includes/AppearanceConsole.php:115
+#: includes/Publisher.php:79
 msgid "Desktop preview"
 msgstr ""
 
-#: includes/AppearanceConsole.php:108
-#: includes/Publisher.php:79
+#: includes/AppearanceConsole.php:116
+#: includes/Publisher.php:80
 msgid "Mobile preview"
-msgstr ""
-
-#: includes/AuditAppearance.php:26
-#: includes/Notice.php:29
-msgid "Information"
 msgstr ""
 
 #: includes/AuditAppearance.php:27
@@ -1010,305 +1117,1475 @@ msgid "Error or refusal"
 msgstr ""
 
 #: includes/AuditAppearance.php:32
+#: includes/AuditEvents.php:90
 msgid "Other event"
 msgstr ""
 
-#: includes/AuditConsole.php:35
+#: includes/AuditConsole.php:43
 msgid "Selected events purged. A purge trace has been retained."
 msgstr ""
 
-#: includes/AuditConsole.php:35
+#: includes/AuditConsole.php:43
 msgid "Audit log purged"
 msgstr ""
 
-#: includes/AuditConsole.php:43
+#: includes/AuditConsole.php:51
 msgid "Recorded events"
 msgstr ""
 
-#: includes/AuditConsole.php:43
+#: includes/AuditConsole.php:51
 msgid "Times shown in the site timezone:"
 msgstr ""
 
-#: includes/AuditConsole.php:43
+#: includes/AuditConsole.php:51
 msgid "Event display mode"
 msgstr ""
 
-#: includes/AuditConsole.php:45
+#: includes/AuditConsole.php:53
 msgid "Simplified"
 msgstr ""
 
-#: includes/AuditConsole.php:46
+#: includes/AuditConsole.php:54
 msgid "Technical"
 msgstr ""
 
-#: includes/AuditConsole.php:63
+#. translators: 1: original login; 2: source account ID, never a destination identity.
+#: includes/AuditConsole.php:71
+#: includes/AuditConsole.php:80
+#: includes/DocumentSheet.php:88
 msgid "Unavailable"
 msgstr ""
 
-#: includes/AuditConsole.php:68
+#: includes/AuditConsole.php:77
+msgid "System action on the source site"
+msgstr ""
+
+#: includes/AuditConsole.php:78
+msgid "Visitor on the source site"
+msgstr ""
+
+#. translators: 1: original login; 2: source account ID, never a destination identity.
+#: includes/AuditConsole.php:80
+#, php-format
+msgid "%1$s · source site account #%2$d"
+msgstr ""
+
+#: includes/AuditConsole.php:84
 msgid "Visitor not logged in"
 msgstr ""
 
-#: includes/AuditConsole.php:68
+#: includes/AuditConsole.php:84
 msgid "System action"
 msgstr ""
 
-#: includes/AuditConsole.php:68
+#: includes/AuditConsole.php:84
 msgid "Unknown legacy actor"
 msgstr ""
 
 #. translators: 1: WordPress account login; 2: numeric WordPress user ID.
-#: includes/AuditConsole.php:71
+#: includes/AuditConsole.php:87
 #, php-format
 msgid "%1$s · WordPress user #%2$d"
 msgstr ""
 
 #. translators: %d: numeric WordPress user ID.
-#: includes/AuditConsole.php:74
+#: includes/AuditConsole.php:90
 #, php-format
 msgid "WordPress user #%d"
 msgstr ""
 
-#: includes/AuditConsole.php:77
-#: includes/TrashConsole.php:27
+#: includes/AuditConsole.php:93
 msgid "Folder"
 msgstr ""
 
-#: includes/AuditConsole.php:77
+#: includes/AuditConsole.php:93
 msgid "Resource name unavailable"
 msgstr ""
 
-#: includes/AuditConsole.php:80
+#: includes/AuditConsole.php:96
 msgid "Show technical details"
 msgstr ""
 
-#: includes/AuditConsole.php:84
+#: includes/AuditConsole.php:100
 msgid "No matching events."
 msgstr ""
 
-#: includes/AuditConsole.php:96
+#: includes/AuditConsole.php:112
 msgid "Older events"
 msgstr ""
 
-#: includes/AuditConsole.php:97
+#: includes/AuditConsole.php:113
 msgid "Filters and exports"
 msgstr ""
 
-#: includes/AuditConsole.php:97
+#: includes/AuditConsole.php:113
 msgid "Event type"
 msgstr ""
 
-#: includes/AuditConsole.php:97
-msgid "All events"
+#: includes/AuditConsole.php:114
+msgid "Action"
 msgstr ""
 
-#: includes/AuditConsole.php:103
+#: includes/AuditConsole.php:115
+msgid "Status"
+msgstr ""
+
+#: includes/AuditConsole.php:116
 msgid "Advanced filters"
 msgstr ""
 
-#: includes/AuditConsole.php:103
+#: includes/AuditConsole.php:116
+msgid "Technical event"
+msgstr ""
+
+#: includes/AuditConsole.php:116
+msgid "All events"
+msgstr ""
+
+#: includes/AuditConsole.php:123
 msgid "WordPress username"
 msgstr ""
 
-#: includes/AuditConsole.php:105
+#: includes/AuditConsole.php:125
 msgid "From"
 msgstr ""
 
-#: includes/AuditConsole.php:106
+#: includes/AuditConsole.php:126
 msgid "Until"
 msgstr ""
 
-#: includes/AuditConsole.php:109
+#: includes/AuditConsole.php:129
+#: includes/LibraryConsole.php:184
 msgid "Apply filters"
 msgstr ""
 
-#: includes/AuditConsole.php:117
+#: includes/AuditConsole.php:137
 msgid "Reset"
 msgstr ""
 
-#: includes/AuditConsole.php:119
+#: includes/AuditConsole.php:139
 msgid "Export events"
 msgstr ""
 
-#: includes/AuditConsole.php:119
+#: includes/AuditConsole.php:139
 msgid "Exports use all events matching the applied filters, regardless of the current page or display mode."
 msgstr ""
 
 #. translators: %s: export format (CSV, TXT, or JSONL).
-#: includes/AuditConsole.php:138
+#: includes/AuditConsole.php:158
 #, php-format
 msgid "Preparing your %s download…"
 msgstr ""
 
 #. translators: %s: export format (CSV, TXT, or JSONL).
-#: includes/AuditConsole.php:140
+#: includes/AuditConsole.php:160
 #, php-format
 msgid "Download %s audit file"
 msgstr ""
 
-#: includes/AuditConsole.php:141
+#: includes/AuditConsole.php:161
 msgid "Audit export"
 msgstr ""
 
-#: includes/AuditConsole.php:141
+#: includes/AuditConsole.php:161
 msgid "File received. Your browser has been asked to download it."
 msgstr ""
 
-#: includes/AuditConsole.php:141
+#: includes/AuditConsole.php:161
 msgid "Download failed. Check your connection and permissions, then retry."
 msgstr ""
 
-#: includes/AuditConsole.php:143
+#: includes/AuditConsole.php:163
 msgid "Audit maintenance"
 msgstr ""
 
-#: includes/AuditConsole.php:143
+#: includes/AuditConsole.php:163
 msgid "Export the selected events before purging if you need a copy."
 msgstr ""
 
-#: includes/AuditConsole.php:152
+#: includes/AuditConsole.php:172
 msgid "Prepare purge"
 msgstr ""
 
-#: includes/AuditConsole.php:156
+#: includes/AuditConsole.php:176
 msgid "Irreversible purge"
 msgstr ""
 
-#: includes/AuditConsole.php:156
+#: includes/AuditConsole.php:176
 msgid "events selected. New events and purge traces are excluded."
 msgstr ""
 
-#: includes/AuditConsole.php:167
+#: includes/AuditConsole.php:187
 msgid "I understand these events cannot be restored."
 msgstr ""
 
-#: includes/AuditConsole.php:167
+#: includes/AuditConsole.php:187
 msgid "Permanently purge selected events"
 msgstr ""
 
-#: includes/AuditConsole.php:169
+#: includes/AuditConsole.php:189
 msgid "Select between 1 and 10000 events by narrowing the filters."
 msgstr ""
 
-#: includes/AuditConsole.php:174
+#: includes/AuditConsole.php:194
 msgid "Audit unavailable. Check your permissions and date filters."
 msgstr ""
 
-#: includes/AuditConsole.php:174
+#: includes/AuditConsole.php:194
 msgid "Audit unavailable"
 msgstr ""
 
-#: includes/AuditConsole.php:266
+#. translators: %d: number of selected filter choices.
+#. translators: %d: number of selected filter choices, updated locally before applying.
+#: includes/AuditConsole.php:206
+#: includes/AuditConsole.php:208
+msgid "All"
+msgstr ""
+
+#. translators: %d: number of selected filter choices.
+#. translators: %d: number of selected filter choices, updated locally before applying.
+#: includes/AuditConsole.php:206
+#: includes/AuditConsole.php:208
+#, php-format
+msgid "%d selected"
+msgstr ""
+
+#: includes/AuditConsole.php:313
 msgid "Database repair requested"
 msgstr ""
 
-#: includes/AuditConsole.php:267
+#: includes/AuditConsole.php:314
 msgid "Database tables repaired and verified"
 msgstr ""
 
-#: includes/AuditConsole.php:268
+#: includes/AuditConsole.php:315
+msgid "WordPress restoration tables converted and verified"
+msgstr ""
+
+#: includes/AuditConsole.php:316
 msgid "All file types enabled"
 msgstr ""
 
-#: includes/AuditConsole.php:269
+#: includes/AuditConsole.php:317
 msgid "File type restrictions restored"
 msgstr ""
 
-#: includes/AuditConsole.php:270
+#: includes/AuditConsole.php:318
 msgid "Folder permission change requested"
 msgstr ""
 
-#: includes/AuditConsole.php:271
+#: includes/AuditConsole.php:319
 msgid "Folder permissions changed"
 msgstr ""
 
-#: includes/AuditConsole.php:272
-#: includes/Publisher.php:75
+#: includes/AuditConsole.php:320
+#: includes/Publisher.php:76
 msgid "Access denied"
 msgstr ""
 
-#: includes/AuditConsole.php:274
+#: includes/AuditConsole.php:322
 msgid "Document permission change requested"
 msgstr ""
 
-#: includes/AuditConsole.php:275
+#: includes/AuditConsole.php:323
 msgid "Document permissions changed"
 msgstr ""
 
-#: includes/AuditConsole.php:276
+#: includes/AuditConsole.php:324
+msgid "Document description changed"
+msgstr ""
+
+#: includes/AuditConsole.php:325
 msgid "Document move requested"
 msgstr ""
 
-#: includes/AuditConsole.php:278
+#: includes/AuditConsole.php:327
 msgid "Document copy requested"
 msgstr ""
 
-#: includes/AuditConsole.php:280
+#: includes/AuditConsole.php:329
 msgid "Document removal requested"
 msgstr ""
 
-#: includes/AuditConsole.php:282
+#: includes/AuditConsole.php:331
 msgid "Document restoration requested"
 msgstr ""
 
-#: includes/AuditConsole.php:284
+#: includes/AuditConsole.php:333
 msgid "Document purge requested"
 msgstr ""
 
-#: includes/AuditConsole.php:285
+#: includes/AuditConsole.php:334
 msgid "Document permanently deleted"
 msgstr ""
 
-#: includes/AuditConsole.php:287
+#: includes/AuditConsole.php:335
+msgid "Document renamed"
+msgstr ""
+
+#: includes/AuditConsole.php:336
+msgid "Document rename requested"
+msgstr ""
+
+#: includes/AuditConsole.php:337
+msgid "Folder renamed"
+msgstr ""
+
+#: includes/AuditConsole.php:338
+msgid "Folder rename requested"
+msgstr ""
+
+#: includes/AuditConsole.php:339
+msgid "Encrypted backup requested"
+msgstr ""
+
+#: includes/AuditConsole.php:340
+msgid "Encrypted backup created"
+msgstr ""
+
+#: includes/AuditConsole.php:341
+msgid "Encrypted backup download started"
+msgstr ""
+
+#: includes/AuditConsole.php:342
+msgid "Encrypted backup downloaded"
+msgstr ""
+
+#: includes/AuditConsole.php:343
+msgid "Backup analysis requested"
+msgstr ""
+
+#: includes/AuditConsole.php:344
+msgid "Backup authenticated"
+msgstr ""
+
+#: includes/AuditConsole.php:345
+msgid "Library restoration requested"
+msgstr ""
+
+#: includes/AuditConsole.php:346
+msgid "Library restored"
+msgstr ""
+
+#: includes/AuditConsole.php:347
+msgid "Backup job cancelled"
+msgstr ""
+
+#: includes/AuditConsole.php:348
+msgid "Backup job failed"
+msgstr ""
+
+#: includes/AuditConsole.php:349
+msgid "Library restoration failed"
+msgstr ""
+
+#: includes/AuditConsole.php:351
 msgid "Folder creation requested"
 msgstr ""
 
-#: includes/AuditConsole.php:288
+#: includes/AuditConsole.php:352
 msgid "Folder deletion requested"
 msgstr ""
 
-#: includes/AuditConsole.php:289
+#: includes/AuditConsole.php:353
 msgid "Settings changed"
 msgstr ""
 
-#: includes/AuditConsole.php:290
+#: includes/AuditConsole.php:354
 msgid "Audit export requested"
 msgstr ""
 
-#: includes/AuditConsole.php:291
+#: includes/AuditConsole.php:355
 msgid "Audit events purged"
 msgstr ""
 
-#: includes/AuditConsole.php:292
+#: includes/AuditConsole.php:356
 msgid "Document preview requested"
 msgstr ""
 
-#: includes/AuditConsole.php:293
+#: includes/AuditConsole.php:357
 msgid "Document download started"
 msgstr ""
 
-#: includes/AuditConsole.php:294
+#: includes/AuditConsole.php:358
 msgid "Document metadata requested"
 msgstr ""
 
-#: includes/AuditConsole.php:295
+#: includes/AuditConsole.php:359
 msgid "Document upload requested"
 msgstr ""
 
-#: includes/AuditConsole.php:296
+#: includes/AuditConsole.php:360
 msgid "Folder deleted; documents recovered"
 msgstr ""
 
-#: includes/AuditConsole.php:301
+#: includes/AuditConsole.php:365
 msgid "Document upload failed"
 msgstr ""
 
-#: includes/AuditConsole.php:370
+#: includes/AuditConsole.php:434
 msgid "Audit action refused. Review your filters, permissions and confirmation."
 msgstr ""
 
-#: includes/Installer.php:25
+#: includes/AuditEvents.php:72
+msgid "Document upload"
+msgstr ""
+
+#: includes/AuditEvents.php:73
+msgid "Document description change"
+msgstr ""
+
+#: includes/AuditEvents.php:74
+msgid "Document copy"
+msgstr ""
+
+#: includes/AuditEvents.php:75
+msgid "Document move"
+msgstr ""
+
+#: includes/AuditEvents.php:76
+msgid "Document restoration"
+msgstr ""
+
+#: includes/AuditEvents.php:78
+msgid "Permanent document deletion"
+msgstr ""
+
+#: includes/AuditEvents.php:79
+msgid "Document or folder rename"
+msgstr ""
+
+#: includes/AuditEvents.php:80
+msgid "Folder creation"
+msgstr ""
+
+#: includes/AuditEvents.php:81
+msgid "Folder deletion"
+msgstr ""
+
+#: includes/AuditEvents.php:82
+msgid "Permission change"
+msgstr ""
+
+#: includes/AuditEvents.php:83
+msgid "Access control"
+msgstr ""
+
+#: includes/AuditEvents.php:85
+msgid "Document download"
+msgstr ""
+
+#: includes/AuditEvents.php:86
+msgid "Settings change"
+msgstr ""
+
+#: includes/AuditEvents.php:87
+msgid "Database maintenance"
+msgstr ""
+
+#: includes/AuditEvents.php:88
+msgid "Audit maintenance and export"
+msgstr ""
+
+#: includes/AuditEvents.php:89
+msgid "Backup and restoration"
+msgstr ""
+
+#: includes/AuditEvents.php:100
+msgid "Request received"
+msgstr ""
+
+#: includes/AuditEvents.php:101
+msgid "Succeeded"
+msgstr ""
+
+#: includes/AuditEvents.php:102
+msgid "Denied"
+msgstr ""
+
+#: includes/AuditEvents.php:103
+msgid "Failed"
+msgstr ""
+
+#: includes/AuditEvents.php:104
+msgid "Started"
+msgstr ""
+
+#: includes/AuditEvents.php:105
+msgid "Cancelled"
+msgstr ""
+
+#: includes/AuditEvents.php:106
+msgid "Undetermined"
+msgstr ""
+
+#: includes/BackupComponents.php:240
+msgid "Include documents"
+msgstr ""
+
+#: includes/BackupComponents.php:240
+msgid "Include active files and their metadata. Their folder structure is included automatically."
+msgstr ""
+
+#: includes/BackupComponents.php:241
+msgid "Include folder structure"
+msgstr ""
+
+#: includes/BackupComponents.php:241
+msgid "Recreate the folder tree, even without its documents."
+msgstr ""
+
+#: includes/BackupComponents.php:242
+msgid "Include trash"
+msgstr ""
+
+#: includes/BackupComponents.php:242
+msgid "Also restore deleted documents still retained in the source library."
+msgstr ""
+
+#: includes/BackupComponents.php:243
+msgid "Keep access rules"
+msgstr ""
+
+#: includes/BackupComponents.php:243
+msgid "Match the roles used by source rules to existing destination roles. If omitted, restored content is private to administration."
+msgstr ""
+
+#: includes/BackupComponents.php:244
+msgid "Keep creator attribution"
+msgstr ""
+
+#: includes/BackupComponents.php:244
+msgid "Retain source creator references for optional individual attribution. Otherwise all restored items belong to the restoring account. No WordPress account is created."
+msgstr ""
+
+#: includes/BackupComponents.php:245
+msgid "Include FileWarden settings"
+msgstr ""
+
+#: includes/BackupComponents.php:245
+msgid "Transfer limits, retention, language and notification duration. Sensitive security options are reset when importing settings."
+msgstr ""
+
+#: includes/BackupComponents.php:246
+msgid "Include public appearance"
+msgstr ""
+
+#: includes/BackupComponents.php:246
+msgid "Transfer the public name, colors and validated logo. Otherwise keep the destination appearance."
+msgstr ""
+
+#: includes/BackupComponents.php:247
+msgid "Include audit history"
+msgstr ""
+
+#: includes/BackupComponents.php:247
+msgid "Includes historical actors and any unexpired recorded IPs. Imported events remain identified as source history."
+msgstr ""
+
+#: includes/BackupConsole.php:13
+#: includes/SettingsConsole.php:35
+msgid "Backup and migration"
+msgstr ""
+
+#: includes/BackupConsole.php:13
+msgid "Transfer your library or configuration in an authenticated encrypted package. WordPress accounts, account passwords and the source storage key are never exported."
+msgstr ""
+
+#: includes/BackupConsole.php:13
+msgid "Backup tasks"
+msgstr ""
+
+#: includes/BackupConsole.php:13
+msgid "Back up"
+msgstr ""
+
+#: includes/BackupConsole.php:13
+msgid "Encrypted library backup"
+msgstr ""
+
+#: includes/BackupConsole.php:13
+msgid "Choose the data to include. Keep the backup password separately: FileWarden cannot recover it."
+msgstr ""
+
+#: includes/BackupConsole.php:17
+msgid "Backup password (at least 16 characters)"
+msgstr ""
+
+#: includes/BackupConsole.php:17
+msgid "Confirm the password"
+msgstr ""
+
+#: includes/BackupConsole.php:17
+msgid "Generate a strong password"
+msgstr ""
+
+#: includes/BackupConsole.php:17
+msgid "Show the password"
+msgstr ""
+
+#: includes/BackupConsole.php:17
+msgid "I have saved the password separately and understand that the backup contains the selected data."
+msgstr ""
+
+#: includes/BackupConsole.php:17
+msgid "Create encrypted backup"
+msgstr ""
+
+#: includes/BackupConsole.php:19
+msgid "Your account does not have the dedicated library export capability."
+msgstr ""
+
+#: includes/BackupConsole.php:20
+msgid "Restore a backup"
+msgstr ""
+
+#: includes/BackupConsole.php:20
+msgid "Analysis authenticates the entire package before activation. Choose which available components to restore. Source rights require explicit role mappings; omitting rights restores private administration-only content. No WordPress accounts or privileges are created."
+msgstr ""
+
+#: includes/BackupConsole.php:22
+msgid "Encrypted backup (.fwbackup)"
+msgstr ""
+
+#: includes/BackupConsole.php:22
+msgid "Backup password"
+msgstr ""
+
+#: includes/BackupConsole.php:22
+msgid "Analyze backup"
+msgstr ""
+
+#: includes/BackupConsole.php:24
+msgid "Your account does not have the dedicated library restoration capability."
+msgstr ""
+
+#: includes/BackupConsole.php:25
+msgid "Backup progress"
+msgstr ""
+
+#: includes/BackupConsole.php:25
+msgid "Continue / refresh status"
+msgstr ""
+
+#: includes/BackupConsole.php:25
+msgid "Cancel and clean temporary files"
+msgstr ""
+
+#: includes/BackupConsole.php:25
+msgid "Download encrypted backup"
+msgstr ""
+
+#: includes/BackupConsole.php:25
+msgid "Review restoration"
+msgstr ""
+
+#: includes/BackupConsole.php:25
+msgid "I confirm the selected components and the settings to replace. Library data can only be restored into an empty library."
+msgstr ""
+
+#: includes/BackupConsole.php:25
+msgid "Restore library"
+msgstr ""
+
+#. translators: %s: server upload limit.
+#: includes/BackupConsole.php:27
+#, php-format
+msgid "Server upload limit: %s. Jobs expire after one hour. This version supports up to 10,000 rows per table, a 4 MB manifest and 256 MB per document. Library writes pause during preparation or restoration."
+msgstr ""
+
+#: includes/BackupConsole.php:28
+msgid "Enable JavaScript for resumable encrypted backup jobs. Existing document operations remain available."
+msgstr ""
+
+#: includes/BackupConsole.php:33
+msgid "Backup contents"
+msgstr ""
+
+#: includes/BackupConsole.php:33
+msgid "Complete backup"
+msgstr ""
+
+#: includes/BackupConsole.php:33
+msgid "Custom backup"
+msgstr ""
+
+#: includes/BackupConsole.php:33
+msgid "Includes documents, folders, trash, access rules, creator references, settings, public appearance and audit history."
+msgstr ""
+
+#: includes/BackupConsole.php:36
+msgid "Associated information"
+msgstr ""
+
+#: includes/BackupConsole.php:37
+#: includes/SettingsConsole.php:182
+msgid "Configuration"
+msgstr ""
+
+#: includes/BackupConsole.php:38
+msgid "History"
+msgstr ""
+
+#: includes/BackupConsole.php:48
+msgid "WordPress accounts, account passwords, source encryption keys and role privileges are never transferred. Excluding components removes their data from the encrypted package."
+msgstr ""
+
+#: includes/BackupConsole.php:93
+msgid "Select at least one backup component."
+msgstr ""
+
+#: includes/BackupConsole.php:94
+msgid "Configuration only: review the settings and appearance to replace. Existing library documents and folders will be preserved."
+msgstr ""
+
+#: includes/BackupConsole.php:95
+msgid "Selected contents"
+msgstr ""
+
+#: includes/BackupConsole.php:96
+msgid "Components to restore"
+msgstr ""
+
+#: includes/BackupConsole.php:97
+msgid "Access rules will not be imported. All restored documents and folders will be private to administration until you deliberately configure their access. Existing global-read privileges remain applicable."
+msgstr ""
+
+#: includes/BackupConsole.php:98
+msgid "Attribute all restored items to my account"
+msgstr ""
+
+#: includes/BackupConsole.php:99
+msgid "Choose attribution for each source creator"
+msgstr ""
+
+#: includes/BackupConsole.php:101
+msgid "Authenticated files prepared"
+msgstr ""
+
+#: includes/BackupConsole.php:102
+msgid "Package authenticated. Review the available components and access mode before restoring."
+msgstr ""
+
+#: includes/BackupConsole.php:103
+msgid "Encrypted backup ready. Download it and keep the password separately."
+msgstr ""
+
+#: includes/BackupConsole.php:104
+msgid "Library restored with the confirmed access mode. Review permissions and the site before sharing documents."
+msgstr ""
+
+#: includes/BackupConsole.php:105
+msgid "The request was interrupted. Use Continue to check the server before retrying. Temporary files remain private."
+msgstr ""
+
+#: includes/BackupConsole.php:106
+msgid "The passwords must match and contain at least 16 characters."
+msgstr ""
+
+#: includes/BackupConsole.php:107
+msgid "Choose explicitly"
+msgstr ""
+
+#: includes/BackupConsole.php:108
+msgid "Source role"
+msgstr ""
+
+#: includes/BackupConsole.php:109
+msgid "Source creator"
+msgstr ""
+
+#: includes/BackupConsole.php:110
+msgid "folders / documents / trash / audit events"
+msgstr ""
+
+#: includes/BackupConsole.php:111
+msgid "Job cancelled. Temporary files cleaned."
+msgstr ""
+
+#: includes/BackupConsole.php:250
+msgid "Backup download unavailable or expired."
+msgstr ""
+
+#: includes/BackupErrors.php:54
+msgid "The selected backup components or restoration choices are invalid. Review the available choices; omitted access rules always restore private administration-only content."
+msgstr ""
+
+#: includes/BackupErrors.php:55
+msgid "The native PHP Sodium extension is not enabled. Activate Sodium in your hosting PHP settings or contact your host, then run diagnostics again."
+msgstr ""
+
+#: includes/BackupErrors.php:56
+msgid "PHP Sodium is enabled, but the required authenticated-streaming functions are unavailable. Ask your host to check the native extension and its libsodium version."
+msgstr ""
+
+#: includes/BackupErrors.php:57
+msgid "The native Sodium encryption test failed. Ask your host to investigate the PHP extension; no backup encryption check was bypassed."
+msgstr ""
+
+#: includes/BackupErrors.php:58
+msgid "Your account lacks a required backup or restoration permission."
+msgstr ""
+
+#: includes/BackupErrors.php:59
+msgid "Confirm an identical backup password of at least 16 characters, at most 1024 bytes, and acknowledge that you saved it separately."
+msgstr ""
+
+#: includes/BackupErrors.php:60
+msgid "The PHP Sodium password-derivation functions are unavailable. Ask your host to enable native Sodium with Argon2id support."
+msgstr ""
+
+#: includes/BackupErrors.php:61
+msgid "Sodium could not derive the backup key. Ask your host to check available process memory and Argon2id support."
+msgstr ""
+
+#: includes/BackupErrors.php:62
+msgid "Another operation or backup is active. Resume or cancel your existing backup, or retry after the other operation finishes."
+msgstr ""
+
+#: includes/BackupErrors.php:63
+msgid "The required database tables are missing, nontransactional or their engines cannot be verified. Check the database status in Storage and security."
+msgstr ""
+
+#: includes/BackupErrors.php:64
+msgid "The HTTPS protection check of private storage failed. Check the storage status in Storage and security; backup cannot bypass this check."
+msgstr ""
+
+#: includes/BackupErrors.php:65
+msgid "The server could not create or save private backup files. Ask your host to check storage permissions and quotas."
+msgstr ""
+
+#: includes/BackupErrors.php:66
+msgid "The server could not determine free backup space. Ask your host to check access to disk-space information."
+msgstr ""
+
+#: includes/BackupErrors.php:67
+msgid "There is not enough free space for this backup operation and its safety reserve."
+msgstr ""
+
+#: includes/BackupErrors.php:68
+msgid "A backup metadata or upload limit was reached. Check the documented limits; the server upload limit applies to restoration."
+msgstr ""
+
+#: includes/BackupErrors.php:69
+msgid "Library metadata is incompatible or inconsistent, or a purge is incomplete. Keep your documents and report this reference for diagnosis."
+msgstr ""
+
+#: includes/BackupErrors.php:70
+msgid "The package or a source file failed verification. For restoration, check the backup password and use the original unmodified backup. No integrity check can be bypassed."
+msgstr ""
+
+#: includes/BackupErrors.php:71
+msgid "Select an existing destination role and creator for every source entry before confirming restoration."
+msgstr ""
+
+#: includes/BackupErrors.php:72
+msgid "Restoration requires an empty destination library, including trash. This requirement does not apply to creating a backup."
+msgstr ""
+
+#: includes/BackupErrors.php:73
+msgid "The backup job has expired. Refresh its status and start again after temporary files have been cleaned."
+msgstr ""
+
+#: includes/BackupErrors.php:74
+msgid "The private backup checkpoint cannot be verified or resumed. Keep existing files and report this reference for diagnosis."
+msgstr ""
+
+#: includes/BackupErrors.php:75
+msgid "The backup operation failed unexpectedly. Keep your documents and report this reference and the operation you were performing."
+msgstr ""
+
+#. translators: 1: safe explanation, 2: non-sensitive support reference.
+#: includes/BackupErrors.php:80
+#, php-format
+msgid "%1$s Reference: %2$s."
+msgstr ""
+
+#: includes/ContrastConsole.php:19
+msgid "Main text / interface background"
+msgstr ""
+
+#: includes/ContrastConsole.php:20
+msgid "Main text / cards"
+msgstr ""
+
+#: includes/ContrastConsole.php:21
+msgid "Button text / button"
+msgstr ""
+
+#: includes/ContrastConsole.php:22
+msgid "Button text / hover"
+msgstr ""
+
+#: includes/ContrastConsole.php:23
+msgid "Links / cards"
+msgstr ""
+
+#: includes/ContrastConsole.php:24
+msgid "Links / interface background"
+msgstr ""
+
+#: includes/ContrastConsole.php:25
+msgid "Secondary text / cards"
+msgstr ""
+
+#: includes/ContrastConsole.php:26
+msgid "Secondary text / interface background"
+msgstr ""
+
+#: includes/ContrastConsole.php:28
+msgid "Good contrast — AA"
+msgstr ""
+
+#: includes/ContrastConsole.php:29
+msgid "Enhanced contrast — AAA"
+msgstr ""
+
+#: includes/ContrastConsole.php:30
+msgid "Needs improvement"
+msgstr ""
+
+#: includes/ContrastConsole.php:31
+msgid "Incomplete — score not calculated"
+msgstr ""
+
+#: includes/ContrastConsole.php:32
+msgid "text contrasts pass"
+msgstr ""
+
+#: includes/ContrastConsole.php:48
+msgid "Text readability"
+msgstr ""
+
+#: includes/ContrastConsole.php:52
+msgid "View contrast details"
+msgstr ""
+
+#: includes/ContrastConsole.php:56
+msgid "These text contrasts do not certify the accessibility of the whole site."
+msgstr ""
+
+#: includes/DiagnosticConsole.php:13
+#: includes/SettingsConsole.php:65
+msgid "Diagnostic"
+msgstr ""
+
+#: includes/DiagnosticConsole.php:13
+msgid "Check prerequisites and identify the causes of blocked operations."
+msgstr ""
+
+#: includes/DiagnosticConsole.php:13
+msgid "Run diagnostic"
+msgstr ""
+
+#: includes/DiagnosticConsole.php:13
+msgid "Technical report"
+msgstr ""
+
+#: includes/DiagnosticConsole.php:13
+msgid "No diagnostic has been run in this page."
+msgstr ""
+
+#: includes/DiagnosticConsole.php:13
+msgid "View report contents"
+msgstr ""
+
+#: includes/DiagnosticConsole.php:13
+msgid "Only versions, limits and measured results are included. No passwords, keys, physical paths, IP addresses, document names or account identities."
+msgstr ""
+
+#: includes/DiagnosticConsole.php:13
+msgid "Diagnostics do not repair tables or modify documents. Successful checks are not a complete security or compatibility certification."
+msgstr ""
+
+#: includes/DiagnosticConsole.php:13
+msgid "Enable JavaScript to run diagnostics and download the report."
+msgstr ""
+
+#: includes/DiagnosticConsole.php:24
+msgid "Prepare conversion to InnoDB"
+msgstr ""
+
+#: includes/DiagnosticConsole.php:25
+msgid "Open Storage and security"
+msgstr ""
+
+#: includes/DiagnosticConsole.php:30
+#: includes/SettingsConsole.php:172
+msgid "Verified"
+msgstr ""
+
+#: includes/DiagnosticConsole.php:31
+msgid "Blocking"
+msgstr ""
+
+#: includes/DiagnosticConsole.php:32
+#: includes/SettingsConsole.php:153
+#: includes/SettingsConsole.php:171
+msgid "Not verified"
+msgstr ""
+
+#: includes/DiagnosticConsole.php:34
+msgid "Running the server checks…"
+msgstr ""
+
+#: includes/DiagnosticConsole.php:35
+msgid "No blocking issue was detected by these checks."
+msgstr ""
+
+#: includes/DiagnosticConsole.php:36
+msgid "An operation requires attention. Open the details below."
+msgstr ""
+
+#: includes/DiagnosticConsole.php:37
+msgid "Diagnostic incomplete. Some checks could not be verified."
+msgstr ""
+
+#: includes/DiagnosticConsole.php:38
+msgid "Diagnostic unavailable. Check your session and permissions, then retry."
+msgstr ""
+
+#: includes/DiagnosticConsole.php:39
+msgid "The browser has been asked to download the technical report."
+msgstr ""
+
+#: includes/DiagnosticConsole.php:51
+msgid "Diagnostic access denied."
+msgstr ""
+
+#: includes/DiagnosticConsole.php:57
+msgid "Diagnostic could not complete. No automatic repair was performed."
+msgstr ""
+
+#: includes/Diagnostics.php:17
+msgid "PHP environment"
+msgstr ""
+
+#: includes/Diagnostics.php:18
+msgid "Encryption"
+msgstr ""
+
+#: includes/Diagnostics.php:19
+msgid "Private storage"
+msgstr ""
+
+#: includes/Diagnostics.php:20
+#: includes/SettingsConsole.php:182
+msgid "Database"
+msgstr ""
+
+#: includes/Diagnostics.php:21
+msgid "Space and limits"
+msgstr ""
+
+#: includes/Diagnostics.php:22
+msgid "Active tasks"
+msgstr ""
+
+#. translators: 1: PHP version, 2: configured PHP memory limit.
+#: includes/Diagnostics.php:113
+msgid "Minimum PHP version"
+msgstr ""
+
+#. translators: 1: PHP version, 2: configured PHP memory limit.
+#: includes/Diagnostics.php:113
+#, php-format
+msgid "PHP %1$s; configured memory: %2$s. This checks the minimum version, not complete hosting compatibility."
+msgstr ""
+
+#: includes/Diagnostics.php:125
+#: includes/Diagnostics.php:128
+msgid "Authenticated encryption"
+msgstr ""
+
+#: includes/Diagnostics.php:125
+msgid "Sodium encrypted and authenticated a temporary in-memory witness."
+msgstr ""
+
+#: includes/Diagnostics.php:135
+#: includes/Diagnostics.php:138
+msgid "Argon2id key derivation"
+msgstr ""
+
+#: includes/Diagnostics.php:135
+msgid "A temporary key was derived with the same bounded parameters used by backups."
+msgstr ""
+
+#: includes/Diagnostics.php:143
+#: includes/Diagnostics.php:145
+msgid "Storage protection"
+msgstr ""
+
+#: includes/Diagnostics.php:143
+msgid "The configured storage isolation checks passed for this request."
+msgstr ""
+
+#: includes/Diagnostics.php:145
+msgid "Private storage protection could not be verified. Review Storage and security; file operations remain blocked."
+msgstr ""
+
+#: includes/Diagnostics.php:155
+msgid "Private create, read and cleanup"
+msgstr ""
+
+#: includes/Diagnostics.php:155
+msgid "The private random witness was written, read and removed successfully."
+msgstr ""
+
+#: includes/Diagnostics.php:155
+msgid "The private write/read/cleanup check did not complete. Ask your host to check permissions and quotas."
+msgstr ""
+
+#: includes/Diagnostics.php:157
+msgid "FileWarden tables"
+msgstr ""
+
+#: includes/Diagnostics.php:158
+msgid "WordPress restoration tables"
+msgstr ""
+
+#: includes/Diagnostics.php:162
+msgid "All required tables were found and use InnoDB."
+msgstr ""
+
+#: includes/Diagnostics.php:163
+msgid "At least one required table is nontransactional. No automatic conversion was performed."
+msgstr ""
+
+#: includes/Diagnostics.php:164
+msgid "The required tables or their engines could not be verified."
+msgstr ""
+
+#: includes/Diagnostics.php:172
+#: includes/Diagnostics.php:175
+msgid "Backup metadata consistency"
+msgstr ""
+
+#: includes/Diagnostics.php:172
+msgid "The library metadata passed the backup schema and size checks without creating an archive."
+msgstr ""
+
+#. translators: %s: measured disk space.
+#: includes/Diagnostics.php:186
+msgid "Free storage space"
+msgstr ""
+
+#. translators: %s: measured disk space.
+#: includes/Diagnostics.php:186
+msgid "Free space could not be measured. Backup remains blocked until its capacity check succeeds."
+msgstr ""
+
+#. translators: %s: measured disk space.
+#: includes/Diagnostics.php:186
+#, php-format
+msgid "%s available now. Each backup rechecks its actual requirements and safety reserve."
+msgstr ""
+
+#. translators: %s: effective PHP upload limit.
+#: includes/Diagnostics.php:188
+msgid "Restoration upload limit"
+msgstr ""
+
+#. translators: %s: effective PHP upload limit.
+#: includes/Diagnostics.php:188
+#, php-format
+msgid "%s per uploaded backup. This limit does not apply to creating an export."
+msgstr ""
+
+#: includes/Diagnostics.php:191
+msgid "Library write availability"
+msgstr ""
+
+#: includes/Diagnostics.php:191
+msgid "A backup or restoration holds the write barrier. Resume or cancel that task from Backup and migration."
+msgstr ""
+
+#: includes/Diagnostics.php:191
+msgid "A database repair is pending. Review Storage and security."
+msgstr ""
+
+#: includes/Diagnostics.php:191
+msgid "No FileWarden backup or repair barrier is active."
+msgstr ""
+
+#: includes/DocumentSheet.php:19
+msgid "Not published: reserved for authorized library managers."
+msgstr ""
+
+#: includes/DocumentSheet.php:19
+msgid "Previous location restrictions still apply to this document."
+msgstr ""
+
+#: includes/DocumentSheet.php:19
+msgid "This document is public."
+msgstr ""
+
+#: includes/DocumentSheet.php:19
+msgid "Access is limited by the file rule and its folder hierarchy."
+msgstr ""
+
+#: includes/DocumentSheet.php:21
+msgid "Understand access"
+msgstr ""
+
+#: includes/DocumentSheet.php:24
+msgid "Previous location restrictions"
+msgstr ""
+
+#: includes/DocumentSheet.php:30
+#: includes/LibraryConsole.php:156
+msgid "Current folder"
+msgstr ""
+
+#: includes/DocumentSheet.php:30
+msgid "Ancestor folder"
+msgstr ""
+
+#: includes/DocumentSheet.php:34
+msgid "Access requires all applicable rules. A public file cannot override a restricted folder."
+msgstr ""
+
+#: includes/DocumentSheet.php:36
+msgid "Documents to classify is not published. Only authorized library managers can access this collection."
+msgstr ""
+
+#: includes/DocumentSheet.php:38
+msgid "Administrators with global content-read permission are an explicit exception. This does not grant editing rights."
+msgstr ""
+
+#: includes/DocumentSheet.php:52
+msgid "The file follows its folder rules."
+msgstr ""
+
+#: includes/DocumentSheet.php:52
+msgid "This folder follows its parent folder rules."
+msgstr ""
+
+#: includes/DocumentSheet.php:53
+msgid "The file adds no restriction."
+msgstr ""
+
+#: includes/DocumentSheet.php:53
+msgid "This folder adds no restriction."
+msgstr ""
+
+#: includes/DocumentSheet.php:54
+msgid "The file requires sign-in."
+msgstr ""
+
+#: includes/DocumentSheet.php:54
+msgid "This folder requires sign-in."
+msgstr ""
+
+#: includes/DocumentSheet.php:55
+msgid "The file is reserved for the listed roles."
+msgstr ""
+
+#: includes/DocumentSheet.php:55
+msgid "This folder is reserved for the listed roles."
+msgstr ""
+
+#: includes/DocumentSheet.php:58
+msgid "This condition is retained from the previous location."
+msgstr ""
+
+#: includes/DocumentSheet.php:58
+msgid "This retained rule adds no restriction."
+msgstr ""
+
+#: includes/DocumentSheet.php:75
+msgid "Description"
+msgstr ""
+
+#: includes/DocumentSheet.php:75
+msgid "No description yet."
+msgstr ""
+
+#: includes/DocumentSheet.php:77
+msgid "Edit description"
+msgstr ""
+
+#: includes/DocumentSheet.php:79
+msgid "Plain text, up to 400 characters. Clear the field to remove the description."
+msgstr ""
+
+#: includes/DocumentSheet.php:79
+msgid "Save description"
+msgstr ""
+
+#: includes/DocumentSheet.php:81
+msgid "Document information"
+msgstr ""
+
+#: includes/DocumentSheet.php:84
+msgid "Format"
+msgstr ""
+
+#: includes/DocumentSheet.php:86
+msgid "Imported on"
+msgstr ""
+
+#: includes/DocumentSheet.php:87
+msgid "Added to this folder"
+msgstr ""
+
+#: includes/DocumentSheet.php:88
+msgid "Creator"
+msgstr ""
+
+#: includes/Installer.php:36
 msgid "FileWarden currently supports single-site WordPress only."
+msgstr ""
+
+#: includes/LibraryConsole.php:24
+msgid "Your session expired. Reload the page."
+msgstr ""
+
+#: includes/LibraryConsole.php:46
+msgid "A name already exists in the destination. No selected item was changed."
+msgstr ""
+
+#: includes/LibraryConsole.php:48
+msgid "Operation refused. Check your permissions, selection, destination and names. Review again if the library changed. No selected item was changed."
+msgstr ""
+
+#: includes/LibraryConsole.php:65
+msgid "Use no more than 400 characters."
+msgstr ""
+
+#: includes/LibraryConsole.php:66
+#: includes/LibraryConsole.php:95
+msgid "Rename"
+msgstr ""
+
+#: includes/LibraryConsole.php:67
+msgid "New name (keep the file extension)"
+msgstr ""
+
+#: includes/LibraryConsole.php:70
+msgid "Confirm"
+msgstr ""
+
+#: includes/LibraryConsole.php:71
+msgid "Review the selected documents"
+msgstr ""
+
+#: includes/LibraryConsole.php:72
+#: includes/LibraryConsole.php:120
+msgid "Move selection to trash"
+msgstr ""
+
+#: includes/LibraryConsole.php:73
+msgid "These documents will disappear from publications. You can restore them from Trash before retention expires."
+msgstr ""
+
+#: includes/LibraryConsole.php:74
+msgid "Close"
+msgstr ""
+
+#: includes/LibraryConsole.php:75
+msgid "The server could not confirm the operation. Reload before trying again."
+msgstr ""
+
+#: includes/LibraryConsole.php:78
+#: includes/LibraryConsole.php:122
+msgid "Deselect all"
+msgstr ""
+
+#: includes/LibraryConsole.php:79
+msgid "documents selected (maximum 50)"
+msgstr ""
+
+#: includes/LibraryConsole.php:80
+msgid "Operation completed. Reloading the library."
+msgstr ""
+
+#: includes/LibraryConsole.php:95
+msgid "Rename folder"
+msgstr ""
+
+#: includes/LibraryConsole.php:111
+msgid "Fallback destination if the original folder is unavailable"
+msgstr ""
+
+#: includes/LibraryConsole.php:111
+#: includes/TrashConsole.php:104
+msgid "Select a destination"
+msgstr ""
+
+#: includes/LibraryConsole.php:117
+msgid "Restore selection"
+msgstr ""
+
+#: includes/LibraryConsole.php:117
+msgid "Move / classify selection"
+msgstr ""
+
+#: includes/LibraryConsole.php:127
+msgid "Select visible documents"
+msgstr ""
+
+#: includes/LibraryConsole.php:154
+msgid "Search in"
+msgstr ""
+
+#: includes/LibraryConsole.php:157
+msgid "Authorized library"
+msgstr ""
+
+#: includes/LibraryConsole.php:163
+#: includes/Publication.php:135
+msgid "Search"
+msgstr ""
+
+#: includes/LibraryConsole.php:165
+msgid "File extension"
+msgstr ""
+
+#: includes/LibraryConsole.php:166
+msgid "Added after"
+msgstr ""
+
+#: includes/LibraryConsole.php:167
+msgid "Added before"
+msgstr ""
+
+#: includes/LibraryConsole.php:168
+msgid "Minimum size (KB)"
+msgstr ""
+
+#: includes/LibraryConsole.php:169
+msgid "Maximum size (KB)"
+msgstr ""
+
+#: includes/LibraryConsole.php:173
+msgid "Filters"
+msgstr ""
+
+#: includes/LibraryConsole.php:173
+msgid "File type"
+msgstr ""
+
+#: includes/LibraryConsole.php:176
+msgid "Added during"
+msgstr ""
+
+#: includes/LibraryConsole.php:176
+msgid "File size"
+msgstr ""
+
+#: includes/LibraryConsole.php:184
+msgid "Reset filters"
+msgstr ""
+
+#: includes/LibraryConsole.php:186
+msgid "Active filters"
+msgstr ""
+
+#. translators: %s: filter label.
+#: includes/LibraryConsole.php:191
+#, php-format
+msgid "Remove filter: %s"
 msgstr ""
 
 #: includes/ManagedStorage.php:33
@@ -1327,11 +2604,11 @@ msgstr ""
 msgid "Attention required"
 msgstr ""
 
-#: includes/Plugin.php:35
+#: includes/Plugin.php:38
 msgid "FileWarden requires reactivation to install its database schema."
 msgstr ""
 
-#: includes/Plugin.php:35
+#: includes/Plugin.php:38
 msgid "FileWarden unavailable"
 msgstr ""
 
@@ -1356,44 +2633,60 @@ msgid "Search documents…"
 msgstr ""
 
 #: includes/Publication.php:137
-#: includes/Publisher.php:53
+#: includes/Publisher.php:55
 msgid "Detailed list"
 msgstr ""
 
 #: includes/Publication.php:138
-#: includes/Publisher.php:54
+#: includes/Publisher.php:56
 msgid "Grid"
 msgstr ""
 
 #: includes/Publication.php:153
-msgid "No documents are visible in this folder."
+msgid "No documents to display"
 msgstr ""
 
-#: includes/Publication.php:216
+#: includes/Publication.php:153
+msgid "No results"
+msgstr ""
+
+#: includes/Publication.php:153
+msgid "No documents are available to you in this folder at the moment."
+msgstr ""
+
+#: includes/Publication.php:153
+msgid "No accessible documents match your search in this folder."
+msgstr ""
+
+#: includes/Publication.php:155
+msgid "Clear search"
+msgstr ""
+
+#: includes/Publication.php:220
 msgid "Temporarily unavailable"
 msgstr ""
 
-#: includes/Publication.php:216
+#: includes/Publication.php:220
 msgid "Access not authorized"
 msgstr ""
 
-#: includes/Publication.php:216
+#: includes/Publication.php:220
 msgid "A reserved space"
 msgstr ""
 
-#: includes/Publication.php:217
+#: includes/Publication.php:221
 msgid "Please try again later."
 msgstr ""
 
-#: includes/Publication.php:217
+#: includes/Publication.php:221
 msgid "Your account cannot access this space, or it is no longer available."
 msgstr ""
 
-#: includes/Publication.php:217
+#: includes/Publication.php:221
 msgid "Sign in to view the documents you are allowed to access."
 msgstr ""
 
-#: includes/Publication.php:223
+#: includes/Publication.php:229
 msgid "Sign in"
 msgstr ""
 
@@ -1402,131 +2695,163 @@ msgid "Create a folder before publishing documents."
 msgstr ""
 
 #: includes/Publisher.php:40
-#: includes/Publisher.php:45
+#: includes/Publisher.php:47
 msgid "Folder integration"
 msgstr ""
 
-#: includes/Publisher.php:45
+#: includes/Publisher.php:47
 msgid "Folder to publish"
 msgstr ""
 
-#: includes/Publisher.php:51
+#: includes/Publisher.php:53
 msgid "Display"
 msgstr ""
 
-#: includes/Publisher.php:61
+#: includes/Publisher.php:63
 msgid "Unavailable space design"
 msgstr ""
 
-#: includes/Publisher.php:63
+#: includes/Publisher.php:65
 msgid "Compact"
 msgstr ""
 
-#: includes/Publisher.php:64
+#: includes/Publisher.php:66
 msgid "Centered card"
 msgstr ""
 
-#: includes/Publisher.php:65
+#: includes/Publisher.php:67
 msgid "Editorial banner"
 msgstr ""
 
-#: includes/Publisher.php:69
+#: includes/Publisher.php:71
 msgid "Update preview"
 msgstr ""
 
-#: includes/Publisher.php:75
+#: includes/Publisher.php:76
 msgid "Preview state"
 msgstr ""
 
-#: includes/Publisher.php:75
+#: includes/Publisher.php:76
 msgid "Authorized"
 msgstr ""
 
-#: includes/Publisher.php:76
+#: includes/Publisher.php:77
 msgid "Preview device"
 msgstr ""
 
-#: includes/Publisher.php:83
+#: includes/Publisher.php:84
 msgid "Preview anonymous unavailable state"
 msgstr ""
 
-#: includes/Publisher.php:83
+#: includes/Publisher.php:84
 msgid "The live preview uses your account permissions. Visitors may see fewer documents."
 msgstr ""
 
-#: includes/Publisher.php:83
+#: includes/Publisher.php:84
 msgid "Loading preview…"
 msgstr ""
 
-#: includes/Publisher.php:83
+#: includes/Publisher.php:84
 msgid "Preview updated."
 msgstr ""
 
-#: includes/Publisher.php:83
+#: includes/Publisher.php:84
 msgid "Preview unavailable. Change a setting to retry."
 msgstr ""
 
-#: includes/Publisher.php:104
+#: includes/Publisher.php:105
 msgid "Shortcode"
 msgstr ""
 
-#: includes/Publisher.php:104
+#: includes/Publisher.php:105
 msgid "Copy this code into the WordPress Shortcode block or the Elementor Shortcode widget."
 msgstr ""
 
-#: includes/Publisher.php:104
+#: includes/Publisher.php:105
 msgid "Shortcode copied."
 msgstr ""
 
-#: includes/Publisher.php:104
+#: includes/Publisher.php:105
 msgid "Copy failed. Select the shortcode and copy it manually."
 msgstr ""
 
-#: includes/Publisher.php:114
+#: includes/Publisher.php:115
 msgid "Visitor sign-in"
 msgstr ""
 
-#: includes/Publisher.php:114
+#: includes/Publisher.php:115
 msgid "Shared by all publications on this site."
 msgstr ""
 
-#: includes/Publisher.php:116
+#: includes/Publisher.php:117
 msgid "Sign-in button destination"
 msgstr ""
 
-#: includes/Publisher.php:118
+#: includes/Publisher.php:119
 msgid "WordPress sign-in — default"
 msgstr ""
 
-#: includes/Publisher.php:119
+#: includes/Publisher.php:120
 msgid "Custom sign-in page"
 msgstr ""
 
-#: includes/Publisher.php:123
+#: includes/Publisher.php:121
+msgid "Elementor popup"
+msgstr ""
+
+#: includes/Publisher.php:125
+msgid "About Elementor popup sign-in"
+msgstr ""
+
+#: includes/Publisher.php:125
+msgid "Find your popup in the Shortcode column. For [elementor-template id=\"1252\"], enter 1252 or paste the shortcode. Elementor Pro must be available on the containing page; otherwise WordPress sign-in is used."
+msgstr ""
+
+#: includes/Publisher.php:134
+msgid "Open Elementor popups (new tab)"
+msgstr ""
+
+#: includes/Publisher.php:137
+msgid "Elementor popup ID"
+msgstr ""
+
+#: includes/Publisher.php:137
+msgid "Enter the ID or paste the Elementor shortcode."
+msgstr ""
+
+#: includes/Publisher.php:137
+msgid "The popup opens on the page containing the publication. WordPress sign-in remains the fallback."
+msgstr ""
+
+#: includes/Publisher.php:137
 msgid "Sign-in page URL"
 msgstr ""
 
-#: includes/Publisher.php:123
+#: includes/Publisher.php:137
 msgid "The custom page controls where visitors go after signing in."
 msgstr ""
 
-#: includes/Publisher.php:123
+#: includes/Publisher.php:137
 msgid "Open page to check"
 msgstr ""
 
-#: includes/Publisher.php:123
+#: includes/Publisher.php:137
 msgid "Enter a complete HTTP or HTTPS URL without credentials."
 msgstr ""
 
-#: includes/Publisher.php:123
+#: includes/Publisher.php:137
+msgid "Enter a positive Elementor popup ID."
+msgstr ""
+
+#: includes/Publisher.php:137
 msgid "Save sign-in settings"
 msgstr ""
 
-#: includes/Publisher.php:128
+#: includes/Publisher.php:142
 msgid "Sign-in settings saved for all site publications."
 msgstr ""
 
-#: includes/Publisher.php:128
+#: includes/Publisher.php:142
 msgid "Sign-in settings could not be saved. Check the URL and your permissions."
 msgstr ""
 
@@ -1538,393 +2863,413 @@ msgstr ""
 msgid "Invalid input, file type or size."
 msgstr ""
 
-#: includes/RestController.php:156
+#: includes/RestController.php:162
 msgid "Rename the file or cancel. Version creation is not available yet."
 msgstr ""
 
-#: includes/RestController.php:162
+#: includes/RestController.php:168
 msgid "Operation unavailable. Check FileWarden diagnostics."
 msgstr ""
 
-#: includes/SettingsConsole.php:24
+#: includes/SettingsConsole.php:25
 msgid "General"
 msgstr ""
 
-#: includes/SettingsConsole.php:25
+#: includes/SettingsConsole.php:26
 msgid "Personalize how FileWarden behaves."
 msgstr ""
 
-#: includes/SettingsConsole.php:29
+#: includes/SettingsConsole.php:30
 msgid "Storage and security"
 msgstr ""
 
-#: includes/SettingsConsole.php:30
+#: includes/SettingsConsole.php:31
 msgid "Keep your documents separate from the plugin code."
 msgstr ""
 
-#: includes/SettingsConsole.php:34
-msgid "Documents and limits"
-msgstr ""
-
-#: includes/SettingsConsole.php:35
-msgid "Set document upload limits."
-msgstr ""
-
-#: includes/SettingsConsole.php:39
-msgid "Retention"
+#: includes/SettingsConsole.php:36
+msgid "Export or restore an encrypted library."
 msgstr ""
 
 #: includes/SettingsConsole.php:40
-msgid "Choose how long deleted documents remain in the trash."
+msgid "Documents and limits"
+msgstr ""
+
+#: includes/SettingsConsole.php:41
+msgid "Set document upload limits."
 msgstr ""
 
 #: includes/SettingsConsole.php:45
+msgid "Retention"
+msgstr ""
+
+#: includes/SettingsConsole.php:46
+msgid "Choose how long deleted documents remain in the trash."
+msgstr ""
+
+#: includes/SettingsConsole.php:51
 msgid "Choose how long recorded events are retained."
 msgstr ""
 
-#: includes/SettingsConsole.php:135
-#: includes/SettingsConsole.php:153
-msgid "Not verified"
+#: includes/SettingsConsole.php:66
+msgid "Check prerequisites and identify blocked operations."
 msgstr ""
 
-#: includes/SettingsConsole.php:139
+#: includes/SettingsConsole.php:157
 msgid "Storage directory checks passed."
 msgstr ""
 
-#: includes/SettingsConsole.php:142
+#: includes/SettingsConsole.php:160
 msgid "Storage protection could not be verified. File operations remain blocked. Check your hosting configuration."
 msgstr ""
 
-#: includes/SettingsConsole.php:154
-msgid "Verified"
-msgstr ""
-
-#: includes/SettingsConsole.php:155
+#: includes/SettingsConsole.php:173
 msgid "Critical"
 msgstr ""
 
-#: includes/SettingsConsole.php:158
+#: includes/SettingsConsole.php:176
 msgid "FileWarden settings"
 msgstr ""
 
-#: includes/SettingsConsole.php:159
+#: includes/SettingsConsole.php:177
 msgid "FileWarden health"
 msgstr ""
 
-#: includes/SettingsConsole.php:159
-#: includes/SettingsConsole.php:164
+#: includes/SettingsConsole.php:177
+#: includes/SettingsConsole.php:182
 msgid "Storage"
 msgstr ""
 
-#: includes/SettingsConsole.php:159
-#: includes/SettingsConsole.php:164
+#: includes/SettingsConsole.php:177
+#: includes/SettingsConsole.php:182
 msgid "Last check"
 msgstr ""
 
-#: includes/SettingsConsole.php:163
-#: includes/SettingsConsole.php:164
+#: includes/SettingsConsole.php:181
+#: includes/SettingsConsole.php:182
 msgid "Warning: server upload limits or ZIP support restrict available imports."
 msgstr ""
 
-#: includes/SettingsConsole.php:164
+#: includes/SettingsConsole.php:182
 msgid "Details"
 msgstr ""
 
-#: includes/SettingsConsole.php:164
-msgid "Database"
-msgstr ""
-
-#: includes/SettingsConsole.php:164
+#: includes/SettingsConsole.php:182
 msgid "Operational — The three tables use InnoDB."
 msgstr ""
 
-#: includes/SettingsConsole.php:164
+#: includes/SettingsConsole.php:182
 msgid "Attention required — Review Storage and security."
 msgstr ""
 
-#: includes/SettingsConsole.php:164
-msgid "Configuration"
-msgstr ""
-
-#: includes/SettingsConsole.php:164
+#: includes/SettingsConsole.php:182
 msgid "Required upload capabilities are available."
 msgstr ""
 
-#: includes/SettingsConsole.php:166
+#: includes/SettingsConsole.php:184
 msgid "Database attention required. Review Storage and security; folder deletion remains blocked until transactional tables are verified."
 msgstr ""
 
-#: includes/SettingsConsole.php:166
+#: includes/SettingsConsole.php:184
 msgid "Review Storage and security"
 msgstr ""
 
-#: includes/SettingsConsole.php:169
+#: includes/SettingsConsole.php:187
 msgid "Server limits or missing PHP extensions restrict imports. Review Storage and security before uploading."
 msgstr ""
 
-#: includes/SettingsConsole.php:174
+#: includes/SettingsConsole.php:192
 msgid "The three FileWarden tables use InnoDB. Their records and indexes were verified. Folder deletion can now be retried."
 msgstr ""
 
-#: includes/SettingsConsole.php:174
+#: includes/SettingsConsole.php:192
 msgid "Database verified"
 msgstr ""
 
-#: includes/SettingsConsole.php:176
+#: includes/SettingsConsole.php:194
 msgid "Database repair could not be confirmed. No table was reset. A partial conversion may have occurred; review the database and retry the repair after checking your backup."
 msgstr ""
 
-#: includes/SettingsConsole.php:176
+#: includes/SettingsConsole.php:194
 msgid "Database repair incomplete"
 msgstr ""
 
-#: includes/SettingsConsole.php:178
+#: includes/SettingsConsole.php:196
 msgid "Settings saved."
 msgstr ""
 
-#: includes/SettingsConsole.php:178
+#: includes/SettingsConsole.php:196
 msgid "Settings could not be saved."
 msgstr ""
 
-#: includes/SettingsConsole.php:178
+#: includes/SettingsConsole.php:196
 msgid "Settings saved"
 msgstr ""
 
-#: includes/SettingsConsole.php:178
+#: includes/SettingsConsole.php:196
 msgid "Settings not saved"
 msgstr ""
 
-#: includes/SettingsConsole.php:181
+#: includes/SettingsConsole.php:199
 msgid "Settings categories"
 msgstr ""
 
-#: includes/SettingsConsole.php:181
+#: includes/SettingsConsole.php:199
 msgid "Preferences"
 msgstr ""
 
-#: includes/SettingsConsole.php:191
+#: includes/SettingsConsole.php:211
 msgid "Single-site document management. Publishing and document permissions remain independent of these limits."
 msgstr ""
 
-#: includes/SettingsConsole.php:191
+#: includes/SettingsConsole.php:211
 msgid "Notifications"
 msgstr ""
 
-#: includes/SettingsConsole.php:191
+#: includes/SettingsConsole.php:211
 msgid "Automatic display duration"
 msgstr ""
 
 #. translators: %d: notification duration in seconds.
-#: includes/SettingsConsole.php:194
+#: includes/SettingsConsole.php:214
 #, php-format
 msgid "%d seconds"
 msgstr ""
 
-#: includes/SettingsConsole.php:196
+#: includes/SettingsConsole.php:216
 msgid "default"
 msgstr ""
 
-#: includes/SettingsConsole.php:199
+#: includes/SettingsConsole.php:219
 msgid "Set how long notifications remain visible before they disappear automatically."
 msgstr ""
 
-#: includes/SettingsConsole.php:201
+#: includes/SettingsConsole.php:221
 msgid "Documents are stored separately from the plugin. Storage operations remain blocked until protection is verified."
 msgstr ""
 
-#: includes/SettingsConsole.php:212
+#: includes/SettingsConsole.php:233
 msgid "Upload limit (MB, also bounded by server limits)"
 msgstr ""
 
-#: includes/SettingsConsole.php:212
+#: includes/SettingsConsole.php:233
 msgid "Trash retention (days)"
 msgstr ""
 
-#: includes/SettingsConsole.php:212
+#: includes/SettingsConsole.php:233
 msgid "Audit retention (days)"
 msgstr ""
 
-#: includes/SettingsConsole.php:217
+#: includes/SettingsConsole.php:238
 msgid "ZIP files remain downloadable archives; they are inspected but never extracted automatically."
 msgstr ""
 
-#: includes/SettingsConsole.php:217
+#: includes/SettingsConsole.php:238
 msgid "Executable files, active content, macros and unsafe archives are refused."
 msgstr ""
 
-#: includes/SettingsConsole.php:219
+#: includes/SettingsConsole.php:240
+msgid "Network origin of sensitive events"
+msgstr ""
+
+#: includes/SettingsConsole.php:240
+msgid "Record IP addresses for access refusals and sensitive operations"
+msgstr ""
+
+#: includes/SettingsConsole.php:240
+msgid "Disabled by default. Includes permission and security-setting changes, permanent deletion, audit exports and backup/restoration operations. Ordinary document views are excluded."
+msgstr ""
+
+#: includes/SettingsConsole.php:240
+msgid "IP retention (days)"
+msgstr ""
+
+#: includes/SettingsConsole.php:240
+msgid "Initially 30 days, never longer than audit retention. Expired IPs are hidden immediately and erased by scheduled cleanup. Disabling collection stops new IP records."
+msgstr ""
+
+#: includes/SettingsConsole.php:240
+msgid "The server connection address is used. Forwarded headers are accepted only from proxies explicitly configured by the server operator."
+msgstr ""
+
+#: includes/SettingsConsole.php:241
 msgid "Open audit log"
 msgstr ""
 
-#: includes/SettingsConsole.php:222
+#: includes/SettingsConsole.php:244
 msgid "Save settings"
 msgstr ""
 
-#: includes/SettingsConsole.php:232
+#: includes/SettingsConsole.php:256
 msgid "Language"
 msgstr ""
 
-#: includes/SettingsConsole.php:232
+#: includes/SettingsConsole.php:256
 msgid "FileWarden language"
 msgstr ""
 
-#: includes/SettingsConsole.php:233
-msgid "Automatic — WordPress site language"
+#: includes/SettingsConsole.php:258
+msgid "Automatic — Site language"
 msgstr ""
 
-#: includes/SettingsConsole.php:236
+#: includes/SettingsConsole.php:264
 msgid "Choose the language of FileWarden interfaces and messages. Automatic mode uses English when the site language is unavailable."
 msgstr ""
 
 #. translators: %s: native language name.
-#: includes/SettingsConsole.php:238
+#: includes/SettingsConsole.php:266
 #, php-format
 msgid "Language in use: %s"
 msgstr ""
 
-#: includes/SettingsConsole.php:244
+#: includes/SettingsConsole.php:272
 msgid "File types"
 msgstr ""
 
-#: includes/SettingsConsole.php:244
+#: includes/SettingsConsole.php:272
 msgid "Allow all file types"
 msgstr ""
 
-#: includes/SettingsConsole.php:244
+#: includes/SettingsConsole.php:272
 msgid "Allow formats normally refused, including files containing macros or active content."
 msgstr ""
 
-#: includes/SettingsConsole.php:244
+#: includes/SettingsConsole.php:272
 msgid "Advanced option — disabled by default"
 msgstr ""
 
-#: includes/SettingsConsole.php:246
+#: includes/SettingsConsole.php:274
 msgid "All file types are allowed."
 msgstr ""
 
-#: includes/SettingsConsole.php:246
+#: includes/SettingsConsole.php:274
 msgid "Format and active-content restrictions are lifted. Check the origin of shared files."
 msgstr ""
 
-#: includes/SettingsConsole.php:248
-#: includes/SettingsConsole.php:255
+#: includes/SettingsConsole.php:276
+#: includes/SettingsConsole.php:283
 msgid "Some files may contain malicious programs, macros or scripts. Sharing and opening them can put users at risk."
 msgstr ""
 
-#: includes/SettingsConsole.php:248
+#: includes/SettingsConsole.php:276
 msgid "I understand the risks and confirm that I want to allow all file types."
 msgstr ""
 
-#: includes/SettingsConsole.php:250
+#: includes/SettingsConsole.php:278
 msgid "Access rules, file-size limits and storage protection remain enforced."
 msgstr ""
 
-#: includes/SettingsConsole.php:255
+#: includes/SettingsConsole.php:283
 msgid "Security confirmation"
 msgstr ""
 
-#: includes/SettingsConsole.php:255
+#: includes/SettingsConsole.php:283
 msgid "Allow all file types?"
 msgstr ""
 
-#: includes/SettingsConsole.php:255
+#: includes/SettingsConsole.php:283
 msgid "Enable this option only if you trust the origin of the files and understand the risks."
 msgstr ""
 
-#: includes/SettingsConsole.php:255
+#: includes/SettingsConsole.php:283
 msgid "After confirming, save the settings to apply your choice."
 msgstr ""
 
-#: includes/SettingsConsole.php:255
+#: includes/SettingsConsole.php:283
 msgid "Confirm activation"
 msgstr ""
 
-#: includes/SettingsConsole.php:264
+#: includes/SettingsConsole.php:292
 msgid "Transactional database tables"
 msgstr ""
 
-#: includes/SettingsConsole.php:266
+#: includes/SettingsConsole.php:294
 msgid "The three FileWarden tables use InnoDB."
 msgstr ""
 
-#: includes/SettingsConsole.php:267
+#: includes/SettingsConsole.php:295
 msgid "Existing MyISAM tables prevent safe folder deletion. Convert the three FileWarden tables to InnoDB after backing up."
 msgstr ""
 
-#: includes/SettingsConsole.php:268
+#: includes/SettingsConsole.php:296
 msgid "A FileWarden table is missing or its engine is unreadable. Ask your host to verify the installation before repairing."
 msgstr ""
 
-#: includes/SettingsConsole.php:269
+#: includes/SettingsConsole.php:297
 msgid "Table metadata could not be read. Ask your host to check database permissions. No engine change can be offered safely."
 msgstr ""
 
-#: includes/SettingsConsole.php:270
+#: includes/SettingsConsole.php:298
 msgid "An unsupported database engine was found. Ask your host to review it; automatic conversion is unavailable."
 msgstr ""
 
-#: includes/SettingsConsole.php:277
+#: includes/SettingsConsole.php:305
 msgid "A repair checkpoint remains. FileWarden writes are paused until the integrity check and repair succeed. Do not delete this checkpoint or reset the tables."
 msgstr ""
 
-#: includes/SettingsConsole.php:279
+#: includes/SettingsConsole.php:307
 msgid "Back up the complete database, encryption key and document storage first. Pause external writers and allow time and free disk space for the conversion. ALTER TABLE commits each table separately; a failed repair may need to be resumed. Document files are not moved."
 msgstr ""
 
-#: includes/SettingsConsole.php:279
+#: includes/SettingsConsole.php:307
 msgid "I have a complete backup and have paused external writes for this maintenance operation."
 msgstr ""
 
-#: includes/SettingsConsole.php:279
+#: includes/SettingsConsole.php:307
 msgid "Verify and repair database tables"
 msgstr ""
 
-#: includes/TrashConsole.php:26
+#: includes/TrashConsole.php:28
 msgid "Only authorized deleted documents are shown. Restoring requires an authorized destination."
 msgstr ""
 
-#: includes/TrashConsole.php:27
+#: includes/TrashConsole.php:29
 msgid "Global trash"
 msgstr ""
 
-#: includes/TrashConsole.php:27
+#: includes/TrashConsole.php:29
 msgid "All deleted documents you are allowed to manage. Automatic retention still applies."
 msgstr ""
 
-#: includes/TrashConsole.php:27
+#: includes/TrashConsole.php:29
 msgid "Search by filename"
 msgstr ""
 
-#: includes/TrashConsole.php:27
+#: includes/TrashConsole.php:29
 msgid "Search for a document in the trash..."
 msgstr ""
 
-#: includes/TrashConsole.php:27
+#: includes/TrashConsole.php:29
+#: includes/TrashConsole.php:51
+#: includes/TrashConsole.php:59
+msgid "Original location"
+msgstr ""
+
+#: includes/TrashConsole.php:29
 msgid "All folders"
 msgstr ""
 
-#: includes/TrashConsole.php:40
-msgid "Reset filters"
+#. translators: %s: configured trash retention in days.
+#: includes/TrashConsole.php:44
+#, php-format
+msgid "Automatic retention: %s days from deletion."
 msgstr ""
 
 #. translators: %s: authorized matching document count.
-#: includes/TrashConsole.php:44
+#: includes/TrashConsole.php:48
 #, php-format
 msgid "%s document"
 msgid_plural "%s documents"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/TrashConsole.php:45
-msgid "Original location"
-msgstr ""
-
-#: includes/TrashConsole.php:45
+#: includes/TrashConsole.php:51
+#: includes/TrashConsole.php:59
 msgid "Deleted on"
 msgstr ""
 
 #. translators: %s: days until eligibility for automatic trash cleanup.
-#: includes/TrashConsole.php:52
+#: includes/TrashConsole.php:58
 #, php-format
 msgid "Automatic cleanup in %s day"
 msgid_plural "Automatic cleanup in %s days"
@@ -1932,51 +3277,48 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %s: days until eligibility for automatic trash cleanup.
-#: includes/TrashConsole.php:52
+#: includes/TrashConsole.php:58
 msgid "Eligible for automatic cleanup; waiting for the scheduled task."
 msgstr ""
 
-#: includes/TrashConsole.php:53
+#: includes/TrashConsole.php:59
 msgid "Unknown original location"
 msgstr ""
 
-#: includes/TrashConsole.php:56
+#: includes/TrashConsole.php:62
 msgid "Delete permanently"
 msgstr ""
 
-#: includes/TrashConsole.php:73
+#: includes/TrashConsole.php:79
 msgid "The trash is empty."
 msgstr ""
 
 #: includes/TrashConsole.php:83
+#: includes/TrashConsole.php:94
 msgid "Empty trash"
 msgstr ""
 
-#: includes/TrashConsole.php:92
+#: includes/TrashConsole.php:104
 msgid "The original folder is unavailable. Choose an authorized destination before restoring."
 msgstr ""
 
-#: includes/TrashConsole.php:92
-msgid "Select a destination"
-msgstr ""
-
-#: includes/TrashConsole.php:103
+#: includes/TrashConsole.php:115
 msgid "Permanently delete these documents?"
 msgstr ""
 
-#: includes/TrashConsole.php:103
+#: includes/TrashConsole.php:115
 msgid "documents selected. This action cannot be undone."
 msgstr ""
 
-#: includes/TrashConsole.php:105
+#: includes/TrashConsole.php:117
 msgid "This empties all trash documents you are authorized to delete, regardless of the current search or folder filter."
 msgstr ""
 
-#: includes/TrashConsole.php:114
+#: includes/TrashConsole.php:126
 msgid "I understand these documents cannot be restored."
 msgstr ""
 
-#: includes/TrashConsole.php:114
+#: includes/TrashConsole.php:126
 msgid "Confirm permanent deletion"
 msgstr ""
 
@@ -1990,8 +3332,40 @@ msgid "Loading document…"
 msgstr ""
 
 #: includes/Viewer.php:32
-#: includes/Viewer.php:35
+#: includes/Viewer.php:34
 msgid "Page"
+msgstr ""
+
+#: includes/Viewer.php:34
+msgid "Viewer controls"
+msgstr ""
+
+#: includes/Viewer.php:34
+msgid "Previous page"
+msgstr ""
+
+#: includes/Viewer.php:34
+msgid "Next page"
+msgstr ""
+
+#: includes/Viewer.php:34
+msgid "Zoom out"
+msgstr ""
+
+#: includes/Viewer.php:34
+msgid "Zoom"
+msgstr ""
+
+#: includes/Viewer.php:34
+msgid "Fit width"
+msgstr ""
+
+#: includes/Viewer.php:34
+msgid "Whole page"
+msgstr ""
+
+#: includes/Viewer.php:34
+msgid "Zoom in"
 msgstr ""
 
 #: includes/Viewer.php:34
@@ -2002,26 +3376,81 @@ msgstr ""
 msgid "Open in new tab"
 msgstr ""
 
-#: includes/Viewer.php:35
-msgid "Viewer controls"
-msgstr ""
-
-#: includes/Viewer.php:35
-msgid "Previous page"
-msgstr ""
-
-#: includes/Viewer.php:35
-msgid "Next page"
-msgstr ""
-
-#: includes/Viewer.php:35
-msgid "Zoom"
-msgstr ""
-
-#: includes/Viewer.php:35
-msgid "Fit width"
-msgstr ""
-
 #: includes/Viewer.php:37
 msgid "Enable JavaScript to use the viewer, or download the document."
+msgstr ""
+
+#: includes/WordPressTableConsole.php:20
+msgid "Prepare WordPress tables for restoration"
+msgstr ""
+
+#: includes/WordPressTableConsole.php:20
+msgid "Restoration needs transactional options, posts and postmeta tables. This voluntary helper converts only these three site tables, never your whole database."
+msgstr ""
+
+#: includes/WordPressTableConsole.php:25
+msgid "A WordPress administrator must prepare these shared tables."
+msgstr ""
+
+#: includes/WordPressTableConsole.php:27
+msgid "Before conversion, keep an independent full database backup and stop site writes, scheduled tasks and external writers. Each table is verified separately. A conversion can lock WordPress and cannot be rolled back as one transaction."
+msgstr ""
+
+#: includes/WordPressTableConsole.php:27
+msgid "The interactive helper is limited to 200,000 rows and 64 MiB per table. Larger tables, unavailable SQL permissions or unverifiable data require your host. SQL disk space may need confirmation by your host."
+msgstr ""
+
+#: includes/WordPressTableConsole.php:27
+msgid "Check conversion prerequisites"
+msgstr ""
+
+#: includes/WordPressTableConsole.php:27
+msgid "I have an independent complete database backup available for recovery."
+msgstr ""
+
+#: includes/WordPressTableConsole.php:27
+msgid "Site writes, scheduled tasks and external database writers are stopped for maintenance."
+msgstr ""
+
+#: includes/WordPressTableConsole.php:27
+msgid "My host has confirmed enough free space on the database server for this conversion."
+msgstr ""
+
+#: includes/WordPressTableConsole.php:27
+msgid "Convert / resume the affected tables"
+msgstr ""
+
+#: includes/WordPressTableConsole.php:27
+msgid "Run diagnostic again"
+msgstr ""
+
+#: includes/WordPressTableConsole.php:27
+msgid "Enable JavaScript to use the guided converter, or contact your host."
+msgstr ""
+
+#: includes/WordPressTableConsole.php:38
+msgid "Checking or converting the next table. Keep maintenance active."
+msgstr ""
+
+#: includes/WordPressTableConsole.php:39
+msgid "SQL locking passed and measured database disk space covers the current estimate. ALTER permission is checked by the server during conversion."
+msgstr ""
+
+#: includes/WordPressTableConsole.php:40
+msgid "SQL locking passed, but database disk space cannot be measured here. Confirm available space with your host before continuing."
+msgstr ""
+
+#. translators: %d: verified shared tables.
+#: includes/WordPressTableConsole.php:42
+#, php-format
+msgid "%d of 3 WordPress tables verified."
+msgstr ""
+
+#: includes/WordPressTableConsole.php:43
+msgid "The three WordPress tables are verified as InnoDB. Run diagnostics again before restoring."
+msgstr ""
+
+#: includes/WordPressTableConsole.php:44
+#: includes/WordPressTables.php:322
+msgid "Conversion could not complete. Keep maintenance active and your independent backup. Check SQL permissions, database disk space and table size with your host; review and resume if the data is unchanged. No automatic rollback was attempted."
 msgstr ""

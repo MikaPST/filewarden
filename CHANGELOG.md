@@ -1,5 +1,37 @@
 # Changelog
 
+## 0.1.19-alpha.1 — première Alpha
+
+- Regroupe les évolutions v18/v19 et leurs corrections validées en préproduction par le propriétaire : bibliothèque, fiche/descriptions, doublons exacts et copies indépendantes, accès expliqués, modales, Publication, sauvegarde/migration, Diagnostic et journal.
+- Version, métadonnées, notes et paquet installable harmonisés ; recette GitHub actualisée pour les parcours Alpha, migrations depuis les anciennes releases, contrôles HTTP de sécurité, tests FR/EN et restauration sur une seconde installation.
+- Schéma 9, stockage, permissions et pictogrammes inchangés depuis le dernier candidat validé. Préversion GitHub ; aucune publication dans l’annuaire WordPress.org. Le rapport Plugin Check est suivi dans le prochain lot.
+
+## 0.1.19-dev — candidat local
+
+- Compléments documentaires : fiche privée, descriptions de 400 caractères et recherche autorisée, doublons exacts à l’import avec confirmation par fichier, explication des accès et remplacement atomique des anciennes restrictions à l’enregistrement explicite des droits. Schéma 9 additif, anciennes archives compatibles.
+
+- Corrections de préproduction du 28 novembre : chevron de tri unique, retrait du tri Type, tableau en liste et colonnes espacées ; Annuler centré dans les modales ; lien natif filewarden.org ; pictogrammes de sous-dossiers plus lisibles, pastille sombre représentative et marges communes aux trois styles d’accès refusé.
+
+- Seize ajustements validés : menu contextuel stable, sélection intégrée, recherche compacte/tri/date d’arrivée, modales et lecteur, fil d’Ariane/crayon, Elementor, langue/navigation, palettes Sombre/Terracotta et métadonnées d’auteur.
+- Sauvegarde complète ou personnalisée à huit composants ; configuration seule restaurable sans vider la bibliothèque. Mot de passe de sauvegarde explicite, anciens manifestes 1/2 importables, manifeste 3 pour les nouveaux exports.
+- Schéma 8 additif ; anciennes dates inconnues laissées nulles, audit IP conservé sur schémas 7/8. Livraison ZIP locale sans publication GitHub.
+
+
+## 0.1.18-dev — 2026-11-23 (local preproduction candidate)
+
+- Owner-approved acceptance batch: shared rounded search/filter components for Documents and Trash, grouped advanced filters/chips, mobile trash cards and neutral full-width public empty states. Normalize file-extension case. Add confirmed atomic bulk trash without a destination and centered, keyboard-accessible action dialogs retaining native server forms and two-stage move review; read-only dialog loading can be cancelled. Improve destination spacing and backup actions.
+- Add authenticated manifest v2 component flags for complete/simplified exports; physically omit excluded trash, access references, creator attribution, settings, appearance/logo or audit history. Preserve manifest v1 imports. Restore omitted rights as administration-only private policies, and offer global creator attribution by default in the UI; source historical audit actors remain distinct. Preserve destination settings/appearance when omitted.
+- Diagnose missing native Sodium separately from WordPress polyfills and runtime/KDF failures. Link table anomalies to Storage and security. Add explicit administrator-only conversion of the exact current-site options/posts/postmeta tables after independent backup and maintenance confirmation: bounded fingerprints, real SQL exclusion, one ALTER per request, resumable verified checkpoints and no global DDL rollback promise. Never infer remote SQL capacity from a local PHP disk.
+
+
+- Implement the seven owner-approved axes in docs/lot-v0.1.18-dev.md: actual eight-pair AA/AAA text readability, direct rename, reviewed atomic multi-selection, combined name/date/size/type filters and sorts, authorized library search with locations, latest owner-provided icons and encrypted full-library migration.
+- Preserve document/folder UUIDs, source assets and inherited access checks; rename preserves extensions and physical keys. Selection conflicts roll the whole metadata/audit operation back.
+- Owner-approved complements: add bounded real diagnostics and redacted reports, explicit Elementor popup sign-in with WordPress fallback, opt-in sensitive-event IP capture/expiry, vertically stacked action/status filters and a full-width compact shortcode band. Keep technical event codes; version audit exports as schema 3.
+- Apply additive schema 7 network fields while preserving existing rows/settings and revoked audit-management capabilities; defer migration during legacy backup/repair recovery. Accept legacy schema 6 archives and reset IP capture off on restoration.
+- Remove optional mbstring dependency from backup phrase validation and provide fixed safe failure references without weakening encryption, storage or integrity guards. The owner confirmed successful backup creation after enabling native Sodium and preparing InnoDB tables; complete PHP 8.5/LiteSpeed compatibility remains outside local evidence.
+- Add owner/capability/nonce-bound resumable backup jobs, bounded authenticated streams, a private encrypted checkpoint, write barrier, strict manifest, explicit cross-site mappings, transactional activation/recovery and cleanup. Never export source master keys or WordPress accounts. Restore resets sensitive all-format/login options.
+- Local ZIP delivery only; no GitHub push/tag/release authorized for this candidate. See docs/releases/v0.1.18-dev.md for evidence and limits.
+
 ## 0.1.17-dev — 2026-11-22 (development prerelease)
 
 - Final owner-approved preproduction corrections, 2026-11-22: move Publication tabs above both cards; show integration options by preview context while retaining choices; rename Color palette and update FR/EN help; move Shortcode into a compact card above Preview with WordPress/Elementor guidance; use shared amber tokens for retained-access information and document the semantic colors. Preserve schema, existing settings/documents and authorization. See docs/corrections-finales-v0.1.17-dev.md.

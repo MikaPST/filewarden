@@ -23,6 +23,18 @@ final class StorageTest extends TestCase {
 	private function storage( $verified = true ): StorageService {
 		return new StorageService( $this->base . '/private', array( $this->base . '/public' ), $verified );
 	}
+	public function test_chunked_storage_round_trip_and_failed_write_cleanup(): void {
+		$storage=$this->storage();$key=bin2hex(random_bytes(32));$bytes=str_repeat('bounded fixture',10000);
+		$storage->receive_chunks($key,strlen($bytes),function($consume)use($bytes){foreach(str_split($bytes,65536)as$chunk)$consume($chunk);});
+		$restored='';$storage->visit_chunks($key,strlen($bytes),function($chunk)use(&$restored){$restored.=$chunk;});
+		self::assertSame($bytes,$restored);
+		$broken=bin2hex(random_bytes(32));
+		try{$storage->receive_chunks($broken,100,function($consume){$consume('too short');});self::fail('Partial storage accepted');}
+		catch(\RuntimeException $error){self::assertFileDoesNotExist($storage->path($broken));}
+		$injected=bin2hex(random_bytes(32));
+		try{$storage->receive_chunks($injected,100,function(){throw new \RuntimeException('simulated interrupted producer');});self::fail('Producer failure accepted');}
+		catch(\RuntimeException $error){self::assertFileDoesNotExist($storage->path($injected));}
+	}
 	public function test_unverified_storage_is_blocked(): void {
 		$this->expectException( \RuntimeException::class );
 		$this->storage( false )->root();

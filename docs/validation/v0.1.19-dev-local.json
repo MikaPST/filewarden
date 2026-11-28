@@ -1,0 +1,230 @@
+{
+  "version": "0.1.19-dev",
+  "schema": "8",
+  "checked_on": "2026-11-27",
+  "authorization": "Owner GO for local development, tests and ZIP; no GitHub publication, tag or Alpha designation.",
+  "environment": {
+    "os": "Windows local PC",
+    "php": "8.2.35",
+    "wordpress": [
+      "6.8",
+      "7.1.5"
+    ],
+    "database": "MariaDB 10.11.11",
+    "browsers": [
+      "Chromium",
+      "Firefox"
+    ],
+    "plugin_locales": [
+      "en_US",
+      "fr_FR"
+    ]
+  },
+  "checks": {
+    "unit": {
+      "tests": 117,
+      "assertions": 422,
+      "failures": 0
+    },
+    "javascript_unit_tests": 8,
+    "php_syntax_files": 107,
+    "javascript_runtime_syntax_files": 17,
+    "phpcs": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "translation_entries": 766,
+    "composer_validate": true,
+    "composer_advisories": {
+      "advisories": [],
+      "abandoned": [],
+      "filter": [],
+      "cooldown": []
+    },
+    "fresh_install_68": true,
+    "real_18_to_19_upgrade_715": true,
+    "pending_18_backup_resumed_and_deferred_migration_completed": true,
+    "native_sodium_missing_refused": true,
+    "native_sodium_without_mbstring_roundtrip": true,
+    "http": [
+      "ACL and immediate revocation",
+      "MIME, upload allowlist and all-format opt-in",
+      "CSRF and capabilities",
+      "PDF ranges and byte identity",
+      "CSP and private response headers",
+      "CSV/TXT/JSONL actor exports"
+    ],
+    "library_integration": [
+      "rename preserves identity/extension",
+      "search and sort authorization",
+      "stale proof and atomic bulk rollback"
+    ],
+    "complements_integration": [
+      "diagnostic and redacted witness",
+      "action/status filters",
+      "IP retention and trusted proxy boundary",
+      "popup validation"
+    ],
+    "backup_component_combinations": 252,
+    "encrypted_configuration_restores_on_populated_library": [
+      "settings",
+      "appearance",
+      "both"
+    ],
+    "encrypted_cross_installation_restore": {
+      "formats": [
+        "v3",
+        "v1",
+        "v2"
+      ],
+      "tamper_refused": true,
+      "activation_rollback_retry": true,
+      "encrypted_destination": true,
+      "document_count": 2
+    },
+    "malformed_manifests_refused": 18,
+    "transactional_wordpress_metadata_required": true,
+    "new_ui": {
+      "en_US": [
+        "Chromium",
+        "Firefox"
+      ],
+      "fr_FR": [
+        "Chromium",
+        "Firefox"
+      ],
+      "responsive_widths": [
+        320,
+        375,
+        1440
+      ],
+      "coverage": [
+        "stable context menu during repeated scroll",
+        "selection header and conditional actions",
+        "destination and rights modals",
+        "rename tooltip and square close",
+        "search, filters, header sorts",
+        "compact language and preferences heading",
+        "full/custom backup dependencies",
+        "new palettes",
+        "strict popup ID/shortcode and local dynamic admin URL"
+      ]
+    },
+    "compact_viewer": [
+      "Chromium and Firefox",
+      "real PDF rendered pixels and image load",
+      "page navigation and authenticated new tab",
+      "whole-page fit",
+      "bounded zoom plus/minus",
+      "desktop and 375px compact toolbar"
+    ],
+    "palette_text_pairs": {
+      "dark": {
+        "text/background": 14.793516902226571,
+        "text/surface": 12.560116344607126,
+        "button_text/button": 9.306347089539653,
+        "button_text/hover": 11.360413048548008,
+        "link/surface": 10.308332075352167,
+        "link/background": 12.141327405455383,
+        "muted/surface": 8.370351424259017,
+        "muted/background": 9.858741103582132
+      },
+      "terracotta": {
+        "text/background": 11.673440966310517,
+        "text/surface": 12.460900654186409,
+        "button_text/button": 6.606479220662823,
+        "button_text/hover": 9.073033745758686,
+        "link/surface": 7.133697529033499,
+        "link/background": 6.682887480425459,
+        "muted/surface": 6.013384614227314,
+        "muted/background": 5.633372117313117
+      }
+    },
+    "icon_integrity": {
+      "svg_icons_unchanged": 71,
+      "previous_zip_sha256": "a2a910ad84e7e6dd133acbb8dce42a22792c14a9e105baf1642228de370017b2"
+    },
+    "historical_browser_regressions": {
+      "Chromium": [
+        "core PDF/image/publication/workspace/lifecycle",
+        "notifications",
+        "corrections",
+        "v15 refinements and real voluntary database repair",
+        "v16 opt-in/security/translation isolation"
+      ],
+      "Firefox": [
+        "corrections",
+        "v15 refinements and real voluntary database repair",
+        "v16 opt-in/security/translation isolation"
+      ],
+      "note": "Older combined harness was re-run by focused module after obsolete selector/precondition corrections. New UI and compact viewer independently pass both browsers."
+    },
+    "final_zip_installed_browser_smoke": [
+      "Chromium",
+      "Firefox"
+    ],
+    "git_diff_check": true
+  },
+  "package": {
+    "name": "filewarden-0.1.19-dev.zip",
+    "sha256": "4c64e193b5bcc5705bce0364c5db09dcc729d8d453e1df44b84d5576f645ec36",
+    "bytes": 4449422,
+    "files": 371,
+    "source_and_installed_copies_identical": [
+      "v19backupsource",
+      "v19secondarya"
+    ],
+    "runtime_allowlist": true
+  },
+  "limitations": [
+    "PHP 8.5 and the user hosting were not executed locally.",
+    "Elementor Pro popup opening on a real Elementor frontend remains a preproduction acceptance step; validation, normalization and local admin URL were tested.",
+    "The local encrypted target used an explicitly isolated HTTPS protection probe fixture; this does not establish deployment isolation on the real host.",
+    "Contrast ratios cover eight text pairs, not complete human WCAG certification.",
+    "Historic folder arrival dates remain unknown (null), never inferred from original import dates.",
+    "Full/restored-library imports still require an empty destination; configuration-only restores are the explicit exception."
+  ],
+  "harness_notes": [
+    "Legacy UI harnesses were adapted for centered modals, new category counts, responsive duplicate links, versioned digests and adjacent Filters button.",
+    "Repeated upload fixture names now include a run timestamp.",
+    "The early mixed-storage historical fixture was replaced by a clean coherent source for full encrypted cross-installation backup acceptance."
+  ],
+  "evidence_root": ".tools/v19-dev/",
+  "cleanup": {
+    "database_graceful_shutdown": true,
+    "fixture_files_preserved": true,
+    "remaining_owned_services": 0,
+    "http_servers": [
+      {
+        "fixture": "v19primarya",
+        "identity_verified": true,
+        "port": 8131
+      },
+      {
+        "fixture": "v19primaryb",
+        "identity_verified": true,
+        "port": 8132
+      },
+      {
+        "fixture": "v19secondarya",
+        "identity_verified": true,
+        "port": 8133
+      },
+      {
+        "fixture": "v19primaryc",
+        "identity_verified": true,
+        "port": 8134
+      },
+      {
+        "fixture": "v19backupsource",
+        "identity_verified": true,
+        "port": 8135
+      },
+      {
+        "fixture": "v19pending",
+        "identity_verified": true,
+        "port": 8136
+      }
+    ]
+  }
+}

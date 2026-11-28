@@ -1,6 +1,6 @@
 <?php
 /**
- * Audit actors and ACL-protected logical resource snapshots; no IPs, tokens or storage paths.
+ * Audit actors and ACL-protected logical resource snapshots and opt-in expiring IPs; never tokens or storage paths.
  *
  * @package FileWarden
  */
@@ -67,9 +67,18 @@ final class AuditService {
 			}
 		}
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Custom tables require fresh authorization data and prepared database access.
+		$network = array();
+		if ( AuditIp::available() ) {
+			$ip      = AuditIp::capture( $event, $system );
+			$network = array(
+				'actor_ip'      => $ip,
+				'ip_expires_at' => $ip ? gmdate( 'Y-m-d H:i:s', time() + AuditIp::days() * DAY_IN_SECONDS ) : null,
+			);
+		}
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Prepared custom audit insertion under the writer gate.
 		$result = $wpdb->insert(
 			$wpdb->prefix . 'filewarden_audit_logs',
-			array(
+			$network + array(
 				'actor_id'       => $actor_id,
 				'actor_login'    => $actor_login,
 				'actor_type'     => $actor_id ? 'user' : ( $system ? 'system' : 'visitor' ),
@@ -80,7 +89,7 @@ final class AuditService {
 				'object_id'      => $object_id,
 				'created_at'     => current_time( 'mysql', true ),
 			),
-			array( '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s' )
+			array_merge( $network ? array( '%s', '%s' ) : array(), array( '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s' ) )
 		);
 		if ( false === $result ) {
 			throw new \RuntimeException( 'Audit unavailable.' );
@@ -99,13 +108,22 @@ final class AuditService {
 		$lock = null;
 		try {
 			$lock = $repo->lock( 'audit-write' );
+			if ( AuditIp::available() ) {
+				$now    = gmdate( 'Y-m-d H:i:s' );
+				$cutoff = gmdate( 'Y-m-d H:i:s', time() - AuditIp::days() * DAY_IN_SECONDS );
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Erase only expired addresses; preserve event rows.
+				$wpdb->query( $wpdb->prepare( "UPDATE %i SET actor_ip = '', ip_expires_at = NULL WHERE actor_ip <> '' AND (ip_expires_at IS NULL OR ip_expires_at <= %s OR created_at <= %s) LIMIT 10000", $wpdb->prefix . 'filewarden_audit_logs', $now, $cutoff ) );
+				if ( $wpdb->last_error ) {
+					throw new \RuntimeException( 'Audit IP cleanup failed.' );
+				}
+			}
 			$days = max( 1, (int) get_option( 'filewarden_audit_days', 365 ) );
 			$end  = gmdate( 'Y-m-d H:i:s', time() - $days * DAY_IN_SECONDS );
 			// Bounded, repeatable cleanup: additional batches run on subsequent cron ticks.
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Custom tables require fresh authorization data and prepared database access.
 			$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}filewarden_audit_logs WHERE created_at < %s LIMIT 10000", $end ) );
 		} catch ( \RuntimeException $error ) {
-			if ( ! in_array( $error->getMessage(), array( 'Database repair pending.', 'Document is busy.' ), true ) ) {
+			if ( ! in_array( $error->getMessage(), array( 'Database repair pending.', 'Document is busy.', 'Library backup in progress.' ), true ) ) {
 				throw $error; }
 			// Defer this batch without aborting later WordPress cron callbacks.
 		} finally {

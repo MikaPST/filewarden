@@ -1,0 +1,213 @@
+{
+  "version": "0.1.18-dev",
+  "schema": "7",
+  "manifest_versions_imported": [
+    1,
+    2
+  ],
+  "final_verified_on": "2026-11-27",
+  "recorded_at_UTC": "2026-11-27T16:53:43.811051+00:00",
+  "authorization": "Owner GO: local development, tests and ZIP only. No GitHub push, tag or release.",
+  "environment": {
+    "php": "8.2.35",
+    "database": "MariaDB 10.11.11",
+    "wordpress": [
+      "6.8",
+      "7.1.5"
+    ],
+    "browser_engines": [
+      "Chromium",
+      "Firefox"
+    ],
+    "plugin_locales": [
+      "en_US",
+      "fr_FR"
+    ]
+  },
+  "checks": {
+    "unit": {
+      "tests": 110,
+      "assertions": 387,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0
+    },
+    "javascript_unit_tests": 8,
+    "phpcs": {
+      "errors": 0,
+      "warnings": 0,
+      "fixable": 0
+    },
+    "translation_entries": 749,
+    "composer_advisories": 0,
+    "composer_abandoned": 0
+  },
+  "installed_archive": {
+    "php_syntax": 105,
+    "javascript_syntax": 43,
+    "original_icons_verified": 31,
+    "archive_files": 372,
+    "archive_bytes": 4442810,
+    "archive_sha256": "a2a910ad84e7e6dd133acbb8dce42a22792c14a9e105baf1642228de370017b2",
+    "installed_differences": {},
+    "installed_fixtures": [
+      "v18acceptfinal71527",
+      "v18acceptfinal6827"
+    ],
+    "previous_zip_preserved": true
+  },
+  "integration": {
+    "date": "2026-11-27",
+    "upgrade_from_public_zip": "0.1.17-dev",
+    "both_wordpress_versions_passed": true,
+    "historical_integration": true,
+    "library_and_complements": true,
+    "actual_HTTP_upload_preview_download_range_ACL_CSRF": true,
+    "both_final_HTTP_suites": true
+  },
+  "ui_campaign": {
+    "date": "2026-11-23",
+    "EN_FR_both_engines": true,
+    "mobile_widths": [
+      320,
+      375
+    ],
+    "native_dialog_centering_review_cancel_focus_confirm": true,
+    "read_only_loading_cancellation": true,
+    "trash_cards_filters_chips": true,
+    "empty_states_spacing": true,
+    "publication_drafts_palette_logo_login": true,
+    "diagnostic_IP_event_filters_popup_bridge": true,
+    "no_JS_fallback": true,
+    "real_Elementor_Pro_installed": false
+  },
+  "backup_campaign": {
+    "date": "2026-11-23",
+    "component_combinations": 64,
+    "real_selective_restorations": [
+      {
+        "case": "simplified",
+        "keep_source": false,
+        "documents": 1,
+        "private": true,
+        "passed": true
+      },
+      {
+        "case": "complete",
+        "keep_source": false,
+        "documents": 2,
+        "private": true,
+        "passed": true
+      },
+      {
+        "case": "history_private",
+        "keep_source": false,
+        "documents": 2,
+        "private": true,
+        "passed": true
+      },
+      {
+        "case": "complete",
+        "keep_source": true,
+        "documents": 2,
+        "private": false,
+        "passed": true
+      }
+    ],
+    "real_browser_full_archive_private_restore": true,
+    "real_browser_simplified_restore": true,
+    "conditional_role_creator_controls": true,
+    "restored_bytes_private_ACL_current_creator_verified": true,
+    "real_download_and_missing_nonce_anonymous_refusal": true,
+    "migrations": [
+      {
+        "case": "ui-migration",
+        "different_keys": true,
+        "different_user_ids": true,
+        "documents": 2,
+        "folders": 2,
+        "audit": 27,
+        "archive_sha256": "8620a4918475ed812a9f24ccea4312005130f13042d7bf85e39845baa7dc20fe",
+        "passed": true
+      },
+      {
+        "case": "ui-legacy",
+        "different_keys": true,
+        "different_user_ids": true,
+        "documents": 2,
+        "folders": 2,
+        "audit": 15,
+        "archive_sha256": "638a7fcf1b81b05df225a65acd2ce104f9093f08911fba1a26d4c4e5433aa4f4",
+        "passed": true
+      }
+    ],
+    "invalid_manifest_cases": 18,
+    "HTTPS_storage_probe_simulated_only_in_managed_migration_fixtures": true
+  },
+  "maintenance_campaign": {
+    "date": "2026-11-23",
+    "real_MyISAM_to_InnoDB": true,
+    "exact_three_shared_tables": true,
+    "one_table_per_step": true,
+    "real_SQL_writer_exclusion": true,
+    "DDL_failure_resume": true,
+    "data_drift_refusal": true,
+    "independent_WordPress_capability_and_owner_gates": true,
+    "remote_SQL_disk_requires_confirmation": true,
+    "diagnostic_link_reload_no_auto_conversion": true,
+    "real_native_Sodium_absent_with_WordPress_polyfill": true,
+    "bulk_trash_atomic_rollback_stale_proof_capability_checks": true
+  },
+  "harness_corrections": [
+    "Create test administrators before the maintenance snapshot; WordPress option changes after the snapshot correctly blocked resume. Failed fixture checkpoints were preserved; clean fixtures passed.",
+    "Use explicit selectors for new search/filter controls and await native WordPress profile hydration.",
+    "The HTTP script expects English notices. Its earlier French-notice failure was retained; final runs used explicit English on two fresh fixtures, separately from the passed French browser campaign."
+  ],
+  "local_logs_checked": [
+    "v18acceptfinal71527.log",
+    "v18acceptfinal6827.log",
+    "v18acceptfinal71527-regression.log",
+    "v18acceptfinal6827-regression.log",
+    "v18uifinalb715-fr.log",
+    "v18uifinalb68-fr.log",
+    "v18uifinalb715-historical-fr.log",
+    "v18uifinalb68-historical-fr.log",
+    "ui-centered-browser-final.log",
+    "v18uifinalb715-data.log",
+    "v18uifinalb68-data.log",
+    "ui-converter-browser.log",
+    "ui-selective/browser-full.log",
+    "ui-selective/browser-simple.log",
+    "ui-selective/browser-download.log",
+    "ui-manifest-security.log",
+    "ui-native-crypto.log",
+    "ui-migration/target.log",
+    "ui-legacy/target.log"
+  ],
+  "cleanup": {
+    "database_graceful_shutdown": true,
+    "fixture_files_preserved": true,
+    "http_servers": [
+      {
+        "port": 8121,
+        "fixture": "v18acceptfinal71527",
+        "identity_verified": true
+      },
+      {
+        "port": 8122,
+        "fixture": "v18acceptfinal6827",
+        "identity_verified": true
+      }
+    ],
+    "remaining_owned_services": 0
+  },
+  "limits": [
+    "No complete PHP 8.5/LiteSpeed validation.",
+    "No MySQL 8 run in this local corrective campaign.",
+    "No remote CI, real Elementor Pro, large-volume benchmark or full human accessibility audit.",
+    "The owner still needs preproduction acceptance on their hosting."
+  ],
+  "remote_site_modified": false,
+  "github_published": false,
+  "passed": true
+}

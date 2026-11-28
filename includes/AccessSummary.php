@@ -50,22 +50,7 @@ final class AccessSummary {
 	 * @throws \DomainException For broken ancestry.
 	 */
 	public static function chain( array $record, Repository $repository ) {
-		$rules  = array_merge( array( $record['policy'] ?? null ), is_array( $record['retained_rules'] ?? null ) ? $record['retained_rules'] : array() );
-		$parent = (int) ( $record['folder_id'] ?? $record['parent_id'] ?? 0 );
-		$seen   = array();
-		while ( $parent ) {
-			if ( isset( $seen[ $parent ] ) || count( $seen ) >= 100 ) {
-				throw new \DomainException( 'Invalid ancestry.' );
-			}
-			$seen[ $parent ] = true;
-			$folder          = $repository->folder( $parent );
-			if ( ! $folder ) {
-				throw new \DomainException( 'Missing ancestor.' );
-			}
-			$rules[] = $folder['policy'];
-			$parent  = (int) $folder['parent_id'];
-		}
-		return $rules;
+		return ( new PermissionService( array( $repository, 'folder' ) ) )->rules( $record );
 	}
 	/**
 	 * Describe the intersection, without merging unrelated role predicates.

@@ -11,8 +11,19 @@ namespace FileWarden;
  * Installer implementation.
  */
 final class Installer {
-	const SCHEMA       = '6';
-	const CAPABILITIES = array( 'filewarden_read_all_files', 'filewarden_upload_files', 'filewarden_edit_files', 'filewarden_delete_files', 'filewarden_manage_permissions', 'filewarden_manage_settings', 'filewarden_view_audit', 'filewarden_manage_audit' );
+	const SCHEMA       = '9';
+	const CAPABILITIES = array( 'filewarden_read_all_files', 'filewarden_upload_files', 'filewarden_edit_files', 'filewarden_delete_files', 'filewarden_manage_permissions', 'filewarden_manage_settings', 'filewarden_view_audit', 'filewarden_manage_audit', 'filewarden_export_library', 'filewarden_restore_library' );
+
+	/** Grant the new independent capabilities once; later administrator revocations persist. */
+	public static function backup_capabilities() {
+		if ( add_option( 'filewarden_backup_capabilities', '1', '', false ) ) {
+			$role = get_role( 'administrator' );
+			if ( $role ) {
+				$role->add_cap( 'filewarden_export_library' );
+				$role->add_cap( 'filewarden_restore_library' );
+			}
+		}
+	}
 
 	/**
 	 * Install the single-site schema and administrator capabilities.
@@ -24,8 +35,10 @@ final class Installer {
 		if ( is_multisite() || $network_wide ) {
 			wp_die( esc_html__( 'FileWarden currently supports single-site WordPress only.', 'filewarden' ) );
 		}
+		if ( get_option( WordPressTables::CHECKPOINT ) ) {
+			return; }
 		// An interrupted engine repair must remain accessible after reactivation, without schema writes.
-		if ( self::SCHEMA !== get_option( 'filewarden_schema' ) || ! get_option( DatabaseUpgrade::CHECKPOINT ) ) {
+		if ( ! get_option( BackupJobs::BARRIER ) && ! get_option( DatabaseUpgrade::CHECKPOINT ) && ! get_option( WordPressTables::CHECKPOINT ) ) {
 			self::migrate(); }
 		$role = get_role( 'administrator' );
 		if ( $role ) {
@@ -66,6 +79,8 @@ final class Installer {
 			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			uuid char(36) NOT NULL,
 			folder_id bigint(20) unsigned NOT NULL DEFAULT 0,
+            folder_added_at datetime DEFAULT NULL,
+            description text DEFAULT NULL,
 			name varchar(255) NOT NULL,
 			storage_key char(64) NOT NULL,
             retained_rules longtext DEFAULT NULL,
@@ -81,6 +96,7 @@ final class Installer {
 			PRIMARY KEY  (id),
 			UNIQUE KEY uuid (uuid),
 			UNIQUE KEY storage_key (storage_key),
+            KEY content_lookup (sha256,size),
 			KEY folder_id (folder_id),
             KEY trashed_at (trashed_at)
 			) ENGINE=InnoDB $charset;",
@@ -89,6 +105,8 @@ final class Installer {
 			actor_id bigint(20) unsigned NOT NULL DEFAULT 0,
 			actor_login varchar(60) NOT NULL DEFAULT '',
 			actor_type varchar(16) NOT NULL DEFAULT '',
+			actor_ip varchar(45) NOT NULL DEFAULT '',
+			ip_expires_at datetime DEFAULT NULL,
 			resource_type varchar(16) NOT NULL DEFAULT '',
 			resource_name varchar(255) NOT NULL DEFAULT '',
 			resource_rules longtext DEFAULT NULL,
@@ -96,7 +114,8 @@ final class Installer {
 			object_id bigint(20) unsigned NOT NULL DEFAULT 0,
 			created_at datetime NOT NULL,
 			PRIMARY KEY  (id),
-			KEY created_at (created_at)
+			KEY created_at (created_at),
+			KEY ip_expires_at (ip_expires_at)
 			) ENGINE=InnoDB $charset;",
 			);
 			foreach ( $sql as $statement ) {
@@ -122,7 +141,7 @@ final class Installer {
 			add_option( 'filewarden_root_uuid', wp_generate_uuid4(), '', false );
 			if ( ! wp_is_uuid( get_option( 'filewarden_root_uuid' ), 4 ) ) {
 				throw new \RuntimeException( 'Invalid root UUID.' ); }
-			if ( self::SCHEMA !== get_option( 'filewarden_schema' ) && get_role( 'administrator' ) ) {
+			if ( in_array( get_option( 'filewarden_schema' ), array( '1', '2', '3', '4', '5' ), true ) && get_role( 'administrator' ) ) {
 				get_role( 'administrator' )->add_cap( 'filewarden_manage_audit' ); }
 			update_option( 'filewarden_schema', self::SCHEMA, false );
 		} finally {
