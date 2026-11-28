@@ -21,11 +21,15 @@
 
 [Suivi court du projet et organisation des prochains lots](SUIVI.md)
 
-> **Status: 0.1.19-alpha.1 — first Alpha, approved for GitHub publication after owner preproduction acceptance. Not a stable production release. Validate deployment security before using confidential documents.**
+> **Status: 0.1.19-beta.1 — Beta preview, owner preproduction accepted and approved for GitHub publication after checks. Not a stable production release. Validate deployment security before using confidential documents.**
 
 FileWarden is a free, open-source WordPress document-management plugin focused on private storage, inherited access control and modern publishing interfaces. Single-site only for the first version, confirmed by the owner.
 
-## Première Alpha 0.1.19-alpha.1
+## Candidat Bêta 0.1.19-beta.1
+
+Le propriétaire a autorisé la correction des dix signalements Plugin Check : métadonnées readme, chargement des catalogues FR/EN et requêtes SQL du journal, des collections, des sauvegardes et du contrôle des tables. Aucun changement de schéma ni ajout fonctionnel. Les données, droits, liens et pictogrammes sont conservés. Après ses essais, le propriétaire a autorisé la release/tag GitHub Bêta avec ZIP installable et empreinte. Aucune soumission à WordPress.org n’est effectuée. [Notes de la Bêta](docs/releases/v0.1.19-beta.1.md).
+
+## Historique — première Alpha 0.1.19-alpha.1
 
 La première Alpha regroupe les évolutions v18/v19 et leurs corrections validées en préproduction par le propriétaire : fiche document, descriptions de 400 caractères, recherche autorisée, doublons exacts avec copie indépendante à nom annoncé, sélection multiple, explications des accès par étapes, sauvegardes chiffrées, Diagnostic et personnalisation publique. Les contrôles GitHub Actions du commit et du tag conditionnent sa publication. [Notes de l’Alpha](docs/releases/v0.1.19-alpha.1.md).
 

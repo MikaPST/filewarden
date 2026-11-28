@@ -57,56 +57,32 @@ final class AuditHistory {
 		return $result;
 	}
 	/**
-	 * Build prepared conditions. Values never become identifiers.
+	 * Bind values for the fixed predicate. CSV entries come only from the fixed event catalog.
 	 *
 	 * @param array $filters Normalized filters.
 	 * @param int   $upper Snapshot maximum ID.
 	 * @param bool  $purge Exclude purge traces.
-	 * @return string SQL conditions.
+	 * @return array Bound values, never SQL fragments.
 	 */
-	private static function where( array $filters, $upper, $purge = false ) {
-		global $wpdb;
-		$where = $wpdb->prepare( 'id <= %d', $upper );
-		foreach ( array(
-			'event' => 'event = %s',
-			'from'  => 'created_at >= %s',
-			'until' => 'created_at <= %s',
-		) as $key => $expression ) {
-			if ( ! empty( $filters[ $key ] ) ) {
-                // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Expressions are fixed literals above; values are prepared.
-				$where .= ' AND ' . $wpdb->prepare( $expression, $filters[ $key ] );
-			}
-		}
-		if ( isset( $filters['actions'], $filters['statuses'] ) ) {
-			$codes = array();
+	private static function values( array $filters, $upper, $purge = false ) {
+		$scoped = isset( $filters['actions'], $filters['statuses'] );
+		$codes  = array();
+		$other  = false;
+		if ( $scoped ) {
 			foreach ( AuditEvents::CATALOG as $event => $kind ) {
 				if ( in_array( $kind[0], $filters['actions'], true ) && in_array( $kind[1], $filters['statuses'], true ) ) {
 					$codes[] = $event;
 				}
 			}
-			$parts = array();
-			if ( $codes ) {
-				$slots = implode( ',', array_fill( 0, count( $codes ), '%s' ) );
-				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- Placeholder count is generated from bounded canonical values.
-				$parts[] = $wpdb->prepare( "CAST(event AS BINARY) IN ($slots)", $codes );
-			}
-			if ( in_array( 'other', $filters['actions'], true ) && in_array( 'unknown', $filters['statuses'], true ) ) {
-				$known = array_keys( AuditEvents::CATALOG );
-				$slots = implode( ',', array_fill( 0, count( $known ), '%s' ) );
-				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- Fixed catalog values, with generated placeholders.
-				$parts[] = $wpdb->prepare( "CAST(event AS BINARY) NOT IN ($slots)", $known );
-			}
-			$where .= $parts ? ' AND (' . implode( ' OR ', $parts ) . ')' : ' AND 1 = 0';
+			$other = in_array( 'other', $filters['actions'], true ) && in_array( 'unknown', $filters['statuses'], true );
 		}
-		if ( ! empty( $filters['actor_login'] ) ) {
-			if ( ! empty( $filters['actor_id'] ) ) {
-				$where .= $wpdb->prepare( " AND (actor_login = %s OR (actor_login = '' AND actor_id = %d AND actor_type NOT IN ('imported','source_system','source_user','source_visitor','source_unknown')))", $filters['actor_login'], $filters['actor_id'] );
-			} else {
-				$where .= $wpdb->prepare( ' AND actor_login = %s', $filters['actor_login'] ); }
-		}
-		if ( $purge ) {
-			$where .= " AND event <> 'audit_purged'"; }
-		return $where;
+		$event = empty( $filters['event'] ) ? '' : $filters['event'];
+		$from  = empty( $filters['from'] ) ? '' : $filters['from'];
+		$until = empty( $filters['until'] ) ? '' : $filters['until'];
+		$actor = empty( $filters['actor_login'] ) ? '' : $filters['actor_login'];
+		$id    = $actor && ! empty( $filters['actor_id'] ) ? (int) $filters['actor_id'] : 0;
+		$codes = implode( ',', $codes );
+		return array( $upper, $event, $event, $from, $from, $until, $until, (int) $scoped, $codes, $codes, (int) $other, implode( ',', array_keys( AuditEvents::CATALOG ) ), $actor, $actor, $id, $id, (int) $purge );
 	}
 	/**
 	 * Enforce independent audit read permission.
@@ -139,11 +115,70 @@ final class AuditHistory {
 	public static function rows( array $filters, $upper, $limit = 51 ) {
 		global $wpdb;
 		self::authorize();
-		$where = self::where( $filters, $upper );
-        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- where() returns exclusively prepared conditions.
-		$network = AuditIp::available() ? ', actor_ip, ip_expires_at' : '';
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- Network columns are a fixed literal; where() is prepared.
-		$rows = $wpdb->get_results( $wpdb->prepare( "SELECT id, created_at, event, actor_id, actor_login, object_id, actor_type, resource_type, resource_name, resource_rules$network FROM {$wpdb->prefix}filewarden_audit_logs WHERE $where ORDER BY id DESC LIMIT %d", min( 1000, max( 1, $limit ) ) ), ARRAY_A );
+		$values = self::values( $filters, $upper );
+		$rows   = AuditIp::available()
+			? $wpdb->get_results(
+				$wpdb->prepare(
+					'SELECT id, created_at, event, actor_id, actor_login, object_id, actor_type, resource_type, resource_name, resource_rules, actor_ip, ip_expires_at FROM %i WHERE ' . "id <= %d
+		AND (%s = '' OR event = %s)
+		AND (%s = '' OR created_at >= %s)
+		AND (%s = '' OR created_at <= %s)
+		AND (%d = 0 OR ((%s <> '' AND FIND_IN_SET(CAST(event AS BINARY), %s) > 0) OR (%d = 1 AND FIND_IN_SET(CAST(event AS BINARY), %s) = 0)))
+		AND (%s = '' OR actor_login = %s OR (%d > 0 AND actor_login = '' AND actor_id = %d AND actor_type NOT IN ('imported','source_system','source_user','source_visitor','source_unknown')))
+		AND (%d = 0 OR event <> 'audit_purged')" . ' ORDER BY id DESC LIMIT %d',
+					$wpdb->prefix . 'filewarden_audit_logs',
+					$values[0],
+					$values[1],
+					$values[2],
+					$values[3],
+					$values[4],
+					$values[5],
+					$values[6],
+					$values[7],
+					$values[8],
+					$values[9],
+					$values[10],
+					$values[11],
+					$values[12],
+					$values[13],
+					$values[14],
+					$values[15],
+					$values[16],
+					min( 1000, max( 1, $limit ) )
+				),
+				ARRAY_A
+			)
+			: $wpdb->get_results(
+				$wpdb->prepare(
+					'SELECT id, created_at, event, actor_id, actor_login, object_id, actor_type, resource_type, resource_name, resource_rules FROM %i WHERE ' . "id <= %d
+		AND (%s = '' OR event = %s)
+		AND (%s = '' OR created_at >= %s)
+		AND (%s = '' OR created_at <= %s)
+		AND (%d = 0 OR ((%s <> '' AND FIND_IN_SET(CAST(event AS BINARY), %s) > 0) OR (%d = 1 AND FIND_IN_SET(CAST(event AS BINARY), %s) = 0)))
+		AND (%s = '' OR actor_login = %s OR (%d > 0 AND actor_login = '' AND actor_id = %d AND actor_type NOT IN ('imported','source_system','source_user','source_visitor','source_unknown')))
+		AND (%d = 0 OR event <> 'audit_purged')" . ' ORDER BY id DESC LIMIT %d',
+					$wpdb->prefix . 'filewarden_audit_logs',
+					$values[0],
+					$values[1],
+					$values[2],
+					$values[3],
+					$values[4],
+					$values[5],
+					$values[6],
+					$values[7],
+					$values[8],
+					$values[9],
+					$values[10],
+					$values[11],
+					$values[12],
+					$values[13],
+					$values[14],
+					$values[15],
+					$values[16],
+					min( 1000, max( 1, $limit ) )
+				),
+				ARRAY_A
+			);
 		if ( $wpdb->last_error ) {
 			throw new \RuntimeException( 'Audit query failed.' ); }
 		return $rows ?? array();
@@ -162,9 +197,36 @@ final class AuditHistory {
 		self::authorize();
 		if ( ! current_user_can( 'filewarden_manage_audit' ) ) {
 			throw new \DomainException( 'Access denied.' ); }
-		$where = self::where( $filters, $upper, true );
-        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- where() contains prepared values only.
-		$count = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}filewarden_audit_logs WHERE $where" );
+		$values = self::values( $filters, $upper, true );
+		$count  = (int) $wpdb->get_var(
+			$wpdb->prepare(
+				'SELECT COUNT(*) FROM %i WHERE ' . "id <= %d
+		AND (%s = '' OR event = %s)
+		AND (%s = '' OR created_at >= %s)
+		AND (%s = '' OR created_at <= %s)
+		AND (%d = 0 OR ((%s <> '' AND FIND_IN_SET(CAST(event AS BINARY), %s) > 0) OR (%d = 1 AND FIND_IN_SET(CAST(event AS BINARY), %s) = 0)))
+		AND (%s = '' OR actor_login = %s OR (%d > 0 AND actor_login = '' AND actor_id = %d AND actor_type NOT IN ('imported','source_system','source_user','source_visitor','source_unknown')))
+		AND (%d = 0 OR event <> 'audit_purged')",
+				$wpdb->prefix . 'filewarden_audit_logs',
+				$values[0],
+				$values[1],
+				$values[2],
+				$values[3],
+				$values[4],
+				$values[5],
+				$values[6],
+				$values[7],
+				$values[8],
+				$values[9],
+				$values[10],
+				$values[11],
+				$values[12],
+				$values[13],
+				$values[14],
+				$values[15],
+				$values[16]
+			)
+		);
 		if ( $wpdb->last_error ) {
 			throw new \RuntimeException( 'Audit query failed.' ); }
 		return array(
@@ -196,9 +258,36 @@ final class AuditHistory {
 			if ( false === $wpdb->query( 'START TRANSACTION' ) ) {
 				throw new \RuntimeException( 'Audit transaction failed.' ); }
 			try {
-				$where = self::where( $filters, $upper, true );
-                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- Reviewed prepared conditions.
-				$deleted = $wpdb->query( "DELETE FROM {$wpdb->prefix}filewarden_audit_logs WHERE $where" );
+				$values  = self::values( $filters, $upper, true );
+				$deleted = $wpdb->query(
+					$wpdb->prepare(
+						'DELETE FROM %i WHERE ' . "id <= %d
+		AND (%s = '' OR event = %s)
+		AND (%s = '' OR created_at >= %s)
+		AND (%s = '' OR created_at <= %s)
+		AND (%d = 0 OR ((%s <> '' AND FIND_IN_SET(CAST(event AS BINARY), %s) > 0) OR (%d = 1 AND FIND_IN_SET(CAST(event AS BINARY), %s) = 0)))
+		AND (%s = '' OR actor_login = %s OR (%d > 0 AND actor_login = '' AND actor_id = %d AND actor_type NOT IN ('imported','source_system','source_user','source_visitor','source_unknown')))
+		AND (%d = 0 OR event <> 'audit_purged')",
+						$wpdb->prefix . 'filewarden_audit_logs',
+						$values[0],
+						$values[1],
+						$values[2],
+						$values[3],
+						$values[4],
+						$values[5],
+						$values[6],
+						$values[7],
+						$values[8],
+						$values[9],
+						$values[10],
+						$values[11],
+						$values[12],
+						$values[13],
+						$values[14],
+						$values[15],
+						$values[16]
+					)
+				);
 				if ( false === $deleted || $deleted !== $review['count'] ) {
 					throw new \RuntimeException( 'Audit purge changed; review again.' ); }
 				( new AuditService() )->record( 'audit_purged', $deleted );

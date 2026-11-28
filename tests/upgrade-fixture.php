@@ -33,7 +33,7 @@ if ( 'before' === getenv( 'FILEWARDEN_UPGRADE_STAGE' ) ) {
     WP_CLI::success( 'Previous release ZIP activated and persistent upgrade fixture saved.' );
 } else {
     $before = json_decode( file_get_contents( $upgrade_file ), true );
-    if ( FileWarden\Installer::SCHEMA !== get_option( 'filewarden_schema' ) || ( getenv( 'FILEWARDEN_TARGET_VERSION' ) ?: '0.1.19-alpha.1' ) !== FILEWARDEN_VERSION ) { throw new RuntimeException( 'ZIP update did not install the target version and declared schema.' ); }
+    if ( FileWarden\Installer::SCHEMA !== get_option( 'filewarden_schema' ) || ( getenv( 'FILEWARDEN_TARGET_VERSION' ) ?: '0.1.19-beta.1' ) !== FILEWARDEN_VERSION ) { throw new RuntimeException( 'ZIP update did not install the target version and declared schema.' ); }
     if (20 !== FileWarden\Notice::duration()) { throw new RuntimeException('ZIP update did not preserve the notification preference.'); }
     // Numeric options become strings when read back in a fresh WordPress process.
     foreach($before['settings'] as $key=>$value) { $saved=get_option($key);if(is_array($value)?$saved!==$value:(string)$saved!==(string)$value) throw new RuntimeException('ZIP upgrade reset an existing setting: '.$key); }

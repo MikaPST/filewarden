@@ -7,8 +7,8 @@ msgstr "FileWarden"
 msgid "https://filewarden.org"
 msgstr "https://filewarden.org"
 
-msgid "Private document management for WordPress (Alpha preview)."
-msgstr "Gestion documentaire privée pour WordPress (version Alpha)."
+msgid "Private document management for WordPress (Beta preview)."
+msgstr "Gestion documentaire privée pour WordPress (version Bêta)."
 
 msgid "Michaël PASTOR"
 msgstr "Michaël PASTOR"

@@ -84,8 +84,7 @@ final class Language {
 	public static function register() {
 		add_filter( 'load_textdomain_mofile', array( self::class, 'catalog' ), 20, 2 );
 		add_filter( 'load_translation_file', array( self::class, 'catalog' ), 20, 2 );
-		load_plugin_textdomain( 'filewarden', false, dirname( plugin_basename( FILEWARDEN_PATH . 'filewarden.php' ) ) . '/languages' );
-		// An explicit catalog also covers an unsupported site locale with no matching JIT file.
+		// Explicit loading preserves the independent choice and bundled fallback outside the directory.
 		load_textdomain( 'filewarden', FILEWARDEN_PATH . 'languages/filewarden-' . self::locale() . '.mo' );
 	}
 }

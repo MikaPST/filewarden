@@ -101,9 +101,9 @@ final class WordPressTables {
 		$count = 0;
 		$bytes = 0;
 		do {
-			$extra = 'options' === $logical ? $wpdb->prepare( ' AND option_name <> %s', self::CHECKPOINT ) : '';
-            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- All interpolated fragments are prepared constant clauses.
-			$rows = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %i WHERE %i > CAST(%s AS UNSIGNED)', $table, $key, $last ) . $extra . $wpdb->prepare( ' ORDER BY %i LIMIT 200', $key ), ARRAY_A );
+			$rows = 'options' === $logical
+				? $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %i WHERE %i > CAST(%s AS UNSIGNED) AND option_name <> %s ORDER BY %i LIMIT 200', $table, $key, $last, self::CHECKPOINT, $key ), ARRAY_A )
+				: $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %i WHERE %i > CAST(%s AS UNSIGNED) ORDER BY %i LIMIT 200', $table, $key, $last, $key ), ARRAY_A );
 			if ( $wpdb->last_error || ! is_array( $rows ) ) {
 				throw new \RuntimeException( 'Core table verification failed.' ); }
 			foreach ( $rows as $row ) {

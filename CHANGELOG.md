@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.19-beta.1 — candidat Bêta, corrections Plugin Check
+
+- Corrige les dix points du rapport propriétaire : métadonnées readme, appel de traduction déconseillé et sept constructions SQL. Requêtes fixes, identifiants/valeurs préparés, mêmes limites, capacités et transactions ; aucun contrôle PCP ignoré.
+- Préserve le choix de langue FileWarden indépendant de WordPress et les catalogues FR/EN embarqués. Aucun changement de schéma ni nouvelle fonctionnalité.
+- Ajoute une recette SQL réelle et le contrôle officiel PCP du ZIP installé à la procédure de validation. Candidat local pour préproduction ; publication séparée après validation du propriétaire.
+
 ## 0.1.19-alpha.1 — première Alpha
 
 - Regroupe les évolutions v18/v19 et leurs corrections validées en préproduction par le propriétaire : bibliothèque, fiche/descriptions, doublons exacts et copies indépendantes, accès expliqués, modales, Publication, sauvegarde/migration, Diagnostic et journal.

@@ -37,18 +37,21 @@ final class BackupManifest {
 		foreach ( array( 'folders', 'documents', 'audit_logs' ) as $kind ) {
 			if ( ( 'audit_logs' === $kind && ! $components['audit'] ) || ( 'folders' === $kind && ! $components['folders'] ) || ( 'documents' === $kind && ! $components['documents'] && ! $components['trash'] ) ) {
 				continue; }
-			$where   = 'documents' === $kind ? ( ! $components['trash'] ? ' WHERE trashed_at IS NULL' : ( ! $components['documents'] ? ' WHERE trashed_at IS NOT NULL' : '' ) ) : '';
-			$columns = match ( $kind ) {
-				'folders' => 'name,policy', 'documents' => 'name,description,policy,retained_rules,trash_origin,mime', default => 'actor_login,event,actor_type,resource_type,resource_name,resource_rules' };
-			if ( '9' !== get_option( 'filewarden_schema' ) ) {
-				$columns = str_replace( 'description,', '', $columns );
+			$table = $wpdb->prefix . 'filewarden_' . $kind;
+			if ( 'folders' === $kind ) {
+				$budget = $wpdb->get_var( $wpdb->prepare( "SELECT COALESCE(SUM(LENGTH(CONCAT_WS('', name, policy))),0) FROM %i", $table ) );
+			} elseif ( 'audit_logs' === $kind ) {
+				$budget = $wpdb->get_var( $wpdb->prepare( "SELECT COALESCE(SUM(LENGTH(CONCAT_WS('', actor_login, event, actor_type, resource_type, resource_name, resource_rules))),0) FROM %i", $table ) );
+			} elseif ( '9' === get_option( 'filewarden_schema' ) ) {
+				$budget = $wpdb->get_var( $wpdb->prepare( "SELECT COALESCE(SUM(LENGTH(CONCAT_WS('', name, description, policy, retained_rules, trash_origin, mime))),0) FROM %i" . ' WHERE ((trashed_at IS NULL AND %d = 1) OR (trashed_at IS NOT NULL AND %d = 1))', $table, (int) $components['documents'], (int) $components['trash'] ) );
+			} else {
+				$budget = $wpdb->get_var( $wpdb->prepare( "SELECT COALESCE(SUM(LENGTH(CONCAT_WS('', name, policy, retained_rules, trash_origin, mime))),0) FROM %i" . ' WHERE ((trashed_at IS NULL AND %d = 1) OR (trashed_at IS NOT NULL AND %d = 1))', $table, (int) $components['documents'], (int) $components['trash'] ) );
 			}
-			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Column lists are fixed literals, never archive or request data.
-			$budget = $wpdb->get_var( $wpdb->prepare( "SELECT COALESCE(SUM(LENGTH(CONCAT_WS('', $columns))),0) FROM %i$where", $wpdb->prefix . 'filewarden_' . $kind ) );
 			if ( $wpdb->last_error || (int) $budget > self::MAX_JSON ) {
 				throw new \RuntimeException( 'Backup manifest limit exceeded.' ); }
-			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- The optional WHERE clause is a fixed server literal.
-			$rows = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM %i$where ORDER BY id LIMIT %d", $wpdb->prefix . 'filewarden_' . $kind, self::MAX_ROWS + 1 ), ARRAY_A );
+			$rows = 'documents' === $kind
+				? $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %i WHERE ((trashed_at IS NULL AND %d = 1) OR (trashed_at IS NOT NULL AND %d = 1)) ORDER BY id LIMIT %d', $table, (int) $components['documents'], (int) $components['trash'], self::MAX_ROWS + 1 ), ARRAY_A )
+				: $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %i ORDER BY id LIMIT %d', $table, self::MAX_ROWS + 1 ), ARRAY_A );
 			if ( $wpdb->last_error || count( $rows ) > self::MAX_ROWS ) {
 				throw new \RuntimeException( 'Backup manifest limit exceeded.' );
 			}

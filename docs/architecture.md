@@ -1,5 +1,9 @@
 # Architecture proposal
 
+## Beta candidate — Plugin Check corrections
+
+AuditHistory binds fixed optional predicates at execution for listing/review/purge. Action/status values select canonical event codes, passed as a bound CSV list to binary `FIND_IN_SET`; unknown codes and imported actor identities retain their existing treatment. BackupManifest uses explicit schema-compatible column lists and bound active/trash flags. Collection and shared-table queries use fixed alternatives and prepared identifiers, without request-derived SQL fragments. Language still explicitly loads the independent bundled catalog at init, with filters restricted to FileWarden; directory-only translation registration is removed. No schema or access-policy change.
+
 ## Lot autorisé 0.1.19-dev
 
 Voir [le périmètre des 16 points](lot-v0.1.19-dev.md) et [les notes du candidat](releases/v0.1.19-dev.md). Les contrôles d’accès et capacités restent inchangés. La migration additive de schéma 8 ajoute une date d’arrivée nullable ; aucune date historique inconnue n’est reconstruite. Le manifeste 3 inclut huit composants, avec import des anciens manifestes 1/2. Les paquets de configuration seule peuvent être appliqués sur une bibliothèque existante sans modifier documents, dossiers ni politiques ; une restauration de bibliothèque exige toujours une destination vide. Le chiffrement, les validations serveur, la confirmation, le verrou d’écriture et la reprise transactionnelle restent requis. Les mots de passe et clés du site source ne sont jamais exportés.

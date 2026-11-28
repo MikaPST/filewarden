@@ -2,13 +2,17 @@
 Contributors: mikapst
 Tags: documents, file management, access control
 Requires at least: 6.8
+Tested up to: 7.1
+Stable tag: 0.1.19-beta.1
 Requires PHP: 8.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Alpha preview of private document management. Intended for preproduction testing.
+Beta preview of private document management. Intended for preproduction testing.
 
 == Description ==
+
+FileWarden 0.1.19-beta.1 addresses the ten findings from the owner's Plugin Check report: distribution metadata, explicit safe SQL parameters and independent French/English catalog loading. This is a Beta candidate for preproduction, not a stable release or a WordPress.org submission. The Stable tag field identifies this exact package version for validation; directory distribution will be reviewed separately before submission. Existing documents, URLs, access rules, icons, backups and settings are preserved. See docs/releases/v0.1.19-beta.1.md.
 
 FileWarden 0.1.19-alpha.1 is the first public Alpha. It includes the owner-tested 0.1.18/0.1.19 development work: a document sheet, optional 400-character descriptions and authorized search, exact-content duplicate review with independent numbered copies, direct rename and multi-selection, illustrated effective-access explanations, encrypted backup/migration, Diagnostics, public color palettes and Elementor popup sign-in. Schema 9 preserves existing documents and logical links. This is a prerelease, not a stable production release. See docs/releases/v0.1.19-alpha.1.md for scope and limits.
 
@@ -19,6 +23,10 @@ FileWarden 0.1.19-dev is a local development candidate with integrated folder/do
 Use single-site preproduction WordPress. Managed storage requires Sodium and verified HTTPS access restrictions. See docs/setup.md for verification, backups and the optional outside-webroot configuration. Do not use confidential documents before deployment validation.
 
 == Changelog ==
+
+= 0.1.19-beta.1 =
+
+Plugin Check corrections: declare the tested WordPress branch and matching package version, remove the discouraged translation registration while retaining plugin-specific language selection and bundled fallback, and use fixed SQL predicates with prepared identifiers and values for audit, collections, backup scopes and table verification. No schema change or new feature.
 
 = 0.1.19-alpha.1 =
 

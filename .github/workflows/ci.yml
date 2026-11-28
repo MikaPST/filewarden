@@ -98,6 +98,11 @@ jobs:
             sleep 1
           done
           FILEWARDEN_URL=http://127.0.0.1:8080 NODE_PATH=/tmp/fw-browser/node_modules node tests/v17-fresh-browser.cjs
+      - name: Check the installed ZIP with official Plugin Check
+        run: |
+          wp plugin install plugin-check --version=2.2.0 --path=/tmp/fw-fresh
+          wp --require=/tmp/fw-fresh/wp-content/plugins/plugin-check/cli.php plugin check filewarden --path=/tmp/fw-fresh --format=strict-json > build/plugin-check.json
+          python3 tools/check-pcp-result.py build/plugin-check.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -120,6 +125,7 @@ jobs:
           - {version: '0.1.15-dev', schema: '6'}
           - {version: '0.1.16-dev', schema: '6'}
           - {version: '0.1.17-dev', schema: '6'}
+          - {version: '0.1.19-alpha.1', schema: '9'}
     services:
       mysql:
         image: mysql:8.0
@@ -136,7 +142,7 @@ jobs:
       FILEWARDEN_PREVIOUS_VERSION: ${{ matrix.previous.version }}
       FILEWARDEN_PREVIOUS_SCHEMA: ${{ matrix.previous.schema }}
       FILEWARDEN_PREVIOUS_ENGINE: ${{ matrix.previous.version == '0.1.14-dev' && 'MyISAM' || 'InnoDB' }}
-      FILEWARDEN_TARGET_VERSION: '0.1.19-alpha.1'
+      FILEWARDEN_TARGET_VERSION: '0.1.19-beta.1'
       FILEWARDEN_ACCEPTANCE_DIR: /tmp/.tools/filewarden-alpha
     steps:
       - uses: actions/checkout@v4
@@ -193,6 +199,7 @@ jobs:
           python3 tests/http-smoke.py
           mkdir -p "$FILEWARDEN_ACCEPTANCE_DIR"
           chmod 700 "$FILEWARDEN_ACCEPTANCE_DIR"
+          wp eval-file "$GITHUB_WORKSPACE/tests/beta-pcp-integration.php" --path=/tmp/fw-wordpress
           FW_DOCUMENT_STAGE=ci wp eval-file "$GITHUB_WORKSPACE/tests/v19-document-integration.php" --path=/tmp/fw-wordpress
           wp eval-file "$GITHUB_WORKSPACE/tests/v19-same-name-integration.php" --path=/tmp/fw-wordpress
           FILEWARDEN_UI_RESULT="$FILEWARDEN_ACCEPTANCE_DIR/ui-fixture.json" wp eval-file "$GITHUB_WORKSPACE/tests/v19-ui-corrections.php" --path=/tmp/fw-wordpress
@@ -213,7 +220,7 @@ jobs:
           FW_DOCUMENT_STAGE=restore wp eval-file "$GITHUB_WORKSPACE/tests/v19-document-integration.php" --path=/tmp/fw-restore
       - name: Preserve the exact ZIP installed and tested
         uses: actions/upload-artifact@v4
-        if: success() && matrix.wordpress == '6.8' && matrix.previous.version == '0.1.17-dev'
+        if: success() && matrix.wordpress == '6.8' && matrix.previous.version == '0.1.19-alpha.1'
         with:
           name: filewarden-tested-candidate
           path: build/filewarden-*.zip

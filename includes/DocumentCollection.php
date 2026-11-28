@@ -20,11 +20,13 @@ final class DocumentCollection {
 	public static function rows( DocumentService $service, $trash, $search = '', $folder = null ) {
 		global $wpdb;
 		$service->require_capability( $trash ? 'filewarden_delete_files' : 'filewarden_manage_permissions' );
-		$where  = $trash ? 'trashed_at IS NOT NULL' : 'trashed_at IS NULL AND folder_id = 0';
 		$result = array();
 		for ( $offset = 0; ; $offset += 100 ) {
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery,WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Fixed allowlisted predicate and prepared pagination.
-			$rows = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}filewarden_documents WHERE purging = 0 AND $where ORDER BY id DESC LIMIT 100 OFFSET %d", $offset ), ARRAY_A );
+			// phpcs:disable WordPress.DB.DirectDatabaseQuery -- This bounded collection must reflect current ACL and trash state without stale cached rows.
+			$rows = $trash
+				? $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %i WHERE purging = 0 AND trashed_at IS NOT NULL ORDER BY id DESC LIMIT 100 OFFSET %d', $wpdb->prefix . 'filewarden_documents', $offset ), ARRAY_A )
+				: $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %i WHERE purging = 0 AND trashed_at IS NULL AND folder_id = 0 ORDER BY id DESC LIMIT 100 OFFSET %d', $wpdb->prefix . 'filewarden_documents', $offset ), ARRAY_A );
+			// phpcs:enable WordPress.DB.DirectDatabaseQuery
 			if ( $wpdb->last_error ) {
 				throw new \RuntimeException( 'Collection unavailable.' ); }
 			foreach ( $rows as $row ) {

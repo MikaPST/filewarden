@@ -1,0 +1,124 @@
+{
+  "date": "2026-11-28",
+  "version": "0.1.19-beta.1",
+  "status": "local candidate for owner preproduction acceptance",
+  "schema": "9",
+  "archive": {
+    "version": "0.1.19-beta.1",
+    "sha256": "7728f6c9470837dfb442d8d15d62bdbc9649a8bb0e202c92ed87fe3493677531",
+    "bytes": 4465969,
+    "files": 376,
+    "all_members_match_sources_and_three_installed_sites": true,
+    "all_assets_content_unchanged_from_alpha": 299,
+    "asset_eol_only_differences_from_linux_github_zip": 11,
+    "svg_unchanged_content": 71
+  },
+  "plugin_check": {
+    "version": "2.2.0",
+    "source": "official WordPress.org ZIP",
+    "installed_zip_scan": true,
+    "ignored_codes": [],
+    "excluded_checks": [],
+    "results": [
+      {
+        "wordpress": "6.8",
+        "errors": 0,
+        "warnings": 0
+      },
+      {
+        "wordpress": "7.1.5",
+        "errors": 0,
+        "warnings": 0
+      }
+    ],
+    "interface": "WP-CLI; not the remote administration AJAX coordinator"
+  },
+  "unit": {
+    "php": "8.2.35",
+    "tests": 122,
+    "assertions": 436
+  },
+  "javascript_transport_tests": 8,
+  "php_syntax_files": 122,
+  "phpcs": "passed",
+  "catalog_entries": 809,
+  "catalog_languages": [
+    "fr_FR",
+    "en_US"
+  ],
+  "composer_validate_and_audit": "passed, no advisories",
+  "alpha_to_beta_upgrade": [
+    "6.8",
+    "7.1.5"
+  ],
+  "upgrade_preserves_document_bytes_uuid_acl_audit_and_settings": true,
+  "http_acl_csrf_uploads_ranges_audit_exports_and_caches": [
+    "6.8",
+    "7.1.5"
+  ],
+  "targeted_regression": [
+    {
+      "version": "0.1.19-beta.1",
+      "wordpress": "6.8",
+      "audit_taxonomy_combinations": 133,
+      "literal_quotes_percent_underscore": true,
+      "source_actor_separation": true,
+      "snapshot_purge_and_rollback": true,
+      "capability_denials": true,
+      "catalog_choices_and_fallback": true,
+      "selective_backup_scopes": 4,
+      "trash_boundary": true,
+      "checkpoint_exclusion": true
+    },
+    {
+      "version": "0.1.19-beta.1",
+      "wordpress": "7.1.5",
+      "audit_taxonomy_combinations": 133,
+      "literal_quotes_percent_underscore": true,
+      "source_actor_separation": true,
+      "snapshot_purge_and_rollback": true,
+      "capability_denials": true,
+      "catalog_choices_and_fallback": true,
+      "selective_backup_scopes": 4,
+      "trash_boundary": true,
+      "checkpoint_exclusion": true
+    }
+  ],
+  "browser_suites": [
+    "library",
+    "document-details-and-descriptions",
+    "same-name-and-media-imports",
+    "ui-and-publication",
+    "pdf-viewer"
+  ],
+  "browser_engines": [
+    "Chromium",
+    "Firefox"
+  ],
+  "browser_languages": [
+    "en_US",
+    "fr_FR"
+  ],
+  "desktop_mobile": "passed",
+  "same_name_integrity": {
+    "original_unchanged": true,
+    "all_names_unique": true,
+    "same_content_files_verified": 12
+  },
+  "encrypted_export_and_cross_installation_restore": "passed; descriptions and original bytes verified",
+  "github_beta_checks": "not run; workflow updated for next authorized publication",
+  "published_beta": false,
+  "owner_preproduction_feedback": {
+    "date": "2026-11-28",
+    "general_behavior": "owner reports OK",
+    "pcp_performance_ui": {
+      "status": "indeterminate, check did not complete",
+      "check": "enqueued_scripts_size",
+      "action": "plugin_check_run_checks",
+      "http_status": 400,
+      "body": "0",
+      "matching_upstream_report": "https://github.com/WordPress/plugin-check/issues/1445",
+      "hosting_root_cause_confirmed": false
+    }
+  }
+}
